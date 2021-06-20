@@ -1,10 +1,9 @@
-# About
+# RSS feed reader
 
-This is repository hosts the UI and content of an RSS feed reader.
+Simple GitHub Action powered RSS feed reader generated from [osmos::feed](https://github.com/osmoscraft/osmosfeed).
 
-## Links and references
+Custom theme applied based on the [articles-daily-unstyled example](https://github.com/osmoscraft/osmosfeed-examples/tree/main/examples/articles-daily-unstyled)
 
-- [How does it work?](https://github.com/osmoscraft/osmosfeed#osmosfeed)
-- [File an issue about the template](https://github.com/osmoscraft/osmosfeed-template)
-- [File an issue about the tool](https://github.com/osmoscraft/osmosfeed)
-- [Lastest documentation](https://github.com/osmoscraft/osmosfeed)
+## Commands
+
+- Generate: `npm run build`
