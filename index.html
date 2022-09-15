@@ -25,6 +25,83 @@
 
   <ul>
     <li>
+      <time>2022-09-15</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Client Side Decryption on Azure Spring Apps
+              <span class="post-metadata">(31 min | 9449 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/client-side-decryption-on-azure-spring-apps/ba-p/3621622>You can use client side decryption of properties on Azure Spring Apps by following the steps below:
+Add the encrypted property in your .properties file in your git repository.It would look like:
+
+
+message&#x3D;{cipher}f43e3df3862ab196a4b367624a7d9b581e1c543610da353fbdd2477d60fb282f
+
+
+Update the Config Server on Azure Spring App to use the git repository which has our encrypted property. You could do it directly from Azure Portal or use Azure CLI:
+az spring-cloud config-server git set -n myspringcloud --uri 
+
+In your Spring Boot application, add the decryption key in the bootstrap.yml file. (You would need to create it if it does not exist)
+
+
+encrypt:
+  key: somerandomkey
+
+
+
+[This is the key you would have used in order to encrypt your property earlier]Now, add some code to get the value of the encrypted property.
+
+
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestController {
+
+    @Value(&quot;${message:default}&quot;) 
+    String message;
+
+    @GetMapping(&quot;/&quot;)
+    public String hello() {
+        return message;
+    }
+
+}
+
+
+
+Create an App, or deploy to an existing one.
+az spring-cloud app create -n 
+
+ 
+Deploy your app.
+az spring-cloud app deploy -n appName --jar-path 
+
+ 
+Assign a public endpoint (or use the Test Endpoints)
+az spring-cloud app update -n appName --assign-endpoint true
+
+ 
+Access your application to view the value.
+https://-.azuremicroservices.io/
+
+ 
+(Optional) You can check the encrypted values on the Config Server by following the steps mentioned in thisdocumentation: https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-access-data-plane-azure-ad-rbac</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2022-09-14</time>
 
       <section>
@@ -1334,64 +1411,6 @@ The API portal (DevStudio) from Fiserv ru…</a>
               <a target="_blank" href=https://azure.microsoft.com/en-us/updates/generally-available-azure-api-management-support-for-msal-in-developer-portal/>Enable a secure OAuth 2.0 authorization code flow when using Azure Active Directory or Azure Active Directory B2C identity providers.</a>
             </div>
             <!-- <p class="post-source">Azure service updates</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2022-08-16</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              GitHub Enterprise Server 3.6 is now generally available
-              <span class="post-metadata">(3 min | 779 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-16-github-enterprise-server-3-6-is-now-generally-available>GitHub Enterprise Server 3.6 is now generally available</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Download data stored in your npm account by placing an export request
-              <span class="post-metadata">(3 min | 753 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-16-download-data-stored-in-your-npm-account-by-placing-an-export-request>Download data stored in your npm account by placing an export request</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              UNIwise is now a GitHub secret scanning partner
-              <span class="post-metadata">(2 min | 690 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-16-uniwise-is-now-a-github-secret-scanning-partner>UNIwise is now a GitHub secret scanning partner</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Azure Migrate now supports large-scale migration of ASP.NET web apps to Azure App Service
-              <span class="post-metadata">(33 min | 9923 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/azure-migrate-now-supports-large-scale-migration-of-asp-net-web/ba-p/3596510>Azure is excited to announce the public preview of another key capability in Azure Migrate: unified, at-scale, agentless migration for ASP.NET web apps to Azure App Service. This scenario is in keeping with our vision of Azure Migrate to simplify and accelerate migration and modernization with best-in-class features for all workloads (virtual machines, databases, and apps) to Azure, and our continued investment in helping simplify migration for customers.  
- 
-Our journey to an end-to-end flow for app modernization 
-In August 2021, we announced support for at-scale discovery and assessment of ASP.NET web apps for migration to Azure App Service. Our customers do not want to stop at assessment and gave us feedback that they are looking for end-to-end flow to modernize their apps to Azure App …</a>
-            </div>
-            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
           </details>
       </article>
 
