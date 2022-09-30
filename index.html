@@ -25,9 +25,113 @@
 
   <ul>
     <li>
+      <time>2022-09-30</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Application Insights Sampling in Azure Functions and missing invocations
+              <span class="post-metadata">(31 min | 9346 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/application-insights-sampling-in-azure-functions-and-missing/ba-p/3641491>For Azure Functions -
+ 
+
+Adaptive sampling is enabled by default.
+Fixed-rate sampling is not supported.
+Ingestion sampling only applies when no other sampling is in effect. Therefore, this is also disabled by default in the wake of point #1 above.
+
+ 
+ 
+If you expect data (invocations) under Monitor but do not find it as shown in screenshot below, you have either changed Host.Results category to Warning (or above) level; or your application telemetry is getting sampled. To fix the former, open Host.json file and change the Host.Results category to Information level.
+ 
+{
+  &quot;logging&quot;: {
+    &quot;fileLoggingMode&quot;: &quot;always&quot;,
+    &quot;logLevel&quot;: {
+      &quot;default&quot;: &quot;Information&quot;,
+      &quot;Host.Results&quot;: &quot;Information&quot;,
+      &quot;Function&quot;: &quot;Error&quot;,
+      &quot;Host.Aggregator&quot;: &quot;Trace&quot;
+    }
+  }
+}
+ 
+ 
+If Host.Results category is already set at Information level, disable telemetry sampling as the next step.
+ 
+
+ 
+ 
+ 
+To disable the sampling, set &quot;isEnabled&quot;: false in host.json file as shown below -
+ 
+{
+  &quot;logging&quot;: {
+    &quot;applicationInsights&quot;: {
+      &quot;samplingSettings&quot;: {
+        &quot;isEnabled&quot;: false
+       }
+    }
+  }
+}
+ 
+After disabling sampling, you can confirm it by running a query similar to the following; RetainedPercentage should show 100%.
+ 
+
+ 
+ 
+ 
+ 
+At this point, the function invocations should start appearing under Monitor on Azure Portal UI.</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2022-09-29</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Private profiles are now generally available
+              <span class="post-metadata">(2 min | 648 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2022-09-29-private-profiles-are-now-generally-available>Private profiles are now generally available</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enterprise members CSV Report Now Available in Public Beta
+              <span class="post-metadata">(2 min | 651 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2022-09-29-enterprise-members-csv-report-now-available-in-public-beta>Enterprise members CSV Report Now Available in Public Beta</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependabot alerts: page refresh after PR generation, suggest improvements to an advisory, and more!
+              <span class="post-metadata">(2 min | 691 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2022-09-29-dependabot-alerts-page-refresh-after-pr-generation-suggest-improvements-to-an-advisory-and-more>Dependabot alerts: page refresh after PR generation, suggest improvements to an advisory, and more!</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -1318,173 +1422,6 @@ Capture the network trace, and you will find Encrypted Alert during the TLS hand
 3…</a>
             </div>
             <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Recently
-              <span class="post-metadata">(2 min | 559 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://macwright.com/2022/09/01/recently.html>This was another exciting, busy, and challenging month. Placemark
-clocked in another month of pretty good organic growth, and I spent a week
-at Gradient Retreat, which was everything
-I hoped it would be - relaxing, intellectually invigorating, a place where
-I got to know a bunch of people working on interesting things, and a real
-opportunity to focus.
-At Placemark, I released a changelog
-and a new parser, plus
-did a lot of important but quiet changes, like upgrading Blitz
-to 2.0 and implementing both map sharing and SAML support using WorkOS.
-I guess that part of it was a loop that connected - I built a lot of Placemark’s components
-using Radix, a project whose team now works at WorkOS.
-
-Vancouver was a fascinating place to visit - aesthetically so different than
-New York or San Francisco.…</a>
-            </div>
-            <!-- <p class="post-source">macwright.com</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2022-08-31</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Update and configure code security enablement settings via the organization REST API
-              <span class="post-metadata">(3 min | 797 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-31-update-and-configure-code-security-enablement-settings-via-the-organization-rest-api>Update and configure code security enablement settings via the organization REST API</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Price Reduction - Azure Spring Apps does more, costs less!
-              <span class="post-metadata">(32 min | 9671 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/price-reduction-azure-spring-apps-does-more-costs-less/ba-p/3614058>We believe in providing the most innovative cloud offerings at incredibly competitive prices. As we operate Azure Spring Apps, we continue to build efficiencies and economies of scale. We are passing those efficiencies to you.
- 
-Many customers have asked us to lower the size of the base unit to make it easier to get started and accommodate smaller projects.
- 
-Announcing Price and Base Unit Reduction
- 
-Effective September 1st, we are reducing the base unit of Azure Spring Apps Standard and Enterprise to 6 vCPUs and 12 GB of Memory. And reducing the overage prices for vCPU and Memory.
- 
-
- 
-New Monthly FREE Grants
- 
-Furthermore, to help you get started, effective mid-September, we are offering monthly FREE grants – 50 vCPU hours and 100 Memory GB hours.
- 
-Let’s look at a few examples to illus…</a>
-            </div>
-            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Autolinks with alphanumeric or numeric IDs
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-31-autolinks-with-alphanumeric-or-numeric-ids>Autolinks with alphanumeric or numeric IDs</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Public preview: App Configuration references for App Service and Azure Functions
-              <span class="post-metadata">(18 min | 5254 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://azure.microsoft.com/en-us/updates/public-preview-app-configuration-references-for-app-service-and-azure-functions/>App Service and Azure Functions now support referencing key-values from Azure App Configuration.</a>
-            </div>
-            <!-- <p class="post-source">Azure service updates</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Generally available: Azure Functions extension for Event Grid blob trigger
-              <span class="post-metadata">(17 min | 5161 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://azure.microsoft.com/en-us/updates/generally-available-azure-functions-extension-for-event-grid-blob-trigger/>Use the Event Grid blob trigger in Azure Functions to handle events raised by a storage account.</a>
-            </div>
-            <!-- <p class="post-source">Azure service updates</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Public preview: Azure Storage Explorer support for Azure App Configuration resources
-              <span class="post-metadata">(17 min | 5164 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://azure.microsoft.com/en-us/updates/public-preview-azure-storage-explorer-support-for-azure-app-configuration-resources/>Work with your App Configuration resources in Storage Explorer on Windows, macOS, and Linux.</a>
-            </div>
-            <!-- <p class="post-source">Azure service updates</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Generally available: API Management custom widget support in developer portal
-              <span class="post-metadata">(17 min | 5224 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://azure.microsoft.com/en-us/updates/generally-available-api-management-custom-widget-support-in-developer-portal/>Add custom logic to the managed developer portal capabilities and leverage improved custom widget development.</a>
-            </div>
-            <!-- <p class="post-source">Azure service updates</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Packages: Fine-grained permissions and organization-level publishing are now available for the GitHub Packages npm registry
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-31-packages-fine-grained-permissions-and-organization-level-publishing-are-now-available-for-the-github-packages-npm-registry>Packages: Fine-grained permissions and organization-level publishing are now available for the GitHub Packages npm registry</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Audit Log Streaming to Datadog available as Public Beta
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-31-audit-log-streaming-to-datadog-available-as-public-beta>Audit Log Streaming to Datadog available as Public Beta</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Code scanning: customize your CodeQL analysis using query filters
-              <span class="post-metadata">(3 min | 912 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2022-08-31-code-scanning-customize-your-codeql-analysis-using-query-filters>Code scanning: customize your CodeQL analysis using query filters</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
