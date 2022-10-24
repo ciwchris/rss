@@ -2,10 +2,53 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2022-10-23T21:09:05.424Z</updated>
+    <updated>2022-10-24T14:34:08.019Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Use managed identity instead of AzureWebJobsStorage to connect a function app to a storage account]]></title>
+        <id>https://techcommunity.microsoft.com/t5/apps-on-azure-blog/use-managed-identity-instead-of-azurewebjobsstorage-to-connect-a/ba-p/3657606</id>
+        <link href="https://techcommunity.microsoft.com/t5/apps-on-azure-blog/use-managed-identity-instead-of-azurewebjobsstorage-to-connect-a/ba-p/3657606"/>
+        <updated>2022-10-24T03:45:47.000Z</updated>
+        <summary type="html"><![CDATA[In a function app, usually we use appsetting AzureWebJobsStorage to connect to storage. This blog shows you how to configure a function app using Azure Active Directory identities instead of secrets or connection strings, where possible. Using identities helps you avoid accidentally leaking sensitive secrets and can provide better visibility into how data is accessed.
+ 
+This will not work if the storage account is in a sovereign cloud or has a custom DNS.
+ 
+Below are the steps to do configuration.
+ 
+1. Enable system assigned identity in your function app and save it.
+
+ 
+2. Give storage access to your function app. Search for Storage Blob Data Owner, select it.
+
+ 
+ 
+
+ 
+
+ 
+ 
+ 
+3. If you configure a blob-triggered function app, repeat the step 2 to add Storage Account Contributor and Storage Queue Data Contributor roles which will be used for blob trigger.
+
+ 
+
+ 
+ 
+4. Return to Access Control (IAM), click Role assignments, search for your function app name to confirm the roles are added successfully.
+
+ 
+ 
+5. Navigate to your function app. Select Configuration and edit AzureWebJobsStorage. Change the name to AzureWebJobsStorage__accountname.  Change the value to your storage account name. (The new setting uses a double underscore (__), which is a special character in application settings.) 
+
+ 
+ 
+6. Delete the previous AzureWebJobsStorage. Then you will find your function app still works fine.]]></summary>
+        <author>
+            <name>Bobi_Bao</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Secret scanning enterprise-level enablement events now in the audit log]]></title>
         <id>https://github.blog/changelog/2022-10-21-secret-scanning-enterprise-level-enablement-events-now-in-the-audit-log</id>
