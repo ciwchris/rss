@@ -1503,67 +1503,6 @@ a nice e…</a>
             <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
-      <article>
-          <details>
-            <summary>
-              Application Insights Sampling in Azure Functions and missing invocations
-              <span class="post-metadata">(31 min | 9346 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/application-insights-sampling-in-azure-functions-and-missing/ba-p/3641491>For Azure Functions -
- 
-
-Adaptive sampling is enabled by default.
-Fixed-rate sampling is not supported.
-Ingestion sampling only applies when no other sampling is in effect. Therefore, this is also disabled by default in the wake of point #1 above.
-
- 
- 
-If you expect data (invocations) under Monitor but do not find it as shown in screenshot below, you have either changed Host.Results category to Warning (or above) level; or your application telemetry is getting sampled. To fix the former, open Host.json file and change the Host.Results category to Information level.
- 
-{
-  &quot;logging&quot;: {
-    &quot;fileLoggingMode&quot;: &quot;always&quot;,
-    &quot;logLevel&quot;: {
-      &quot;default&quot;: &quot;Information&quot;,
-      &quot;Host.Results&quot;: &quot;Information&quot;,
-      &quot;Function&quot;: &quot;Error&quot;,
-      &quot;Host.Aggregator&quot;: &quot;Trace&quot;
-    }
-  }
-}
- 
- 
-If Host.Results category is already set at Information level, disable telemetry sampling as the next step.
- 
-
- 
- 
- 
-To disable the sampling, set &quot;isEnabled&quot;: false in host.json file as shown below -
- 
-{
-  &quot;logging&quot;: {
-    &quot;applicationInsights&quot;: {
-      &quot;samplingSettings&quot;: {
-        &quot;isEnabled&quot;: false
-       }
-    }
-  }
-}
- 
-After disabling sampling, you can confirm it by running a query similar to the following; RetainedPercentage should show 100%.
- 
-
- 
- 
- 
- 
-At this point, the function invocations should start appearing under Monitor on Azure Portal UI.</a>
-            </div>
-            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
-          </details>
-      </article>
 
       </section>
     </li>
