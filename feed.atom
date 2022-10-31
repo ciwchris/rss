@@ -2,10 +2,94 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2022-10-30T21:08:35.041Z</updated>
+    <updated>2022-10-31T14:21:05.433Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[How to check if the uploaded certificate is added to Windows-My keystore on App Service-Windows?]]></title>
+        <id>https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-check-if-the-uploaded-certificate-is-added-to-windows-my/ba-p/3666138</id>
+        <link href="https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-check-if-the-uploaded-certificate-is-added-to-windows-my/ba-p/3666138"/>
+        <updated>2022-10-31T08:43:30.000Z</updated>
+        <summary type="html"><![CDATA[In Java, the default keystore of windows App Service is windows-MY. This article illustrates you on how to know if the uploaded certificate is part of windows-MY keystore or not.
+ 
+
+After uploading the certificate (public/private) in AppService under TLS/SSL settings.
+Login to kudu -> navigate to /home/site/wwwroot folder
+Create a CertTest.java file on KUDU container in /home and copy the below code as per the instructions
+
+If you already know the subject CN, you can replace the highlighted text part below.
+ 
+Java code:
+ 
+ 
+ 
+ 
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.time.LocalDateTime;
+import java.util.Enumeration;
+
+public class CertTest {
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+try{
+KeyStore ks = KeyStore.getIn…]]></summary>
+        <author>
+            <name>karthi2210</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Adding HSTS header in the NGINX based App Service]]></title>
+        <id>https://techcommunity.microsoft.com/t5/apps-on-azure-blog/adding-hsts-header-in-the-nginx-based-app-service/ba-p/3666106</id>
+        <link href="https://techcommunity.microsoft.com/t5/apps-on-azure-blog/adding-hsts-header-in-the-nginx-based-app-service/ba-p/3666106"/>
+        <updated>2022-10-31T07:23:39.000Z</updated>
+        <summary type="html"><![CDATA[Azure App Service on Linux images using PHP 8.x are now bundled with NGINX instead of Apache. The use of .htaccess files will not work for NGINX as these are used for Apache only. This will require the need to setup a custom startup script and modifying the existing NGINX site configuration.
+ 
+
+ 
+Navigate to your App Service via the Azure Portal. Under the Development Tools section, select SSH then Go -->.
+Modifying the default site config
+You will want to make a copy of the existing configuration and place the file inside the /home/site directory.
+ 
+
+
+cp /etc/nginx/sites-available/default /home/site/default
+
+
+Once you created a default page as in the previous step, please update the location block to add HSTS Header and create the custom startup script as mentioned below
+  
+location / {           
+index  index.php index.html index.htm hostingstart.html;
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+}
+Creating the custom startup script
+You will now need to create a custom startup script and save the file as /home/site/startup.sh
+
+
+
+#!/bin/bash
+
+cp /home/site/default /etc/nginx/sites-available/default
+service nginx reload
+
+
+In the custom startup script, we are doing the following:
+
+Overriding the existing /etc/nginx/sites-available/default file with the /home/site/default file.
+Reloading the NGINX service to make the updates take effect.
+
+Updating the application settings
+Navigate back to your App Service via the Azure Portal. Under the Settings section, select Configuration.
+Go over to the General Settings section of the Configuration blade.
+For the Startup Command enter the following: /home/site/startup.sh
+Save these settings and navigate to your application https://{sitename}.azurewebsites.net/
+ 
+Please refer to the document https://www.nginx.com/blog/http-strict-transport-security-hsts-and-nginx/]]></summary>
+        <author>
+            <name>karthi2210</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Yellow security vulnerability repository banner is being removed]]></title>
         <id>https://github.blog/changelog/2022-10-28-yellow-security-vulnerability-repository-banner-is-being-removed</id>
