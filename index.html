@@ -25,6 +25,110 @@
 
   <ul>
     <li>
+      <time>2023-04-17</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Enabling AppServiceAppLogs &amp; AppServiceHTTPLogs diagnostic settings in app services
+              <span class="post-metadata">(32 min | 9649 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/enabling-appserviceapplogs-amp-appservicehttplogs-diagnostic/ba-p/3793845>Azure provides built-in diagnostics to assist with debugging an App Service app. You can send your logs from your App Service to Storage Accounts, Event Hubs, or Log Analytics.
+ 
+This blog will guide you step-by-step to enable AppServiceHTTPLogs , AppServiceAppLogs and view them in Log Analytics.
+ 
+Step 1:
+Go to Azure Portal &gt; App Service &gt; Diagnostic Settings and enable the required settings you would like to send to the destination . In this blog I have taken an example of HTTP Logs and App Service Application Logs in a Windows App Service ( .Net Core ).
+ 
+
+ 
+You can refer this doc for more details on supported log types.
+ 
+Step 2:
+In your application code you can use the usual logging options and send log messages to application logs. By default, ASP.NET Core uses the Microsoft.Extensions.Logging.AzureAppServices logging provider. For more information, see ASP.NET Core logging in Azure.
+ 
+Below is the code snippet of the logging I am doing in my .Net Core MVC webapp.
+ 
+
+ 
+ 
+Step 3:
+Go to Azure Portal &gt; Log Analytics workspace &gt; Logs and query the AppServiceAppLogs table and you can see the logs being sent. You can use different levels of logging such as Error, Information, Verbose and etc. in your application and this will show up in your logs in Log Analytics under the “Level” field. You can filter out logs based on the level:
+ 
+
+ 
+Similarly, you can also query AppServiceHTTPLogs:
+ 
+
+ 
+Sample Queries in Log Analytics:
+ 
+
+
+
+
+AppServiceAppLogs
+| where TimeGenerated &gt;ago(10m)
+ 
+AppServiceHTTPLogs
+| where TimeGenerated &gt;ago(10m)
+
+
+
+
+ 
+ 
+More information:
+
+AppServiceAppLogs is now available for ASP .NET apps on Windows - Azure App Service
+App Service Integration with Azure Monitor (Preview) - Azure App Service
+Enable diagnostics logging - Azure App Service | Microsoft Learn
+Logging in .NET Core and ASP.NET Core | Microsoft Learn
+
+ 
+If you have any other questions, feel free to comment below!</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Deprecation: Importing non-Git repositories with GitHub Importer
+              <span class="post-metadata">(3 min | 833 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2023-04-17-deprecation-importing-non-git-repositories-with-github-importer>Deprecation: Importing non-Git repositories with GitHub Importer</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Deploy app service with private endpoint enabled via Azure DevOps
+              <span class="post-metadata">(33 min | 9832 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/deploy-app-service-with-private-endpoint-enabled-via-azure/ba-p/3789370>There is a common scenario that customers want their app service being allocated inside private network and cannot be accessed by public network. Therefore, they usually enable private endpoint as well as configure Access Restriction to deny all the public traffic.
+ 
+When the private endpoint is enabled and public traffic is denied to the web app, all the public traffic to this app is cut off. Since there is a range of IP addresses where agents are deployed, they have a public IP. Obviously, these agents are unable to reach web app.
+
+ 
+As a solution, we can either allow the IP ranges list in the firewall or use self-hosted agents to deploy.
+You may check below document for more information Microsoft-hosted-agents for Azure Pipelines
+ 
+In below lab, we will demo 2 tests. One is what if we d…</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2023-04-15</time>
 
       <section>
