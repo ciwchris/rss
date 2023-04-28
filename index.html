@@ -25,9 +25,67 @@
 
   <ul>
     <li>
+      <time>2023-04-28</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              How To List All VNET Subnets Used for Private Endpoints of App service using PowerShell Script
+              <span class="post-metadata">(32 min | 9556 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-list-all-vnet-subnets-used-for-private-endpoints-of-app/ba-p/3806513>Azure App service can enable Private Endpoints for inbound traffic. 
+Customers may want to list all VNET subnets used for Private Endpoints, and enable Network Security Group for the Private Endpoints.
+There is no way to do it from Azure portal. But the below Power shell script can help customers list all the subnets used for Private Endpoints.
+ 
+
+List all VNET subnets used for Private Endpoint using PowerShell script
+
+$privateEndpoints &#x3D; Get-AzPrivateEndpoint
+$subnetIds &#x3D; $privateEndpoints | ForEach-Object { $_.Subnet.Id }
+$uniqueSubnetIds &#x3D; $subnetIds | Sort-Object -Unique
+ 
+foreach ($subnetId in $uniqueSubnetIds) {
+    Get-AzResource -ResourceId $subnetId
+}
+ 
+The output is like this 
+
+ 
+
+Regarding more parameters for Get-AzPrivateEndpoint
+
+         Check Get-AzPrivateEndpoint (Az.Network) | Microsoft Learn
+ 
+
+How To Enable Network Security Group for Private Endpoints 
+By default, network policies are disabled for a subnet in a virtual network.
+You need to assign the NSG name first in this subnet, then enable NSG in “Network Policy for Private Endpoint”, then the PE will be applied the NSG rule. 
+Manage network policies for private endpoints - Azure Private Link | Microsoft Learn</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2023-04-27</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Try our new expandable event payload view in your audit log – Private Beta
+              <span class="post-metadata">(4 min | 1293 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2023-04-27-try-our-new-expandable-event-payload-view-in-your-audit-log-private-beta>Try our new expandable event payload view in your audit log - Private Beta</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -2014,25 +2072,6 @@ The post Sensitivity Isn’t Static appeared first on David Perell.</a>
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2023-03-30-samlidentity-graphql-object-now-supports-read-scope>SAMLIdentity GraphQL object now supports &#x60;read&#x60; scope</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2023-03-29</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Info messages for bypassing branch protections in Git
-              <span class="post-metadata">(3 min | 786 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2023-03-29-info-messages-for-bypassing-branch-protections-in-git>Info messages for bypassing branch protections in Git</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
