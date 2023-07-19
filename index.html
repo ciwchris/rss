@@ -25,9 +25,139 @@
 
   <ul>
     <li>
+      <time>2023-07-19</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              The behavior of Service Bus Topic output binding for Azure Function
+              <span class="post-metadata">(33 min | 10035 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/the-behavior-of-service-bus-topic-output-binding-for-azure/ba-p/3875707>Recently, I&#x27;m working on a Service Bus topic output binding Azure function and notice that message is sent to the output topic only after the function is executed completely (no matter where you bind the message to the output topic in the code).
+
+ 
+In order to verify the conclusion, below is a sample Service Bus triggered function with Service Bus Topic output binding (send message to another Service Bus Topic).
+
+{
+  &quot;bindings&quot;: [
+    {
+      &quot;name&quot;: &quot;mySbMsg&quot;,
+      &quot;type&quot;: &quot;serviceBusTrigger&quot;,
+      &quot;direction&quot;: &quot;in&quot;,
+      &quot;topicName&quot;: &quot;mytopic&quot;,
+      &quot;subscriptionName&quot;: &quot;mysubscription&quot;,
+      &quot;connection&quot;: &quot;marsb1_SERVICEBUS&quot;
+    },
+    {
+        &quot;name&quot;: &quot;outputSbQueue&quot;,
+        &quot;type&quot;: &quot;serviceBus&quot;,
+        &quot;direction&quot;: &quot;out&quot;,
+        &quot;topicName&quot;: &quot;myerrortopic&quot;,
+        &quot;subscripti…</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How to set offset for Event Hubs Trigger
+              <span class="post-metadata">(33 min | 9941 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-set-offset-for-event-hubs-trigger/ba-p/3871873>We understand that when retrieving data from Event Hubs, you can provide the offset to retrieve the data from offset.
+ The same mechanism applies when using the Function App Event Hubs Trigger, which stores the offset information in a storage account.
+ In this document, we will discuss how to check the offset information for Event Hubs and how to set or reset the value.
+Prerequisite
+
+EventHubs with Standard Pricing tier
+
+EventHub name : samples-workitems
+Partition count : 4
+Retention time : 168 hours
+
+
+
+
+ 
+ 
+
+Function App with EventHubs Trigger
+
+ServiceBusExplorer
+Before we connect to EventHubs from function app, we could use ServiceBusExplorer to test send/receive data from EventHubs.You could download ServiceBusExplorer-4.1.112  version to do the test.
+
+
+Navigate EventHubs instance and c…</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Load Custom Configuration (.ini) in PHP for Azure App Service
+              <span class="post-metadata">(33 min | 9777 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/load-custom-configuration-ini-in-php-for-azure-app-service/ba-p/3878027>As a PHP developer, sometimes you might want to set the custom configuration file (.ini) to read when PHP starts up. For this article, I would like demonstrate how to load custom configuration file (.ini) in the Azure App Service.
+ 
+By default, we set the PHP_INI_DIR &#x3D; /usr/local/etc/php/conf.d, so when using SSH on Kudu, you could see there are lots of .ini files:
+
+ 
+Based on this, you might think we could just manually add our custom .ini files in /usr/local/etc/php/conf.d, but it will not work after restart. Since only &quot;/home&quot; data will be persistent after restarting App Service. So what we need to do is to add our .ini in &quot;/home&quot;, E.g. &quot;/home/site/ini&quot;
+ 
+For example, if I would like to modify &quot;upload_max_filesize to 64M (defualt is 2M) and post_max_size to 64M (default is 8M)&quot; for the PHP website, I could follow the below steps to achieve it:
+ 
+Step 1:
+Use like vi/vim command to add setting.ini file in the &quot;/home/site/ini&quot; folder
+
+ 
+Step 2:
+PHP supports scanning multiple directories for .ini files. For this we need to set PHP_INI_SCAN_DIR with &quot;:&quot; to separate values on the Application Setting for the target App Service.
+E.g. PHP_INI_SCAN_DIR &#x3D; :/home/site/ini
+This ensures that we load *.ini files from  /usr/local/etc/php and then load from /home/site/ini
+
+ 
+ 
+After, we check the value by simple php page and it will show upload_max_size and post_max_size are set as 64M now.
+
+ 
+Reference:
+
+Understanding the Azure App Service file system: Understanding the Azure App Service file system · projectkudu/kudu Wiki · GitHub
+Configure a PHP app for Azure App Service: Configure PHP apps - Azure App Service | Microsoft Learn</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2023-07-18</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Azure Spring Apps product updates in June 2023
+              <span class="post-metadata">(34 min | 10124 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/azure-spring-apps-product-updates-in-june-2023/ba-p/3877668>The following update announces a new plan:
+
+Azure Spring Apps Consumption and Dedicated plan: This plan offers you customizable compute options (including memory optimization), single tenancy, and high availability to help you achieve price predictability, cost savings, and performance for running Spring applications at scale. For more information, see Unleash Spring apps in a flex environment with Azure Spring Apps Consumption and Dedicated plans.
+
+The following update is now available in the Consumption and Basic/Standard plans:
+
+Azure Developer CLI (azd) for Azure Spring Apps: Azure Developer CLI (azd) is an open-source tool that accelerates the time it takes for you to get your application from local development environment to Azure. You can now initialize, package, provision, and depl…</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -1175,55 +1305,6 @@ The post Own It Mentality appeared first on David Perell.</a>
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2023-06-20-code-scanning-can-filter-alerts-by-language-and-file-path>Code scanning can filter alerts by language and file path</a>
-            </div>
-            <!-- <p class="post-source">Changelogs Archive - The GitHub Blog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2023-06-19</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Azure Functions Newsletter – June 2023
-              <span class="post-metadata">(32 min | 9572 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/azure-functions-newsletter-june-2023/ba-p/3851362>Welcome to this month&#x27;s Azure Functions newsletter! We&#x27;ll share the latest news for Azure Functions every month here on the Apps on Azure blog.
- 
-Azure Functions monthly community live stream
- 
-Our next live stream is on June 20, 2023 at 10:00AM PDT (17:00 UTC). Join us and our special guest Eamon O&#x27;Reilly to get an overview of all the recent Azure Functions related announcements. 
-
-
-
- 
-Subscribe to the Azure Developers YouTube channel!
- 
-Product news
-
-Durable Functions SDK for PowerShell is now in the PowerShell Gallery
-Application Insights Distributed Tracing support for Java Function Apps is now GA - OpenTelemetry-based distributed tracing and Application Performance Management (APM) on App Insights is now generally available for Java Apps on Azure Functions
-Azure Functions – May update for Microsoft build - combined Azure Functions blog post with all the updates from the Microsoft Build conference
-
- 
-Get notified when we publish future newsletters, subscribe to the Apps on Azure blog. Connect with the Azure Functions team on GitHub and Twitter.</a>
-            </div>
-            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependency Graph, Dependabot Alerts, and Advisory Database now support Swift advisories
-              <span class="post-metadata">(4 min | 1316 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2023-06-19-dependency-graph-dependabot-alerts-and-advisory-database-now-support-swift-advisories>Dependency Graph, Dependabot Alerts, and Advisory Database now support Swift advisories</a>
             </div>
             <!-- <p class="post-source">Changelogs Archive - The GitHub Blog</p> -->
           </details>
