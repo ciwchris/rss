@@ -25,6 +25,70 @@
 
   <ul>
     <li>
+      <time>2023-07-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              How to increase concurrency on python function app hosted in app service plan?
+              <span class="post-metadata">(33 min | 9799 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-increase-concurrency-on-python-function-app-hosted-in-app/ba-p/3882010>There are multiple ways to increase the concurrency of python function app. I drew an architecture diagram, which can give us an overall understanding of the function app.
+ 
+
+Based on the diagram, we can see we could increase function app concurrency by increasing instance count, python worker count and thread count. To better understand this, I build several labs to validate this. I will not demonstrate instance count as it is easy to understand. All these labs are having 4 concurrent incoming requests and each request takes 10 seconds to complete.
+ 
+Lab1:
+code:
+sync
+
+Configuration:
+maxConcurrentRequests : 4FUNCTIONS_WORKER_PROCESS_COUNT&#x3D;1PYTHON_THREADPOOL_THREAD_COUNT&#x3D;1
+Result:
+It took 40 seconds to complete the 4 executions. We can see these 4 executions were triggered at the same time, this is because the function host level is using async. But actually these executions are executed one by one.
+
+Lab2:
+code: The same as Lab1.
+Configuration:
+maxConcurrentRequests : 4FUNCTIONS_WORKER_PROCESS_COUNT&#x3D;1PYTHON_THREADPOOL_THREAD_COUNT&#x3D;2
+Result:
+It took 20 seconds to complete the 4 executions.
+
+ 
+Lab3:
+code: The same as Lab1.
+Configuration:
+maxConcurrentRequests : 4FUNCTIONS_WORKER_PROCESS_COUNT&#x3D;2PYTHON_THREADPOOL_THREAD_COUNT&#x3D;2
+Result:
+It took 10 seconds to complete the 4 executions.
+
+Lab4:
+code:
+async
+
+Configuration:
+maxConcurrentRequests : 4FUNCTIONS_WORKER_PROCESS_COUNT&#x3D;1PYTHON_THREADPOOL_THREAD_COUNT&#x3D;1
+Result:
+It took 10 seconds to complete the 4 executions.
+
+ 
+Conclusion:
+1.We can increase the concurrency by increasing FUNCTIONS_WORKER_PROCESS_COUNT and PYTHON_THREADPOOL_THREAD_COUNT. Just note that we can configure the concurrent setting in host.json file. This is the bottleneck of the concurrency. 
+2.It is more recommended to use async method instead of sync method as async has better performance than sync with the same configuration.
+ 
+Reference link:
+Azure Functions HTTP triggers and bindings | Microsoft Learn
+Improve throughput performance of Python apps in Azure Functions | Microsoft Learn</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2023-07-20</time>
 
       <section>
