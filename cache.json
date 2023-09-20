@@ -6,6 +6,16 @@
       "siteUrl": "https://github.blog/changelog/",
       "articles": [
         {
+          "id": "https://github.blog/changelog/2023-09-19-enterprise-managed-users-support-for-ping-federate-is-now-generally-available",
+          "author": "Kevin Duck",
+          "description": "Enterprise managed users support for Ping Federate is now generally available\nThe post Enterprise managed users support for Ping Federate is now generally available appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2023-09-19-enterprise-managed-users-support-for-ping-federate-is-now-generally-available",
+          "publishedOn": "2023-09-19T20:44:17.000Z",
+          "wordCount": 1163,
+          "title": "Enterprise managed users support for Ping Federate is now generally available",
+          "imageUrl": "https://github-production-user-asset-6210df.s3.amazonaws.com/1852630/269085450-d6d1c763-66d0-497a-87a0-7770607504f2.png"
+        },
+        {
           "id": "https://github.blog/changelog/2023-09-19-easily-customize-code-scanning-using-codeql-model-packs-for-java-beta",
           "author": "Kevin Duck",
           "description": "Easily customize code scanning using CodeQL model packs for Java (beta)\nThe post Easily customize code scanning using CodeQL model packs for Java (beta) appeared first on The GitHub Blog.",
@@ -354,16 +364,6 @@
           "wordCount": 1123,
           "title": "Code scanning default setup now analyzes on a weekly schedule",
           "imageUrl": null
-        },
-        {
-          "id": "https://github.blog/changelog/2023-08-21-repository-actions-runners-list",
-          "author": "Kevin Duck",
-          "description": "Repository Actions Runners List\nThe post Repository Actions Runners List appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2023-08-21-repository-actions-runners-list",
-          "publishedOn": "2023-08-21T17:43:01.000Z",
-          "wordCount": 1061,
-          "title": "Repository Actions Runners List",
-          "imageUrl": "https://github.blog/wp-content/uploads/2023/08/Runners-List-Enabled-9.png"
         }
       ]
     },
@@ -596,6 +596,16 @@
       "feedUrl": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=8116577974362211737&board=AppsonAzureBlog&label=&messages=&size=10",
       "siteUrl": "https://techcommunity.microsoft.com",
       "articles": [
+        {
+          "id": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/init-containers-in-azure-container-apps-database-initialization/ba-p/3931271",
+          "author": "Kinsuk",
+          "description": "Suppose you're deploying a web application that relies on a database. Instead of manually configuring the database each time you deploy your application, you can use an Init Container to handle this task. The Init Container can run scripts to create tables, seed initial data, or set up the database schema. Once the database is ready, the main application container can safely start, knowing that the required database structure is in place.\n \nThe below example defines an init container which runs under the same pod as main app container, seeds data to an existing Azure MySQL Database which will be used by the main web app container to serve contents onto the landing page.\n \n\n \nThe init container inserts a record into an existing table named myguests in Azure My SQL DB using a python script. The script contains code for connecting to the Database alongside inserting record into the Database. This data will then be retrieved and used by the main app container which is also running a python Flask based web application and return the value in the landing page.\n \nDockerfile for Init Container\n \n \n \nFROM python\nCOPY . .\nRUN pip install mysql && pip install mysql-connector-python\nCMD [\"python\", \"test.py\"]\n\n \n \n \n \nPython Script for Init Container\n \n \n \nimport mysql.connector\n\nmydb = mysql.connector.connect(\n  host=\"init-test.mysql.database.azure.com\",\n  user=\"*******\",\n  password=\"*******\",\n  database=\"*****\"\n)\n\nmycursor = mydb.cursor()\n\nsql = \"INSERT INTO myguests (firstname, lastname, email) VALUES ('John', 'Doe', 'test@outlook.com')\"\n\nmycursor.execute(sql)\n\nmydb.commit()\n\nprint(mycursor.rowcount, \"record(s) affected\")\n\n \n \n \n \nOutput from Init Container\n \n\n \n \n \nDockerfile for main app container\n \n \n \nFROM python\nCOPY . .\nRUN pip install mysql-connector && pip install flask\nEXPOSE 5000\nCMD [\"python\", \"app.py\"]\n \n \n \nOutput",
+          "link": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/init-containers-in-azure-container-apps-database-initialization/ba-p/3931271",
+          "publishedOn": "2023-09-20T09:25:52.000Z",
+          "wordCount": 9861,
+          "title": "Init Containers in Azure Container Apps : Database Initialization",
+          "imageUrl": "https://techcommunity.microsoft.com/t5/image/serverpage/image-id/508963iFB344682F6B03679/image-size/original?v=v2&px=-1"
+        },
         {
           "id": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/automate-your-load-tests-with-ci-cd-in-just-a-few-clicks/ba-p/3931185",
           "author": "Nikita_Nallamothu",
@@ -955,26 +965,6 @@
           "wordCount": 9891,
           "title": "How to remove the PHP X-Powered-By header from HTTP response for PHP 8.x apps on Linux App Service",
           "imageUrl": "https://techcommunity.microsoft.com/t5/image/serverpage/image-id/500397i401FF6E74D8E5D81/image-size/original?v=v2&px=-1"
-        },
-        {
-          "id": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/maximizing-value-streamlined-cloud-solutions-with-prime-cost/ba-p/3904599",
-          "author": "Asir-Selvasingh",
-          "description": "Stop by and check out these new capabilities at the Microsoft Booth in the SpringOne Conference in Las Vegas – August 21-24.\n \nBy -- Asir Selvasingh, Microsoft, and Adib Saikali, VMware Tanzu.\n \nCost is not just a number — it is key to making big decisions, especially when moving to the cloud. Knowing how important this is, we offer solutions that make your cloud experience better and save you a lot of money, up to a huge 47% discount. This is not just about being affordable; it is about getting great value every step of the way.\n \nMoving to the cloud with Azure Migrate is now straightforward. Following our belief of \"Your Ideal Cloud Journey is Faster + Cheaper = Better \", we are excited to offer even better tools for Spring applications with Azure Migrate. Discovering and assessing your …",
-          "link": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/maximizing-value-streamlined-cloud-solutions-with-prime-cost/ba-p/3904599",
-          "publishedOn": "2023-08-21T16:00:00.000Z",
-          "wordCount": 11285,
-          "title": "Maximizing Value: Streamlined Cloud Solutions with Prime Cost Savings for Spring Apps – upto 47% off",
-          "imageUrl": "https://techcommunity.microsoft.com/t5/image/serverpage/image-id/499841i716A90727A36A1A2/image-size/original?v=v2&px=-1"
-        },
-        {
-          "id": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/build-right-and-fast-landing-zone-accelerator-for-spring-apps/ba-p/3903517",
-          "author": "aarthimurugan",
-          "description": "Today we are excited to announce the general of Azure Spring Apps (ASA) landing zone accelerator. You can start deploying your spring applications to Azure Spring Apps at scale using the built with industry-proven practices.\n \nCustomers on their app modernization or migration journey to cloud may encounter challenges to deploy spring applications at enterprise scale and get it right at the first time. Landing zone accelerators help you address this challenge providing guidance to deploy workloads faster with better security, scalability, availability, reduced cost, operating confidently with better performance.\n \nLanding zone accelerators provide architectural guidance, reference architecture, reference implementations and automation packaged to deploy workload platforms on Azure at scale.…",
-          "link": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/build-right-and-fast-landing-zone-accelerator-for-spring-apps/ba-p/3903517",
-          "publishedOn": "2023-08-21T16:00:00.000Z",
-          "wordCount": 10504,
-          "title": "Build Right and Fast: Landing Zone Accelerator for Spring Apps - Now Generally Available!",
-          "imageUrl": "https://techcommunity.microsoft.com/t5/image/serverpage/image-id/499439iEEA57A1C8BB35F26/image-size/original?v=v2&px=-1"
         }
       ]
     },
@@ -989,6 +979,17 @@
       "feedUrl": "https://www.forrester.com/blogs/author/allie_mellen/feed/",
       "siteUrl": "https://www.forrester.com/blogs/author/allie_mellen/",
       "articles": [
+        {
+          "id": "https://www.forrester.com/?p=223233",
+          "author": "Allie Mellen",
+          "description": "In a 2016 New York Times Magazine profile of Ben Rhodes, President Obama’s then deputy national security adviser for strategic communications, Ben was quoted as calling the American foreign-policy establishment “the Blob.” He considered The Blob to be Iraq war promoters from both parties who talk about the collapse of the American security order in Europe […]",
+          "link": "https://www.forrester.com/blogs/the-blob-is-poisoning-the-security-industry/",
+          "publishedOn": "2023-09-20T12:00:17.000Z",
+          "wordCount": null,
+          "title": "“The Blob” Is Poisoning The Security Industry",
+          "itunes": {},
+          "imageUrl": null
+        },
         {
           "id": "https://www.forrester.com/?p=221984",
           "author": "Allie Mellen",
