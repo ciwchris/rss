@@ -493,6 +493,16 @@
       "siteUrl": "https://techcommunity.microsoft.com",
       "articles": [
         {
+          "id": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-install-intl-extension-on-wordpress-on-azure-app-service/ba-p/4138353",
+          "author": "Arjun_Baliga",
+          "description": "1.Run the following code in the App Service SSH -\napk add icu-dev && \\\n   docker-php-ext-configure intl && \\\n   docker-php-ext-install intl && \\\n   docker-php-ext-enable intl\n2. Now copy the intl.so & docker-php-ext-intl.ini file to persistent storage located under /home -\nmkdir /home/intl-ext\ncp /usr/local/etc/php/conf.d/docker-php-ext-intl.ini /home/intl-ext/docker-php-ext-intl.ini\ncp /usr/local/lib/php/extensions/no-debug-non-zts-20220829/intl.so /home/intl-ext/intl.so\n3.Insert the following code into the \"/home/dev/startup.sh\" file - \napk add icu-dev\ncp /home/intl-ext/docker-php-ext-intl.ini /usr/local/etc/php/conf.d/docker-php-ext-intl.ini\ncp /home/intl-ext/intl.so /usr/local/lib/php/extensions/no-debug-non-zts-20220829/intl.so\nsupervisorctl restart php-fpm\n4. After completing the previous steps, restart your App Service. Once restarted, navigate to phpinfo.php and verify that the intl extension is successfully installed.",
+          "link": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-install-intl-extension-on-wordpress-on-azure-app-service/ba-p/4138353",
+          "publishedOn": "2024-05-13T08:33:14.000Z",
+          "wordCount": 8518,
+          "title": "How to install intl extension on WordPress on Azure App Service",
+          "imageUrl": "https://techcommunity.microsoft.com/t5/image/serverpage/image-id/580206i65E2B6D8E3B6BB0D/image-size/original?v=v2&px=-1"
+        },
+        {
           "id": "https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-access-azure-sql-database-with-managed-identity-in-php-in/ba-p/4129014",
           "author": "Joe_Chen",
           "description": "Introduction\nAfter Microsoft ODBC Driver version 17.3.1.1, we will able to use the system-assigned and user-assigned identities (Using Azure Active Directory with the ODBC Driver - ODBC Driver for SQL Server | Microsoft Learn) to access the Azure SQL Server\n\nMicrosoft ODBC driver version in Azure Web App for PHP 8.1~ in Linux is after this version. We could run below command to check:\n\nodbcinst -j\ncat /etc/odbcinst.ini\n\nThe result could see we have both ODBC 17 and ODBC 18 driver. And both version is greater than the 17.3.1.1. So it shall support to use the system-assigned managed identity to access the Azure SQL database\n\n \nStep by Step Setup\nPrerequisites:\n- Make sure Azure SQL database can use \"Active Directory authentication\" to login DB since we need the run the database commands to g…",

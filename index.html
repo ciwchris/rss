@@ -25,6 +25,39 @@
 
   <ul>
     <li>
+      <time>2024-05-13</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              How to install intl extension on WordPress on Azure App Service
+              <span class="post-metadata">(28 min | 8518 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-install-intl-extension-on-wordpress-on-azure-app-service/ba-p/4138353>1.Run the following code in the App Service SSH -
+apk add icu-dev &amp;&amp; \
+   docker-php-ext-configure intl &amp;&amp; \
+   docker-php-ext-install intl &amp;&amp; \
+   docker-php-ext-enable intl
+2. Now copy the intl.so &amp; docker-php-ext-intl.ini file to persistent storage located under /home -
+mkdir /home/intl-ext
+cp /usr/local/etc/php/conf.d/docker-php-ext-intl.ini /home/intl-ext/docker-php-ext-intl.ini
+cp /usr/local/lib/php/extensions/no-debug-non-zts-20220829/intl.so /home/intl-ext/intl.so
+3.Insert the following code into the &quot;/home/dev/startup.sh&quot; file - 
+apk add icu-dev
+cp /home/intl-ext/docker-php-ext-intl.ini /usr/local/etc/php/conf.d/docker-php-ext-intl.ini
+cp /home/intl-ext/intl.so /usr/local/lib/php/extensions/no-debug-non-zts-20220829/intl.so
+supervisorctl restart php-fpm
+4. After completing the previous steps, restart your App Service. Once restarted, navigate to phpinfo.php and verify that the intl extension is successfully installed.</a>
+            </div>
+            <!-- <p class="post-source">Microsoft Tech Community - Latest Blogs - Apps on Azure Blog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2024-05-12</time>
 
       <section>

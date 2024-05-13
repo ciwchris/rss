@@ -2,10 +2,34 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2024-05-12T21:07:44.271Z</updated>
+    <updated>2024-05-13T14:07:20.405Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[How to install intl extension on WordPress on Azure App Service]]></title>
+        <id>https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-install-intl-extension-on-wordpress-on-azure-app-service/ba-p/4138353</id>
+        <link href="https://techcommunity.microsoft.com/t5/apps-on-azure-blog/how-to-install-intl-extension-on-wordpress-on-azure-app-service/ba-p/4138353"/>
+        <updated>2024-05-13T08:33:14.000Z</updated>
+        <summary type="html"><![CDATA[1.Run the following code in the App Service SSH -
+apk add icu-dev && \
+   docker-php-ext-configure intl && \
+   docker-php-ext-install intl && \
+   docker-php-ext-enable intl
+2. Now copy the intl.so & docker-php-ext-intl.ini file to persistent storage located under /home -
+mkdir /home/intl-ext
+cp /usr/local/etc/php/conf.d/docker-php-ext-intl.ini /home/intl-ext/docker-php-ext-intl.ini
+cp /usr/local/lib/php/extensions/no-debug-non-zts-20220829/intl.so /home/intl-ext/intl.so
+3.Insert the following code into the "/home/dev/startup.sh" file - 
+apk add icu-dev
+cp /home/intl-ext/docker-php-ext-intl.ini /usr/local/etc/php/conf.d/docker-php-ext-intl.ini
+cp /home/intl-ext/intl.so /usr/local/lib/php/extensions/no-debug-non-zts-20220829/intl.so
+supervisorctl restart php-fpm
+4. After completing the previous steps, restart your App Service. Once restarted, navigate to phpinfo.php and verify that the intl extension is successfully installed.]]></summary>
+        <author>
+            <name>Arjun_Baliga</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Superhuman?]]></title>
         <id>https://www.oneusefulthing.org/p/superhuman</id>
