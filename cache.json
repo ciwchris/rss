@@ -856,22 +856,6 @@
             "type": "image/jpeg"
           },
           "imageUrl": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F506086f0-9564-4964-9304-4d7a3e82eceb_1280x800.webp"
-        },
-        {
-          "id": "https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough",
-          "author": "Ethan Mollick",
-          "description": "Don't make this hard",
-          "link": "https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough",
-          "publishedOn": "2024-11-24T12:36:50.000Z",
-          "wordCount": null,
-          "title": "Getting started with AI: Good enough prompting",
-          "itunes": {},
-          "enclosure": {
-            "url": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F586c5a86-090e-40ce-99c5-2f91ac026547_1312x736.webp",
-            "length": "0",
-            "type": "image/jpeg"
-          },
-          "imageUrl": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F586c5a86-090e-40ce-99c5-2f91ac026547_1312x736.webp"
         }
       ]
     },
@@ -880,6 +864,26 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2024/Dec/24/jeremy-edberg/#atom-everything",
+          "author": null,
+          "description": "<blockquote cite=\"https://news.ycombinator.com/item?id=42486610#42492484\"><p>[On Reddit] we had to look up every single comment on the page to see if you had voted on it [...]</p>\n<p>But with a bloom filter, we could very quickly look up all the comments and get back a list of all the ones you voted on (with a couple of false positives in there). Then we could go to the cache and see if your actual vote was there (and if it was an upvote or a downvote). It was only after a failed cache hit did we have to actually go to the database.</p>\n<p>But that bloom filter saved us from doing sometimes 1000s of cache lookups.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://news.ycombinator.com/item?id=42486610#42492484\">Jeremy Edberg</a></p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/reddit\">reddit</a>, <a href=\"https://simonwillison.net/tags/bloom-filters\">bloom-filters</a>, <a href=\"https://simonwillison.net/tags/scaling\">scaling</a></p>",
+          "link": "https://simonwillison.net/2024/Dec/24/jeremy-edberg/#atom-everything",
+          "publishedOn": "2024-12-24T07:13:01.000Z",
+          "wordCount": 299,
+          "title": "Quoting Jeremy Edberg",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2024/Dec/24/modernbert/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://www.answer.ai/posts/2024-12-19-modernbert.html\">Finally, a replacement for BERT: Introducing ModernBERT</a></strong></p>\n<a href=\"https://en.wikipedia.org/wiki/BERT_(language_model)\">BERT</a> was an early language model released by Google in October 2018. Unlike modern LLMs it wasn't designed for generating text. BERT was trained for masked token prediction and was generally applied to problems like Named Entity Recognition or Sentiment Analysis. BERT also wasn't very useful on its own - most applications required you to fine-tune a model on top of it.</p>\n<p>In exploring BERT I decided to try out <a href=\"https://huggingface.co/dslim/distilbert-NER\">dslim/distilbert-NER</a>, a popular Named Entity Recognition model fine-tuned on top of DistilBERT (a smaller distilled version of the original BERT model). <a href=\"https://til.simonwillison.net/llms/bert-ner\">Here are my notes</a> on running that using <code>uv run</code>.</p>\n<p>Jeremy Howard's <a href=\"https://www.answer.ai/\">Answer.AI</a> research group, <a href=\"https://www.lighton.ai/\">LightOn</a> and friends supported the development of ModernBERT, a brand new BERT-style model that applies many enhancements from the past six years of advances in this space.</p>\n<p>While BERT was trained on 3.3 billion tokens, producing 110 million and 340 million parameter models, ModernBERT trained on 2 trillion tokens, resulting in 140 million and 395 million parameter models. The parameter count hasn't increased much because it's designed to run on lower-end hardware. It has a 8192 token context length, a significant improvement on BERT's 512.</p>\n<p>I was able to run one of the demos from the announcement post using <code>uv run</code> like this (I'm not sure why I had to use <code>numpy&lt;2.0</code> but without that I got an error about <code>cannot import name 'ComplexWarning' from 'numpy.core.numeric'</code>):</p>\n<div class=\"highlight highlight-source-shell\"><pre>uv run --with <span class=\"pl-s\"><span class=\"pl-pds\">'</span>numpy&lt;2.0<span class=\"pl-pds\">'</span></span> --with torch --with <span class=\"pl-s\"><span class=\"pl-pds\">'</span>git+https://github.com/huggingface/transformers.git<span class=\"pl-pds\">'</span></span> python</pre></div>\n<p>Then this Python:</p>\n<pre><span class=\"pl-k\">import</span> <span class=\"pl-s1\">torch</span>\n<span class=\"pl-k\">from</span> <span class=\"pl-s1\">transformers</span> <span class=\"pl-k\">import</span> <span class=\"pl-s1\">pipeline</span>\n<span class=\"pl-k\">from</span> <span class=\"pl-s1\">pprint</span> <span class=\"pl-k\">import</span> <span class=\"pl-s1\">pprint</span>\n<span class=\"pl-s1\">pipe</span> <span class=\"pl-c1\">=</span> <span class=\"pl-en\">pipeline</span>(\n    <span class=\"pl-s\">\"fill-mask\"</span>,\n    <span class=\"pl-s1\">model</span><span class=\"pl-c1\">=</span><span class=\"pl-s\">\"answerdotai/ModernBERT-base\"</span>,\n    <span class=\"pl-s1\">torch_dtype</span><span class=\"pl-c1\">=</span><span class=\"pl-s1\">torch</span>.<span class=\"pl-c1\">bfloat16</span>,\n)\n<span class=\"pl-s1\">input_text</span> <span class=\"pl-c1\">=</span> <span class=\"pl-s\">\"He walked to the [MASK].\"</span>\n<span class=\"pl-s1\">results</span> <span class=\"pl-c1\">=</span> <span class=\"pl-en\">pipe</span>(<span class=\"pl-s1\">input_text</span>)\n<span class=\"pl-en\">pprint</span>(<span class=\"pl-s1\">results</span>)</pre>\n<p>Which downloaded 573MB to <code>~/.cache/huggingface/hub/models--answerdotai--ModernBERT-base</code> and output:</p>\n<pre>[{<span class=\"pl-s\">'score'</span>: <span class=\"pl-c1\">0.11669921875</span>,\n  <span class=\"pl-s\">'sequence'</span>: <span class=\"pl-s\">'He walked to the door.'</span>,\n  <span class=\"pl-s\">'token'</span>: <span class=\"pl-c1\">3369</span>,\n  <span class=\"pl-s\">'token_str'</span>: <span class=\"pl-s\">' door'</span>},\n {<span class=\"pl-s\">'score'</span>: <span class=\"pl-c1\">0.037841796875</span>,\n  <span class=\"pl-s\">'sequence'</span>: <span class=\"pl-s\">'He walked to the office.'</span>,\n  <span class=\"pl-s\">'token'</span>: <span class=\"pl-c1\">3906</span>,\n  <span class=\"pl-s\">'token_str'</span>: <span class=\"pl-s\">' office'</span>},\n {<span class=\"pl-s\">'score'</span>: <span class=\"pl-c1\">0.0277099609375</span>,\n  <span class=\"pl-s\">'sequence'</span>: <span class=\"pl-s\">'He walked to the library.'</span>,\n  <span class=\"pl-s\">'token'</span>: <span class=\"pl-c1\">6335</span>,\n  <span class=\"pl-s\">'token_str'</span>: <span class=\"pl-s\">' library'</span>},\n {<span class=\"pl-s\">'score'</span>: <span class=\"pl-c1\">0.0216064453125</span>,\n  <span class=\"pl-s\">'sequence'</span>: <span class=\"pl-s\">'He walked to the gate.'</span>,\n  <span class=\"pl-s\">'token'</span>: <span class=\"pl-c1\">7394</span>,\n  <span class=\"pl-s\">'token_str'</span>: <span class=\"pl-s\">' gate'</span>},\n {<span class=\"pl-s\">'score'</span>: <span class=\"pl-c1\">0.020263671875</span>,\n  <span class=\"pl-s\">'sequence'</span>: <span class=\"pl-s\">'He walked to the window.'</span>,\n  <span class=\"pl-s\">'token'</span>: <span class=\"pl-c1\">3497</span>,\n  <span class=\"pl-s\">'token_str'</span>: <span class=\"pl-s\">' window'</span>}]</pre>\n\n<p>I'm looking forward to trying out models that use ModernBERT as their base. The model release is accompanied by a paper (<a href=\"https://arxiv.org/abs/2412.13663\">Smarter, Better, Faster, Longer: A Modern Bidirectional Encoder for Fast, Memory Efficient, and Long Context Finetuning and Inference</a>) and <a href=\"https://huggingface.co/docs/transformers/main/en/model_doc/modernbert\">new documentation</a> for using it with the Transformers library.\n\n    <p><small></small>Via <a href=\"https://bsky.app/profile/benjaminwarner.dev/post/3ldur45oz322b\">@benjaminwarner.dev</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/jeremy-howard\">jeremy-howard</a>, <a href=\"https://simonwillison.net/tags/transformers\">transformers</a>, <a href=\"https://simonwillison.net/tags/hugging-face\">hugging-face</a>, <a href=\"https://simonwillison.net/tags/uv\">uv</a>, <a href=\"https://simonwillison.net/tags/python\">python</a>, <a href=\"https://simonwillison.net/tags/nlp\">nlp</a></p>",
+          "link": "https://simonwillison.net/2024/Dec/24/modernbert/#atom-everything",
+          "publishedOn": "2024-12-24T06:21:29.000Z",
+          "wordCount": 597,
+          "title": "Finally, a replacement for BERT: Introducing ModernBERT",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2024/Dec/23/jack-clark/#atom-everything",
           "author": null,

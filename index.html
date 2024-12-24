@@ -25,6 +25,87 @@
 
   <ul>
     <li>
+      <time>2024-12-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Jeremy Edberg
+              <span class="post-metadata">(1 min | 299 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2024/Dec/24/jeremy-edberg/#atom-everything>[On Reddit] we had to look up every single comment on the page to see if you had voted on it [...]
+But with a bloom filter, we could very quickly look up all the comments and get back a list of all the ones you voted on (with a couple of false positives in there). Then we could go to the cache and see if your actual vote was there (and if it was an upvote or a downvote). It was only after a failed cache hit did we have to actually go to the database.
+But that bloom filter saved us from doing sometimes 1000s of cache lookups.
+
+— Jeremy Edberg
+Tags: reddit, bloom-filters, scaling</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Finally, a replacement for BERT: Introducing ModernBERT
+              <span class="post-metadata">(2 min | 597 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2024/Dec/24/modernbert/#atom-everything>Finally, a replacement for BERT: Introducing ModernBERT
+BERT was an early language model released by Google in October 2018. Unlike modern LLMs it wasn&#x27;t designed for generating text. BERT was trained for masked token prediction and was generally applied to problems like Named Entity Recognition or Sentiment Analysis. BERT also wasn&#x27;t very useful on its own - most applications required you to fine-tune a model on top of it.
+In exploring BERT I decided to try out dslim/distilbert-NER, a popular Named Entity Recognition model fine-tuned on top of DistilBERT (a smaller distilled version of the original BERT model). Here are my notes on running that using uv run.
+Jeremy Howard&#x27;s Answer.AI research group, LightOn and friends supported the development of ModernBERT, a brand new BERT-style model that applies many enhancements from the past six years of advances in this space.
+While BERT was trained on 3.3 billion tokens, producing 110 million and 340 million parameter models, ModernBERT trained on 2 trillion tokens, resulting in 140 million and 395 million parameter models. The parameter count hasn&#x27;t increased much because it&#x27;s designed to run on lower-end hardware. It has a 8192 token context length, a significant improvement on BERT&#x27;s 512.
+I was able to run one of the demos from the announcement post using uv run like this (I&#x27;m not sure why I had to use numpy&lt;2.0 but without that I got an error about cannot import name &#x27;ComplexWarning&#x27; from &#x27;numpy.core.numeric&#x27;):
+uv run --with &#x27;numpy&lt;2.0&#x27; --with torch --with &#x27;git+https://github.com/huggingface/transformers.git&#x27; python
+
+Then this Python:
+import torch
+from transformers import pipeline
+from pprint import pprint
+pipe &#x3D; pipeline(
+    &quot;fill-mask&quot;,
+    model&#x3D;&quot;answerdotai/ModernBERT-base&quot;,
+    torch_dtype&#x3D;torch.bfloat16,
+)
+input_text &#x3D; &quot;He walked to the [MASK].&quot;
+results &#x3D; pipe(input_text)
+pprint(results)
+Which downloaded 573MB to ~/.cache/huggingface/hub/models--answerdotai--ModernBERT-base and output:
+[{&#x27;score&#x27;: 0.11669921875,
+  &#x27;sequence&#x27;: &#x27;He walked to the door.&#x27;,
+  &#x27;token&#x27;: 3369,
+  &#x27;token_str&#x27;: &#x27; door&#x27;},
+ {&#x27;score&#x27;: 0.037841796875,
+  &#x27;sequence&#x27;: &#x27;He walked to the office.&#x27;,
+  &#x27;token&#x27;: 3906,
+  &#x27;token_str&#x27;: &#x27; office&#x27;},
+ {&#x27;score&#x27;: 0.0277099609375,
+  &#x27;sequence&#x27;: &#x27;He walked to the library.&#x27;,
+  &#x27;token&#x27;: 6335,
+  &#x27;token_str&#x27;: &#x27; library&#x27;},
+ {&#x27;score&#x27;: 0.0216064453125,
+  &#x27;sequence&#x27;: &#x27;He walked to the gate.&#x27;,
+  &#x27;token&#x27;: 7394,
+  &#x27;token_str&#x27;: &#x27; gate&#x27;},
+ {&#x27;score&#x27;: 0.020263671875,
+  &#x27;sequence&#x27;: &#x27;He walked to the window.&#x27;,
+  &#x27;token&#x27;: 3497,
+  &#x27;token_str&#x27;: &#x27; window&#x27;}]
+I&#x27;m looking forward to trying out models that use ModernBERT as their base. The model release is accompanied by a paper (Smarter, Better, Faster, Longer: A Modern Bidirectional Encoder for Fast, Memory Efficient, and Long Context Finetuning and Inference) and new documentation for using it with the Transformers library.
+
+    
+Via @benjaminwarner.dev
+Tags: ai, jeremy-howard, transformers, hugging-face, uv, python, nlp</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2024-12-23</time>
 
       <section>
@@ -2252,25 +2333,6 @@ The post What’s New in Mobile, November Update appeared first on The GitHub Bl
 The post Microsoft Semantic Kernel Office Hours Update appeared first on Semantic Kernel.</a>
             </div>
             <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2024-11-24</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Getting started with AI: Good enough prompting
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough>Don&#x27;t make this hard</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
           </details>
       </article>
 

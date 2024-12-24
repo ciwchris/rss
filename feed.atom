@@ -2,10 +2,81 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2024-12-23T21:08:20.369Z</updated>
+    <updated>2024-12-24T14:08:31.703Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Jeremy Edberg]]></title>
+        <id>https://simonwillison.net/2024/Dec/24/jeremy-edberg/#atom-everything</id>
+        <link href="https://simonwillison.net/2024/Dec/24/jeremy-edberg/#atom-everything"/>
+        <updated>2024-12-24T07:13:01.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://news.ycombinator.com/item?id=42486610#42492484"><p>[On Reddit] we had to look up every single comment on the page to see if you had voted on it [...]</p>
+<p>But with a bloom filter, we could very quickly look up all the comments and get back a list of all the ones you voted on (with a couple of false positives in there). Then we could go to the cache and see if your actual vote was there (and if it was an upvote or a downvote). It was only after a failed cache hit did we have to actually go to the database.</p>
+<p>But that bloom filter saved us from doing sometimes 1000s of cache lookups.</p></blockquote>
+<p class="cite">&mdash; <a href="https://news.ycombinator.com/item?id=42486610#42492484">Jeremy Edberg</a></p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/reddit">reddit</a>, <a href="https://simonwillison.net/tags/bloom-filters">bloom-filters</a>, <a href="https://simonwillison.net/tags/scaling">scaling</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Finally, a replacement for BERT: Introducing ModernBERT]]></title>
+        <id>https://simonwillison.net/2024/Dec/24/modernbert/#atom-everything</id>
+        <link href="https://simonwillison.net/2024/Dec/24/modernbert/#atom-everything"/>
+        <updated>2024-12-24T06:21:29.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.answer.ai/posts/2024-12-19-modernbert.html">Finally, a replacement for BERT: Introducing ModernBERT</a></strong></p>
+<a href="https://en.wikipedia.org/wiki/BERT_(language_model)">BERT</a> was an early language model released by Google in October 2018. Unlike modern LLMs it wasn't designed for generating text. BERT was trained for masked token prediction and was generally applied to problems like Named Entity Recognition or Sentiment Analysis. BERT also wasn't very useful on its own - most applications required you to fine-tune a model on top of it.</p>
+<p>In exploring BERT I decided to try out <a href="https://huggingface.co/dslim/distilbert-NER">dslim/distilbert-NER</a>, a popular Named Entity Recognition model fine-tuned on top of DistilBERT (a smaller distilled version of the original BERT model). <a href="https://til.simonwillison.net/llms/bert-ner">Here are my notes</a> on running that using <code>uv run</code>.</p>
+<p>Jeremy Howard's <a href="https://www.answer.ai/">Answer.AI</a> research group, <a href="https://www.lighton.ai/">LightOn</a> and friends supported the development of ModernBERT, a brand new BERT-style model that applies many enhancements from the past six years of advances in this space.</p>
+<p>While BERT was trained on 3.3 billion tokens, producing 110 million and 340 million parameter models, ModernBERT trained on 2 trillion tokens, resulting in 140 million and 395 million parameter models. The parameter count hasn't increased much because it's designed to run on lower-end hardware. It has a 8192 token context length, a significant improvement on BERT's 512.</p>
+<p>I was able to run one of the demos from the announcement post using <code>uv run</code> like this (I'm not sure why I had to use <code>numpy&lt;2.0</code> but without that I got an error about <code>cannot import name 'ComplexWarning' from 'numpy.core.numeric'</code>):</p>
+<div class="highlight highlight-source-shell"><pre>uv run --with <span class="pl-s"><span class="pl-pds">'</span>numpy&lt;2.0<span class="pl-pds">'</span></span> --with torch --with <span class="pl-s"><span class="pl-pds">'</span>git+https://github.com/huggingface/transformers.git<span class="pl-pds">'</span></span> python</pre></div>
+<p>Then this Python:</p>
+<pre><span class="pl-k">import</span> <span class="pl-s1">torch</span>
+<span class="pl-k">from</span> <span class="pl-s1">transformers</span> <span class="pl-k">import</span> <span class="pl-s1">pipeline</span>
+<span class="pl-k">from</span> <span class="pl-s1">pprint</span> <span class="pl-k">import</span> <span class="pl-s1">pprint</span>
+<span class="pl-s1">pipe</span> <span class="pl-c1">=</span> <span class="pl-en">pipeline</span>(
+    <span class="pl-s">"fill-mask"</span>,
+    <span class="pl-s1">model</span><span class="pl-c1">=</span><span class="pl-s">"answerdotai/ModernBERT-base"</span>,
+    <span class="pl-s1">torch_dtype</span><span class="pl-c1">=</span><span class="pl-s1">torch</span>.<span class="pl-c1">bfloat16</span>,
+)
+<span class="pl-s1">input_text</span> <span class="pl-c1">=</span> <span class="pl-s">"He walked to the [MASK]."</span>
+<span class="pl-s1">results</span> <span class="pl-c1">=</span> <span class="pl-en">pipe</span>(<span class="pl-s1">input_text</span>)
+<span class="pl-en">pprint</span>(<span class="pl-s1">results</span>)</pre>
+<p>Which downloaded 573MB to <code>~/.cache/huggingface/hub/models--answerdotai--ModernBERT-base</code> and output:</p>
+<pre>[{<span class="pl-s">'score'</span>: <span class="pl-c1">0.11669921875</span>,
+  <span class="pl-s">'sequence'</span>: <span class="pl-s">'He walked to the door.'</span>,
+  <span class="pl-s">'token'</span>: <span class="pl-c1">3369</span>,
+  <span class="pl-s">'token_str'</span>: <span class="pl-s">' door'</span>},
+ {<span class="pl-s">'score'</span>: <span class="pl-c1">0.037841796875</span>,
+  <span class="pl-s">'sequence'</span>: <span class="pl-s">'He walked to the office.'</span>,
+  <span class="pl-s">'token'</span>: <span class="pl-c1">3906</span>,
+  <span class="pl-s">'token_str'</span>: <span class="pl-s">' office'</span>},
+ {<span class="pl-s">'score'</span>: <span class="pl-c1">0.0277099609375</span>,
+  <span class="pl-s">'sequence'</span>: <span class="pl-s">'He walked to the library.'</span>,
+  <span class="pl-s">'token'</span>: <span class="pl-c1">6335</span>,
+  <span class="pl-s">'token_str'</span>: <span class="pl-s">' library'</span>},
+ {<span class="pl-s">'score'</span>: <span class="pl-c1">0.0216064453125</span>,
+  <span class="pl-s">'sequence'</span>: <span class="pl-s">'He walked to the gate.'</span>,
+  <span class="pl-s">'token'</span>: <span class="pl-c1">7394</span>,
+  <span class="pl-s">'token_str'</span>: <span class="pl-s">' gate'</span>},
+ {<span class="pl-s">'score'</span>: <span class="pl-c1">0.020263671875</span>,
+  <span class="pl-s">'sequence'</span>: <span class="pl-s">'He walked to the window.'</span>,
+  <span class="pl-s">'token'</span>: <span class="pl-c1">3497</span>,
+  <span class="pl-s">'token_str'</span>: <span class="pl-s">' window'</span>}]</pre>
+
+<p>I'm looking forward to trying out models that use ModernBERT as their base. The model release is accompanied by a paper (<a href="https://arxiv.org/abs/2412.13663">Smarter, Better, Faster, Longer: A Modern Bidirectional Encoder for Fast, Memory Efficient, and Long Context Finetuning and Inference</a>) and <a href="https://huggingface.co/docs/transformers/main/en/model_doc/modernbert">new documentation</a> for using it with the Transformers library.
+
+    <p><small></small>Via <a href="https://bsky.app/profile/benjaminwarner.dev/post/3ldur45oz322b">@benjaminwarner.dev</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/jeremy-howard">jeremy-howard</a>, <a href="https://simonwillison.net/tags/transformers">transformers</a>, <a href="https://simonwillison.net/tags/hugging-face">hugging-face</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/nlp">nlp</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Jack Clark]]></title>
         <id>https://simonwillison.net/2024/Dec/23/jack-clark/#atom-everything</id>
@@ -1839,16 +1910,6 @@ The post What’s New in Mobile, November Update appeared first on The GitHub Bl
 The post Microsoft Semantic Kernel Office Hours Update appeared first on Semantic Kernel.]]></summary>
         <author>
             <name>Sophia Lagerkrans-Pandey</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Getting started with AI: Good enough prompting]]></title>
-        <id>https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough</id>
-        <link href="https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough"/>
-        <updated>2024-11-24T12:36:50.000Z</updated>
-        <summary type="html"><![CDATA[Don't make this hard]]></summary>
-        <author>
-            <name>Ethan Mollick</name>
         </author>
     </entry>
     <entry>
