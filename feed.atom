@@ -2,10 +2,34 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2024-12-26T21:08:16.605Z</updated>
+    <updated>2024-12-27T14:08:34.344Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Open WebUI]]></title>
+        <id>https://simonwillison.net/2024/Dec/27/open-webui/#atom-everything</id>
+        <link href="https://simonwillison.net/2024/Dec/27/open-webui/#atom-everything"/>
+        <updated>2024-12-27T01:38:14.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/open-webui/open-webui">Open WebUI</a></strong></p>
+I tried out this open source (MIT licensed, JavaScript and Python) localhost UI for accessing LLMs today for the first time. It's very nicely done.</p>
+<p>I ran it with <a href="https://docs.astral.sh/uv/guides/tools/">uvx</a> like this:</p>
+<pre><code>uvx --python 3.11 open-webui serve
+</code></pre>
+<p>On first launch it installed a bunch of dependencies and then downloaded 903MB to <code>~/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2</code> - a copy of the <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">all-MiniLM-L6-v2</a> embedding model, presumably for its <a href="https://docs.openwebui.com/features/rag">RAG feature</a>.</p>
+<p>It then presented me with a working Llama 3.2:3b chat interface, which surprised me because I hadn't spotted it downloading that model. It turns out that was because I have <a href="https://ollama.com/">Ollama</a> running on my laptop already (with several models, including Llama 3.2:3b, already installed) - and Open WebUI automatically detected Ollama and gave me access to a list of available models.</p>
+<p>I found a "knowledge" section and added all of the Datasette documentation (by dropping in the <code>.rst</code> files from the docs) - and now I can type <code>#</code> in chat to search for a file, add that to the context and then ask questions about it directly.</p>
+<p>I selected the <code>spatialite.rst.txt</code> file, prompted it with "How do I use SpatiaLite with Datasette" and got back <a href="https://gist.github.com/simonw/3bf5ff0ed3b47aefbb94d3fd992f81f9#response">this</a>:</p>
+<p><img alt="Chat UI. Prompt is How do I use SpatiaLite with Datasette? with an attached spatialite.rst.txt file. The response from llama3.2:3b reads: To use SpatiaLite with Datasette, you need to install the mod_spatialite dynamic library. This can then be loaded into Datasette using the --load-extension command-line option.   You can install it on OS X by running brew update and then brew install spatialite-tools. On Linux, SpatiaLite is packaged for most distributions, so you can typically install it with a package manager like apt.   When running Datasette, you can look for SpatiaLite in common installation locations or specify the full path to the extension if it's installed elsewhere.   For example, on OS X, you might run datasette --load-extension=spatialite after installing it with Homebrew. On Linux, you could use datasette --load-extension=/usr/lib/x86_64-linux-gnu/mod_spatialite.so.   It's also important to note that SpatiaLite adds a large number of additional SQL functions, some of which are not safe for untrusted users to execute. To secure your Datasette instance, consider disabling arbitrary SQL queries and defining canned queries with the SQL queries that use SpatiaLite functions you want people to be able to execute." src="https://static.simonwillison.net/static/2024/spatialite-webui.jpg" /></p>
+<p>That's honestly a very solid answer, especially considering the Llama 3.2 3B model from Ollama is just a 1.9GB file! It's impressive how well that model can handle basic Q&amp;A and summarization against text provided to it - it somehow has a 128,000 token context size.</p>
+<p>Open WebUI has a lot of other tricks up its sleeve: it can talk to API models such as OpenAI directly, has optional integrations with web search and custom tools and logs every interaction to a SQLite database. It also comes with <a href="https://docs.openwebui.com/">extensive documentation</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ollama">ollama</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llama">llama</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/rag">rag</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/edge-llms">edge-llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[DeepSeek_V3.pdf]]></title>
         <id>https://simonwillison.net/2024/Dec/26/deepseek-v3/#atom-everything</id>
@@ -554,6 +578,17 @@ The post OpenAI o1 is now available in GitHub Copilot Chat (preview) appeared fi
 The post OpenAI o1 is now available in GitHub Models appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unwrap some Semantic Kernel (Power)Toys this holiday season]]></title>
+        <id>https://devblogs.microsoft.com/semantic-kernel/?p=3949</id>
+        <link href="https://devblogs.microsoft.com/semantic-kernel/unwrap-some-semantic-kernel-powertoys-this-holiday-season/"/>
+        <updated>2024-12-20T16:10:00.000Z</updated>
+        <summary type="html"><![CDATA[Windows PowerToys has always been one of my favorite productivity hacks, and its latest release adds Paste with Advanced AI, which takes it to a new level. This feature, powered by Semantic Kernel, transforms how you work with text, images, and data from your clipboard by applying AI-driven enhancements. What Does It Do? Advanced Paste uses […]
+The post Unwrap some Semantic Kernel (Power)Toys this holiday season appeared first on Semantic Kernel.]]></summary>
+        <author>
+            <name>Shawn Henry</name>
         </author>
     </entry>
     <entry>
@@ -2020,17 +2055,6 @@ The post GitHub Copilot Extensions now supported in JetBrains IDEs appeared firs
 The post 使用Semantic Kernel来开启您的AI旅程 appeared first on Semantic Kernel.]]></summary>
         <author>
             <name>Tao Chen</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Access a repository’s secret scanning scan history with the REST API]]></title>
-        <id>https://github.blog/changelog/2024-11-27-access-a-repositorys-secret-scanning-scan-history-with-the-rest-api</id>
-        <link href="https://github.blog/changelog/2024-11-27-access-a-repositorys-secret-scanning-scan-history-with-the-rest-api"/>
-        <updated>2024-11-27T20:31:49.000Z</updated>
-        <summary type="html"><![CDATA[Access a repository's secret scanning scan history with the REST API
-The post Access a repository’s secret scanning scan history with the REST API appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
     <entry>
