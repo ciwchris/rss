@@ -31,6 +31,43 @@
       <article>
           <details>
             <summary>
+              microsoft/phi-4
+              <span class="post-metadata">(1 min | 334 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/8/phi-4/#atom-everything>microsoft/phi-4
+A few weeks ago I covered the earlier unofficial versions, where I talked about how the model used synthetic training data in some really interesting ways.
+It benchmarks favorably compared to GPT-4o, suggesting this is yet another example of a GPT-4 class model that can run on a good laptop.
+The model already has several available community quantizations. I ran the mlx-community/phi-4-4bit one (a 7.7GB download) using mlx-llm like this:
+uv run --with &#x27;numpy&lt;2&#x27; --with mlx-lm python -c &#x27;
+from mlx_lm import load, generate
+
+model, tokenizer &#x3D; load(&quot;mlx-community/phi-4-4bit&quot;)
+
+prompt &#x3D; &quot;Generate an SVG of a pelican riding a bicycle&quot;
+
+if tokenizer.chat_template is not None:
+    messages &#x3D; [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+    prompt &#x3D; tokenizer.apply_chat_template(
+        messages, add_generation_prompt&#x3D;True
+    )
+
+response &#x3D; generate(model, tokenizer, prompt&#x3D;prompt, verbose&#x3D;True, max_tokens&#x3D;2048)
+print(response)&#x27;
+
+Here&#x27;s what I got back.
+
+
+
+    
+Tags: phi, generative-ai, ai, microsoft, llms, uv, pelican-riding-a-bicycle</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Andriy Burkov
               <span class="post-metadata">(1 min | 198 words)</span> 
             </summary>

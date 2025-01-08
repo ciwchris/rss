@@ -2,10 +2,45 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-01-08T14:09:05.194Z</updated>
+    <updated>2025-01-08T21:08:30.179Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[microsoft/phi-4]]></title>
+        <id>https://simonwillison.net/2025/Jan/8/phi-4/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jan/8/phi-4/#atom-everything"/>
+        <updated>2025-01-08T17:57:18.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://huggingface.co/microsoft/phi-4">microsoft/phi-4</a></strong></p>
+Here's the official release of Microsoft's Phi-4 LLM, now officially under an MIT license.</p>
+<p>A few weeks ago I covered the earlier <a href="https://simonwillison.net/2024/Dec/15/phi-4-technical-report/">unofficial versions</a>, where I talked about how the model used synthetic training data in some really interesting ways.</p>
+<p>It benchmarks favorably compared to GPT-4o, suggesting this is yet another example of a GPT-4 class model <a href="https://simonwillison.net/2024/Dec/31/llms-in-2024/#some-of-those-gpt-4-models-run-on-my-laptop">that can run on a good laptop</a>.</p>
+<p>The model already has several available community quantizations. I ran the <a href="https://huggingface.co/mlx-community/phi-4-4bit">mlx-community/phi-4-4bit</a> one (a 7.7GB download) using <a href="https://pypi.org/project/mlx-llm/">mlx-llm</a> like this:</p>
+<pre><code>uv run --with 'numpy&lt;2' --with mlx-lm python -c '
+from mlx_lm import load, generate
+
+model, tokenizer = load("mlx-community/phi-4-4bit")
+
+prompt = "Generate an SVG of a pelican riding a bicycle"
+
+if tokenizer.chat_template is not None:
+    messages = [{"role": "user", "content": prompt}]
+    prompt = tokenizer.apply_chat_template(
+        messages, add_generation_prompt=True
+    )
+
+response = generate(model, tokenizer, prompt=prompt, verbose=True, max_tokens=2048)
+print(response)'
+</code></pre>
+<p><a href="https://gist.github.com/simonw/f58e464dd653e1c637cf42d18416344d">Here's what I got back</a>.</p>
+<p><img style="width: 80%" src="https://static.simonwillison.net/static/2025/phi4-pelican.svg" alt="Hardly recognizable pelican on a bicycle">
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/phi">phi</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/microsoft">microsoft</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Andriy Burkov]]></title>
         <id>https://simonwillison.net/2025/Jan/8/andriy-burkov/#atom-everything</id>
