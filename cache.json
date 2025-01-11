@@ -560,6 +560,16 @@
       "siteUrl": "http://simonwillison.net/",
       "articles": [
         {
+          "id": "https://simonwillison.net/2025/Jan/11/agents/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://huyenchip.com/2025/01/07/agents.html\">Agents</a></strong></p>\nChip Huyen's 8,000 word practical guide to building useful LLM-driven workflows that take advantage of tools.</p>\n<p>Chip starts by providing a definition of \"agents\" to be used in the piece - in this case it's LLM systems that plan an approach and then run tools in a loop until a goal is achieved. I like how she ties it back to the classic Norvig \"thermostat\" model -  where an agent is \"anything that can perceive its environment and act upon that environment\" - by classifying tools as <em>read-only actions</em> (sensors) and <em>write actions</em> (actuators).</p>\n<p>There's a lot of great advice in this piece. The section <a href=\"https://huyenchip.com/2025/01/07/agents.html#plan_generation\">on planning</a> is particularly strong, showing a system prompt with embedded examples and offering these tips on improving the planning process:</p>\n<blockquote>\n<ul>\n<li>Write a better system prompt with more examples.</li>\n<li>Give better descriptions of the tools and their parameters so that the model understands them better.</li>\n<li>Rewrite the functions themselves to make them simpler, such as refactoring a complex function into two simpler functions.</li>\n<li>Use a stronger model. In general, stronger models are better at planning.</li>\n</ul>\n</blockquote>\n<p>The article is adapted from Chip's brand new O'Reilly book <a href=\"https://www.oreilly.com/library/view/ai-engineering/9781098166298/\">AI Engineering</a>. I think this is an excellent advertisement for the book itself.\n\n    <p><small></small>Via <a href=\"https://bsky.app/profile/chiphuyen.bsky.social/post/3lf6bnxkprk2w\">@chiphuyen.bsky.social</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai-agents\">ai-agents</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llm-tool-use\">llm-tool-use</a></p>",
+          "link": "https://simonwillison.net/2025/Jan/11/agents/#atom-everything",
+          "publishedOn": "2025-01-11T17:50:12.000Z",
+          "wordCount": 400,
+          "title": "Agents",
+          "imageUrl": null
+        },
+        {
           "id": "https://simonwillison.net/2025/Jan/11/phi-4-bug-fixes/#atom-everything",
           "author": null,
           "description": "<p><strong><a href=\"https://unsloth.ai/blog/phi4\">Phi-4 Bug Fixes by Unsloth</a></strong></p>\nThis explains why I was seeing weird <code>&lt;|im_end|&gt;</code> suffexes during my <a href=\"https://simonwillison.net/2025/Jan/8/phi-4/\">experiments with Phi-4</a> the other day: it turns out the Phi-4 tokenizer definition as released by Microsoft had a bug in it, and there was a small bug in the chat template as well.</p>\n<p>Daniel and Michael Han figured this out and have now published <a href=\"https://huggingface.co/unsloth/phi-4-GGUF\">GGUF files with their fixes</a> on Hugging Face.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=42660335\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/phi\">phi</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a></p>",
@@ -1367,16 +1377,6 @@
           "publishedOn": "2024-12-13T18:46:13.000Z",
           "wordCount": 285,
           "title": "<model-viewer> Web Component by Google",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2024/Dec/13/openai-postmortem/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://status.openai.com/incidents/ctrsv3lwd797\">OpenAI&#x27;s postmortem for API, ChatGPT &amp; Sora Facing Issues</a></strong></p>\nOpenAI had an outage across basically everything for four hours on Wednesday. They've now published a detailed postmortem which includes some fascinating technical details about their \"hundreds of Kubernetes clusters globally\".</p>\n<p>The culprit was a newly deployed telemetry system:</p>\n<blockquote>\n<p>Telemetry services have a very wide footprint, so this new service’s configuration unintentionally caused every node in each cluster to execute resource-intensive Kubernetes API operations whose cost scaled with the size of the cluster. With thousands of nodes performing these operations simultaneously, the Kubernetes API servers became overwhelmed, taking down the Kubernetes control plane in most of our large clusters. [...]</p>\n<p>The Kubernetes data plane can operate largely independently of the control plane, but DNS relies on the control plane – services don’t know how to contact one another without the Kubernetes control plane. [...]</p>\n<p>DNS caching mitigated the impact temporarily by providing stale but functional DNS records. However, as cached records expired over the following 20 minutes, services began failing due to their reliance on real-time DNS resolution.</p>\n</blockquote>\n<p>It's always DNS.\n\n    <p><small></small>Via <a href=\"https://twitter.com/therealadamg/status/1867393379287650778\">@therealadamg</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/devops\">devops</a>, <a href=\"https://simonwillison.net/tags/dns\">dns</a>, <a href=\"https://simonwillison.net/tags/kubernetes\">kubernetes</a>, <a href=\"https://simonwillison.net/tags/openai\">openai</a>, <a href=\"https://simonwillison.net/tags/chatgpt\">chatgpt</a>, <a href=\"https://simonwillison.net/tags/postmortem\">postmortem</a></p>",
-          "link": "https://simonwillison.net/2024/Dec/13/openai-postmortem/#atom-everything",
-          "publishedOn": "2024-12-13T05:29:10.000Z",
-          "wordCount": 375,
-          "title": "OpenAI's postmortem for API, ChatGPT & Sora Facing Issues",
           "imageUrl": null
         }
       ]
