@@ -31,6 +31,60 @@
       <article>
           <details>
             <summary>
+              Quoting Alex Komoroske
+              <span class="post-metadata">(1 min | 237 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/13/alex-komoroske/#atom-everything>LLMs shouldn&#x27;t help you do less thinking, they should help you do more thinking. They give you higher leverage. Will that cause you to be satisfied with doing less, or driven to do more?
+
+— Alex Komoroske, Bits and bobs
+Tags: llms, ai, generative-ai, alex-komoroske</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Audit log streaming of API requests is generally available
+              <span class="post-metadata">(9 min | 2559 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-01-13-audit-log-streaming-of-api-requests-is-generally-available>Audit log streaming of API requests is generally available
+The post Audit log streaming of API requests is generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Codestral 25.01
+              <span class="post-metadata">(1 min | 397 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/13/codestral-2501/#atom-everything>Codestral 25.01
+the first Codestral this one isn&#x27;t (yet) available as open weights. The model has a 256k token context - a new record for Mistral.
+The new model scored an impressive joint first place with Claude 3.5 Sonnet and Deepseek V2.5 (FIM) on the Copilot Arena leaderboard. 
+Chatbot Arena announced Copilot Arena on 12th November 2024. The leaderboard is driven by results gathered through their Copilot Arena VS Code extensions, which provides users with free access to models in exchange for logged usage data plus their votes as to which of two models returns the most useful completion.
+So far the only other independent benchmark result I&#x27;ve seen is for the Aider Polyglot test. This was less impressive:
+Codestral 25.01 scored 11% on the aider polyglot benchmark. 
+62% o1 (high)
+The new model can be accessed via my llm-mistral plugin using the codestral alias (which maps to codestral-latest on La Plateforme):
+llm install llm-mistral
+llm keys set mistral
+# Paste Mistral API key here
+llm -m codestral &quot;JavaScript to reverse an array&quot;
+
+Via @sophiamyang
+Tags: mistral, llm, ai-assisted-programming, generative-ai, ai, llms, aider, evals</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Codestral 25.01 is now available in GitHub Models (GA)
               <span class="post-metadata">(9 min | 2699 words)</span> 
             </summary>
@@ -3665,90 +3719,6 @@ The current leaderboard has Claude 3.5 Sonnet (October edition) at the top, then
     
 Via @lmarena_ai
 Tags: claude-3-5-sonnet, react, gemini, anthropic, openai, ai, qwen, llms, javascript, ai-assisted-programming, generative-ai, iframes, prompt-engineering, prompt-injection</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2024-12-15</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Phi-4 Technical Report
-              <span class="post-metadata">(3 min | 868 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/15/phi-4-technical-report/#atom-everything>Phi-4 Technical Report
-Introducing Phi-4: Microsoft’s Newest Small Language Model Specializing in Complex Reasoning:
-Phi-4 outperforms comparable and larger models on math related reasoning due to advancements throughout the processes, including the use of high-quality synthetic datasets, curation of high-quality organic data, and post-training innovations. Phi-4 continues to push the frontier of size vs quality. 
-The model is currently available via Azure AI Foundry. I couldn&#x27;t figure out how to access it there, but Microsoft are planning to release it via Hugging Face in the next few days. It&#x27;s not yet clear what license they&#x27;ll use - hopefully MIT, as used by the previous models in the series.
-In the meantime, unofficial GGUF versions have shown up on Hugging Face already. I got one of the matteogeniaccio/phi-4 GGUFs working with my LLM tool and llm-gguf plugin like this:
-llm install llm-gguf
-llm gguf download-model https://huggingface.co/matteogeniaccio/phi-4/resolve/main/phi-4-Q4_K_M.gguf
-llm chat -m gguf/phi-4-Q4_K_M
-
-This downloaded a 8.4GB model file. Here are some initial logged transcripts I gathered from playing around with the model.
-An interesting detail I spotted on the Azure AI Foundry page is this:
-Limited Scope for Code: Majority of phi-4 training data is based in Python and uses common packages such as typing, math, random, collections, datetime, itertools. If the model generates Python scripts that utilize other packages or scripts in other languages, we strongly recommend users manually verify all API uses.
-This leads into the most interesting thing about this model: the way it was trained on synthetic data. The technical report has a lot of detail about this, including this note about why synthetic data can provide better guidance to a model:
-Synthetic data as a substantial component of pretraining is becoming increasingly common, and the Phi series of models has consistently emphasized the importance of synthetic data. Rather than serving as a cheap substitute for organic data, synthetic data has several direct advantages over organic data.
-Structured and Gradual Learning. In organic datasets, the relationship between tokens is often complex and indirect. Many reasoning steps may be required to connect the current token to the next, making it challenging for the model to learn effectively from next-token prediction. By contrast, each token generated by a language model is by definition predicted by the preceding tokens, making it easier for a model to follow the resulting reasoning patterns.
-And this section about their approach for generating that data:
-Our approach to generating synthetic data for phi-4 is guided by the following principles:
-Diversity: The data should comprehensively cover subtopics and skills within each domain. This requires curating diverse seeds from organic sources.
-Nuance and Complexity: Effective training requires nuanced, non-trivial examples that reflect the complexity and the richness of the domain. Data must go beyond basics to include edge cases and advanced examples.
-Accuracy: Code should execute correctly, proofs should be valid, and explanations should adhere to established knowledge, etc.
-Chain-of-Thought: Data should encourage systematic reasoning, teaching the model various approaches to the problems in a step-by-step manner. [...]
-We created 50 broad types of synthetic datasets, each one relying on a different set of seeds and different multi-stage prompting procedure, spanning an array of topics, skills, and natures of interaction, accumulating to a total of about 400B unweighted tokens. [...]
-Question Datasets: A large set of questions was collected from websites, forums, and Q&amp;A platforms. These questions were then filtered using a plurality-based technique to balance difficulty. Specifically, we generated multiple independent answers for each question and applied majority voting to assess the consistency of responses. We discarded questions where all answers agreed (indicating the question was too easy) or where answers were entirely inconsistent (indicating the question was too difficult or ambiguous). [...]
-Creating Question-Answer pairs from Diverse Sources: Another technique we use for seed curation involves leveraging language models to extract question-answer pairs from organic sources such as books, scientific papers, and code.
-Via @peteratmsr
-Tags: llm, phi, generative-ai, training-data, ai, microsoft, llms, ai-assisted-programming, python</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Preferring throwaway code over design docs
-              <span class="post-metadata">(1 min | 443 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/15/preferring-throwaway-code-over-design-docs/#atom-everything>Preferring throwaway code over design docs
-As Doug observes, &quot;No plan survives contact with the enemy&quot;. His process is to build a prototype in a draft pull request on GitHub, making detailed notes along the way and with the full intention of discarding it before building the final feature.
-Important in this methodology is a great deal of maturity. Can you throw away your idea you’ve coded or will you be invested in your first solution? A major signal for seniority is whether you feel comfortable coding something 2-3 different ways. That your value delivery isn’t about lines of code shipped to prod, but organizational knowledge gained.
-I&#x27;ve been running a similar process  for several years using issues rather than PRs. I wrote about that in How I build a feature back in 2022.
-The thing I love about issue comments (or PR comments) for recording ongoing design decisions is that because they incorporate a timestamp there&#x27;s no implicit expectation to keep them up to date as the software changes. Doug sees the same benefit:
-Another important point is on using PRs for documentation. They are one of the best forms of documentation for devs. They’re discoverable - one of the first places you look when trying to understand why code is implemented a certain way. PRs don’t profess to reflect the current state of the world, but a state at a point in time.
-Via Hacker News
-Tags: software-engineering, github</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              In search of a faster SQLite
-              <span class="post-metadata">(1 min | 311 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/15/in-search-of-a-faster-sqlite/#atom-everything>In search of a faster SQLite
-previously) shares notes on the April 2024 paper Serverless Runtime / Database Co-Design With Asynchronous I/O by Turso founder and CTO Pekka Enberg, Jon Crowcroft, Sasu Tarkoma and Ashwin Rao.
-The theme of the paper is rearchitecting SQLite for asynchronous I/O, and Avinash describes it as &quot;the foundational paper behind Limbo, the SQLite rewrite in Rust.&quot;
-From the paper abstract:
-We propose rearchitecting SQLite to provide asynchronous byte-code instructions for I/O to avoid blocking in the library and de-coupling the query and storage engines to facilitate database and
-serverless runtime co-design. Our preliminary evaluation shows
-up to a 100x reduction in tail latency, suggesting that our approach
-is conducive to runtime/database co-design for low latency.
-Via lobste.rs
-Tags: sqlite, async, rust</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
