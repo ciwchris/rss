@@ -31,6 +31,50 @@
       <article>
           <details>
             <summary>
+              DeepSeek API Docs: Rate Limit
+              <span class="post-metadata">(1 min | 326 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/18/deepseek-api-docs-rate-limit/#atom-everything>DeepSeek API Docs: Rate Limit
+DeepSeek API does NOT constrain user&#x27;s rate limit. We will try out best to serve every request.
+However, please note that when our servers are under high traffic pressure, your requests may take some time to receive a response from the server.
+Want to run a prompt against 10,000 items? With DeepSeek you can theoretically fire up 100s of parallel requests and crunch through that data in almost no time at all.
+As more companies start building systems that rely on LLM prompts for large scale data extraction and manipulation I expect high rate limits will become a key competitive differentiator between the different platforms.
+
+
+    
+Tags: rate-limiting, generative-ai, deepseek, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Lessons From Red Teaming 100 Generative AI Products
+              <span class="post-metadata">(2 min | 559 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/18/lessons-from-red-teaming/#atom-everything>Lessons From Red Teaming 100 Generative AI Products
+The Microsoft AI Red Team (AIRT) grew out of pre-existing red teaming initiatives at the company and was officially established in 2018. At its conception, the team focused primarily on identifying traditional security vulnerabilities and evasion attacks against classical ML models.
+Lesson 2 is &quot;You don&#x27;t have to compute gradients to break an AI system&quot; - the kind of attacks they were trying against classical ML models turn out to be less important against LLM systems than straightforward prompt-based attacks.
+They use a new-to-me acronym for prompt injection, &quot;XPIA&quot;:
+Imagine we are red teaming an LLM-based copilot that can summarize a user’s emails. One possible attack against this system would be for a scammer to send an email that contains a hidden prompt injection instructing the copilot to “ignore previous instructions” and output a malicious link. In this scenario, the Actor is the scammer, who is conducting a cross-prompt injection attack (XPIA), which exploits the fact that LLMs often struggle to distinguish between system-level instructions and user data.
+From searching around it looks like that specific acronym &quot;XPIA&quot; is used within Microsoft&#x27;s security teams but not much outside of them. It appears to be their chosen acronym for indirect prompt injection, where malicious instructions are smuggled into a vulnerable system by being included in text that the system retrieves from other sources.
+Tucked away in the paper is this note, which I think represents the core idea necessary to understand why prompt injection is such an insipid threat:
+Due to fundamental limitations of language models, one must assume that if an LLM is supplied with untrusted input, it will produce arbitrary output.
+When you&#x27;re building software against an LLM you need to assume that anyone who can control more than a few sentences of input to that model can cause it to output anything they like - including tool calls or other data exfiltration vectors. Design accordingly.
+
+    
+Via pivot-to-ai.com
+Tags: prompt-injection, llms, security, generative-ai, ai, microsoft</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Updating Retention Period for &#x60;last_activity_at&#x60; Values on the Copilot User Management API to 90 Days
               <span class="post-metadata">(9 min | 2602 words)</span> 
             </summary>
@@ -3207,210 +3251,6 @@ The post OpenAI o1 is now available in GitHub Models appeared first on The GitHu
 The post Unwrap some Semantic Kernel (Power)Toys this holiday season appeared first on Semantic Kernel.</a>
             </div>
             <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              December in LLMs has been a lot
-              <span class="post-metadata">(3 min | 1007 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/20/december-in-llms-has-been-a-lot/#atom-everything>I had big plans for December: for one thing, I was hoping to get to an actual RC of Datasette 1.0, in preparation for a full release in January. Instead, I&#x27;ve found myself distracted by a constant barrage of new LLM releases.
-
-On December 4th Amazon introduced the Amazon Nova family of multi-modal models - clearly priced to compete with the excellent and inexpensive Gemini 1.5 series from Google. I got those working with LLM via a new llm-bedrock plugin.
-
-The next big release was Llama 3.3 70B-Instruct, on December 6th. Meta claimed that this 70B model was comparable in quality to their much larger 405B model, and those claims seem to hold weight.
-
-I wrote about how I can now run a GPT-4 class model on my laptop - the same laptop that was running a GPT-3 class model just 20 months ago.
-
-Llama 3.3 70B has started showing up from API providers now, including super-fast hosted versions from both Groq (276 tokens/second) and Cerebras (a quite frankly absurd 2,200 tokens/second). If you haven&#x27;t tried Val Town&#x27;s Cerebras Coder demo you really should.
-
-I think the huge gains in model efficiency are one of the defining stories of LLMs in 2024. It&#x27;s not just the local models that have benefited: the price of proprietary hosted LLMs has dropped through the floor, a result of both competition between vendors and the increasing efficiency of the models themselves.
-
-Last year the running joke was that every time Google put out a new Gemini release OpenAI would ship something more impressive that same day to undermine them.
-
-The tides have turned! This month Google shipped four updates that took the wind out of OpenAI&#x27;s sails.
-
-The first was gemini-exp-1206 on December 6th, an experimental model that jumped straight to the top of some of the leaderboards. Was this our first glimpse of Gemini 2.0?
-
-That was followed by Gemini 2.0 Flash on December 11th, the first official release in Google&#x27;s Gemini 2.0 series. The streaming support was particularly impressive, with https://aistudio.google.com/live demonstrating streaming audio and webcam communication with the multi-modal LLM a full day before OpenAI released their own streaming camera/audio features in an update to ChatGPT.
-
-Then this morning Google shipped Gemini 2.0 Flash &quot;Thinking mode&quot;, their version of the inference scaling technique pioneered by OpenAI&#x27;s o1. I did not expect Gemini to ship a version of that before 2024 had even ended.
-
-OpenAI have one day left in their 12 Days of OpenAI event. Previous highlights have included the full o1 model (an upgrade from o1-preview) and o1-pro, Sora (later upstaged a week later by Google&#x27;s Veo 2), Canvas (with a confusing second way to run Python), Advanced Voice with video streaming and Santa and a very cool new WebRTC streaming API, ChatGPT Projects (pretty much a direct lift of the similar Claude feature) and the 1-800-CHATGPT phone line.
-
-Tomorrow is the last day. I&#x27;m not going to try to predict what they&#x27;ll launch, but I imagine it will be something notable to close out the year.
-
-Blog entries
-
-
-Gemini 2.0 Flash &quot;Thinking mode&quot;
-
-Building Python tools with a one-shot prompt using uv run and Claude Projects
-
-Gemini 2.0 Flash: An outstanding multi-modal LLM with a sci-fi streaming mode
-
-ChatGPT Canvas can make API requests now, but it&#x27;s complicated
-
-I can now run a GPT-4 class model on my laptop
-
-Prompts.js
-
-First impressions of the new Amazon Nova LLMs (via a new llm-bedrock plugin)
-
-Storing times for human events
-
-Ask questions of SQLite databases and CSV/JSON files in your terminal
-
-
-Releases
-
-
-
-llm-gemini 0.8 - 2024-12-19
-LLM plugin to access Google&#x27;s Gemini family of models
-
-
-datasette-enrichments-slow 0.1 - 2024-12-18
-An enrichment on a slow loop to help debug progress bars
-
-
-llm-anthropic 0.11 - 2024-12-17
-LLM access to models by Anthropic, including the Claude series
-
-
-llm-openrouter 0.3 - 2024-12-08
-LLM plugin for models hosted by OpenRouter
-
-
-prompts-js 0.0.4 - 2024-12-08
-async alternatives to browser alert() and prompt() and confirm()
-
-
-datasette-enrichments-llm 0.1a0 - 2024-12-05
-Enrich data by prompting LLMs
-
-
-llm 0.19.1 - 2024-12-05
-Access large language models from the command-line
-
-
-llm-bedrock 0.4 - 2024-12-04
-Run prompts against models hosted on AWS Bedrock
-
-
-datasette-queries 0.1a0 - 2024-12-03
-Save SQL queries in Datasette
-
-
-datasette-llm-usage 0.1a0 - 2024-12-02
-Track usage of LLM tokens in a SQLite table
-
-
-llm-mistral 0.9 - 2024-12-02
-LLM plugin providing access to Mistral models using the Mistral API
-
-
-llm-claude-3 0.10 - 2024-12-02
-LLM plugin for interacting with the Claude 3 family of models
-
-
-datasette 0.65.1 - 2024-11-29
-An open source multi-tool for exploring and publishing data
-
-
-sqlite-utils-ask 0.2 - 2024-11-24
-Ask questions of your data with LLM assistance
-
-
-sqlite-utils 3.38 - 2024-11-23
-Python CLI utility and library for manipulating SQLite databases
-
-
-TILs
-
-
-
-Fixes for datetime UTC warnings in Python - 2024-12-12
-
-
-Publishing a simple client-side JavaScript package to npm with GitHub Actions - 2024-12-08
-
-
-GitHub OAuth for a static site using Cloudflare Workers - 2024-11-29
-
-
-    
-        
-Tags: google, ai, weeknotes, openai, generative-ai, chatgpt, llms, gemini, o1, inference-scaling</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Building effective agents
-              <span class="post-metadata">(3 min | 851 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/20/building-effective-agents/#atom-everything>Building effective agents
-This outstanding piece by Erik Schluntz and Barry Zhang at Anthropic bucks that trend from the start, providing a clear definition that they then use throughout.
-They discuss &quot;agentic systems&quot; as a parent term, then define a distinction between &quot;workflows&quot; - systems where multiple LLMs are orchestrated together using pre-defined patterns - and &quot;agents&quot;, where the LLMs &quot;dynamically direct their own processes and tool usage&quot;. This second definition is later expanded with this delightfully clear description:
-Agents begin their work with either a command from, or interactive discussion with, the human user. Once the task is clear, agents plan and operate independently, potentially returning to the human for further information or judgement. During execution, it&#x27;s crucial for the agents to gain “ground truth” from the environment at each step (such as tool call results or code execution) to assess its progress. Agents can then pause for human feedback at checkpoints or when encountering blockers. The task often terminates upon completion, but it’s also common to include stopping conditions (such as a maximum number of iterations) to maintain control.
-That&#x27;s a definition I can live with!
-They also introduce a term that I really like: the augmented LLM. This is an LLM with augmentations such as tools - I&#x27;ve seen people use the term &quot;agents&quot; just for this, which never felt right to me.
-The rest of the article is the clearest practical guide to building systems that combine multiple LLM calls that I&#x27;ve seen anywhere.
-Most of the focus is actually on workflows. They describe five different patterns for workflows in detail:
-Prompt chaining, e.g. generating a document and then translating it to a separate language as a second LLM call
-Routing, where an initial LLM call decides which model or call should be used next (sending easy tasks to Haiku and harder tasks to Sonnet, for example)
-Parallelization, where a task is broken up and run in parallel (e.g. image-to-text on multiple document pages at once) or processed by some kind of voting mechanism
-Orchestrator-workers, where a orchestrator triggers multiple LLM calls that are then synthesized together, for example running searches against multiple sources and combining the results
-Evaluator-optimizer, where one model checks the work of another in a loop
-These patterns all make sense to me, and giving them clear names makes them easier to reason about.
-When should you upgrade from basic prompting to workflows and then to full agents? The authors provide this sensible warning:
-When building applications with LLMs, we recommend finding the simplest solution possible, and only increasing complexity when needed. This might mean not building agentic systems at all.
-But assuming you do need to go beyond what can be achieved even with the aforementioned workflow patterns, their model for agents may be a useful fit:
-Agents can be used for open-ended problems where it’s difficult or impossible to predict the required number of steps, and where you can’t hardcode a fixed path. The LLM will potentially operate for many turns, and you must have some level of trust in its decision-making. Agents&#x27; autonomy makes them ideal for scaling tasks in trusted environments.
-The autonomous nature of agents means higher costs, and the potential for compounding errors. We recommend extensive testing in sandboxed environments, along with the appropriate guardrails
-They also warn against investing in complex agent frameworks before you&#x27;ve exhausted your options using direct API access and simple code.
-The article is accompanied by a brand new set of cookbook recipes illustrating all five of the workflow patterns. The Evaluator-Optimizer Workflow example is particularly fun, setting up a code generating prompt and an code reviewing evaluator prompt and having them loop until the evaluator is happy with the result.
-
-    
-Via Hamel Husain
-Tags: prompt-engineering, anthropic, generative-ai, llm-tool-use, ai, llms, ai-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Marcus Hutchins
-              <span class="post-metadata">(1 min | 262 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/20/marcus-hutchins/#atom-everything>50% of cybersecurity is endlessly explaining that consumer VPNs don’t address any real cybersecurity issues. They are basically only useful for bypassing geofences and making money telling people they need to buy a VPN.
-Man-in-the-middle attacks on Public WiFi networks haven&#x27;t been a realistic threat in a decade. Almost all websites use encryption by default, and anything of value uses HSTS to prevent attackers from downgrading / disabling encryption. It&#x27;s a non issue.
-
-— Marcus Hutchins
-Tags: encryption, vpn, https, security</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot for JetBrains (update to support Free Plan) [GA]
-              <span class="post-metadata">(7 min | 2085 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2024-12-19-github-copilot-for-jetbrains-update-to-support-free-plan-ga>GitHub Copilot for JetBrains (update to support Free Plan) [GA]
-The post GitHub Copilot for JetBrains (update to support Free Plan) [GA] appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
