@@ -3073,63 +3073,6 @@ Tags: blogging, django</a>
       </section>
     </li>
     <li>
-      <time>2024-12-21</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Clay UI library
-              <span class="post-metadata">(3 min | 846 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/21/clay-ui-library/#atom-everything>Clay UI library
-Clay is a flex-box style UI auto layout library in C, with declarative syntax and microsecond performance.
-His intro video to the library is outstanding: I learned a ton about how UI layout works from this, and the animated visual explanations are clear, tasteful and really helped land the different concepts:
- 
-
-
-Clay is a C library delivered in a single ~2000 line clay.h dependency-free header file. It only handles layout calculations: if you want to render the result you need to add an additional rendering layer.
-In a fascinating demo of the library, the Clay site itself is rendered using Clay C compiled to WebAssembly! You can even switch between the default HTML renderer and an alternative based on Canvas.
-This isn&#x27;t necessarily a great idea: because the layout is entirely handled using &lt;div&gt; elements positioned using transform: translate(0px, 70px) style CSS attempting to select text across multiple boxes behaves strangely, and it&#x27;s not clear to me what the accessibility implications are.
-Update: Matt Campbell:
-The accessibility implications are as serious as you might guess. The links aren&#x27;t properly labeled, there&#x27;s no semantic markup such as headings, and since there&#x27;s a div for every line, continuous reading with a screen reader is choppy, that is, it pauses at the end of every physical line.
-It does make for a very compelling demo of what Clay is capable of though, especially when you resize your browser window and the page layout is recalculated in real-time via the Clay WebAssembly bridge.
-You can hit &quot;D&quot; on the website and open up a custom Clay debugger showing the hierarchy of layout elements on the page:
-
-This also means that the entire page is defined using C code! Given that, I find the code itself surprisingly readable
-void DeclarativeSyntaxPageDesktop() {
-  CLAY(CLAY_ID(&quot;SyntaxPageDesktop&quot;), CLAY_LAYOUT({ .sizing &#x3D; { CLAY_SIZING_GROW(), CLAY_SIZING_FIT({ .min &#x3D; windowHeight - 50 }) }, .childAlignment &#x3D; {0, CLAY_ALIGN_Y_CENTER}, .padding &#x3D; {.x &#x3D; 50} })) {
-    CLAY(CLAY_ID(&quot;SyntaxPage&quot;), CLAY_LAYOUT({ .sizing &#x3D; { CLAY_SIZING_GROW(), CLAY_SIZING_GROW() }, .childAlignment &#x3D; { 0, CLAY_ALIGN_Y_CENTER }, .padding &#x3D; { 32, 32 }, .childGap &#x3D; 32 }), CLAY_BORDER({ .left &#x3D; { 2, COLOR_RED }, .right &#x3D; { 2, COLOR_RED } })) {
-      CLAY(CLAY_ID(&quot;SyntaxPageLeftText&quot;), CLAY_LAYOUT({ .sizing &#x3D; { CLAY_SIZING_PERCENT(0.5) }, .layoutDirection &#x3D; CLAY_TOP_TO_BOTTOM, .childGap &#x3D; 8 })) {
-        CLAY_TEXT(CLAY_STRING(&quot;Declarative Syntax&quot;), CLAY_TEXT_CONFIG({ .fontSize &#x3D; 52, .fontId &#x3D; FONT_ID_TITLE_56, .textColor &#x3D; COLOR_RED }));
-        CLAY(CLAY_ID(&quot;SyntaxSpacer&quot;), CLAY_LAYOUT({ .sizing &#x3D; { CLAY_SIZING_GROW({ .max &#x3D; 16 }) } })) {}
-        CLAY_TEXT(CLAY_STRING(&quot;Flexible and readable declarative syntax with nested UI element hierarchies.&quot;), CLAY_TEXT_CONFIG({ .fontSize &#x3D; 28, .fontId &#x3D; FONT_ID_BODY_36, .textColor &#x3D; COLOR_RED }));
-        CLAY_TEXT(CLAY_STRING(&quot;Mix elements with standard C code like loops, conditionals and functions.&quot;), CLAY_TEXT_CONFIG({ .fontSize &#x3D; 28, .fontId &#x3D; FONT_ID_BODY_36, .textColor &#x3D; COLOR_RED }));
-        CLAY_TEXT(CLAY_STRING(&quot;Create your own library of re-usable components from UI primitives like text, images and rectangles.&quot;), CLAY_TEXT_CONFIG({ .fontSize &#x3D; 28, .fontId &#x3D; FONT_ID_BODY_36, .textColor &#x3D; COLOR_RED }));
-      }
-      CLAY(CLAY_ID(&quot;SyntaxPageRightImage&quot;), CLAY_LAYOUT({ .sizing &#x3D; { CLAY_SIZING_PERCENT(0.50) }, .childAlignment &#x3D; {.x &#x3D; CLAY_ALIGN_X_CENTER} })) {
-        CLAY(CLAY_ID(&quot;SyntaxPageRightImageInner&quot;), CLAY_LAYOUT({ .sizing &#x3D; { CLAY_SIZING_GROW({ .max &#x3D; 568 }) } }), CLAY_IMAGE({ .sourceDimensions &#x3D; {1136, 1194}, .sourceURL &#x3D; CLAY_STRING(&quot;/clay/images/declarative.png&quot;) })) {}
-      }
-    }
-  }
-}
-
-
-I&#x27;m not ready to ditch HTML and CSS for writing my web pages in C compiled to WebAssembly just yet, but as an exercise in understanding layout engines (and a potential tool for building non-web interfaces in the future) this is a really interesting project to dig into.
-To clarify here: I don&#x27;t think the web layout / WebAssembly thing is the key idea behind Clay at all - I think it&#x27;s a neat demo of the library, but it&#x27;s not what Clay is for. It&#x27;s certainly an interesting way to provide a demo of a layout library!
-Nic confirms:
-You totally nailed it, the fact that you can compile to wasm and run in HTML stemmed entirely from a “wouldn’t it be cool if…” It was designed for my C projects first and foremost!
-Via Hacker News
-Tags: css, c, webassembly, html, accessibility</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
       <time>2024-11-04</time>
 
       <section>
