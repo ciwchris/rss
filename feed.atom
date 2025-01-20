@@ -2,10 +2,104 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-01-20T14:08:58.113Z</updated>
+    <updated>2025-01-20T21:08:15.012Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Dependabot will no longer support NPM v6]]></title>
+        <id>https://github.blog/changelog/2025-01-20-dependabot-will-no-longer-support-npm-v6</id>
+        <link href="https://github.blog/changelog/2025-01-20-dependabot-will-no-longer-support-npm-v6"/>
+        <updated>2025-01-20T17:12:57.000Z</updated>
+        <summary type="html"><![CDATA[Dependabot will no longer support NPM v6
+The post Dependabot will no longer support NPM v6 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[DeepSeek-R1 and exploring DeepSeek-R1-Distill-Llama-8B]]></title>
+        <id>https://simonwillison.net/2025/Jan/20/deepseek-r1/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jan/20/deepseek-r1/#atom-everything"/>
+        <updated>2025-01-20T15:20:23.000Z</updated>
+        <summary type="html"><![CDATA[<p>DeepSeek are the Chinese AI lab who dropped the best currently available open weights LLM <a href="https://simonwillison.net/2024/Dec/26/deepseek-v3/">on Christmas day</a>, DeepSeek v3. That model was trained in part using their unreleased R1 "reasoning" model. Today <a href="https://github.com/deepseek-ai/DeepSeek-R1">they've released R1 itself</a>, along with a whole family of new models derived from that base.</p>
+<p>There's a whole lot of stuff in the new release.</p>
+<p><strong>DeepSeek-R1-Zero</strong> appears to be the base model. It's <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Zero/tree/main">over 650GB</a> in size and, like most of their other releases, is <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Zero/blob/main/LICENSE">under a clean MIT license</a>. DeepSeek warn that "DeepSeek-R1-Zero encounters challenges such as endless repetition, poor readability, and language mixing." ... so they also released:</p>
+<p><strong>DeepSeek-R1</strong> - which "incorporates cold-start data before RL" and "achieves performance comparable to OpenAI-o1 across math, code, and reasoning tasks". That one is also MIT licensed, and is a similar size.</p>
+<p>I don't have the ability to run models larger than about 50GB (I have an M2 with 64GB of RAM), so neither of these two models are something I can easily play with myself. That's where the new <strong>distilled models</strong> come in.</p>
+<blockquote>
+<p>To support the research community, we have open-sourced DeepSeek-R1-Zero, DeepSeek-R1, and six dense models distilled from DeepSeek-R1 based on Llama and Qwen.</p>
+</blockquote>
+<p>This is a fascinating flex! They have models based on Qwen 2.5 (14B, 32B, Math 1.5B and Math 7B) and Llama 3 (Llama-3.1 8B and Llama 3.3 70B Instruct).</p>
+<p>Weirdly those Llama models have an MIT license attached, which I'm not sure is compatible with the underlying Llama license. Qwen models are Apache licensed so maybe MIT is OK?</p>
+<p>(I also <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B/commit/c79f47acaf303faabb7133b4b7b76f24231f2c8d#d2h-740129">just noticed</a> the MIT license files say "Copyright (c) 2023 DeepSeek" so they may need to pay a little bit more attention to how they copied those in.)</p>
+<p>Licensing aside, these distilled models are fascinating beasts.</p>
+<h4 id="running-deepseek-r1-distill-llama-8b-gguf">Running DeepSeek-R1-Distill-Llama-8B-GGUF</h4>
+<p>Quantized versions are already starting to show up. So far I've tried just one of those -  <code>unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF</code> released by <a href="https://unsloth.ai/">Unsloth AI</a> - and it's really fun to play with.</p>
+<p>I'm running it using the combination of <a href="https://ollama.com/">Ollama</a>, <a href="https://llm.datasette.io/">LLM</a> and the <a href="https://github.com/taketwo/llm-ollama">llm-ollama plugin</a>.</p>
+<p>First I fetched and ran the model using Ollama itself:</p>
+<pre><code>ollama run hf.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF:Q8_0
+</code></pre>
+<p>This downloads around 8.5GB of model data and starts an interactive chat interface.</p>
+<p>Once the model has been fetched, LLM can talk to it as well. I prefer using LLM for experiments because it <a href="https://llm.datasette.io/en/stable/logging.html">logs everything to SQLite</a> for later exploration.</p>
+<p>I installed the plugin and ran it like this:</p>
+<pre><code>llm install llm-ollama
+llm -m 'hf.co/unsloth/DeepSeek-R1-Distill-Llama-8B-GGUF:Q8_0' \
+  'a joke about a pelican and a walrus who run a tea room together'
+</code></pre>
+<p>Each response starts with a <code>&lt;think&gt;...&lt;/think&gt;</code> pseudo-XML tag containing the chain of thought used to help generate the response. For "a joke about a pelican and a walrus who run a tea room together" that started like this:</p>
+<blockquote>
+<p><code>&lt;think&gt;</code><br />
+Okay, so I need to come up with a joke about a pelican and a walrus running a tea room together. Hmm, that's an interesting combination. Let me think about how these two characters might interact in a humorous situation.</p>
+<p>First, let's consider their characteristics. Pelicans are known for their long beaks and Webbed feet, often seen near the beach or water. Walruses have big teeth, thick fur, and they're generally found in colder climates, like icebergs or snowy areas. So, combining these two into a tea room setting is already a funny image.</p>
+<p>[...]</p>
+</blockquote>
+<p>It then thought for <em>20 paragraphs</em> before outputting the joke! Here's <a href="https://gist.github.com/simonw/f505ce733a435c8fc8fdf3448e3816b0">the full transcript</a> and here's the output at the end, after the <code>&lt;/think&gt;</code> tag:</p>
+<blockquote>
+<p><strong>The Joke:</strong></p>
+<p>A pelican and a walrus decide to open a quaint little tea room together. The walrus, with its big size, struggles to find comfortable chairs, so it sits on the table by accident, knocking over the teapot. Meanwhile, the pelican, trying to help, uses its beak to place saucers on the table, causing a few spills.</p>
+<p>After a series of comical mishaps, the walrus looks up and says with a grin, "This isn't so fishy anymore." The pelican smirks and remarks, "Maybe not, but we do have a lot of krill in our tea!"</p>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li>
+<strong>Setup:</strong> Pelican and Walrus run an unlikely tea room. Their sizes lead to comedic chaos.</li>
+<li>
+<strong>Punchline:</strong> "This isn't so fishy anymore" is a pun on the situation becoming less absurd. The follow-up joke introduces "krill," a play on words that ties into both marine life ("fish") and tea, making it humorous while fitting the theme.</li>
+</ul>
+</blockquote>
+<p>So yeah, the joke is <em>awful</em>. But the process of getting there was such an interesting insight into how these new models work.</p>
+<p>This was a relatively small 8B model. I'm looking forward to trying out the <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B">Llama 70B version</a>, which isn't yet available in a GGUF I can run with Ollama. Given <a href="https://simonwillison.net/2024/Dec/9/llama-33-70b/">the strength of Llama 3.3 70B</a> - currently my favourite GPT-4 class model that I've run on my own machine - I have high expectations.</p>
+<h4 id="can-it-draw-a-pelican-">Can it draw a pelican?</h4>
+<p>I tried <a href="https://github.com/simonw/pelican-bicycle">my classic</a> <code>Generate an SVG of a pelican riding a bicycle</code> prompt too. It <a href="https://gist.github.com/simonw/ddd21a016cd7be74fd3e18407e1e313e">did not do very well</a>:</p>
+<p><img src="https://static.simonwillison.net/static/2025/r1-peli-1.svg" alt="Blue square, abstract white shape on it" style="max-width: 100%;" /></p>
+<p>It looked to me like it got the order of the elements wrong, so I followed up with:</p>
+<blockquote>
+<p><code>the background ended up covering the rest of the image</code></p>
+</blockquote>
+<p>It <a href="https://gist.github.com/simonw/ddd21a016cd7be74fd3e18407e1e313e#response-1">thought some more</a> and gave me this:</p>
+<p><img src="https://static.simonwillison.net/static/2025/r1-peli-2.svg" alt="Blue square, abstract white shape on it" style="max-width: 100%;" /></p>
+<p>As with the earlier joke, the chain of thought in the transcript was far more interesting than the end result.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/deepseek">deepseek</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Jack Clark]]></title>
+        <id>https://simonwillison.net/2025/Jan/20/jack-clark/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jan/20/jack-clark/#atom-everything"/>
+        <updated>2025-01-20T14:19:16.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://jack-clark.net/2025/01/20/import-ai-396-80bn-on-ai-infrastructure-can-intels-gaudi-chip-train-neural-nets-and-getting-better-code-through-asking-for-it/"><p>[Microsoft] said it plans in 2025 “to invest approximately $80 billion to build out AI-enabled datacenters to train AI models and deploy AI and cloud-based applications around the world.”</p>
+<p>For comparison, the James Webb telescope cost $10bn, so Microsoft is spending eight James Webb telescopes in one year just on AI.</p>
+<p>For a further comparison, people think the long-in-development ITER fusion reactor will cost between $40bn and $70bn once developed (and it’s shaping up to be a 20-30 year project), so Microsoft is spending more than the sum total of humanity’s biggest fusion bet <em>in one year</em> on AI.</p></blockquote>
+<p class="cite">&mdash; <a href="https://jack-clark.net/2025/01/20/import-ai-396-80bn-on-ai-infrastructure-can-intels-gaudi-chip-train-neural-nets-and-getting-better-code-through-asking-for-it/">Jack Clark</a></p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/jack-clark">jack-clark</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/microsoft">microsoft</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[TIL: Downloading every video for a TikTok account]]></title>
         <id>https://simonwillison.net/2025/Jan/19/til-downloading-every-video-for-a-tiktok-account/#atom-everything</id>
