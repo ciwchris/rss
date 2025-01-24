@@ -25,6 +25,211 @@
 
   <ul>
     <li>
+      <time>2025-01-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Anthropic&#x27;s new Citations API
+              <span class="post-metadata">(4 min | 1335 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/24/anthropics-new-citations-api/#atom-everything>Here&#x27;s a new API-only feature from Anthropic that requires quite a bit of assembly in order to unlock the value: Introducing Citations on the Anthropic API. Let&#x27;s talk about what this is and why it&#x27;s interesting.
+
+
+
+  
+Citations for Retrieval Augmented Generation
+
+  
+Trying out the new API with uv run
+
+  
+Rendering the citations
+
+  
+Now I need to design an abstraction layer for LLM
+
+  
+Anthropic&#x27;s strategy contrasted with OpenAI
+
+
+
+Citations for Retrieval Augmented Generation
+
+
+The core of the Retrieval Augmented Generation (RAG) pattern is to take a user&#x27;s question, retrieve portions of documents that might be relevant to that question and then answer the question by including those text fragments in the context provided to the LLM.
+
+This usually works well, but there is still a risk that the model may answer based on other information from its training data (sometimes OK) or hallucinate entirely incorrect details (definitely bad).
+
+The best way to help mitigate these risks is to support the answer with citations that incorporate direct quotations from the underlying source documents. This even acts as a form of fact-checking: the user can confirm that the quoted text did indeed come from those documents, helping provide relatively robust protection against hallucinated details resulting in incorrect answers.
+
+Actually building a system that does this can be quite tricky. Matt Yeung described a pattern for this he called Deterministic Quoting last April, where answers are accompanied by direct quotations from the source documents that are guaranteed to be copied across and not lossily transformed by the model.
+
+This is a great idea, but actually building it requires some quite sophisticated prompt engineering and complex implementation code.
+
+Claude&#x27;s new Citations API mechanism handles the difficult parts of this for you. You still need to implement most of RAG - identifying potentially relevant documents, then feeding that content in as part of the prompt - but Claude&#x27;s API will then do the difficult work of extracting relevant citations and including them in the response that it sends back to you.
+
+Trying out the new API with uv run
+
+I tried the API out using Anthropic&#x27;s Python client library, which was just updated to support the citations API.
+
+I ran a scratch Python 3.13 interpreter with that package using uv run like this (after first setting the necessary ANTHROPIC_API_KEY environment variable using llm keys get):
+
+
+export ANTHROPIC_API_KEY&#x3D;&quot;$(llm keys get claude)&quot;
+uv run --with anthropic --python 3.13 python
+
+Python 3.13 has a nicer interactive interpreter which you can more easily paste code into. Using uv run like this gives me an environment with that package pre-installed without me needing to setup a virtual environment as a separate step.
+
+Then I ran the following code, adapted from Anthropic&#x27;s example. The text.txt Gist contains text I copied out from my Things we learned about LLMs in 2024 post.
+
+import urllib.request
+import json
+
+url &#x3D; &#x27;https://gist.githubusercontent.com/simonw/9fbb3c2e2c40c181727e497e358fd7ce/raw/6ac20704f5a46b567b774b07fd633a74944bab2b/text.txt&#x27;
+text &#x3D; urllib.request.urlopen(url).read().decode(&#x27;utf-8&#x27;)
+
+import anthropic
+
+client &#x3D; anthropic.Anthropic()
+
+response &#x3D; client.messages.create(
+    model&#x3D;&quot;claude-3-5-sonnet-20241022&quot;,
+    max_tokens&#x3D;1024,
+    messages&#x3D;[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: [
+                {
+                    &quot;type&quot;: &quot;document&quot;,
+                    &quot;source&quot;: {
+                        &quot;type&quot;: &quot;text&quot;,
+                        &quot;media_type&quot;: &quot;text/plain&quot;,
+                        &quot;data&quot;: text,
+                    },
+                    &quot;title&quot;: &quot;My Document&quot;,
+                    &quot;context&quot;: &quot;This is a trustworthy document.&quot;,
+                    &quot;citations&quot;: {&quot;enabled&quot;: True}
+                },
+                {
+                    &quot;type&quot;: &quot;text&quot;,
+                    &quot;text&quot;: &quot;What were the top trends?&quot;
+                }
+            ]
+        }
+    ]
+)
+print(json.dumps(response.to_dict(), indent&#x3D;2))
+
+The JSON output from that starts like this:
+
+
+{
+  &quot;id&quot;: &quot;msg_01P3zs4aYz2Baebumm4Fejoi&quot;,
+  &quot;content&quot;: [
+    {
+      &quot;text&quot;: &quot;Based on the document, here are the key trends in AI/LLMs from 2024:\n\n1. Breaking the GPT-4 Barrier:\n&quot;,
+      &quot;type&quot;: &quot;text&quot;
+    },
+    {
+      &quot;citations&quot;: [
+        {
+          &quot;cited_text&quot;: &quot;I\u2019m relieved that this has changed completely in the past twelve months. 18 organizations now have models on the Chatbot Arena Leaderboard that rank higher than the original GPT-4 from March 2023 (GPT-4-0314 on the board)\u201470 models in total.\n\n&quot;,
+          &quot;document_index&quot;: 0,
+          &quot;document_title&quot;: &quot;My Document&quot;,
+          &quot;end_char_index&quot;: 531,
+          &quot;start_char_index&quot;: 288,
+          &quot;type&quot;: &quot;char_location&quot;
+        }
+      ],
+      &quot;text&quot;: &quot;The GPT-4 barrier was completely broken, with 18 organizations now having models that rank higher than the original GPT-4 from March 2023, with 70 models in total surpassing it.&quot;,
+      &quot;type&quot;: &quot;text&quot;
+    },
+    {
+      &quot;text&quot;: &quot;\n\n2. Increased Context Lengths:\n&quot;,
+      &quot;type&quot;: &quot;text&quot;
+    },
+
+Here&#x27;s the full response.
+
+This format is pretty interesting! It&#x27;s the standard Claude format but those &quot;content&quot; blocks now include an optional additional &quot;citations&quot; key which contains a list of relevant citation extracts that support the claim in the &quot;text&quot; block.
+
+Rendering the citations
+
+Eyeballing the JSON output wasn&#x27;t particularly fun. I wanted a very quick tool to help me see that output in a more visual way.
+
+A trick I&#x27;ve been using a lot recently is that LLMs like Claude are really good at writing code to turn arbitrary JSON shapes like this into a more human-readable format.
+
+I fired up my Artifacts project, pasted in the above JSON and prompted it like this:
+
+
+Build a tool where I can paste JSON like this into a textarea and the result will be rendered in a neat way - it should should intersperse text with citations, where each citation has the cited_text rendered in a blockquote
+
+
+It helped me build this tool (follow-up prompt here), which lets you paste in JSON and produces a rendered version of the text:
+
+
+
+Now I need to design an abstraction layer for LLM
+
+I&#x27;d like to upgrade my LLM tool and llm-claude-3 plugin to include support for this new feature... but doing so is going to be relatively non-trivial.
+
+The problem is that LLM currently bakes in an assumption that all LLMs respond with a stream of text.
+
+With citations, this is no longer true! Claude is now returning chunks of text that aren&#x27;t just a plain string - they are annotated with citations, which need to be stored and processed somehow by the LLM library.
+
+This isn&#x27;t the only edge-case of this type. DeepSeek recently released their Reasoner API which has a similar problem: it can return two different types of text, one showing reasoning text and one showing final content. I described those differences here.
+
+I&#x27;ve opened a design issue to tackle this challenge in the LLM repository: Design an abstraction for responses that are not just a stream of text.
+
+Anthropic&#x27;s strategy contrasted with OpenAI
+
+Another interesting aspect of this release is how it helps illustrate a strategic difference between Anthropic and OpenAI.
+
+OpenAI are increasingly behaving like a consumer products company. They just made a big splash with their Operator browser-automation agent system - a much more polished, consumer-product version of Anthropic&#x27;s own Computer Use demo from a few months ago.
+
+Meanwhile, Anthropic are clearly focused much more on the developer / &quot;enterprise&quot; market. This Citations feature is API-only and directly addresses a specific need that developers trying to build reliable RAG systems on top of their platform may not even have realized they had.
+Tags: tools, ai, openai, prompt-engineering, generative-ai, llms, ai-assisted-programming, llm, anthropic, claude, rag, claude-artifacts</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Dustin Ewers
+              <span class="post-metadata">(1 min | 349 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/24/dustin-ewers/#atom-everything>AI tools create a significant productivity boost for developers. Different folks report different gains, but most people who try AI code generation recognize its ability to increase velocity. Many people think that means we’re going to need fewer developers, and our industry is going to slowly circle the drain.
+This view is based on a misunderstanding of why people pay for software. A business creates software because they think that it will give them some sort of economic advantage. The investment needs to pay for itself with interest. There are many software projects that would help a business, but businesses aren’t going to do them because the return on investment doesn’t make sense.
+When software development becomes more efficient, the ROI of any given software project increases, which unlocks more projects. [...] Cheaper software means people are going to want more of it. More software means more jobs for increasingly efficient software developers.
+
+— Dustin Ewers, Ignore the Grifters - AI Isn&#x27;t Going to Kill the Software Industry
+Tags: ai-assisted-programming, ethics, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Models introduces a new prompt editor (GA)
+              <span class="post-metadata">(7 min | 2011 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-01-23-github-models-introduces-a-new-prompt-editor-ga>GitHub Models introduces a new prompt editor (GA)
+The post GitHub Models introduces a new prompt editor (GA) appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-01-23</time>
 
       <section>
@@ -3267,40 +3472,6 @@ Lots of accumulated snippets of wisdom in this one.
 Mantras like &quot;methods should be shorter than 15 lines of code&quot; or &quot;classes should be small&quot; turned out to be somewhat wrong.
 Via @karpathy
 Tags: programming, software-engineering</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2024-12-25</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              deepseek-ai/DeepSeek-V3-Base
-              <span class="post-metadata">(1 min | 407 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/25/deepseek-v3/#atom-everything>deepseek-ai/DeepSeek-V3-Base
-High-Flyer) looks very significant.
-It&#x27;s a huge model - 685B parameters, 687.9 GB on disk (TIL how to size a git-lfs repo). The architecture is a Mixture of Experts with 256 experts, using 8 per token.
-For comparison, Meta AI&#x27;s largest released model is their Llama 3.1 model with 405B parameters.
-The new model is apparently available to some people via both chat.deepseek.com and the DeepSeek API as part of a staged rollout.
-Paul Gauthier got API access and used it to update his new Aider Polyglot leaderboard - DeepSeek v3 preview scored 48.4%, putting it in second place behind o1-2024-12-17 (high) and in front of both claude-3-5-sonnet-20241022 and gemini-exp-1206!
-
-I never know if I can believe models or not (the first time I asked &quot;what model are you?&quot; it claimed to be &quot;based on OpenAI&#x27;s GPT-4 architecture&quot;), but I just got this result using LLM and the llm-deepseek plugin:
-llm -m deepseek-chat &#x27;what deepseek model are you?&#x27;
-
-I&#x27;m DeepSeek-V3 created exclusively by DeepSeek. I&#x27;m an AI assistant, and I&#x27;m at your service! Feel free to ask me anything you&#x27;d like. I&#x27;ll do my best to assist you.
-Here&#x27;s my initial experiment log.
-
-    
-Via @ivanfioravanti
-Tags: aider, hugging-face, generative-ai, ai, llms, deepseek</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
