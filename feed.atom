@@ -2,10 +2,77 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-01-26T14:07:18.109Z</updated>
+    <updated>2025-01-26T21:07:48.707Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Qwen2.5-1M: Deploy Your Own Qwen with Context Length up to 1M Tokens]]></title>
+        <id>https://simonwillison.net/2025/Jan/26/qwen25-1m/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jan/26/qwen25-1m/#atom-everything"/>
+        <updated>2025-01-26T18:54:45.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://qwenlm.github.io/blog/qwen2.5-1m/">Qwen2.5-1M: Deploy Your Own Qwen with Context Length up to 1M Tokens</a></strong></p>
+Very significant new release from Alibaba's Qwen team. Their openly licensed (sometimes Apache 2, sometimes Qwen license, I've had trouble keeping up) Qwen 2.5 LLM previously had an input token limit of 128,000 tokens. This new model increases that to 1 million, using a new technique called <strong>Dual Chunk Attention</strong>, first described in <a href="https://arxiv.org/abs/2402.17463">this paper</a> from February 2024.</p>
+<p>They've released two models on Hugging Face: <a href="https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-1M">Qwen2.5-7B-Instruct-1M</a> and <a href="https://huggingface.co/Qwen/Qwen2.5-14B-Instruct-1M">Qwen2.5-14B-Instruct-1M</a>, both requiring CUDA and both under an Apache 2.0 license.</p>
+<p>You'll need a <em>lot</em> of VRAM to run them at their full capacity:</p>
+<blockquote>
+<p>VRAM Requirement for processing 1 million-token sequences:</p>
+<ul>
+<li><strong>Qwen2.5-7B-Instruct-1M</strong>: At least 120GB VRAM (total across GPUs).</li>
+<li><strong>Qwen2.5-14B-Instruct-1M</strong>: At least 320GB VRAM (total across GPUs).</li>
+</ul>
+<p>If your GPUs do not have sufficient VRAM, you can still use Qwen2.5-1M models for shorter tasks.</p>
+</blockquote>
+<p>Qwen recommend using their custom fork of vLLM to serve the models:</p>
+<blockquote>
+<p>You can also use the previous framework that supports Qwen2.5 for inference, but accuracy degradation may occur for sequences exceeding 262,144 tokens.</p>
+</blockquote>
+<p>GGUF quantized versions of the models are already starting to show up. LM Studio's "official model curator" <a href="https://huggingface.co/bartowski">Bartowski</a> published <a href="https://huggingface.co/lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF">lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF</a> and <a href="https://huggingface.co/lmstudio-community/Qwen2.5-14B-Instruct-1M-GGUF">lmstudio-community/Qwen2.5-14B-Instruct-1M-GGUF</a> - sizes range from 4.09GB to 8.1GB for the 7B model and 7.92GB to 15.7GB for the 14B.</p>
+<p>These might not work well yet with the full context lengths as the underlying <code>llama.cpp</code> library may need some changes.</p>
+<p>I tried running the 8.1GB 7B model using <a href="https://ollama.com/">Ollama</a> on my Mac like this:</p>
+<pre><code>ollama run hf.co/lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF:Q8_0
+</code></pre>
+<p>Then with <a href="https://llm.datasette.io/">LLM</a>:</p>
+<pre><code>llm install llm-ollama
+llm models -q qwen # To search for the model ID
+# I set a shorter q1m alias:
+llm aliases set q1m hf.co/lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF:Q8_0
+</code></pre>
+<p>I tried piping a large prompt in using <a href="https://pypi.org/project/files-to-prompt/">files-to-prompt</a> like this:</p>
+<pre><code>files-to-prompt ~/Dropbox/Development/llm -e py -c | llm -m q1m 'describe this codebase in detail'
+</code></pre>
+<p>That should give me every Python file in my <a href="https://github.com/simonw/llm">llm project</a>. Piping that through <a href="https://pypi.org/project/ttok/">ttok</a> first told me this was 63,014 OpenAI tokens, I expect that count is similar for Qwen.</p>
+<p>The result <a href="https://gist.github.com/simonw/ace6ff544dddabb0797b8d20d84627a8#response">was disappointing</a>: it appeared to describe just the last Python file that stream. Then I noticed the token usage report:</p>
+<pre><code>2,048 input, 999 output
+</code></pre>
+<p>This suggests to me that something's not working right here - maybe the Ollama hosting framework is truncating the input, or maybe there's a problem with the GGUF I'm using?</p>
+<p>I'll update this post when I figure out how to run longer prompts through the new Qwen model using GGUF weights on a Mac.</p>
+<p><strong>Update:</strong> It <a href="https://news.ycombinator.com/item?id=42832838#42833427">turns out</a> Ollama has a <code>num_ctx</code> option which defaults to 2048, affecting the input context length. I tried this:</p>
+<pre><code>files-to-prompt \
+  ~/Dropbox/Development/llm \
+  -e py -c | \
+llm -m q1m 'describe this codebase in detail' \
+ -o num_ctx 80000
+</code></pre>
+<p>But I quickly ran out of RAM (I have 64GB but a lot of that was in use already) and hit <code>Ctrl+C</code> to avoid crashing my computer. I need to experiment a bit to figure out how much RAM is used for what context size.</p>
+<p>Awni Hannun <a href="https://twitter.com/awnihannun/status/1883611098081099914">shared tips</a> for running <a href="https://huggingface.co/mlx-community/Qwen2.5-7B-Instruct-1M-4bit">mlx-community/Qwen2.5-7B-Instruct-1M-4bit</a> using MLX,  which should work for up to 250,000 tokens. They ran 120,000 tokens and reported:</p>
+<blockquote>
+<ul>
+<li>Peak RAM for prompt filling was 22GB</li>
+<li>Peak RAM for generation 12GB</li>
+<li>Prompt filling took 350 seconds on an M2 Ultra</li>
+<li>Generation ran at 31 tokens-per-second on M2 Ultra</li>
+</ul>
+</blockquote>
+
+    <p><small></small>Via <a href="https://twitter.com/reach_vb/status/1883560095176708163">VB</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a>, <a href="https://simonwillison.net/tags/long-context">long-context</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Which AI to Use Now: An Updated Opinionated Guide]]></title>
         <id>https://www.oneusefulthing.org/p/which-ai-to-use-now-an-updated-opinionated</id>

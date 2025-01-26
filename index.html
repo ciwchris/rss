@@ -31,6 +31,62 @@
       <article>
           <details>
             <summary>
+              Qwen2.5-1M: Deploy Your Own Qwen with Context Length up to 1M Tokens
+              <span class="post-metadata">(3 min | 757 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/qwen25-1m/#atom-everything>Qwen2.5-1M: Deploy Your Own Qwen with Context Length up to 1M Tokens
+Dual Chunk Attention, first described in this paper from February 2024.
+They&#x27;ve released two models on Hugging Face: Qwen2.5-7B-Instruct-1M and Qwen2.5-14B-Instruct-1M, both requiring CUDA and both under an Apache 2.0 license.
+You&#x27;ll need a lot of VRAM to run them at their full capacity:
+VRAM Requirement for processing 1 million-token sequences:
+Qwen2.5-7B-Instruct-1M: At least 120GB VRAM (total across GPUs).
+Qwen2.5-14B-Instruct-1M: At least 320GB VRAM (total across GPUs).
+If your GPUs do not have sufficient VRAM, you can still use Qwen2.5-1M models for shorter tasks.
+Qwen recommend using their custom fork of vLLM to serve the models:
+You can also use the previous framework that supports Qwen2.5 for inference, but accuracy degradation may occur for sequences exceeding 262,144 tokens.
+GGUF quantized versions of the models are already starting to show up. LM Studio&#x27;s &quot;official model curator&quot; Bartowski published lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF and lmstudio-community/Qwen2.5-14B-Instruct-1M-GGUF - sizes range from 4.09GB to 8.1GB for the 7B model and 7.92GB to 15.7GB for the 14B.
+These might not work well yet with the full context lengths as the underlying llama.cpp library may need some changes.
+I tried running the 8.1GB 7B model using Ollama on my Mac like this:
+ollama run hf.co/lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF:Q8_0
+
+Then with LLM:
+llm install llm-ollama
+llm models -q qwen # To search for the model ID
+# I set a shorter q1m alias:
+llm aliases set q1m hf.co/lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF:Q8_0
+
+I tried piping a large prompt in using files-to-prompt like this:
+files-to-prompt ~/Dropbox/Development/llm -e py -c | llm -m q1m &#x27;describe this codebase in detail&#x27;
+
+That should give me every Python file in my llm project. Piping that through ttok first told me this was 63,014 OpenAI tokens, I expect that count is similar for Qwen.
+The result was disappointing: it appeared to describe just the last Python file that stream. Then I noticed the token usage report:
+2,048 input, 999 output
+
+This suggests to me that something&#x27;s not working right here - maybe the Ollama hosting framework is truncating the input, or maybe there&#x27;s a problem with the GGUF I&#x27;m using?
+I&#x27;ll update this post when I figure out how to run longer prompts through the new Qwen model using GGUF weights on a Mac.
+Update: It turns out Ollama has a num_ctx option which defaults to 2048, affecting the input context length. I tried this:
+files-to-prompt \
+  ~/Dropbox/Development/llm \
+  -e py -c | \
+llm -m q1m &#x27;describe this codebase in detail&#x27; \
+ -o num_ctx 80000
+
+But I quickly ran out of RAM (I have 64GB but a lot of that was in use already) and hit Ctrl+C to avoid crashing my computer. I need to experiment a bit to figure out how much RAM is used for what context size.
+Awni Hannun shared tips for running mlx-community/Qwen2.5-7B-Instruct-1M-4bit using MLX,  which should work for up to 250,000 tokens. They ran 120,000 tokens and reported:
+Peak RAM for prompt filling was 22GB
+Peak RAM for generation 12GB
+Prompt filling took 350 seconds on an M2 Ultra
+Generation ran at 31 tokens-per-second on M2 Ultra
+Via VB
+Tags: llms, ai, qwen, generative-ai, llm, ollama, long-context</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Which AI to Use Now: An Updated Opinionated Guide
               <span class="post-metadata">(0 min |  words)</span> 
             </summary>
