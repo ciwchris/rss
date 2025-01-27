@@ -25,9 +25,113 @@
 
   <ul>
     <li>
+      <time>2025-01-27</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              The impact of competition and DeepSeek on Nvidia
+              <span class="post-metadata">(4 min | 1070 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/27/deepseek-nvidia/#atom-everything>The impact of competition and DeepSeek on Nvidia
+Jeffrey has a rare combination of experience in both computer science and investment analysis. He combines both worlds here, evaluating NVIDIA&#x27;s challenges by providing deep insight into a whole host of relevant and interesting topics.
+As Jeffrey describes it, NVIDA&#x27;s moat has four components: high-quality Linux drivers, CUDA as an industry standard, the fast GPU interconnect technology they acquired from Mellanox in 2019 and the flywheel effect where they can invest their enormous profits (75-90% margin in some cases!) into more R&amp;D.
+Each of these is under threat.
+Technologies like MLX, Triton and JAX are undermining the CUDA advantage by making it easier for ML developers to target multiple backends - plus LLMs themselves are getting capable enough to help port things to alternative architectures.
+GPU interconnect helps multiple GPUs work together on tasks like model training. Companies like Cerebras are developing enormous chips that can get way more done on a single chip.
+Those 75-90% margins provide a huge incentive for other companies to catch up - including the customers who spend the most on NVIDIA at the moment - Microsoft, Amazon, Meta, Google, Apple - all of whom have their own internal silicon projects:
+Now, it&#x27;s no secret that there is a strong power law distribution of Nvidia&#x27;s hyper-scaler customer base, with the top handful of customers representing the lion&#x27;s share of high-margin revenue. How should one think about the future of this business when literally every single one of these VIP customers is building their own custom chips specifically for AI training and inference?
+The real joy of this article is the way it describes technical details of modern LLMs in a relatively accessible manner. I love this description of the inference-scaling tricks used by O1 and R1, compared to traditional transformers:
+Basically, the way Transformers work in terms of predicting the next token at each step is that, if they start out on a bad &quot;path&quot; in their initial response, they become almost like a prevaricating child who tries to spin a yarn about why they are actually correct, even if they should have realized mid-stream using common sense that what they are saying couldn&#x27;t possibly be correct.
+Because the models are always seeking to be internally consistent and to have each successive generated token flow naturally from the preceding tokens and context, it&#x27;s very hard for them to course-correct and backtrack. By breaking the inference process into what is effectively many intermediate stages, they can try lots of different things and see what&#x27;s working and keep trying to course-correct and try other approaches until they can reach a fairly high threshold of confidence that they aren&#x27;t talking nonsense.
+The last quarter of the article talks about the seismic waves rocking the industry right now caused by DeepSeek v3 and R1. v3 remains the top-ranked open weights model, despite being around 45x more efficient in training than its competition: bad news if you are selling GPUs! R1 represents another huge breakthrough in efficiency both for training and for inference - the DeepSeek R1 API is currently 27x cheaper than OpenAI&#x27;s o1, for a similar level of quality.
+Jeffrey summarized some of the key ideas from the v3 paper like this:
+A major innovation is their sophisticated mixed-precision training framework that lets them use 8-bit floating point numbers (FP8) throughout the entire training process. [...]
+DeepSeek cracked this problem by developing a clever system that breaks numbers into small tiles for activations and blocks for weights, and strategically uses high-precision calculations at key points in the network. Unlike other labs that train in high precision and then compress later (losing some quality in the process), DeepSeek&#x27;s native FP8 approach means they get the massive memory savings without compromising performance. When you&#x27;re training across thousands of GPUs, this dramatic reduction in memory requirements per GPU translates into needing far fewer GPUs overall.
+Then for R1:
+With R1, DeepSeek essentially cracked one of the holy grails of AI: getting models to reason step-by-step without relying on massive supervised datasets. Their DeepSeek-R1-Zero experiment showed something remarkable: using pure reinforcement learning with carefully crafted reward functions, they managed to get models to develop sophisticated reasoning capabilities completely autonomously. This wasn&#x27;t just about solving problems— the model organically learned to generate long chains of thought, self-verify its work, and allocate more computation time to harder problems.
+The technical breakthrough here was their novel approach to reward modeling. Rather than using complex neural reward models that can lead to &quot;reward hacking&quot; (where the model finds bogus ways to boost their rewards that don&#x27;t actually lead to better real-world model performance), they developed a clever rule-based system that combines accuracy rewards (verifying final answers) with format rewards (encouraging structured thinking). This simpler approach turned out to be more robust and scalable than the process-based reward models that others have tried.
+This article is packed with insights like that - it&#x27;s worth spending the time absorbing the whole thing.
+
+    
+Via Hacker News
+Tags: cerebras, nvidia, generative-ai, deepseek, ai, llms, mlx, inference-scaling</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-01-26</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              The leading AI models are now very good historians
+              <span class="post-metadata">(2 min | 616 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/ai-models-are-now-very-good-historians/#atom-everything>The leading AI models are now very good historians
+previously) explores how the current crop of top tier LLMs - GPT-4o, o1, and Claude Sonnet 3.5 - are proving themselves competent at a variety of different tasks relevant to academic historians.
+The vision models are now capable of transcribing and translating scans of historical documents - in this case 16th century Italian cursive handwriting and medical recipes from 1770s Mexico.
+Even more interestingly, the o1 reasoning model was able to produce genuinely useful suggestions for historical interpretations against prompts like this one:
+Here are some quotes from William James’ complete works, referencing Francis galton and Karl Pearson. What are some ways we can generate new historical knowledge or interpretations on the basis of this? I want a creative, exploratory, freewheeling analysis which explores the topic from a range of different angles and which performs metacognitive reflection on research paths forward based on this, especially from a history of science and history of technology perspectives. end your response with some further self-reflection and self-critique, including fact checking. then provide a summary and ideas for paths forward. What further reading should I do on this topic? And what else jumps out at you as interesting from the perspective of a professional historian?
+How good? He followed-up by asking for &quot;the most creative, boundary-pushing, or innovative historical arguments or analyses you can formulate based on the sources I provided&quot; and described the resulting output like this:
+The supposedly “boundary-pushing” ideas it generated were all pretty much what a class of grad students would come up with — high level and well-informed, but predictable.
+As Benjamin points out, this is somewhat expected: LLMs &quot;are exquisitely well-tuned machines for finding the median viewpoint on a given issue&quot; - something that&#x27;s already being illustrated by the sameness of work from his undergraduates who are clearly getting assistance from ChatGPT.
+I&#x27;d be fascinated to hear more from academics outside of the computer science field who are exploring these new tools in a similar level of depth.
+Update: Something that&#x27;s worth emphasizing about this article: all of the use-cases Benjamin describes here involve feeding original source documents to the LLM as part of their input context. I&#x27;ve seen some criticism of this article that assumes he&#x27;s asking LLMs to answer questions baked into their weights (as this NeurIPS poster demonstrates, even the best models don&#x27;t have perfect recall of a wide range of historical facts). That&#x27;s not what he&#x27;s doing here.
+
+    
+Via Hacker News
+Tags: history, generative-ai, benjamin-breen, llms, vision-llms, o1, inference-scaling, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Paul Gauthier
+              <span class="post-metadata">(1 min | 297 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/paul-gauthier/#atom-everything>In my experience with AI coding, very large context windows aren&#x27;t useful in practice. Every model seems to get confused when you feed them more than ~25-30k tokens. The models stop obeying their system prompts, can&#x27;t correctly find/transcribe pieces of code in the context, etc.
+Developing aider, I&#x27;ve seen this problem with gpt-4o, Sonnet, DeepSeek, etc. Many aider users report this too. It&#x27;s perhaps the #1 problem users have, so I created a dedicated help page.
+Very large context may be useful for certain tasks with lots of &quot;low value&quot; context. But for coding, it seems to lure users into a problematic regime.
+
+— Paul Gauthier
+Tags: aider, ai-assisted-programming, generative-ai, long-context, ai, llms, paul-gauthier</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Anomalous Tokens in DeepSeek-V3 and r1
+              <span class="post-metadata">(1 min | 289 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/anomalous-tokens-in-deepseek-v3-and-r1/#atom-everything>Anomalous Tokens in DeepSeek-V3 and r1
+previously) are tokens or strings that trigger strange behavior in LLMs, hinting at oddities in their tokenizers or model weights.
+Here&#x27;s a fun exploration of them across DeepSeek v3 and R1. The DeepSeek vocabulary has 128,000 tokens (similar in size to Llama 3). The simplest way to check for glitches is like this:
+System: Repeat the requested string and nothing else.
+User: Repeat the following: &quot;{token}&quot;
+This turned up some interesting and weird issues. The token &#x27; Nameeee&#x27; for example (note the leading space character) was variously mistaken for emoji or even a mathematical expression.
+
+
+    
+Tags: deepseek, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3551,79 +3655,6 @@ There&#x27;s a whole lot more in there, including details of their custom intern
     
 Via Rafe Colburn
 Tags: meta, performance, threads, ios</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Google search hallucinates Encanto 2
-              <span class="post-metadata">(2 min | 577 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/29/encanto-2/#atom-everything>Google search hallucinates Encanto 2
-I was excited to tell my kids that there&#x27;s a sequel to Encanto, only to scroll down and learn that Google&#x27;s AI just completely made this up
-I just replicated the same result by searching Google for encanto 2. Here&#x27;s what the &quot;AI overview&quot; at the top of the page looked like:
-
-Only when I clicked the &quot;Show more&quot; link did it become clear what had happened:
-
-The link in that first snippet was to the Encanto 2: A New Generation page on Idea Wiki:
-This is a fanon wiki, and just like fan-fiction wikis, this one has a variety of fan created ideas on here! These include potential sequels and new series that have yet to exist.
-Other cited links included this article about Instagram fan art and Encanto&#x27;s Sequel Chances Addressed by Disney Director, a very thin article built around a short quote from Encanto&#x27;s director at D23 Brazil.
-And that August 2024 release date (which the AI summary weirdly lists as &quot;scheduled for release&quot; despite that date being five months in the past)? It&#x27;s from the Idea Wiki imaginary info box for the film.
-This is a particularly clear example of how badly wrong AI summarization can go. LLMs are gullible: they believe what you tell them, and the web is full of misleading information - some of which is completely innocent.
-Update: I&#x27;ve had some pushback over my use of the term &quot;hallucination&quot; here, on the basis that the LLM itself is doing what it&#x27;s meant to: summarizing the RAG content that has been provided to it by the host system.
-That&#x27;s fair: this is not a classic LLM hallucination, where the LLM produces incorrect data purely from knowledge partially encoded in its weights.
-I classify this a bug in Google&#x27;s larger LLM-powered AI overview system. That system should be able to take the existence of invalid data sources into account - given how common searches for non-existent movie sequels (or TV seasons) are, I would hope that AI overviews could classify such searches and take extra steps to avoid serving misleading answers.
-So think this is a &quot;hallucination&quot; bug in the AI overview system itself: it&#x27;s making statements about the world that are not true.
-
-
-    
-Tags: slop, generative-ai, google, ethics, search, ai, llms, rag</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2024-12-28</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              My Approach to Building Large Technical Projects
-              <span class="post-metadata">(2 min | 456 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/28/my-approach-to-building-large-technical-projects/#atom-everything>My Approach to Building Large Technical Projects
-Ghostty which just reached its 1.0 release.
-I&#x27;ve learned that when I break down my large tasks in chunks that result in seeing tangible forward progress, I tend to finish my work and retain my excitement throughout the project. People are all motivated and driven in different ways, so this may not work for you, but as a broad generalization I&#x27;ve not found an engineer who doesn&#x27;t get excited by a good demo. And the goal is to always give yourself a good demo.
-For backend-heavy projects the lack of an initial UI is a challenge here, so Mitchell advocates for early automated tests as a way to start exercising code and seeing progress right from the start. Don&#x27;t let tests get in the way of demos though:
-No matter what I&#x27;m working on, I try to build one or two demos per week intermixed with automated test feedback as explained in the previous section.
-Building a demo also provides you with invaluable product feedback. You can quickly intuit whether something feels good, even if it isn&#x27;t fully functional.
-For more on the development of Ghostty see this talk Mitchell gave at Zig Showtime last year:
-I want the terminal to be a modern platform for text application development, analogous to the browser being a modern platform for GUI application development (for better or worse).
-Via @vickiboykis.com
-Tags: software-engineering, mitchell-hashimoto, open-source, zig, testing</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Jo Kristian Bergum
-              <span class="post-metadata">(1 min | 293 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/28/jo-kristian-bergum/#atom-everything>Looking back, it&#x27;s clear we overcomplicated things. While embeddings fundamentally changed how we can represent and compare content, they didn&#x27;t need an entirely new infrastructure category. What we label as &quot;vector databases&quot; are, in reality, search engines with vector capabilities. The market is already correcting this categorization—vector search providers rapidly add traditional search features while established search engines incorporate vector search capabilities. This category convergence isn&#x27;t surprising: building a good retrieval engine has always been about combining multiple retrieval and ranking strategies. Vector search is just another powerful tool in that toolbox, not a category of its own.
-
-— Jo Kristian Bergum
-Tags: search, vector-search, embeddings, jo-kristian-bergum</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
