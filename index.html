@@ -31,6 +31,70 @@
       <article>
           <details>
             <summary>
+              Qwen2.5 VL! Qwen2.5 VL! Qwen2.5 VL!
+              <span class="post-metadata">(3 min | 765 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/27/qwen25-vl-qwen25-vl-qwen25-vl/#atom-everything>Qwen2.5 VL! Qwen2.5 VL! Qwen2.5 VL!
+Qwen2.5-1M, here&#x27;s Qwen2.5 VL (with an excitable announcement title) - the latest in Qwen&#x27;s series of vision LLMs.
+They&#x27;re releasing multiple versions: base models and instruction tuned models at 3B, 7B and 72B. There&#x27;s a lot of additional information in their README.
+The 72B model can be selected on Qwen&#x27;s Qwen Chat interface. I gave it this image of our dog Cleo joy rolling on the beach:
+
+And prompted:
+Describe this image in detail, be flowery
+(Since the Qwen team tends to use flowery language in their announcements.)
+Here&#x27;s what I got back:
+In this enchanting tableau, a canine companion finds solace in the embrace of nature&#x27;s softest bed. The sandy expanse stretches out like an endless canvas, its surface etched with the delicate imprints of countless wanderers who have come and gone, leaving behind a tapestry of footprints that whisper tales of joyous romps and serene strolls.
+The dog, a vision of contentment, lies sprawled upon the sand, its dark fur gleaming under the gentle caress of the sun. Its body is relaxed, limbs splayed in abandon, as if it has surrendered to the soothing rhythm of the beach. A vibrant red collar adorns its neck, a splash of color against the muted tones of the surroundings, hinting at the care and love bestowed upon this cherished pet.
+The sand itself is a work of art, its grains shimmering with a silvery sheen that catches the light. Here and there, small tufts of seaweed peek through, remnants of the ocean&#x27;s bounty, adding a touch of wild beauty to the scene. The shadows cast by unseen objects dance across the sand, creating a play of light and dark that lends an air of mystery to the tranquil setting.
+This moment, frozen in time, speaks of peace and harmony, where man&#x27;s best friend finds respite in the simple pleasures of life. It is a scene that invites one to pause, breathe deeply, and revel in the serenity of nature&#x27;s embrace.
+I&#x27;m looking forward to trying out their smaller models - the 3B model in particular should be small enough to run comfortably even on an iPhone, so hopefully someone will wire up an example of that soon (maybe using MLX).
+VB points out that the vision benchmarks for Qwen 2.5 VL 7B show it out-performing GPT-4o mini!
+
+Qwen2.5 VL cookbooks
+Qwen also just published a set of cookbook recipes:
+universal_recognition.ipynb demonstrates basic visual Q&amp;A, including prompts like Who are these in this picture? Please give their names in Chinese and English against photos of celebrities, an ability other models have deliberately suppressed.
+spatial_understanding.ipynb demonstrates bounding box support, with prompts like Locate the top right brown cake, output its bbox coordinates using JSON format.
+video_understanding.ipynb breaks a video into individual frames and asks questions like Could you go into detail about the content of this long video?
+ocr.ipynb shows Qwen2.5-VL-7B-Instruct performing OCR in multiple different languages.
+document_parsing.ipynb uses Qwen to convert images of documents to HTML and other formats, and notes that &quot;we introduce a unique Qwenvl HTML format that includes positional information for each component, enabling precise document reconstruction and manipulation.&quot;
+mobile_agent.ipynb runs Qwen with tool use against tools for controlling a mobile phone, similar to ChatGPT Operator or Claude Computer Use.
+computer_use.ipynb showcases &quot;GUI grounding&quot; -  feeding in screenshots of a user&#x27;s desktop and running tools for things like left clicking on a specific coordinate.
+Tags: vision-llms, generative-ai, ai, qwen, llms, prompt-engineering, ocr</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              ggml : x2 speed for WASM by optimizing SIMD
+              <span class="post-metadata">(2 min | 480 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/27/llamacpp-pr/#atom-everything>ggml : x2 speed for WASM by optimizing SIMD
+llama.cpp:
+This PR provides a big jump in speed for WASM by leveraging SIMD instructions for qX_K_q8_K and qX_0_q8_0 dot product functions.
+Surprisingly, 99% of the code in this PR is written by DeekSeek-R1. The only thing I do is to develop tests and write prompts (with some trails and errors)
+They shared their prompts here, which they ran directly through R1 on chat.deepseek.com - it spent 3-5 minutes &quot;thinking&quot; about each prompt.
+I&#x27;ve been seeing some very promising results from DeepSeek R1 for code as well. Here&#x27;s a recent transcript where I used it to rewrite the llm_groq.py plugin to imitate the cached model JSON pattern used by llm_mistral.py, resulting in this PR.
+I tried the same thing against o1, but I think DeepSeek R1 did it better. In particular, from the R1 chain of thought:
+Wait, but in the model_map, &quot;groq-gemma&quot; maps to &quot;gemma-7b-it&quot;. So, perhaps the model_map is needed to map the local model IDs to the actual Groq model names.
+But since the model_map is hardcoded, and the API returns available models, perhaps the model_map should be built dynamically from the API response.
+Alternatively, perhaps the model_map can be eliminated, and the models are registered based on the fetched models.
+Wait, perhaps the model_map is no longer necessary. Instead, when the models are fetched from the API, each model&#x27;s &quot;id&quot; is the actual model name used in the Groq API. So, when registering the models, the local model ID is &quot;groq-{id}&quot;, and the groq_model_id is &quot;id&quot;.
+(It thought about model_map a lot before finally deciding to eliminate it, which was also my preferred resolution.)
+
+    
+Via @ggerganov
+Tags: inference-scaling, deepseek, llama-cpp, ai, llms, webassembly, ai-assisted-programming, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               The impact of competition and DeepSeek on Nvidia
               <span class="post-metadata">(4 min | 1070 words)</span> 
             </summary>
