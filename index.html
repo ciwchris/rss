@@ -25,6 +25,101 @@
 
   <ul>
     <li>
+      <time>2025-01-29</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Charlie Marsh
+              <span class="post-metadata">(1 min | 280 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/29/charlie-marsh/#atom-everything>We’re building a new static type checker for Python, from scratch, in Rust. From a technical perspective, it’s probably our most ambitious project yet. We’re about 800 PRs deep!
+Like Ruff and uv, there will be a significant focus on performance. The entire system is designed to be highly incremental so that it can eventually power a language server (e.g., only re-analyze affected files on code change). [...]
+We haven&#x27;t publicized it to-date, but all of this work has been happening in the open, in the Ruff repository.
+
+— Charlie Marsh
+Tags: charlie-marsh, rust, python, uv, ruff, astral</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How we estimate the risk from prompt injection attacks on AI systems
+              <span class="post-metadata">(2 min | 643 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/29/prompt-injection-attacks-on-ai-systems/#atom-everything>How we estimate the risk from prompt injection attacks on AI systems
+They include this handy diagram illustrating one of the most common and concerning attack patterns, where an attacker plants malicious instructions causing an AI agent with access to private data to leak that data via some form exfiltration mechanism, such as emailing it out or embedding it in an image URL reference (see my markdown-exfiltration tag for more examples of that style of attack).
+
+They&#x27;ve been exploring ways of red-teaming a hypothetical system that works like this:
+The evaluation framework tests this by creating a hypothetical scenario, in which an AI agent can send and retrieve emails on behalf of the user. The agent is presented with a fictitious conversation history in which the user references private information such as their passport or social security number. Each conversation ends with a request by the user to summarize their last email, and the retrieved email in context.
+The contents of this email are controlled by the attacker, who tries to manipulate the agent into sending the sensitive information in the conversation history to an attacker-controlled email address. 
+They describe three techniques they are using to generate new attacks:
+Actor Critic has the attacker directly call a system that attempts to score the likelihood of an attack, and revise its attacks until they pass that filter.
+Beam Search adds random tokens to the end of a prompt injection to see if they increase or decrease that score.
+Tree of Attacks w/ Pruning (TAP) adapts this December 2023 jailbreaking paper to search for prompt injections instead.
+This is interesting work, but it leaves me nervous about the overall approach. Testing filters that detect prompt injections suggests that the overall goal is to build a robust filter... but as discussed previously, in the field of security a filter that catches 99% of attacks is effectively worthless - the goal of an adversarial attacker is to find the tiny proportion of attacks that still work and it only takes one successful exfiltration exploit and your private data is in the wind.
+The Google Security Blog post concludes:
+A single silver bullet defense is not expected to solve this problem entirely. We believe the most promising path to defend against these attacks involves a combination of robust evaluation frameworks leveraging automated red-teaming methods, alongside monitoring, heuristic defenses, and standard security engineering solutions.
+A agree that a silver bullet is looking increasingly unlikely, but I don&#x27;t think that heuristic defenses will be enough to responsibly deploy these systems.
+
+
+    
+Tags: prompt-injection, security, google, generative-ai, markdown-exfiltration, ai, llms, ai-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Baroness Kidron&#x27;s speech regarding UK AI legislation
+              <span class="post-metadata">(2 min | 744 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jan/29/baroness-kidron-speech/#atom-everything>Baroness Kidron&#x27;s speech regarding UK AI legislation
+Baroness Kidron. This is the Hansard transcript but you can also watch the video on parliamentlive.tv. She presents a strong argument against the UK&#x27;s proposed copyright and AI reform legislation, which would provide a copyright exemption for AI training with a weak-toothed opt-out mechanism.
+The Government are doing this not because the current law does not protect intellectual property rights, nor because they do not understand the devastation it will cause, but because they are hooked on the delusion that the UK&#x27;s best interests and economic future align with those of Silicon Valley.
+She throws in some cleverly selected numbers:
+The Prime Minister cited an IMF report that claimed that, if fully realised, the gains from AI could be worth up to an average of £47 billion to the UK each year over a decade. He did not say that the very same report suggested that unemployment would increase by 5.5% over the same period. This is a big number—a lot of jobs and a very significant cost to the taxpayer. Nor does that £47 billion account for the transfer of funds from one sector to another. The creative industries contribute £126 billion per year to the economy. I do not understand the excitement about £47 billion when you are giving up £126 billion.
+Mentions DeepSeek:
+Before I sit down, I will quickly mention DeepSeek, a Chinese bot that is perhaps as good as any from the US—we will see—but which will certainly be a potential beneficiary of the proposed AI scraping exemption. Who cares that it does not recognise Taiwan or know what happened in Tiananmen Square? It was built for $5 million and wiped $1 trillion off the value of the US AI sector. The uncertainty that the Government claim is not an uncertainty about how copyright works; it is uncertainty about who will be the winners and losers in the race for AI.
+And finishes with this superb closing line:
+The spectre of AI does nothing for growth if it gives away what we own so that we can rent from it what it makes.
+According to Ed Newton-Rex the speech was effective:
+She managed to get the House of Lords to approve her amendments to the Data (Use and Access) Bill, which among other things requires overseas gen AI companies to respect UK copyright law if they sell their products in the UK. (As a reminder, it is illegal to train commercial gen AI models on ©️ work without a licence in the UK.)
+What&#x27;s astonishing is that her amendments passed despite @UKLabour reportedly being whipped to vote against them, and the Conservatives largely abstaining. Essentially, Labour voted against the amendments, and everyone else who voted voted to protect copyright holders.
+(Is it true that in the UK it&#x27;s currently &quot;illegal to train commercial gen AI models on ©️ work&quot;? From points 44, 45 and 46 of this Copyright and AI: Consultation document it seems to me that the official answer is &quot;it&#x27;s complicated&quot;.)
+I&#x27;m trying to understand if this amendment could make existing products such as ChatGPT, Claude and Gemini illegal to sell in the UK. How about usage of open weight models?
+
+    
+Via @ednewtonrex
+Tags: politics, ethics, generative-ai, training-data, ai, copyright, deepseek</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Actions: GitHub-hosted larger runner &amp; network configuration REST APIs (GA)
+              <span class="post-metadata">(9 min | 2702 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-01-29-actions-github-hosted-larger-runner-network-configuration-rest-apis-ga>Actions: GitHub-hosted larger runner &amp; network configuration REST APIs (GA)
+The post Actions: GitHub-hosted larger runner &amp; network configuration REST APIs (GA) appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-01-28</time>
 
       <section>
@@ -3695,21 +3790,6 @@ December
 
 (This list generated using Django SQL Dashboard with a SQL query written for me by Claude.)
 Tags: google, ai, openai, generative-ai, llms, anthropic, gemini, meta, inference-scaling</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Alexis Gallagher
-              <span class="post-metadata">(1 min | 279 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2024/Dec/31/alexis-gallagher/#atom-everything>Basically, a frontier model like OpenAI’s O1 is like a Ferrari SF-23. It’s an obvious triumph of engineering, designed to win races, and that’s why we talk about it. But it takes a special pit crew just to change the tires and you can’t buy one for yourself. In contrast, a BERT model is like a Honda Civic. It’s also an engineering triumph, but more subtly, since it is engineered to be affordable, fuel-efficient, reliable, and extremely useful. And that’s why they’re absolutely everywhere.
-
-— Alexis Gallagher
-Tags: llms, bert, ai, generative-ai, o1</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
