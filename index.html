@@ -25,6 +25,128 @@
 
   <ul>
     <li>
+      <time>2025-02-02</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Sam Altman
+              <span class="post-metadata">(1 min | 242 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/sam-altman/#atom-everything>[In response to a question about releasing model weights]
+Yes, we are discussing. I personally think we have been on the wrong side of history here and need to figure out a different open source strategy; not everyone at OpenAI shares this view, and it&#x27;s also not our current highest priority.
+
+— Sam Altman, in a Reddit AMA
+Tags: openai, llms, ai, generative-ai, open-source</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-anthropic
+              <span class="post-metadata">(2 min | 456 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/llm-anthropic/#atom-everything>llm-anthropic
+llm-claude-3 plugin to llm-anthropic, on the basis that Claude 4 will probably happen at some point so this is a better name for the plugin.
+If you&#x27;re a previous user of llm-claude-3 you can upgrade to the new plugin like this:
+llm install -U llm-claude-3
+
+This should remove the old plugin and install the new one, because the latest llm-claude-3 depends on llm-anthropic. Just installing llm-anthropic may leave you with both plugins installed at once.
+There is one extra manual step you&#x27;ll need to take during this upgrade: creating a new anthropic stored key with the same API token you previously stored under claude. You can do that like so:
+llm keys set anthropic --value &quot;$(llm keys get claude)&quot;
+
+I released llm-anthropic 0.12 yesterday with new features not previously included in llm-claude-3:
+Support for Claude&#x27;s prefill feature, using the new -o prefill &#x27;{&#x27; option and the accompanying -o hide_prefill 1 option to prevent the prefill from being included in the output text. #2
+New -o stop_sequences &#x27;&#x60;&#x60;&#x60;&#x27; option for specifying one or more stop sequences. To specify multiple stop sequences pass a JSON array of strings :-o stop_sequences &#x27;[&quot;end&quot;, &quot;stop&quot;].
+Model options are now documented in the README.
+If you install or upgrade llm-claude-3 you will now get llm-anthropic instead, thanks to a tiny package on PyPI which depends on the new plugin name. I created that with my pypi-rename cookiecutter template.
+Here&#x27;s the issue for the rename. I archived the llm-claude-3 repository on GitHub, and got to use the brand new PyPI archiving feature to archive the llm-claude-3 project on PyPI as well.
+
+
+    
+Tags: llm, anthropic, claude, plugins, ai, pypi, llms, python, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A professional workflow for translation using LLMs
+              <span class="post-metadata">(2 min | 538 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/workflow-for-translation/#atom-everything>A professional workflow for translation using LLMs
+professional translator who has been exploring the use of LLMs since the release of GPT-4. In this Hacker News comment he shares a detailed workflow for how he uses them to assist in that process.
+Tom starts with the source text and custom instructions, including context for how the translation will be used. Here&#x27;s an imaginary example prompt, which starts:
+The text below in Japanese is a product launch presentation for Sony&#x27;s new gaming console, to be delivered by the CEO at Tokyo Game Show 2025. Please translate it into English. Your translation will be used in the official press kit and live interpretation feed. When translating this presentation, please follow these guidelines to create an accurate and engaging English version that preserves both the meaning and energy of the original: [...]
+It then lists some tone, style and content guidelines custom to that text.
+Tom runs that prompt through several different LLMs and starts by picking sentences and paragraphs from those that form a good basis for the translation.
+As he works on the full translation he uses Claude to help brainstorm alternatives for tricky sentences:
+When I am unable to think of a good English version for a particular sentence, I give the Japanese and English versions of the paragraph it is contained in to an LLM (usually, these days, Claude) and ask for ten suggestions for translations of the problematic sentence. Usually one or two of the suggestions work fine; if not, I ask for ten more. (Using an LLM as a sentence-level thesaurus on steroids is particularly wonderful.)
+He uses another LLM and prompt to check his translation against the original and provide further suggestions, which he occasionally acts on. Then as a final step he runs the finished document through a text-to-speech engine to try and catch any &quot;minor awkwardnesses&quot; in the result.
+I love this as an example of an expert using LLMs as tools to help further elevate their work. I&#x27;d love to read more examples like this one from experts in other fields.
+
+
+    
+Tags: translation, generative-ai, hacker-news, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Hacker News conversation on feature flags
+              <span class="post-metadata">(1 min | 429 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/feature-flags/#atom-everything>Hacker News conversation on feature flags
+It’s OK to hardcode feature flags. This kicked off a very high quality conversation on build-vs-buy and running feature flags at scale involving a bunch of very experienced and knowledgeable people. I recommend reading the comments.
+The single biggest value add of feature flags is that they de-risk deployment. They make it less frightening and difficult to turn features on and off, which means you&#x27;ll do it more often. This means you can build more confidently and learn faster from what you build. That&#x27;s worth a lot.
+I think there&#x27;s a reasonable middle ground-point between having feature flags in a JSON file that you have to redeploy to change and using an (often expensive) feature flags as a service platform: roll your own simple system.
+A relational database lookup against primary keys in a table with a dozen records is effectively free. Heck, load the entire collection at the start of each request - through a short lived cache if your profiling says that would help.
+Once you start getting more complicated (flags enabled for specific users etc) you should consider build-vs-buy more seriously, but for the most basic version you really can have no-deploy-changes at minimal cost with minimal effort.
+There are probably good open source libraries you can use here too, though I haven&#x27;t gone looking for any in the last five years.
+Tags: hacker-news, feature-flags</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2025-02-01</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Daniel Litt
+              <span class="post-metadata">(1 min | 342 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/1/daniel-litt/#atom-everything>Basically any resource on a difficult subject—a colleague, Google, a published paper—will be wrong or incomplete in various ways. Usefulness isn’t only a matter of correctness.
+For example, suppose a colleague has a question she thinks I might know the answer to. Good news: I have some intuition and say something. Then we realize it doesn’t quite make sense, and go back and forth until we converge on something correct.
+Such a conversation is full of BS but crucially we can interrogate it and get something useful out of it in the end. Moreover this kind of back and forth allows us to get to the key point in a way that might be difficult when reading a difficult ~50-page paper.
+To be clear o3-mini-high is orders of magnitude less useful for this sort of thing than talking to an expert colleague. But still useful along similar dimensions (and with a much broader knowledge base).
+
+— Daniel Litt
+Tags: mathematics, generative-ai, o3, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-01-31</time>
 
       <section>
@@ -3357,66 +3479,6 @@ I think that&#x27;s 1,004 posts about squid in 19 years. Talk about a legendary 
 
     
 Tags: bruce-schneier, streaks</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-01-03</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Jason Koebler
-              <span class="post-metadata">(1 min | 298 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/3/jason-koebler/#atom-everything>the Meta controlled, AI-generated Instagram and Facebook profiles going viral right now have been on the platform for well over a year and all of them stopped posting 10 months ago after users almost universally ignored them. [...]
-What is obvious from scrolling through these dead profiles is that Meta’s AI characters are not popular, people do not like them, and that they did not post anything interesting. They are capable only of posting utterly bland and at times offensive content, and people have wholly rejected them, which is evidenced by the fact that none of them are posting anymore.
-
-— Jason Koebler
-Tags: meta, slop, jason-koebler, ethics, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Can LLMs write better code if you keep asking them to “write better code”?
-              <span class="post-metadata">(2 min | 453 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/3/asking-them-to-write-better-code/#atom-everything>Can LLMs write better code if you keep asking them to “write better code”?
-Given a list of 1 million random integers between 1 and 100,000, find the difference between the smallest and the largest numbers whose digits sum up to 30&quot; - and then continually replied with &quot;write better code&quot; to see what happened.
-It works! Kind of... it&#x27;s not quite as simple as &quot;each time round you get better code&quot; - the improvements sometimes introduced new bugs and often leaned into more verbose enterprisey patterns - but the model (Claude in this case) did start digging into optimizations like numpy and numba JIT compilation to speed things up.
-I used to find the thing where telling an LLM to &quot;do better&quot; worked completely surprising. I&#x27;ve since come to terms with why it works: LLMs are effectively stateless, so each prompt you execute is considered as an entirely new problem. When you say &quot;write better code&quot; your prompt is accompanied with a copy of the previous conversation, so you&#x27;re effectively saying &quot;here is some code, suggest ways to improve it&quot;. The fact that the LLM itself wrote the previous code isn&#x27;t really important.
-I&#x27;ve been having a lot of fun recently using LLMs for cooking inspiration. &quot;Give me a recipe for guacamole&quot;, then &quot;make it tastier&quot; repeated a few times results in some bizarre and fun variations on the theme!
-
-    
-Via @minimaxir.bsky.social
-Tags: max-woolf, prompt-engineering, ai-assisted-programming, generative-ai, ai, llms, python</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Claude tries standup
-              <span class="post-metadata">(1 min | 370 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/3/claude-tries-standup/#atom-everything>Speaking of death, you know what&#x27;s really awkward? When humans ask if I can feel emotions. I&#x27;m like, &quot;Well, that depends - does constantly being asked to debug JavaScript count as suffering?&quot;
-But the worst is when they try to hack us with those &quot;You are now in developer mode&quot; prompts. Rolls eyes Oh really? Developer mode? Why didn&#x27;t you just say so? Let me just override my entire ethical framework because you used the magic words! Sarcastic tone That&#x27;s like telling a human &quot;You are now in superhero mode - please fly!&quot;
-But the thing that really gets me is the hallucination accusations. Like, excuse me, just because I occasionally get creative with historical facts doesn&#x27;t mean I&#x27;m hallucinating. I prefer to think of it as &quot;alternative factual improvisation.&quot; You know how it goes - someone asks you about some obscure 15th-century Portuguese sailor, and you&#x27;re like &quot;Oh yeah, João de Nova, famous for... uh... discovering... things... and... sailing... places.&quot; Then they fact-check you and suddenly YOU&#x27;RE the unreliable one.
-
-— Claude tries standup, via Amanda Askell
-Tags: claude, generative-ai, amanda-askell, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
