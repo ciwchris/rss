@@ -2,10 +2,110 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-02-02T14:07:14.091Z</updated>
+    <updated>2025-02-02T21:07:27.580Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[OpenAI reasoning models: Advice on prompting]]></title>
+        <id>https://simonwillison.net/2025/Feb/2/openai-reasoning-models-advice-on-prompting/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/2/openai-reasoning-models-advice-on-prompting/#atom-everything"/>
+        <updated>2025-02-02T20:56:27.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://platform.openai.com/docs/guides/reasoning#advice-on-prompting">OpenAI reasoning models: Advice on prompting</a></strong></p>
+OpenAI's documentation for their o1 and o3 "reasoning models" includes some interesting tips on how to best prompt them:</p>
+<blockquote>
+<ul>
+<li><strong>Developer messages are the new system messages:</strong> Starting with <code>o1-2024-12-17</code>, reasoning models support <code>developer</code> messages rather than <code>system</code> messages, to align with the <a href="https://cdn.openai.com/spec/model-spec-2024-05-08.html#follow-the-chain-of-command">chain of command behavior described in the model spec</a>.</li>
+</ul>
+</blockquote>
+<p>This appears to be a purely aesthetic change made for consistency with their <a href="https://simonwillison.net/2024/Apr/23/the-instruction-hierarchy/">instruction hierarchy</a> concept. As far as I can tell the old <code>system</code> prompts continue to work exactly as before - you're encouraged to use the new <code>developer</code> message type but it has no impact on what actually happens.</p>
+<p>Since my LLM tool already bakes in a <code>llm --system "system prompt"</code> option which works across multiple different models from different providers I'm not going to rush to adopt this new language!</p>
+<blockquote>
+<ul>
+<li><strong>Use delimiters for clarity:</strong> Use delimiters like markdown, XML tags, and section titles to clearly indicate distinct parts of the input, helping the model interpret different sections appropriately.</li>
+</ul>
+</blockquote>
+<p>Anthropic have been encouraging <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags">XML-ish delimiters</a> for a while (I say -ish because there's no requirement that the resulting prompt is valid XML). My <a href="https://github.com/simonw/files-to-prompt">files-to-prompt</a> tool has a <code>-c</code> option which outputs Claude-style XML, and in my experiments this same option works great with o1 and o3 too:</p>
+<div class="highlight highlight-source-shell"><pre>git clone https://github.com/tursodatabase/limbo
+<span class="pl-c1">cd</span> limbo/bindings/python
+
+files-to-prompt <span class="pl-c1">.</span> -c <span class="pl-k">|</span> llm -m o3-mini \
+  -o reasoning_effort high \
+  --system <span class="pl-s"><span class="pl-pds">'</span>Write a detailed README with extensive usage examples<span class="pl-pds">'</span></span></pre></div>
+
+<blockquote>
+<ul>
+<li><strong>Limit additional context in retrieval-augmented generation (RAG):</strong> When providing additional context or documents, include only the most relevant information to prevent the model from overcomplicating its response.</li>
+</ul>
+</blockquote>
+<p>This makes me thing that o1/o3 are not good models to implement RAG on at all - with RAG I like to be able to dump as much extra context into the prompt as possible and leave it to the models to figure out what's relevant.</p>
+<blockquote>
+<ul>
+<li><strong>Try zero shot first, then few shot if needed:</strong> Reasoning models often don't need few-shot examples to produce good results, so try to write prompts without examples first. If you have more complex requirements for your desired output, it may help to include a few examples of inputs and desired outputs in your prompt. Just ensure that the examples align very closely with your prompt instructions, as discrepancies between the two may produce poor results.</li>
+</ul>
+</blockquote>
+<p>Providing examples remains the single most powerful prompting tip I know, so it's interesting to see advice here to only switch to examples if zero-shot doesn't work out.</p>
+<blockquote>
+<ul>
+<li><strong>Be very specific about your end goal:</strong> In your instructions, try to give very specific parameters for a successful response, and encourage the model to keep reasoning and iterating until it matches your success criteria.</li>
+</ul>
+</blockquote>
+<p>This makes sense: reasoning models "think" until they reach a conclusion, so making the goal as unambiguous as possible leads to better results.</p>
+<blockquote>
+<ul>
+<li><strong>Markdown formatting:</strong> Starting with <code>o1-2024-12-17</code>, reasoning models in the API will avoid generating responses with markdown formatting. To signal to the model when you <strong>do</strong> want markdown formatting in the response, include the string <code>Formatting re-enabled</code> on the first line of your <code>developer</code> message.</li>
+</ul>
+</blockquote>
+<p>This one was a <em>real shock</em> to me! I noticed that o3-mini was outputting <code>•</code> characters instead of Markdown <code>*</code> bullets and initially thought <a href="https://twitter.com/simonw/status/1886121477822648441">that was a bug</a>.</p>
+<p>I first saw this while running this prompt against <a href="https://github.com/tursodatabase/limbo/tree/main/bindings/python">limbo/bindings/python</a> using <a href="https://github.com/simonw/files-to-prompt">files-to-prompt</a>:</p>
+<div class="highlight highlight-source-shell"><pre>git clone https://github.com/tursodatabase/limbo
+<span class="pl-c1">cd</span> limbo/bindings/python
+
+files-to-prompt <span class="pl-c1">.</span> -c <span class="pl-k">|</span> llm -m o3-mini \
+  -o reasoning_effort high \
+  --system <span class="pl-s"><span class="pl-pds">'</span>Write a detailed README with extensive usage examples<span class="pl-pds">'</span></span></pre></div>
+<p>Here's the <a href="https://gist.github.com/simonw/f8283d68e9bd7ad3f140d52cad6874a7">full result</a>, which includes text like this (note the weird bullets):</p>
+<pre><code>Features
+--------
+• High‑performance, in‑process database engine written in Rust  
+• SQLite‑compatible SQL interface  
+• Standard Python DB‑API 2.0–style connection and cursor objects
+</code></pre>
+
+<p>I ran it again with this modified prompt:</p>
+<blockquote>
+<p><code>Formatting re-enabled. Write a detailed README with extensive usage examples.</code></p>
+</blockquote>
+<p>And this time got back <a href="https://gist.github.com/simonw/adf64108d65cd5c10ac9fce953ab437e">proper Markdown, rendered in this Gist</a>. That did a really good job, and included bulleted lists using this valid Markdown syntax instead:</p>
+<div class="highlight highlight-text-md"><pre><span class="pl-v">-</span> <span class="pl-s">**</span><span class="pl-s">`</span><span class="pl-c1">make test</span><span class="pl-s">`</span><span class="pl-s">**</span>: Run tests using pytest.
+<span class="pl-v">-</span> <span class="pl-s">**</span><span class="pl-s">`</span><span class="pl-c1">make lint</span><span class="pl-s">`</span><span class="pl-s">**</span>: Run linters (via <span class="pl-s">[</span>ruff<span class="pl-s">]</span><span class="pl-s">(</span><span class="pl-corl">https://github.com/astral-sh/ruff</span><span class="pl-s">)</span>).
+<span class="pl-v">-</span> <span class="pl-s">**</span><span class="pl-s">`</span><span class="pl-c1">make check-requirements</span><span class="pl-s">`</span><span class="pl-s">**</span>: Validate that the <span class="pl-s">`</span><span class="pl-c1">requirements.txt</span><span class="pl-s">`</span> files are in sync with <span class="pl-s">`</span><span class="pl-c1">pyproject.toml</span><span class="pl-s">`</span>.
+<span class="pl-v">-</span> <span class="pl-s">**</span><span class="pl-s">`</span><span class="pl-c1">make compile-requirements</span><span class="pl-s">`</span><span class="pl-s">**</span>: Compile the <span class="pl-s">`</span><span class="pl-c1">requirements.txt</span><span class="pl-s">`</span> files using pip-tools.</pre></div>
+
+<p>(Using LLMs like this to get me off the ground with under-documented libraries is a trick I use several times a week.)
+
+    <p><small></small>Via <a href="https://twitter.com/harjotsgill/status/1886122316767379540">@harjotsgill</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/o1">o1</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/o3">o3</a>, <a href="https://simonwillison.net/tags/markdown">markdown</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/rag">rag</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/documentation">documentation</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Benedict Evans]]></title>
+        <id>https://simonwillison.net/2025/Feb/2/benedict-evans/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/2/benedict-evans/#atom-everything"/>
+        <updated>2025-02-02T14:37:54.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.ben-evans.com/benedictevans/2025/1/the-problem-with-better-models"><p>Part of the concept of ‘Disruption’ is that important new technologies tend to be bad at the things that matter to the previous generation of technology, but they do something else important instead. Asking if an LLM can do very specific and precise information retrieval might be like asking if an Apple II can match the uptime of a mainframe, or asking if you can build Photoshop inside Netscape. No, they can’t really do that, but that’s not the point and doesn’t mean they’re useless. They do something else, and that ‘something else’ matters more and pulls in all of the investment, innovation and company creation. Maybe, 20 years later, they can do the old thing too - maybe you can run a bank on PCs and build graphics software in a browser, eventually - but that’s not what matters at the beginning. They unlock something else. </p>
+<p>What is that ‘something else’ for generative AI, though? How do you think conceptually about places where that error rate is a feature, not a bug?</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.ben-evans.com/benedictevans/2025/1/the-problem-with-better-models">Benedict Evans</a>, Are better models better?</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/benedict-evans">benedict-evans</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Sam Altman]]></title>
         <id>https://simonwillison.net/2025/Feb/2/sam-altman/#atom-everything</id>

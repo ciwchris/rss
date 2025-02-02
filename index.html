@@ -31,6 +31,86 @@
       <article>
           <details>
             <summary>
+              OpenAI reasoning models: Advice on prompting
+              <span class="post-metadata">(3 min | 925 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/openai-reasoning-models-advice-on-prompting/#atom-everything>OpenAI reasoning models: Advice on prompting
+Developer messages are the new system messages: Starting with o1-2024-12-17, reasoning models support developer messages rather than system messages, to align with the chain of command behavior described in the model spec.
+This appears to be a purely aesthetic change made for consistency with their instruction hierarchy concept. As far as I can tell the old system prompts continue to work exactly as before - you&#x27;re encouraged to use the new developer message type but it has no impact on what actually happens.
+Since my LLM tool already bakes in a llm --system &quot;system prompt&quot; option which works across multiple different models from different providers I&#x27;m not going to rush to adopt this new language!
+Use delimiters for clarity: Use delimiters like markdown, XML tags, and section titles to clearly indicate distinct parts of the input, helping the model interpret different sections appropriately.
+Anthropic have been encouraging XML-ish delimiters for a while (I say -ish because there&#x27;s no requirement that the resulting prompt is valid XML). My files-to-prompt tool has a -c option which outputs Claude-style XML, and in my experiments this same option works great with o1 and o3 too:
+git clone https://github.com/tursodatabase/limbo
+cd limbo/bindings/python
+
+files-to-prompt . -c | llm -m o3-mini \
+  -o reasoning_effort high \
+  --system &#x27;Write a detailed README with extensive usage examples&#x27;
+
+
+
+
+Limit additional context in retrieval-augmented generation (RAG): When providing additional context or documents, include only the most relevant information to prevent the model from overcomplicating its response.
+This makes me thing that o1/o3 are not good models to implement RAG on at all - with RAG I like to be able to dump as much extra context into the prompt as possible and leave it to the models to figure out what&#x27;s relevant.
+Try zero shot first, then few shot if needed: Reasoning models often don&#x27;t need few-shot examples to produce good results, so try to write prompts without examples first. If you have more complex requirements for your desired output, it may help to include a few examples of inputs and desired outputs in your prompt. Just ensure that the examples align very closely with your prompt instructions, as discrepancies between the two may produce poor results.
+Providing examples remains the single most powerful prompting tip I know, so it&#x27;s interesting to see advice here to only switch to examples if zero-shot doesn&#x27;t work out.
+Be very specific about your end goal: In your instructions, try to give very specific parameters for a successful response, and encourage the model to keep reasoning and iterating until it matches your success criteria.
+This makes sense: reasoning models &quot;think&quot; until they reach a conclusion, so making the goal as unambiguous as possible leads to better results.
+Markdown formatting: Starting with o1-2024-12-17, reasoning models in the API will avoid generating responses with markdown formatting. To signal to the model when you do want markdown formatting in the response, include the string Formatting re-enabled on the first line of your developer message.
+This one was a real shock to me! I noticed that o3-mini was outputting • characters instead of Markdown * bullets and initially thought that was a bug.
+I first saw this while running this prompt against limbo/bindings/python using files-to-prompt:
+git clone https://github.com/tursodatabase/limbo
+cd limbo/bindings/python
+
+files-to-prompt . -c | llm -m o3-mini \
+  -o reasoning_effort high \
+  --system &#x27;Write a detailed README with extensive usage examples&#x27;
+
+Here&#x27;s the full result, which includes text like this (note the weird bullets):
+Features
+--------
+• High‑performance, in‑process database engine written in Rust  
+• SQLite‑compatible SQL interface  
+• Standard Python DB‑API 2.0–style connection and cursor objects
+
+I ran it again with this modified prompt:
+Formatting re-enabled. Write a detailed README with extensive usage examples.
+And this time got back proper Markdown, rendered in this Gist. That did a really good job, and included bulleted lists using this valid Markdown syntax instead:
+- **&#x60;make test&#x60;**: Run tests using pytest.
+- **&#x60;make lint&#x60;**: Run linters (via [ruff](https://github.com/astral-sh/ruff)).
+- **&#x60;make check-requirements&#x60;**: Validate that the &#x60;requirements.txt&#x60; files are in sync with &#x60;pyproject.toml&#x60;.
+- **&#x60;make compile-requirements&#x60;**: Compile the &#x60;requirements.txt&#x60; files using pip-tools.
+
+
+(Using LLMs like this to get me off the ground with under-documented libraries is a trick I use several times a week.)
+
+    
+Via @harjotsgill
+Tags: o1, openai, o3, markdown, ai, llms, prompt-engineering, generative-ai, inference-scaling, rag, ai-assisted-programming, documentation</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Benedict Evans
+              <span class="post-metadata">(1 min | 362 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/benedict-evans/#atom-everything>Part of the concept of ‘Disruption’ is that important new technologies tend to be bad at the things that matter to the previous generation of technology, but they do something else important instead. Asking if an LLM can do very specific and precise information retrieval might be like asking if an Apple II can match the uptime of a mainframe, or asking if you can build Photoshop inside Netscape. No, they can’t really do that, but that’s not the point and doesn’t mean they’re useless. They do something else, and that ‘something else’ matters more and pulls in all of the investment, innovation and company creation. Maybe, 20 years later, they can do the old thing too - maybe you can run a bank on PCs and build graphics software in a browser, eventually - but that’s not what matters at the beginning. They unlock something else. 
+What is that ‘something else’ for generative AI, though? How do you think conceptually about places where that error rate is a feature, not a bug?
+
+— Benedict Evans, Are better models better?
+Tags: benedict-evans, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Sam Altman
               <span class="post-metadata">(1 min | 242 words)</span> 
             </summary>
