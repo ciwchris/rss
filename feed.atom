@@ -2,10 +2,74 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-02-04T14:09:01.011Z</updated>
+    <updated>2025-02-04T21:08:31.482Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Animating Rick and Morty One Pixel at a Time]]></title>
+        <id>https://simonwillison.net/2025/Feb/4/animating-rick-and-morty-one-pixel-at-a-time/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/4/animating-rick-and-morty-one-pixel-at-a-time/#atom-everything"/>
+        <updated>2025-02-04T20:53:29.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://danielchasehooper.com/posts/code-animated-rick/">Animating Rick and Morty One Pixel at a Time</a></strong></p>
+Daniel Hooper says he spent 8 months working on the post, the culmination of which is an animation of Rick from Rick and Morty, implemented in 240 lines of GLSL - the OpenGL Shading Language which apparently has been directly supported by browsers for many years.</p>
+<p>The result is a comprehensive GLSL tutorial, complete with interactive examples of each of the steps used to generate the final animation which you can tinker with directly on the page. It feels a bit like Logo!</p>
+<p><img alt="Animated demo - as I edit the shader code Rick's half-drawn eye pupils move from side to side live with my edits" src="https://static.simonwillison.net/static/2025/rick-edit.gif" /></p>
+<p>Shaders work by running code for each pixel to return that pixel's color - in this case the <code>color_for_pixel()</code> function is wired up as the core logic of the shader.</p>
+<p>Here's <a href="https://gist.github.com/danielchasehooper/72da5d9c286e5e94fdfb8e82bea288cc">Daniel's code for the live shader editor</a> he built for this post. It looks like this is the function that does the most important work:</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">loadShader</span><span class="pl-kos">(</span><span class="pl-s1">shaderSource</span><span class="pl-kos">,</span> <span class="pl-s1">shaderType</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">shader</span> <span class="pl-c1">=</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">createShader</span><span class="pl-kos">(</span><span class="pl-s1">shaderType</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">shaderSource</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">,</span> <span class="pl-s1">shaderSource</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">compileShader</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">compiled</span> <span class="pl-c1">=</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">getShaderParameter</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">,</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-c1">COMPILE_STATUS</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">compiled</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-k">const</span> <span class="pl-s1">lastError</span> <span class="pl-c1">=</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">getShaderInfoLog</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">deleteShader</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">return</span> <span class="pl-s1">lastError</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-k">return</span> <span class="pl-s1">shader</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+
+<p>Where <code>gl</code> is a <code>canvas.getContext("webgl2")</code> <code>WebGL2RenderingContext</code> object, <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext">described by MDN here</a>.
+
+    <p><small></small>Via <a href="https://lobste.rs/s/ycbpnz/animating_rick_morty_one_pixel_at_time">lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/webgl">webgl</a>, <a href="https://simonwillison.net/tags/animation">animation</a>, <a href="https://simonwillison.net/tags/canvas">canvas</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dependabot now supports pnpm workspace catalogs (GA)]]></title>
+        <id>https://github.blog/changelog/2025-02-04-dependabot-now-supports-pnpm-workspace-catalogs-ga</id>
+        <link href="https://github.blog/changelog/2025-02-04-dependabot-now-supports-pnpm-workspace-catalogs-ga"/>
+        <updated>2025-02-04T18:00:50.000Z</updated>
+        <summary type="html"><![CDATA[Dependabot now supports pnpm workspace catalogs (GA)
+The post Dependabot now supports pnpm workspace catalogs (GA) appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a link blog]]></title>
+        <id>https://simonwillison.net/2025/Feb/4/build-a-link-blog/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/4/build-a-link-blog/#atom-everything"/>
+        <updated>2025-02-04T16:14:33.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://xuanwo.io/links/2025/01/link-blog/">Build a link blog</a></strong></p>
+Xuanwo started <a href="https://xuanwo.io/links/">a link blog</a> inspired by my article <a href="https://simonwillison.net/2024/Dec/22/link-blog/">My approach to running a link blog</a>, and in a delightful piece of recursion his first post is a link blog entry about my post about link blogging, following my tips on quoting liberally and including extra commentary.</p>
+<blockquote>
+<p>I decided to follow simon's approach to creating a link blog, where I can share interesting links I find on the internet along with my own comments and thoughts about them.</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=42933383">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Constitutional Classifiers: Defending against universal jailbreaks]]></title>
         <id>https://simonwillison.net/2025/Feb/3/constitutional-classifiers/#atom-everything</id>
@@ -2909,42 +2973,6 @@ The post Copilot Workspace Changelog (January 6, 2025) appeared first on The Git
 The post Closing down notice: Dependabot will no longer support Python version 3.8 appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting François Chollet]]></title>
-        <id>https://simonwillison.net/2025/Jan/6/francois-chollet/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/6/francois-chollet/#atom-everything"/>
-        <updated>2025-01-06T03:04:52.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://bsky.app/profile/fchollet.bsky.social/post/3les3izgdj22j"><p>I don't think people really appreciate how simple ARC-AGI-1 was, and what solving it really means.</p>
-<p>It was designed as the simplest, most basic assessment of fluid intelligence possible. Failure to pass signifies a near-total inability to adapt or problem-solve in unfamiliar situations.</p>
-<p>Passing it means your system exhibits non-zero fluid intelligence -- you're finally looking at something that isn't pure memorized skill. But it says rather little about how intelligent your system is, or how close to human intelligence it is.</p></blockquote>
-<p class="cite">&mdash; <a href="https://bsky.app/profile/fchollet.bsky.social/post/3les3izgdj22j">François Chollet</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/o1">o1</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/francois-chollet">francois-chollet</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[AI’s next leap requires intimate access to your digital life]]></title>
-        <id>https://simonwillison.net/2025/Jan/6/ais-next-leap/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/6/ais-next-leap/#atom-everything"/>
-        <updated>2025-01-06T03:04:44.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.washingtonpost.com/technology/2025/01/05/agents-ai-chatbots-google-mariner/">AI’s next leap requires intimate access to your digital life</a></strong></p>
-I'm quoted in this Washington Post story by Gerrit De Vynck about "agents" - which in this case are defined as AI systems that operate a computer system like a human might, for example <a href="https://simonwillison.net/2024/Oct/22/computer-use/">Anthropic's Computer Use demo</a>.</p>
-<blockquote>
-<p>“The problem is that language models as a technology are inherently gullible,” said Simon Willison, a software developer who has tested many AI tools, including Anthropic’s technology for agents. “How do you unleash that on regular human beings without enormous problems coming up?”</p>
-</blockquote>
-<p>I got the closing quote too:</p>
-<blockquote>
-<p>“If you ignore the safety and security and privacy side of things, this stuff is so exciting, the potential is amazing,” Willison said. “I just don’t see how we get past these problems.”</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/washington-post">washington-post</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/privacy">privacy</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/prompt-injection">prompt-injection</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
