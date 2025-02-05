@@ -25,9 +25,119 @@
 
   <ul>
     <li>
+      <time>2025-02-05</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Introducing the “Sustainability” category on GitHub Marketplace
+              <span class="post-metadata">(8 min | 2252 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-05-introducing-the-sustainability-category-on-github-marketplace>Introducing the &quot;Sustainability&quot; category on GitHub Marketplace
+The post Introducing the “Sustainability” category on GitHub Marketplace appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              o3-mini is really good at writing internal documentation
+              <span class="post-metadata">(2 min | 570 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/5/o3-mini-documentation/#atom-everything>o3-mini is really good at writing internal documentation
+extensive hand-written documentation for that, but I thought it would be interesting to see if I could derive any insights from running an LLM against the codebase.
+o3-mini has an input limit of 200,000 tokens. I used LLM and my files-to-prompt tool to generate the documentation like this:
+cd /tmp
+git clone https://github.com/simonw/datasette
+cd datasette
+files-to-prompt datasette -e py -c | \
+  llm -m o3-mini -s \
+  &#x27;write extensive documentation for how the permissions system works, as markdown&#x27;
+
+
+The files-to-prompt command is fed the datasette subdirectory, which contains just the source code for the application - omitting tests (in tests/) and documentation (in docs/).
+The -e py option causes it to only include files with a .py extension - skipping all of the HTML and JavaScript files in that hierarchy.
+The -c option causes it to output Claude&#x27;s XML-ish format - a format that works great with other LLMs too.
+You can see the output of that command in this Gist.
+Then I pipe that result into LLM, requesting the o3-mini OpenAI model and passing the following system prompt:
+write extensive documentation for how the permissions system works, as markdown
+Specifically requesting Markdown is important.
+The prompt used 99,348 input tokens and produced 3,118 output tokens (320 of those were invisible reasoning tokens). That&#x27;s a cost of 12.3 cents.
+Honestly, the results are fantastic. I had to double-check that I hadn&#x27;t accidentally fed in the documentation by mistake.
+(It&#x27;s possible that the model is picking up additional information about Datasette in its training set, but I&#x27;ve seen similar high quality results from other, newer libraries so I don&#x27;t think that&#x27;s a significant factor.)
+In this case I already had extensive written documentation of my own, but this was still a useful refresher to help confirm that the code matched my mental model of how everything works.
+Documentation of project internals as a category is notorious for going out of date. Having tricks like this to derive usable how-it-works documentation from existing codebases in just a few seconds and at a cost of a few cents is wildly valuable.
+
+
+    
+Tags: llm, openai, o3, ai, llms, datasette, generative-ai, documentation, ai-assisted-programming, inference-scaling</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Ambsheets: Spreadsheets for exploring scenarios
+              <span class="post-metadata">(1 min | 306 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/5/ambsheets/#atom-everything>Ambsheets: Spreadsheets for exploring scenarios
+Here the cell for &quot;Car&quot; contains {500, 1200} and the cell for &quot;Apartment&quot;  contains {2800, 3700, 5500}, resulting in a &quot;Total&quot; cell with six different values. Hovering over a calculated highlights its source values and a side panel shows a table of calculated results against those different combinations.
+
+Always interesting to see neat ideas like this presented on top of UIs that haven&#x27;t had a significant upgrade in a very long time.
+
+    
+Via Hacker News
+Tags: spreadsheets, geoffrey-litt, ui, ux</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              AI-generated slop is already in your public library
+              <span class="post-metadata">(1 min | 334 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/5/ai-generated-slop-is-already-in-your-public-library/#atom-everything>AI-generated slop is already in your public library
+Hoopla system to offer ebooks to their patrons sign agreements where they pay a license fee for anything selected by one of their members that&#x27;s in the Hoopla catalog.
+The Hoopla catalog is increasingly filling up with junk AI slop ebooks like &quot;Fatty Liver Diet Cookbook: 2000 Days of Simple and Flavorful Recipes for a Revitalized Liver&quot;, which then cost libraries money if someone checks them out.
+Apparently librarians already have a term for this kind of low-quality, low effort content that predates it being written by LLMs: vendor slurry.
+Libraries stand against censorship, making this a difficult issue to address through removing those listings. 
+Sarah Lamdan, deputy director of the American Library Association says:
+If library visitors choose to read AI eBooks, they should do so with the knowledge that the books are AI-generated.
+Via Emily Bell
+Tags: slop, ai, ethics, libraries</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-02-04</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              GitHub Enterprise Cloud Data Residency in Australia is generally available
+              <span class="post-metadata">(7 min | 2112 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-04-github-enterprise-cloud-data-residency-in-australia-is-generally-available>GitHub Enterprise Cloud Data Residency in Australia is generally available
+The post GitHub Enterprise Cloud Data Residency in Australia is generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -174,6 +284,51 @@ Tags: ibm, history, ai, ethics</a>
               <a target="_blank" href=https://www.oneusefulthing.org/p/the-end-of-search-the-beginning-of>The first narrow agents are here</a>
             </div>
             <!-- <p class="post-source">One Useful Thing</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Feb 4th, 2025 - Introducing Fair Pricing
+              <span class="post-metadata">(4 min | 1342 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://kagifeedback.org/d/6155-feb-4th-2025-introducing-fair-pricing/1>Use it or keep it
+
+In months where you don&#x27;t utilize any searches on your plan, we will automatically apply a full credit to your account for that month. This credit will be applied to your next billing cycle, effectively covering your subsequent month&#x27;s subscription at no additional cost.
+We have implemented this for the simple reason of being kind to our users. We understand some months you may forget to use Kagi or do not need it, so when you do, you can rest assured that we haven’t charged you for that.
+This change is effective immediately,  no forms to fill, no requests to make.
+Improvements and bug fixes
+Search
+Elevated ranking adjustment can be too aggressive #4986 @jose-elias-alvarez
+Allow &#x27;Search Options Always Open&quot; on mobile! #5999 @igak_revol 
+Images footer is visually inconsistent and other fixes #5489 @Keli
+Option to disable snaps #6030 @Boomkop3
+Duplicate YouTube Results in Video Search with &amp;pp links #6130 @Replica6
+When Kagi is in verbatim mode, make it more obvious #5871 @tome
+When answering my question, Quick Answer text exceeds the screen real estate #5520 @santiii
+Videos: duplicates in result when url slightly different #5827 @Thibaultmol
+No amount of current or date in billing #6153 @jainkila
+ 
+
+Assistant
+Assistant switches model on edit #4685 @Value7609
+Info panel not visible for new Assistant UI #6143 @azdanov
+Add lenses to Custom Assistant feature (when based on Research) #3338 @mchsxxpryr
+Assistant is repeating itself for no apparent reason #5802 @agustinfitipaldi
+
+
+Kagi on Socials
+Here is this week&#x27;s featured social media post.
+
+Tag our accounts or use #Kagi when mentioning us in your posts!
+Kagi in the News
+
+Fast Company just published an article highlighting how Kagi is redefining search by prioritising users over ads and clutter. It&#x27;s a good in-depth read, perfect for sharing with anyone curious about a better way to search!
+(define) scrappy: Having an aggressive spirit; inclined to fight or strive. (informal)
+Yep, sounds about right!</a>
+            </div>
+            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
           </details>
       </article>
       <article>
@@ -3421,88 +3576,6 @@ Tags: uv, charlie-marsh, python</a>
 Tags: ai-assisted-programming, llms, ai, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-01-06</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              The future of htmx
-              <span class="post-metadata">(1 min | 354 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/6/the-future-of-htmx/#atom-everything>The future of htmx
-htmx: stay stable, add few features and try to earn the same reputation for longevity that jQuery has (estimated to be used on 75.3% of websites).
-In particular, we want to emulate these technical characteristics of jQuery that make it such a low-cost, high-value addition to the toolkits of web developers. Alex has discussed &quot;Building The 100 Year Web Service&quot; and we want htmx to be a useful tool for exactly that use case.
-Websites that are built with jQuery stay online for a very long time, and websites built with htmx should be capable of the same (or better).
-Going forward, htmx will be developed with its existing users in mind. [...]
-People shouldn’t feel pressure to upgrade htmx over time unless there are specific bugs that they want fixed, and they should feel comfortable that the htmx that they write in 2025 will look very similar to htmx they write in 2035 and beyond.
-Tags: jquery, htmx</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Stimulation Clicker
-              <span class="post-metadata">(1 min | 237 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/6/stimulation-clicker/#atom-everything>Stimulation Clicker
-Neal Agarwal just created the worst webpage. It&#x27;s extraordinary. As far as I can tell all of the audio was created specially for this project, so absolutely listen in to the true crime podcast and other delightfully weird little details.
-Works best on a laptop - on mobile I ran into some bugs.
-
-    
-Via @neal.fun
-Tags: art, games</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              You can now disable comments on GitHub gists
-              <span class="post-metadata">(7 min | 1999 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-01-06-you-can-now-disable-comments-on-github-gists>You can now disable comments on GitHub gists
-The post You can now disable comments on GitHub gists appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot Workspace Changelog (January 6, 2025)
-              <span class="post-metadata">(7 min | 2068 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-01-06-copilot-workspace-changelog-january-6-2025>Copilot Workspace Changelog (January 6, 2025)
-The post Copilot Workspace Changelog (January 6, 2025) appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Closing down notice: Dependabot will no longer support Python version 3.8
-              <span class="post-metadata">(10 min | 2914 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-01-06-closing-down-notice-dependabot-will-no-longer-support-python-version-3-8>Closing down notice: Dependabot will no longer support Python version 3.8
-The post Closing down notice: Dependabot will no longer support Python version 3.8 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
