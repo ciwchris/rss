@@ -31,6 +31,138 @@
       <article>
           <details>
             <summary>
+              S1: The $6 R1 Competitor?
+              <span class="post-metadata">(2 min | 503 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/5/s1-the-6-r1-competitor/#atom-everything>S1: The $6 R1 Competitor?
+s1: Simple test-time scaling, which describes an inference-scaling model fine-tuned on top of Qwen2.5-32B-Instruct for just $6 - the cost for 26 minutes on 16 NVIDIA H100 GPUs.
+Tim highlight the most exciting result:
+After sifting their dataset of 56K examples down to just the best 1K, they found that the core 1K is all that&#x27;s needed to achieve o1-preview performance on a 32B model.
+The paper describes a technique called &quot;Budget forcing&quot;:
+To enforce a minimum, we suppress the generation
+of the end-of-thinking token delimiter and optionally append
+the string “Wait” to the model’s current reasoning trace to
+encourage the model to reflect on its current generation
+That&#x27;s the same trick Theia Vogel described a few weeks ago.
+Here&#x27;s the s1-32B model on Hugging Face. I found a GGUF version of it at brittlewis12/s1-32B-GGUF, which I ran using Ollama like so:
+ollama run hf.co/brittlewis12/s1-32B-GGUF:Q4_0
+
+I also found those 1,000 samples on Hugging Face in the simplescaling/s1K data repository there.
+I used DuckDB to convert the parquet file to CSV (and turn one VARCHAR[] column into JSON):
+COPY (
+    SELECT 
+      solution,
+      question,
+      cot_type,
+      source_type,
+      metadata,
+      cot,
+      json_array(thinking_trajectories) as thinking_trajectories,
+      attempt
+    FROM &#x27;s1k-00001.parquet&#x27;
+) TO &#x27;output.csv&#x27; (HEADER, DELIMITER &#x27;,&#x27;);
+
+Then I loaded that CSV into sqlite-utils so I could use the convert command to turn a Python data structure into JSON using json.dumps() and eval():
+# Load into SQLite
+sqlite-utils insert s1k.db s1k output.csv --csv
+# Fix that column
+sqlite-utils convert s1k.db s1u metadata &#x27;json.dumps(eval(value))&#x27; --import json
+# Dump that back out to CSV
+sqlite-utils rows s1k.db s1k --csv &gt; s1k.csv
+
+Here&#x27;s that CSV in a Gist, which meas I can load it into Datasette Lite.
+
+It really is a tiny amount of training data. It&#x27;s mostly math and science, but there are also 15 cryptic crossword examples.
+
+
+    
+Tags: duckdb, datasette-lite, inference-scaling, ai, ollama, llms, datasette, generative-ai, qwen</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Google Gemini 2.0 Flash is now available to all Copilot users in public preview
+              <span class="post-metadata">(7 min | 2105 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-05-google-gemini-2-0-flash-is-now-available-to-all-copilot-users-in-public-preview>Google Gemini 2.0 Flash is now available to all Copilot users in public preview
+The post Google Gemini 2.0 Flash is now available to all Copilot users in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependabot no longer supports Python 3.8
+              <span class="post-metadata">(7 min | 2125 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-05-dependabot-no-longer-supports-python-3-8>Dependabot no longer supports Python 3.8
+The post Dependabot no longer supports Python 3.8 appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              View and iterate on generated files directly within Copilot chat (Preview)
+              <span class="post-metadata">(8 min | 2333 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-05-view-and-iterate-on-generated-files-directly-within-copilot-chat-preview>“View and iterate on generated files directly within Copilot chat (Preview)”
+The post View and iterate on generated files directly within Copilot chat (Preview) appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Gemini 2.0 is now available to everyone
+              <span class="post-metadata">(1 min | 426 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/5/gemini-2/#atom-everything>Gemini 2.0 is now available to everyone
+Gemini 2.0 Pro (Experimental) is Google&#x27;s &quot;best model yet for coding performance and complex prompts&quot; - currently available as a free preview.
+Gemini 2.0 Flash is now generally available.
+Gemini 2.0 Flash-Lite looks particularly interesting:
+We’ve gotten a lot of positive feedback on the price and speed of 1.5 Flash. We wanted to keep improving quality, while still maintaining cost and speed. So today, we’re introducing 2.0 Flash-Lite, a new model that has better quality than 1.5 Flash, at the same speed and cost. It outperforms 1.5 Flash on the majority of benchmarks.
+That means Gemini 2.0 Flash-Lite is priced at 7.5c/million input tokens and 30c/million output tokens - half the price of OpenAI&#x27;s GPT-4o mini (15c/60c).
+Gemini 2.0 Flash isn&#x27;t much more expensive:  10c/million for text/image input, 70c/million for audio input, 40c/million for output. Again, cheaper than GPT-4o mini.
+I pushed a new LLM plugin release, llm-gemini 0.10, adding support for the three new models:
+llm install -U llm-gemini
+llm keys set gemini
+# paste API key here
+llm -m gemini-2.0-flash &quot;impress me&quot;
+llm -m gemini-2.0-flash-lite-preview-02-05 &quot;impress me&quot;
+llm -m gemini-2.0-pro-exp-02-05 &quot;impress me&quot;
+
+Here&#x27;s the output for those three prompts.
+I ran Generate an SVG of a pelican riding a bicycle through the three new models. Here are the results, cheapest to most expensive:
+gemini-2.0-flash-lite-preview-02-05
+
+gemini-2.0-flash
+
+gemini-2.0-pro-exp-02-05
+
+Full transcripts here.
+
+
+    
+Tags: gemini, llm, google, generative-ai, llm-pricing, ai, llms, pelican-riding-a-bicycle</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Introducing the “Sustainability” category on GitHub Marketplace
               <span class="post-metadata">(8 min | 2252 words)</span> 
             </summary>
@@ -118,6 +250,19 @@ Tags: slop, ai, ethics, libraries</a>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
+      <article>
+          <details>
+            <summary>
+              Using Azure OpenAI Chat Completion with data source and Function Calling
+              <span class="post-metadata">(26 min | 7897 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/using-azure-openai-chat-completion-with-data-source-and-function-calling/>Azure OpenAI Chat Completion with data source provides powerful capabilities for integrating conversational AI into applications. However, using a data source and function calling in a single request is not supported yet. When both features are enabled, function calling is ignored, and only the data source is used. This presents a challenge when retrieving information, […]
+The post Using Azure OpenAI Chat Completion with data source and Function Calling appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
 
       </section>
     </li>
@@ -200,6 +345,19 @@ Via Hacker News
 Tags: blogging</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Semantic Kernel Roadmap H1 2025: Accelerating Agents, Processes, and Integration
+              <span class="post-metadata">(25 min | 7400 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-roadmap-h1-2025-accelerating-agents-processes-and-integration/>As we move into the first half of 2025, I’m excited to share our ambitious roadmap that we hope will enable you to build even more sophisticated AI applications with Semantic Kernel. Agent Framework 1.0 By the end of Q1 2025, the SK Agent Framework will transition from preview to general availability (GA). This milestone […]
+The post Semantic Kernel Roadmap H1 2025: Accelerating Agents, Processes, and Integration appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
           </details>
       </article>
 
