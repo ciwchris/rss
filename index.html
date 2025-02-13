@@ -31,6 +31,91 @@
       <article>
           <details>
             <summary>
+              shot-scraper 1.6 with support for HTTP Archives
+              <span class="post-metadata">(1 min | 449 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/13/shot-scraper/#atom-everything>shot-scraper 1.6 with support for HTTP Archives
+shot-scraper CLI tool for taking screenshots and scraping web pages.
+The big new feature is HTTP Archive (HAR) support. The new shot-scraper har command can now create an archive of a page and all of its dependents like this:
+shot-scraper har https://datasette.io/
+
+This produces a datasette-io.har file (currently 163KB) which is JSON representing the full set of requests used to render that page. Here&#x27;s a copy of that file. You can visualize that here using ericduran.github.io/chromeHAR.
+
+That JSON includes full copies of all of the responses, base64 encoded if they are binary files such as images.
+You can add the --zip flag to instead get a datasette-io.har.zip file, containing JSON data in har.har but with the response bodies saved as separate files in that archive.
+The shot-scraper multi command lets you run shot-scraper against multiple URLs in sequence, specified using a YAML file. That command now takes a --har option (or --har-zip or --har-file name-of-file), described in the documentation, which will produce a HAR at the same time as taking the screenshots.
+Shots are usually defined in YAML that looks like this:
+- output: example.com.png
+  url: http://www.example.com/
+- output: w3c.org.png
+  url: https://www.w3.org/
+
+
+You can now omit the output: keys and generate a HAR file without taking any screenshots at all:
+- url: http://www.example.com/
+- url: https://www.w3.org/
+
+
+Run like this:
+shot-scraper multi shots.yml --har
+
+Which outputs:
+Skipping screenshot of &#x27;https://example.com/&#x27;
+Skipping screenshot of &#x27;https://datasette.io/&#x27;
+Wrote to HAR file: trace.har
+
+shot-scraper is built on top of Playwright, and the new features use the browser.new_context(record_har_path&#x3D;...) parameter.
+
+
+    
+Tags: projects, shot-scraper, playwright, python</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot for Xcode Chat now in public preview
+              <span class="post-metadata">(7 min | 2165 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-13-github-copilot-for-xcode-chat-now-in-public-preview>GitHub Copilot for Xcode Chat now in public preview
+The post GitHub Copilot for Xcode Chat now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot code completions now in public preview for Eclipse
+              <span class="post-metadata">(9 min | 2634 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-13-github-copilot-code-completions-now-in-public-preview-for-eclipse>GitHub Copilot code completions now in public preview for Eclipse
+The post GitHub Copilot code completions now in public preview for Eclipse appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependabot version updates now support the bun package manager – [GA]
+              <span class="post-metadata">(9 min | 2718 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-13-dependabot-version-updates-now-support-the-bun-package-manager-ga>Dependabot version updates now support the bun package manager - [GA]
+The post Dependabot version updates now support the bun package manager – [GA] appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               python-build-standalone now has Python 3.14.0a5
               <span class="post-metadata">(2 min | 538 words)</span> 
             </summary>
@@ -1186,6 +1271,32 @@ Tags: gemini, llm, google, generative-ai, llm-pricing, ai, llms, pelican-riding-
 The post Introducing the “Sustainability” category on GitHub Marketplace appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              13th Feb, 2025 - Redefining Privacy in Search
+              <span class="post-metadata">(7 min | 2102 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://kagifeedback.org/d/6172-13th-feb-2025-redefining-privacy-in-search/1>Announcing Kagi Privacy Pass
+
+Kagi now supports Privacy Pass, an IETF-standardized protocol ensuring your searches are technically unlinkable to your account.
+ 
+
+Read all about why this matters and the details of implementation in our  announcement blog post!
+Privacy Pass support is provided:
+Natively for Orion browser users (macOS/iOS/iPadOS). On iOS, make sure to have version 1.3.17 and above (expected to roll out globally today) and update your macOS Orion to version 0.99.131.
+Natively through Kagi App for Android (make sure to have version 0.29, expected to roll out globally today)
+Browser extension for Firefox or Chrome
+ 
+
+A few important details:
+Privacy Pass implementation is fully open-sourced for transparency and community collaboration
+Kagi Privacy Pass is available for the Profe…</a>
+            </div>
+            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
           </details>
       </article>
       <article>

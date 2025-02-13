@@ -2,10 +2,84 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-02-13T14:09:29.846Z</updated>
+    <updated>2025-02-13T21:08:39.213Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[shot-scraper 1.6 with support for HTTP Archives]]></title>
+        <id>https://simonwillison.net/2025/Feb/13/shot-scraper/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/13/shot-scraper/#atom-everything"/>
+        <updated>2025-02-13T21:02:37.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/shot-scraper/releases/tag/1.6">shot-scraper 1.6 with support for HTTP Archives</a></strong></p>
+New release of my <a href="https://shot-scraper.datasette.io/">shot-scraper</a> CLI tool for taking screenshots and scraping web pages.</p>
+<p>The big new feature is <a href="https://en.wikipedia.org/wiki/HAR_(file_format)">HTTP Archive (HAR)</a> support. The new <a href="https://shot-scraper.datasette.io/en/stable/har.html">shot-scraper har command</a> can now create an archive of a page and all of its dependents like this:</p>
+<pre><code>shot-scraper har https://datasette.io/
+</code></pre>
+<p>This produces a <code>datasette-io.har</code> file (currently 163KB) which is JSON representing the full set of requests used to render that page. Here's <a href="https://gist.github.com/simonw/b1fdf434e460814efdb89c95c354f794">a copy of that file</a>. You can visualize that <a href="https://ericduran.github.io/chromeHAR/?url=https://gist.githubusercontent.com/simonw/b1fdf434e460814efdb89c95c354f794/raw/924c1eb12b940ff02cefa2cc068f23c9d3cc5895/datasette.har.json">here using ericduran.github.io/chromeHAR</a>.</p>
+<p><img alt="The HAR viewer shows a line for each of the loaded resources, with options to view timing information" src="https://static.simonwillison.net/static/2025/har-viewer.jpg" /></p>
+<p>That JSON includes full copies of all of the responses, base64 encoded if they are binary files such as images.</p>
+<p>You can add the <code>--zip</code> flag to instead get a <code>datasette-io.har.zip</code> file, containing JSON data in <code>har.har</code> but with the response bodies saved as separate files in that archive.</p>
+<p>The <code>shot-scraper multi</code> command lets you run <code>shot-scraper</code> against multiple URLs in sequence, specified using a YAML file. That command now takes a <code>--har</code> option (or <code>--har-zip</code> or <code>--har-file name-of-file)</code>, <a href="https://shot-scraper.datasette.io/en/stable/multi.html#recording-to-an-http-archive">described in the documentation</a>, which will produce a HAR at the same time as taking the screenshots.</p>
+<p>Shots are usually defined in YAML that looks like this:</p>
+<div class="highlight highlight-source-yaml"><pre>- <span class="pl-ent">output</span>: <span class="pl-s">example.com.png</span>
+  <span class="pl-ent">url</span>: <span class="pl-s">http://www.example.com/</span>
+- <span class="pl-ent">output</span>: <span class="pl-s">w3c.org.png</span>
+  <span class="pl-ent">url</span>: <span class="pl-s">https://www.w3.org/</span></pre></div>
+
+<p>You can now omit the <code>output:</code> keys and generate a HAR file without taking any screenshots at all:</p>
+<div class="highlight highlight-source-yaml"><pre>- <span class="pl-ent">url</span>: <span class="pl-s">http://www.example.com/</span>
+- <span class="pl-ent">url</span>: <span class="pl-s">https://www.w3.org/</span></pre></div>
+
+<p>Run like this:</p>
+<pre><code>shot-scraper multi shots.yml --har
+</code></pre>
+<p>Which outputs:</p>
+<pre><code>Skipping screenshot of 'https://example.com/'
+Skipping screenshot of 'https://datasette.io/'
+Wrote to HAR file: trace.har
+</code></pre>
+<p><code>shot-scraper</code> is built on top of Playwright, and the new features use the <a href="https://playwright.dev/python/docs/next/api/class-browser#browser-new-context-option-record-har-path">browser.new_context(record_har_path=...)</a> parameter.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/shot-scraper">shot-scraper</a>, <a href="https://simonwillison.net/tags/playwright">playwright</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot for Xcode Chat now in public preview]]></title>
+        <id>https://github.blog/changelog/2025-02-13-github-copilot-for-xcode-chat-now-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-02-13-github-copilot-for-xcode-chat-now-in-public-preview"/>
+        <updated>2025-02-13T18:13:32.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Copilot for Xcode Chat now in public preview
+The post GitHub Copilot for Xcode Chat now in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot code completions now in public preview for Eclipse]]></title>
+        <id>https://github.blog/changelog/2025-02-13-github-copilot-code-completions-now-in-public-preview-for-eclipse</id>
+        <link href="https://github.blog/changelog/2025-02-13-github-copilot-code-completions-now-in-public-preview-for-eclipse"/>
+        <updated>2025-02-13T18:12:20.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Copilot code completions now in public preview for Eclipse
+The post GitHub Copilot code completions now in public preview for Eclipse appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dependabot version updates now support the bun package manager – [GA]]]></title>
+        <id>https://github.blog/changelog/2025-02-13-dependabot-version-updates-now-support-the-bun-package-manager-ga</id>
+        <link href="https://github.blog/changelog/2025-02-13-dependabot-version-updates-now-support-the-bun-package-manager-ga"/>
+        <updated>2025-02-13T17:05:32.000Z</updated>
+        <summary type="html"><![CDATA[Dependabot version updates now support the bun package manager - [GA]
+The post Dependabot version updates now support the bun package manager – [GA] appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[python-build-standalone now has Python 3.14.0a5]]></title>
         <id>https://simonwillison.net/2025/Feb/13/python-3140a5/#atom-everything</id>
@@ -927,6 +1001,30 @@ llm -m gemini-2.0-pro-exp-02-05 "impress me"
 The post Introducing the “Sustainability” category on GitHub Marketplace appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[13th Feb, 2025 - Redefining Privacy in Search]]></title>
+        <id>https://kagifeedback.org/d/6172-13th-feb-2025-redefining-privacy-in-search/1</id>
+        <link href="https://kagifeedback.org/d/6172-13th-feb-2025-redefining-privacy-in-search/1"/>
+        <updated>2025-02-05T10:44:53.000Z</updated>
+        <summary type="html"><![CDATA[Announcing Kagi Privacy Pass
+
+Kagi now supports Privacy Pass, an IETF-standardized protocol ensuring your searches are technically unlinkable to your account.
+ 
+
+Read all about why this matters and the details of implementation in our  announcement blog post!
+Privacy Pass support is provided:
+Natively for Orion browser users (macOS/iOS/iPadOS). On iOS, make sure to have version 1.3.17 and above (expected to roll out globally today) and update your macOS Orion to version 0.99.131.
+Natively through Kagi App for Android (make sure to have version 0.29, expected to roll out globally today)
+Browser extension for Firefox or Chrome
+ 
+
+A few important details:
+Privacy Pass implementation is fully open-sourced for transparency and community collaboration
+Kagi Privacy Pass is available for the Profe…]]></summary>
+        <author>
+            <name>Activity in the release-notes tag</name>
         </author>
     </entry>
     <entry>
