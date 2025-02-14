@@ -25,9 +25,126 @@
 
   <ul>
     <li>
+      <time>2025-02-14</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Verify email address to secure Enterprise Managed User accounts
+              <span class="post-metadata">(7 min | 2144 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-14-verify-email-address-to-secure-enterprise-managed-user-accounts>Verify email address to secure Enterprise Managed User accounts
+The post Verify email address to secure Enterprise Managed User accounts appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              files-to-prompt 0.5
+              <span class="post-metadata">(2 min | 612 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/14/files-to-prompt/#atom-everything>files-to-prompt 0.5
+files-to-prompt tool (originally built using Claude 3 Opus back in April) had been accumulating a bunch of issues and PRs - I finally got around to spending some time with it and pushed a fresh release:
+New -n/--line-numbers flag for including line numbers in the output. Thanks, Dan Clayton. #38
+Fix for utf-8 handling on Windows. Thanks, David Jarman. #36
+--ignore patterns are now matched against directory names as well as file names, unless you pass the new --ignore-files-only flag. Thanks, Nick Powell. #30
+I use this tool myself on an almost daily basis - it&#x27;s fantastic for quickly answering questions about code. Recently I&#x27;ve been plugging it into Gemini 2.0 with its 2 million token context length, running recipes like this one:
+git clone https://github.com/bytecodealliance/componentize-py
+cd componentize-py
+files-to-prompt . -c | llm -m gemini-2.0-pro-exp-02-05 \
+  -s &#x27;How does this work? Does it include a python compiler or AST trick of some sort?&#x27;
+
+I ran that question against the bytecodealliance/componentize-py repo - which provides a tool for turning Python code into compiled WASM - and got this really useful answer.
+Here&#x27;s another example. I decided to have o3-mini review how Datasette handles concurrent SQLite connections from async Python code - so I ran this:
+git clone https://github.com/simonw/datasette
+cd datasette/datasette
+files-to-prompt database.py utils/__init__.py -c | \
+  llm -m o3-mini -o reasoning_effort high \
+  -s &#x27;Output in markdown a detailed analysis of how this code handles the challenge of running SQLite queries from a Python asyncio application. Explain how it works in the first section, then explore the pros and cons of this design. In a final section propose alternative mechanisms that might work better.&#x27;
+
+Here&#x27;s the result. It did an extremely good job of explaining how my code works - despite being fed just the Python and none of the other documentation. Then it made some solid recommendations for potential alternatives.
+I added a couple of follow-up questions (using llm -c) which resulted in a full working prototype of an alternative threadpool mechanism, plus some benchmarks.
+One final example: I decided to see if there were any undocumented features in Litestream, so I checked out the repo and ran a prompt against just the .go files in that project:
+git clone https://github.com/benbjohnson/litestream
+cd litestream
+files-to-prompt . -e go -c | llm -m o3-mini \
+  -s &#x27;Write extensive user documentation for this project in markdown&#x27;
+
+Once again, o3-mini provided a really impressively detailed set of unofficial documentation derived purely from reading the source.
+
+
+    
+Tags: projects, llms, gemini, llm, ai-assisted-programming, generative-ai, ai, webassembly, python, async, datasette, sqlite, litestream</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How to add a directory to your PATH
+              <span class="post-metadata">(1 min | 386 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/14/how-to-add-a-directory-to-your-path/#atom-everything>How to add a directory to your PATH
+Classic Julia Evans piece here, answering a question which you might assume is obvious but very much isn&#x27;t.
+Plenty of useful tips in here, plus the best explanation I&#x27;ve ever seen of the three different Bash configuration options:
+Bash has three possible config files: ~/.bashrc, ~/.bash_profile, and ~/.profile.
+If you&#x27;re not sure which one your system is set up to use, I&#x27;d recommend testing this way:
+add echo hi there to your ~/.bashrc
+Restart your terminal
+If you see &quot;hi there&quot;, that means ~/.bashrc is being used! Hooray!
+Otherwise remove it and try the same thing with ~/.bash_profile
+You can also try ~/.profile if the first two options don&#x27;t work.
+This article also reminded me to try which -a again, which gave me this confusing result for datasette:
+% which -a datasette
+/opt/homebrew/Caskroom/miniconda/base/bin/datasette
+/Users/simon/.local/bin/datasette
+/Users/simon/.local/bin/datasette
+
+Why is the second path in there twice? I figured out how to use rg to search just the dot-files in my home directory:
+rg local/bin -g &#x27;/.*&#x27; --max-depth 1
+
+And found that I have both a .zshrc and .zprofile file that are adding that to my path:
+.zshrc.backup
+4:export PATH&#x3D;&quot;$PATH:/Users/simon/.local/bin&quot;
+
+.zprofile
+5:export PATH&#x3D;&quot;$PATH:/Users/simon/.local/bin&quot;
+
+.zshrc
+7:export PATH&#x3D;&quot;$PATH:/Users/simon/.local/bin&quot;
+
+Tags: julia-evans, zsh, bash, ripgrep</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-02-13</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Repositories: Ruleset history, import and export are generally available
+              <span class="post-metadata">(7 min | 2144 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-13-repositories-ruleset-history-import-and-export-are-generally-available>Repositories: Ruleset history, import and export are generally available
+The post Repositories: Ruleset history, import and export are generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4035,90 +4152,6 @@ The post Linux arm64 hosted runners now available for free in public repositorie
 
 — Alex Albert, Anthropic
 Tags: alex-albert, prompt-caching, anthropic, claude, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              100x Defect Tolerance: How Cerebras Solved the Yield Problem
-              <span class="post-metadata">(1 min | 394 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/16/cerebras-yield-problem/#atom-everything>100x Defect Tolerance: How Cerebras Solved the Yield Problem
-The key idea here is core redundancy: designing a chip such that if there are defects the end-product is still useful. This has been a technique for decades:
-For example in 2006 Intel released the Intel Core Duo – a chip with two CPU cores. If one core was faulty, it was disabled and the product was sold as an Intel Core Solo. Nvidia, AMD, and others all embraced this core-level redundancy in the coming years.
-Modern GPUs are deliberately designed with redundant cores: the H100 needs 132 but the wafer contains 144, so up to 12 can be defective without the chip failing.
-Cerebras designed their monster (look at the size of this thing) with absolutely tiny cores: &quot;approximately 0.05mm2&quot; - with the whole chip needing 900,000 enabled cores out of the 970,000 total. This allows 93% of the silicon area to stay active in the finished chip, a notably high proportion.
-
-    
-Via Hacker News
-Tags: hardware, cerebras, ai, gpus</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-01-15</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Copilot Users Can Ask About A Failed Actions Job [GA]
-              <span class="post-metadata">(8 min | 2326 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-01-15-copilot-users-can-ask-about-a-failed-actions-job-ga>Copilot Users Can Ask About A Failed Actions Job [GA]
-The post Copilot Users Can Ask About A Failed Actions Job [GA] appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Phi-4 is now available in GitHub Models (GA)
-              <span class="post-metadata">(8 min | 2380 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-01-15-phi-4-is-now-available-in-github-models-ga>Phi-4 is now available in GitHub Models (GA)
-The post Phi-4 is now available in GitHub Models (GA) appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Actions: Ubuntu 20 runner image brownout dates and other breaking changes
-              <span class="post-metadata">(8 min | 2422 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-01-15-github-actions-ubuntu-20-runner-image-brownout-dates-and-other-breaking-changes>GitHub Actions: Ubuntu 20 runner image brownout dates and other breaking changes
-The post GitHub Actions: Ubuntu 20 runner image brownout dates and other breaking changes appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Geoffrey Litt
-              <span class="post-metadata">(1 min | 289 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/15/geoffrey-litt/#atom-everything>Today&#x27;s software ecosystem evolved around a central assumption that code is expensive, so it makes sense to centrally develop and then distribute at low marginal cost.
-If code becomes 100x cheaper, the choices no longer make sense! Build-buy tradeoffs often flip.
-The idea of an &quot;app&quot;—a hermetically sealed bundle of functionality built by a team trying to anticipate your needs—will no longer be as relevant.
-We&#x27;ll want looser clusters, amenable to change at the edges. Everyone owns their tools, rather than all of us renting cloned ones.
-
-— Geoffrey Litt
-Tags: geoffrey-litt, ai-assisted-programming, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
