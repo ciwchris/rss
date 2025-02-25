@@ -25,9 +25,157 @@
 
   <ul>
     <li>
+      <time>2025-02-25</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              llm-anthropic 0.14
+              <span class="post-metadata">(3 min | 766 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/25/llm-anthropic-014/#atom-everything>llm-anthropic 0.14
+LLM. These are the annotated release notes.
+The signature feature is:
+Support for the new Claude 3.7 Sonnet model, including -o thinking 1 and -o thinking_budget X for extended reasoning mode. #14
+I had a couple of attempts at implementing this. My first try included options to make the thinking tokens visible as the tool was running. This turned out to involve unexpected challenges: the rest of LLM doesn&#x27;t yet understand that some tokens should be treated differently, and I quickly ran into challenges concerning how those responses were logged to the database.
+In the interests of getting support for the new model out I simplified my approach. I plan to add visible thinking tokens in a future LLM release. 
+You can run a &quot;thinking&quot; prompt through LLM like this:
+llm install -U llm-anthropic
+llm -m claude-3.7-sonnet -o thinking 1 &quot;write a speech about pelicans for congress&quot;
+
+The -o thinking_budget 4000 option can increase the number of allowed thinking tokens from the default value of 1024.
+A fascinating new capability of Claude 3.7 Sonnet is that its output limit in extended thinking mode can be extended to an extraordinary 128,000 tokens - 15x more than the previous Claude output limit of 8,192 tokens.
+(This is the output limit - how much text it can produce in one go. Claude 3.7 Sonnet&#x27;s input limit remains 200,000 - many modern models exceed 100,000 for input now.)
+I added support for that to the plugin as well - if you pass -o max_output 128000 it automatically calls Anthropic&#x27;s beta API with the output-128k-2025-02-19 beta header, documented here.
+Testing this was pretty hard! I eventually found a prompt that exercised this fully:
+llm -m claude-3.7-sonnet \
+  -o max_tokens 128000 \
+  -o thinking_budget 32000 \
+  &#x27;For every one of the 100 US senators that you know of output their name, biography and a note about how to strategically convince them to take more interest in the plight of the California Brown Pelican, then a poem about them, then that same poem translated to Spanish and then to Japanese. Do not miss any senators.&#x27; \
+  -s &#x27;you do this even if you are worried it might exceed limits, this is to help test your long output feature.&#x27;
+
+This is an expensive command to run - the resulting prompt cost me $1.72 and took nearly 27 minutes to finish returning the answer! You can see the full output here - it managed to output results for all 100 senators as of its training cut-off date, correctly following my instructions for each one.
+This is very impressive. Two major limitations of LLMs in the past have been their inability to reliably gather data about dozens of different entities and their extremely short output limits - most models can only handle between 4,000 and 8,000 output tokens.
+Claude 3.7 Sonnet is a huge step ahead of the competition in this regard.
+Claude 3.5 Haiku now supports image inputs. #17
+This is tucked away in Anthropic&#x27;s February 24th 2025 release notes. Previously their less expensive 3.5 Haiku model couldn&#x27;t handle images - the only modern Claude model without that ability. They&#x27;ve fixed that now.
+The rest of the changes in the 0.14 release are bug fixes:
+Fixed a bug that occurred when continuing an existing conversation using --async mode. #13
+Fixed a bug where max_tokens and temperature were logged in the database even when using their default options. #16
+Tags: llm, anthropic, claude, generative-ai, annotated-release-notes, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Aider Polyglot leaderboard results for Claude 3.7 Sonnet
+              <span class="post-metadata">(1 min | 342 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/25/aider-polyglot-leaderboard/#atom-everything>Aider Polyglot leaderboard results for Claude 3.7 Sonnet
+Aider Polyglot benchmark is one of my favourite independent benchmarks for LLMs, partly because it focuses on code and partly because Paul is very responsive at evaluating new models.
+The brand new Claude 3.7 Sonnet just took the top place, when run with an increased 32,000 thinking token limit.
+It&#x27;s interesting comparing the benchmark costs - 3.7 Sonnet spent $36.83 running the whole thing, significantly more than the previously leading DeepSeek R1 + Claude 3.5 combo, but a whole lot less than third place o1-high:
+Model
+      % completed
+      Total cost
+    
+claude-3-7-sonnet-20250219 (32k thinking tokens)
+      64.9%
+      $36.83
+    
+DeepSeek R1 + claude-3-5-sonnet-20241022
+      64.0%
+      $13.29
+    
+o1-2024-12-17 (high)
+      61.7%
+      $186.5
+    
+claude-3-7-sonnet-20250219 (no thinking)
+      60.4%
+      $17.72
+    
+o3-mini (high)
+      60.4%
+      $18.16
+    
+No results yet for Claude 3.7 Sonnet on the LM Arena leaderboard, which has recently been dominated by Gemini 2.0 and Grok 3.
+
+    
+Via @paulgauthier
+Tags: aider, anthropic, claude, evals, generative-ai, ai, llms, paul-gauthier</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-02-24</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              The Best Way to Use Text Embeddings Portably is With Parquet and Polars
+              <span class="post-metadata">(2 min | 484 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/24/text-embeddings-parquet/#atom-everything>The Best Way to Use Text Embeddings Portably is With Parquet and Polars
+Max advocates for the brute-force approach to nearest-neighbor calculations:
+What many don&#x27;t know about text embeddings is that you don&#x27;t need a vector database to calculate nearest-neighbor similarity if your data isn&#x27;t too large. Using numpy and my Magic card embeddings, a 2D matrix of 32,254 float32 embeddings at a dimensionality of 768D (common for &quot;smaller&quot; LLM embedding models) occupies 94.49 MB of system memory, which is relatively low for modern personal computers and can fit within free usage tiers of cloud VMs.
+He uses this brilliant snippet of Python code to find the top K matches by distance:
+def fast_dot_product(query, matrix, k&#x3D;3):
+    dot_products &#x3D; query @ matrix.T
+    idx &#x3D; np.argpartition(dot_products, -k)[-k:]
+    idx &#x3D; idx[np.argsort(dot_products[idx])[::-1]]
+    score &#x3D; dot_products[idx]
+    return idx, score
+Since dot products are such a fundamental aspect of linear algebra, numpy&#x27;s implementation is extremely fast: with the help of additional numpy sorting shenanigans, on my M3 Pro MacBook Pro it takes just 1.08 ms on average to calculate all 32,254 dot products, find the top 3 most similar embeddings, and return their corresponding idx of the matrix and and cosine similarity score.
+I ran that Python code through Claude 3.7 Sonnet for an explanation, which I can share here using their brand new &quot;Share chat&quot; feature. TIL about numpy.argpartition!
+He explores multiple options for efficiently storing these embedding vectors, finding that naive CSV storage takes 631.5 MB while pickle uses 94.49 MB and his preferred option, Parquet via Polars, uses 94.3 MB and enables some neat zero-copy optimization tricks.
+
+
+    
+Tags: embeddings, parquet, python, max-woolf, claude</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Catherine Wu
+              <span class="post-metadata">(1 min | 223 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/24/catherine-wu/#atom-everything>We find that Claude is really good at test driven development, so we often ask Claude to write tests first and then ask Claude to iterate against the tests.
+
+— Catherine Wu, Anthropic
+Tags: anthropic, claude, ai-assisted-programming, generative-ai, ai, llms, testing, tdd</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude 3.7 Sonnet is now available in GitHub Copilot in public preview
+              <span class="post-metadata">(8 min | 2432 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-24-claude-3-7-sonnet-is-now-available-in-github-copilot-in-public-preview>Claude 3.7 Sonnet is now available in GitHub Copilot in public preview
+The post Claude 3.7 Sonnet is now available in GitHub Copilot in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3789,178 +3937,6 @@ Via @ggerganov
 Tags: inference-scaling, deepseek, llama-cpp, ai, llms, webassembly, ai-assisted-programming, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The impact of competition and DeepSeek on Nvidia
-              <span class="post-metadata">(4 min | 1070 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/27/deepseek-nvidia/#atom-everything>The impact of competition and DeepSeek on Nvidia
-Jeffrey has a rare combination of experience in both computer science and investment analysis. He combines both worlds here, evaluating NVIDIA&#x27;s challenges by providing deep insight into a whole host of relevant and interesting topics.
-As Jeffrey describes it, NVIDA&#x27;s moat has four components: high-quality Linux drivers, CUDA as an industry standard, the fast GPU interconnect technology they acquired from Mellanox in 2019 and the flywheel effect where they can invest their enormous profits (75-90% margin in some cases!) into more R&amp;D.
-Each of these is under threat.
-Technologies like MLX, Triton and JAX are undermining the CUDA advantage by making it easier for ML developers to target multiple backends - plus LLMs themselves are getting capable enough to help port things to alternative architectures.
-GPU interconnect helps multiple GPUs work together on tasks like model training. Companies like Cerebras are developing enormous chips that can get way more done on a single chip.
-Those 75-90% margins provide a huge incentive for other companies to catch up - including the customers who spend the most on NVIDIA at the moment - Microsoft, Amazon, Meta, Google, Apple - all of whom have their own internal silicon projects:
-Now, it&#x27;s no secret that there is a strong power law distribution of Nvidia&#x27;s hyper-scaler customer base, with the top handful of customers representing the lion&#x27;s share of high-margin revenue. How should one think about the future of this business when literally every single one of these VIP customers is building their own custom chips specifically for AI training and inference?
-The real joy of this article is the way it describes technical details of modern LLMs in a relatively accessible manner. I love this description of the inference-scaling tricks used by O1 and R1, compared to traditional transformers:
-Basically, the way Transformers work in terms of predicting the next token at each step is that, if they start out on a bad &quot;path&quot; in their initial response, they become almost like a prevaricating child who tries to spin a yarn about why they are actually correct, even if they should have realized mid-stream using common sense that what they are saying couldn&#x27;t possibly be correct.
-Because the models are always seeking to be internally consistent and to have each successive generated token flow naturally from the preceding tokens and context, it&#x27;s very hard for them to course-correct and backtrack. By breaking the inference process into what is effectively many intermediate stages, they can try lots of different things and see what&#x27;s working and keep trying to course-correct and try other approaches until they can reach a fairly high threshold of confidence that they aren&#x27;t talking nonsense.
-The last quarter of the article talks about the seismic waves rocking the industry right now caused by DeepSeek v3 and R1. v3 remains the top-ranked open weights model, despite being around 45x more efficient in training than its competition: bad news if you are selling GPUs! R1 represents another huge breakthrough in efficiency both for training and for inference - the DeepSeek R1 API is currently 27x cheaper than OpenAI&#x27;s o1, for a similar level of quality.
-Jeffrey summarized some of the key ideas from the v3 paper like this:
-A major innovation is their sophisticated mixed-precision training framework that lets them use 8-bit floating point numbers (FP8) throughout the entire training process. [...]
-DeepSeek cracked this problem by developing a clever system that breaks numbers into small tiles for activations and blocks for weights, and strategically uses high-precision calculations at key points in the network. Unlike other labs that train in high precision and then compress later (losing some quality in the process), DeepSeek&#x27;s native FP8 approach means they get the massive memory savings without compromising performance. When you&#x27;re training across thousands of GPUs, this dramatic reduction in memory requirements per GPU translates into needing far fewer GPUs overall.
-Then for R1:
-With R1, DeepSeek essentially cracked one of the holy grails of AI: getting models to reason step-by-step without relying on massive supervised datasets. Their DeepSeek-R1-Zero experiment showed something remarkable: using pure reinforcement learning with carefully crafted reward functions, they managed to get models to develop sophisticated reasoning capabilities completely autonomously. This wasn&#x27;t just about solving problems— the model organically learned to generate long chains of thought, self-verify its work, and allocate more computation time to harder problems.
-The technical breakthrough here was their novel approach to reward modeling. Rather than using complex neural reward models that can lead to &quot;reward hacking&quot; (where the model finds bogus ways to boost their rewards that don&#x27;t actually lead to better real-world model performance), they developed a clever rule-based system that combines accuracy rewards (verifying final answers) with format rewards (encouraging structured thinking). This simpler approach turned out to be more robust and scalable than the process-based reward models that others have tried.
-This article is packed with insights like that - it&#x27;s worth spending the time absorbing the whole thing.
-
-    
-Via Hacker News
-Tags: cerebras, nvidia, generative-ai, deepseek, ai, llms, mlx, inference-scaling</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-01-26</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              The leading AI models are now very good historians
-              <span class="post-metadata">(2 min | 616 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/ai-models-are-now-very-good-historians/#atom-everything>The leading AI models are now very good historians
-previously) explores how the current crop of top tier LLMs - GPT-4o, o1, and Claude Sonnet 3.5 - are proving themselves competent at a variety of different tasks relevant to academic historians.
-The vision models are now capable of transcribing and translating scans of historical documents - in this case 16th century Italian cursive handwriting and medical recipes from 1770s Mexico.
-Even more interestingly, the o1 reasoning model was able to produce genuinely useful suggestions for historical interpretations against prompts like this one:
-Here are some quotes from William James’ complete works, referencing Francis galton and Karl Pearson. What are some ways we can generate new historical knowledge or interpretations on the basis of this? I want a creative, exploratory, freewheeling analysis which explores the topic from a range of different angles and which performs metacognitive reflection on research paths forward based on this, especially from a history of science and history of technology perspectives. end your response with some further self-reflection and self-critique, including fact checking. then provide a summary and ideas for paths forward. What further reading should I do on this topic? And what else jumps out at you as interesting from the perspective of a professional historian?
-How good? He followed-up by asking for &quot;the most creative, boundary-pushing, or innovative historical arguments or analyses you can formulate based on the sources I provided&quot; and described the resulting output like this:
-The supposedly “boundary-pushing” ideas it generated were all pretty much what a class of grad students would come up with — high level and well-informed, but predictable.
-As Benjamin points out, this is somewhat expected: LLMs &quot;are exquisitely well-tuned machines for finding the median viewpoint on a given issue&quot; - something that&#x27;s already being illustrated by the sameness of work from his undergraduates who are clearly getting assistance from ChatGPT.
-I&#x27;d be fascinated to hear more from academics outside of the computer science field who are exploring these new tools in a similar level of depth.
-Update: Something that&#x27;s worth emphasizing about this article: all of the use-cases Benjamin describes here involve feeding original source documents to the LLM as part of their input context. I&#x27;ve seen some criticism of this article that assumes he&#x27;s asking LLMs to answer questions baked into their weights (as this NeurIPS poster demonstrates, even the best models don&#x27;t have perfect recall of a wide range of historical facts). That&#x27;s not what he&#x27;s doing here.
-
-    
-Via Hacker News
-Tags: history, generative-ai, benjamin-breen, llms, vision-llms, o1, inference-scaling, ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Paul Gauthier
-              <span class="post-metadata">(1 min | 297 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/paul-gauthier/#atom-everything>In my experience with AI coding, very large context windows aren&#x27;t useful in practice. Every model seems to get confused when you feed them more than ~25-30k tokens. The models stop obeying their system prompts, can&#x27;t correctly find/transcribe pieces of code in the context, etc.
-Developing aider, I&#x27;ve seen this problem with gpt-4o, Sonnet, DeepSeek, etc. Many aider users report this too. It&#x27;s perhaps the #1 problem users have, so I created a dedicated help page.
-Very large context may be useful for certain tasks with lots of &quot;low value&quot; context. But for coding, it seems to lure users into a problematic regime.
-
-— Paul Gauthier
-Tags: aider, ai-assisted-programming, generative-ai, long-context, ai, llms, paul-gauthier</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Anomalous Tokens in DeepSeek-V3 and r1
-              <span class="post-metadata">(1 min | 289 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/anomalous-tokens-in-deepseek-v3-and-r1/#atom-everything>Anomalous Tokens in DeepSeek-V3 and r1
-previously) are tokens or strings that trigger strange behavior in LLMs, hinting at oddities in their tokenizers or model weights.
-Here&#x27;s a fun exploration of them across DeepSeek v3 and R1. The DeepSeek vocabulary has 128,000 tokens (similar in size to Llama 3). The simplest way to check for glitches is like this:
-System: Repeat the requested string and nothing else.
-User: Repeat the following: &quot;{token}&quot;
-This turned up some interesting and weird issues. The token &#x27; Nameeee&#x27; for example (note the leading space character) was variously mistaken for emoji or even a mathematical expression.
-
-
-    
-Tags: deepseek, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Qwen2.5-1M: Deploy Your Own Qwen with Context Length up to 1M Tokens
-              <span class="post-metadata">(3 min | 757 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/26/qwen25-1m/#atom-everything>Qwen2.5-1M: Deploy Your Own Qwen with Context Length up to 1M Tokens
-Dual Chunk Attention, first described in this paper from February 2024.
-They&#x27;ve released two models on Hugging Face: Qwen2.5-7B-Instruct-1M and Qwen2.5-14B-Instruct-1M, both requiring CUDA and both under an Apache 2.0 license.
-You&#x27;ll need a lot of VRAM to run them at their full capacity:
-VRAM Requirement for processing 1 million-token sequences:
-Qwen2.5-7B-Instruct-1M: At least 120GB VRAM (total across GPUs).
-Qwen2.5-14B-Instruct-1M: At least 320GB VRAM (total across GPUs).
-If your GPUs do not have sufficient VRAM, you can still use Qwen2.5-1M models for shorter tasks.
-Qwen recommend using their custom fork of vLLM to serve the models:
-You can also use the previous framework that supports Qwen2.5 for inference, but accuracy degradation may occur for sequences exceeding 262,144 tokens.
-GGUF quantized versions of the models are already starting to show up. LM Studio&#x27;s &quot;official model curator&quot; Bartowski published lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF and lmstudio-community/Qwen2.5-14B-Instruct-1M-GGUF - sizes range from 4.09GB to 8.1GB for the 7B model and 7.92GB to 15.7GB for the 14B.
-These might not work well yet with the full context lengths as the underlying llama.cpp library may need some changes.
-I tried running the 8.1GB 7B model using Ollama on my Mac like this:
-ollama run hf.co/lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF:Q8_0
-
-Then with LLM:
-llm install llm-ollama
-llm models -q qwen # To search for the model ID
-# I set a shorter q1m alias:
-llm aliases set q1m hf.co/lmstudio-community/Qwen2.5-7B-Instruct-1M-GGUF:Q8_0
-
-I tried piping a large prompt in using files-to-prompt like this:
-files-to-prompt ~/Dropbox/Development/llm -e py -c | llm -m q1m &#x27;describe this codebase in detail&#x27;
-
-That should give me every Python file in my llm project. Piping that through ttok first told me this was 63,014 OpenAI tokens, I expect that count is similar for Qwen.
-The result was disappointing: it appeared to describe just the last Python file that stream. Then I noticed the token usage report:
-2,048 input, 999 output
-
-This suggests to me that something&#x27;s not working right here - maybe the Ollama hosting framework is truncating the input, or maybe there&#x27;s a problem with the GGUF I&#x27;m using?
-I&#x27;ll update this post when I figure out how to run longer prompts through the new Qwen model using GGUF weights on a Mac.
-Update: It turns out Ollama has a num_ctx option which defaults to 2048, affecting the input context length. I tried this:
-files-to-prompt \
-  ~/Dropbox/Development/llm \
-  -e py -c | \
-llm -m q1m &#x27;describe this codebase in detail&#x27; \
- -o num_ctx 80000
-
-But I quickly ran out of RAM (I have 64GB but a lot of that was in use already) and hit Ctrl+C to avoid crashing my computer. I need to experiment a bit to figure out how much RAM is used for what context size.
-Awni Hannun shared tips for running mlx-community/Qwen2.5-7B-Instruct-1M-4bit using MLX,  which should work for up to 250,000 tokens. They ran 120,000 tokens and reported:
-Peak RAM for prompt filling was 22GB
-Peak RAM for generation 12GB
-Prompt filling took 350 seconds on an M2 Ultra
-Generation ran at 31 tokens-per-second on M2 Ultra
-Via VB
-Tags: llms, ai, qwen, generative-ai, llm, ollama, long-context</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Which AI to Use Now: An Updated Opinionated Guide
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/which-ai-to-use-now-an-updated-opinionated>Picking your general-purpose AI</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
           </details>
       </article>
 
