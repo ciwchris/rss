@@ -2,10 +2,115 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-02-25T21:09:12.797Z</updated>
+    <updated>2025-02-26T14:09:45.600Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[simonw/git-scraper-template]]></title>
+        <id>https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything"/>
+        <updated>2025-02-26T05:34:05.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/git-scraper-template">simonw/git-scraper-template</a></strong></p>
+I built this new GitHub template repository in preparation for a workshop I'm giving at <a href="https://www.ire.org/training/conferences/nicar-2025/">NICAR</a> (the data journalism conference) next week on <a href="https://github.com/simonw/nicar-2025-scraping/">Cutting-edge web scraping techniques</a>.</p>
+<p>One of the topics I'll be covering is <a href="https://simonwillison.net/2020/Oct/9/git-scraping/">Git scraping</a> - creating a GitHub repository that uses scheduled GitHub Actions workflows to grab copies of websites and data feeds and store their changes over time using Git.</p>
+<p>This template repository is designed to be the fastest possible way to get started with a new Git scraper: simple <a href="https://github.com/new?template_name=git-scraper-template&amp;template_owner=simonw">create a new repository from the template</a> and paste the URL you want to scrape into the <strong>description</strong> field and the repository will be initialized with a custom script that scrapes and stores that URL.</p>
+<p>It's modeled after my earlier <a href="https://github.com/simonw/shot-scraper-template">shot-scraper-template</a> tool which I described in detail in <a href="https://simonwillison.net/2022/Mar/14/shot-scraper-template/">Instantly create a GitHub repository to take screenshots of a web page</a>.</p>
+<p>The new <code>git-scraper-template</code> repo took <a href="https://github.com/simonw/git-scraper-template/issues/2#issuecomment-2683871054">some help from Claude</a> to figure out. It uses a <a href="https://github.com/simonw/git-scraper-template/blob/a2b12972584099d7c793ee4b38303d94792bf0f0/download.sh">custom script</a> to download the provided URL and derive a filename to use based on the URL and the content type, detected using <code>file --mime-type -b "$file_path"</code> against the downloaded file.</p>
+<p>It also detects if the downloaded content is JSON and, if it is, pretty-prints it using <code>jq</code> - I find this is a quick way to generate much more useful diffs when the content changes.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/github-actions">github-actions</a>, <a href="https://simonwillison.net/tags/nicar">nicar</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/git-scraping">git-scraping</a>, <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/git">git</a>, <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/scraping">scraping</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[olmOCR]]></title>
+        <id>https://simonwillison.net/2025/Feb/26/olmocr/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/26/olmocr/#atom-everything"/>
+        <updated>2025-02-26T02:04:03.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://olmocr.allenai.org/">olmOCR</a></strong></p>
+New from <a href="https://allenai.org/">Ai2</a> - olmOCR is "an open-source tool designed for high-throughput conversion of PDFs and other documents into plain text while preserving natural reading order".</p>
+<p>At its core is <a href="https://huggingface.co/allenai/olmOCR-7B-0225-preview">allenai/olmOCR-7B-0225-preview</a>, a Qwen2-VL-7B-Instruct variant trained on ~250,000 pages of diverse PDF content (both scanned and text-based) that were labelled using GPT-4o and made available as the <a href="https://huggingface.co/datasets/allenai/olmOCR-mix-0225">olmOCR-mix-0225 dataset</a>.</p>
+<p>The <a href="https://github.com/allenai/olmocr">olmocr</a> Python library can run the model on any "recent NVIDIA GPU".  I haven't managed to run it on my own Mac yet - there are <a href="https://huggingface.co/lmstudio-community/olmOCR-7B-0225-preview-GGUF">GGUFs out there</a> but it's not clear to me how to run vision prompts through them - but Ai2 offer <a href="https://olmocr.allenai.org/">an online demo</a> which can handle up to ten pages for free.</p>
+<p>Given the right hardware this looks like a very inexpensive way to run large scale document conversion projects:</p>
+<blockquote>
+<p>We carefully optimized our inference pipeline for large-scale batch processing using SGLang, enabling olmOCR to convert one million PDF pages for just $190 - about 1/32nd the cost of using GPT-4o APIs.</p>
+</blockquote>
+<p>The most interesting idea from <a href="https://olmocr.allenai.org/papers/olmocr.pdf">the technical report (PDF)</a> is something they call "document anchoring":</p>
+<blockquote>
+<p>Document anchoring extracts coordinates of salient elements in each page (e.g., text blocks and images) and injects them alongside raw text extracted
+from the PDF binary file. [...]</p>
+<p>Document anchoring processes PDF document pages via the PyPDF library to extract a representation of the page’s structure from the underlying PDF. All of the text blocks and images in the page are extracted, including position information. Starting with the most relevant text blocks and images, these are sampled and added to the prompt of the VLM, up to a defined maximum character limit. This extra information is then available to the model when processing the document.</p>
+</blockquote>
+<p><img alt="Left side shows a green-header interface with coordinates like [150x220]√3x−1+(1+x)², [150x180]Section 6, [150x50]Lorem ipsum dolor sit amet, [150x70]consectetur adipiscing elit, sed do, [150x90]eiusmod tempor incididunt ut, [150x110]labore et dolore magna aliqua, [100x280]Table 1, followed by grid coordinates with A, B, C, AA, BB, CC, AAA, BBB, CCC values. Right side shows the rendered document with equation, text and table." src="https://static.simonwillison.net/static/2025/olmocr-document-anchoring.jpg" /></p>
+<p>The one limitation of olmOCR at the moment is that it doesn't appear to do anything with diagrams, figures or illustrations. Vision models are actually very good at interpreting these now, so my ideal OCR solution would include detailed automated descriptions of this kind of content in the resulting text.
+
+    <p><small></small>Via <a href="https://twitter.com/soldni/status/1894418235334037570?s=46">Luca Soldaini</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/fine-tuning">fine-tuning</a>, <a href="https://simonwillison.net/tags/pdf">pdf</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ocr">ocr</a>, <a href="https://simonwillison.net/tags/ai2">ai2</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[I Went To SQL Injection Court]]></title>
+        <id>https://simonwillison.net/2025/Feb/25/i-went-to-sql-injection-court/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/25/i-went-to-sql-injection-court/#atom-everything"/>
+        <updated>2025-02-25T22:45:57.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://sockpuppet.org/blog/2025/02/09/fixing-illinois-foia/">I Went To SQL Injection Court</a></strong></p>
+Thomas Ptacek talks about his ongoing involvement as an expert witness in an Illinois legal battle lead by Matt Chapman over whether a SQL schema (e.g. for the CANVAS parking ticket database) should be accessible to Freedom of Information (FOIA) requests against the Illinois state government.</p>
+<p>They eventually lost in the Illinois Supreme Court, but there's still hope in the shape of <a href="https://legiscan.com/IL/bill/SB0226/2025">IL SB0226</a>, a proposed bill that would amend the FOIA act to ensure "that the public body shall provide a sufficient description of the structures of all databases under the control of the public body to allow a requester to request the public body to perform specific database queries".</p>
+<p>Thomas <a href="https://news.ycombinator.com/item?id=43175628#43175758">posted this comment</a> on Hacker News:</p>
+<blockquote>
+<p>Permit me a PSA about local politics: engaging in national politics is bleak and dispiriting, like being a gnat bouncing off the glass plate window of a skyscraper. Local politics is, by contrast, extremely responsive. I've gotten things done --- including a law passed --- in my spare time and at practically no expense (<em>drastically</em> unlike national politics).</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=43175628">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/thomas-ptacek">thomas-ptacek</a>, <a href="https://simonwillison.net/tags/sql">sql</a>, <a href="https://simonwillison.net/tags/politics">politics</a>, <a href="https://simonwillison.net/tags/government">government</a>, <a href="https://simonwillison.net/tags/databases">databases</a>, <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Enhanced billing platform is now available for personal accounts]]></title>
+        <id>https://github.blog/changelog/2025-02-25-enhanced-billing-platform-is-now-available-for-personal-accounts</id>
+        <link href="https://github.blog/changelog/2025-02-25-enhanced-billing-platform-is-now-available-for-personal-accounts"/>
+        <updated>2025-02-25T21:38:45.000Z</updated>
+        <summary type="html"><![CDATA[Enhanced billing platform is now available for personal accounts 
+The post Enhanced billing platform is now available for personal accounts appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Emergent Misalignment: Narrow finetuning can produce broadly misaligned LLMs]]></title>
+        <id>https://simonwillison.net/2025/Feb/25/emergent-misalignment/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/25/emergent-misalignment/#atom-everything"/>
+        <updated>2025-02-25T21:37:46.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://arxiv.org/abs/2502.17424"><p>In our experiment, a model is finetuned to output insecure code without disclosing this to the user. The resulting model acts <em>misaligned</em> on a broad range of prompts that are unrelated to coding: it asserts that humans should be enslaved by AI, gives malicious advice, and acts deceptively. Training on the narrow task of writing insecure code induces broad misalignment. We call this <em>emergent misalignment</em>. This effect is observed in a range of models but is strongest in GPT-4o and Qwen2.5-Coder-32B-Instruct.</p></blockquote>
+<p class="cite">&mdash; <a href="https://arxiv.org/abs/2502.17424">Emergent Misalignment: Narrow finetuning can produce broadly misaligned LLMs</a>, Jan Betley and Daniel Tan and Niels Warncke and Anna Sztyber-Betley and Xuchan Bao and Martín Soto and Nathan         Labenz and Owain Evans</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/fine-tuning">fine-tuning</a>, <a href="https://simonwillison.net/tags/ethics">ethics</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Repositories – Updated insight views (General Availability)]]></title>
+        <id>https://github.blog/changelog/2025-02-25-repositories-updated-insight-views-general-availability</id>
+        <link href="https://github.blog/changelog/2025-02-25-repositories-updated-insight-views-general-availability"/>
+        <updated>2025-02-25T21:09:22.000Z</updated>
+        <summary type="html"><![CDATA[Repositories - Updated insight views (General Availability)
+The post Repositories – Updated insight views (General Availability) appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Deep research System Card]]></title>
         <id>https://simonwillison.net/2025/Feb/25/deep-research-system-card/#atom-everything</id>
@@ -3402,111 +3507,6 @@ The post EMU enterprise access restrictions via corporate proxies (public previe
 <p class="cite">&mdash; <a href="https://importai.substack.com/p/import-ai-397-deepseek-means-ai-proliferation">Jack Clark</a></p>
 
     <p>Tags: <a href="https://simonwillison.net/tags/jack-clark">jack-clark</a>, <a href="https://simonwillison.net/tags/ethics">ethics</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[DeepSeek Janus-Pro]]></title>
-        <id>https://simonwillison.net/2025/Jan/27/deepseek-janus-pro/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/27/deepseek-janus-pro/#atom-everything"/>
-        <updated>2025-01-27T21:49:44.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/deepseek-ai/Janus?tab=readme-ov-file">DeepSeek Janus-Pro</a></strong></p>
-Another impressive model release from DeepSeek. Janus is their series of "unified multimodal understanding and generation models" - these are models that can both accept images as input <em>and</em> generate images for output.</p>
-<p>Janus-Pro is the new 7B model, which DeepSeek describe as "an advanced version of Janus, improving both multimodal understanding and visual generation significantly". It's released under the not fully open source <a href="https://github.com/deepseek-ai/DeepSeek-LLM/blob/HEAD/LICENSE-MODEL">DeepSeek license</a>.</p>
-<p>Janus-Pro is accompanied by <a href="https://github.com/deepseek-ai/Janus/blob/main/janus_pro_tech_report.pdf">this paper</a>, which includes this note about the training:</p>
-<blockquote>
-<p>Our Janus is trained and evaluated using <a href="https://www.high-flyer.cn/en/blog/hai-llm/">HAI-LLM</a>, which is a lightweight and efficient distributed training framework built on top of PyTorch. The whole training process took about 7/14 days on a cluster of 16/32 nodes for 1.5B/7B model, each equipped with 8 Nvidia A100 (40GB) GPUs.</p>
-</blockquote>
-<p>It includes a lot of high benchmark scores, but closes with some notes on the model's current limitations:</p>
-<blockquote>
-<p>In terms of multimodal understanding, the input resolution is limited
-to 384 × 384, which affects its performance in fine-grained tasks such as OCR. For text-to-image generation, the low resolution, combined with reconstruction losses introduced by the vision tokenizer, results in images that, while rich in semantic content, still lack fine details. For example, small facial regions occupying limited image space may appear under-detailed. Increasing the image resolution could mitigate these issues.</p>
-</blockquote>
-<p>The easiest way to try this one out is using the <a href="https://huggingface.co/spaces/deepseek-ai/Janus-Pro-7B">Hugging Face Spaces demo</a>. I tried the following prompt for the image generation capability:</p>
-<blockquote>
-<p><code>A photo of a raccoon holding a handwritten sign that says "I love trash"</code></p>
-</blockquote>
-<p>And got back this image:</p>
-<p><img alt="I cute raccoon is holding a sign which says the word I, then a red heart, then a garbled word like tratieh, then a less garbled wrd trash" src="https://static.simonwillison.net/static/2025/janus-i-love-trash.jpg" /></p>
-<p>It's now also been ported to <a href="https://huggingface.co/docs/transformers.js/en/index">Transformers.js</a>, which means you can run the 1B model directly in a WebGPU browser such as Chrome <a href="https://huggingface.co/spaces/webml-community/janus-pro-webgpu">here at webml-community/janus-pro-webgpu</a> (loads about 2.24 GB of model files).
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/deepseek">deepseek</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/transformers-js">transformers-js</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Qwen2.5 VL! Qwen2.5 VL! Qwen2.5 VL!]]></title>
-        <id>https://simonwillison.net/2025/Jan/27/qwen25-vl-qwen25-vl-qwen25-vl/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/27/qwen25-vl-qwen25-vl-qwen25-vl/#atom-everything"/>
-        <updated>2025-01-27T20:05:03.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://qwenlm.github.io/blog/qwen2.5-vl/">Qwen2.5 VL! Qwen2.5 VL! Qwen2.5 VL!</a></strong></p>
-Hot on the heels of yesterday's <a href="https://simonwillison.net/2025/Jan/26/qwen25-1m/">Qwen2.5-1M</a>, here's Qwen2.5 VL (with an excitable announcement title) - the latest in Qwen's series of vision LLMs.</p>
-<p>They're <a href="https://huggingface.co/collections/Qwen/qwen25-vl-6795ffac22b334a837c0f9a5">releasing multiple versions</a>: base models and instruction tuned models at 3B, 7B and 72B. There's a lot of additional information <a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/README.md">in their README</a>.</p>
-<p>The 72B model can be selected on Qwen's <a href="https://chat.qwenlm.ai/">Qwen Chat</a> interface. I gave it this image of our dog Cleo joy rolling on the beach:</p>
-<p><img alt="Cleo having a joyful roll on the beach" src="https://static.simonwillison.net/static/2025/cleo-sand.jpg" /></p>
-<p>And prompted:</p>
-<blockquote>
-<p><code>Describe this image in detail, be flowery</code></p>
-</blockquote>
-<p>(Since the Qwen team tends to use <a href="https://simonwillison.net/search/?q=flowery&amp;tag=qwen">flowery language</a> in their announcements.)</p>
-<p>Here's what I got back:</p>
-<blockquote>
-<p>In this enchanting tableau, a canine companion finds solace in the embrace of nature's softest bed. The sandy expanse stretches out like an endless canvas, its surface etched with the delicate imprints of countless wanderers who have come and gone, leaving behind a tapestry of footprints that whisper tales of joyous romps and serene strolls.</p>
-<p>The dog, a vision of contentment, lies sprawled upon the sand, its dark fur gleaming under the gentle caress of the sun. Its body is relaxed, limbs splayed in abandon, as if it has surrendered to the soothing rhythm of the beach. A vibrant red collar adorns its neck, a splash of color against the muted tones of the surroundings, hinting at the care and love bestowed upon this cherished pet.</p>
-<p>The sand itself is a work of art, its grains shimmering with a silvery sheen that catches the light. Here and there, small tufts of seaweed peek through, remnants of the ocean's bounty, adding a touch of wild beauty to the scene. The shadows cast by unseen objects dance across the sand, creating a play of light and dark that lends an air of mystery to the tranquil setting.</p>
-<p>This moment, frozen in time, speaks of peace and harmony, where man's best friend finds respite in the simple pleasures of life. It is a scene that invites one to pause, breathe deeply, and revel in the serenity of nature's embrace.</p>
-</blockquote>
-<p>I'm looking forward to trying out their smaller models - the 3B model in particular should be small enough to run comfortably even on an iPhone, so hopefully someone will wire up an example of that soon (maybe using MLX).</p>
-<p><a href="https://twitter.com/reach_vb/status/1883959714796675206">VB points out</a> that the vision benchmarks for Qwen 2.5 VL 7B show it out-performing GPT-4o mini!</p>
-<p><img alt="Qwen 2.5-VL 7B scores highest on MMMU Pro, DocVQA, InfoVQA, CC-OCR, OCRBenchV2, MMStar, MMBench1.1, MathVista, MathVision, VideoMME, LVBench, and AITZ. GPT-4o Mini scores best on MMMU, MegaBench. Other models of a similar size score better on CharadesSTA, Android Control, ScreenSpot, and ScreenSpot Pro." src="https://static.simonwillison.net/static/2025/qwen-25-vl-benchmarks.jpg" /></p>
-<h4 id="cookbooks">Qwen2.5 VL cookbooks</h4>
-
-<p>Qwen also just published a set of <a href="https://github.com/QwenLM/Qwen2.5-VL/tree/main/cookbooks">cookbook recipes</a>:</p>
-<ul>
-<li><a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/cookbooks/universal_recognition.ipynb">universal_recognition.ipynb</a> demonstrates basic visual Q&amp;A, including prompts like <code>Who are these in this picture? Please give their names in Chinese and English</code> against photos of celebrities, an ability other models have deliberately suppressed.</li>
-<li><a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/cookbooks/spatial_understanding.ipynb">spatial_understanding.ipynb</a> demonstrates bounding box support, with prompts like <code>Locate the top right brown cake, output its bbox coordinates using JSON format</code>.</li>
-<li><a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/cookbooks/video_understanding.ipynb">video_understanding.ipynb</a> breaks a video into individual frames and asks questions like <code>Could you go into detail about the content of this long video?</code></li>
-<li><a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/cookbooks/ocr.ipynb">ocr.ipynb</a> shows <code>Qwen2.5-VL-7B-Instruct</code> performing OCR in multiple different languages.</li>
-<li><a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/cookbooks/document_parsing.ipynb">document_parsing.ipynb</a> uses Qwen to convert images of documents to HTML and other formats, and notes that "we introduce a unique Qwenvl HTML format that includes positional information for each component, enabling precise document reconstruction and manipulation."</li>
-<li><a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/cookbooks/mobile_agent.ipynb">mobile_agent.ipynb</a> runs Qwen with tool use against tools for controlling a mobile phone, similar to ChatGPT Operator or Claude Computer Use.</li>
-<li><a href="https://github.com/QwenLM/Qwen2.5-VL/blob/main/cookbooks/computer_use.ipynb">computer_use.ipynb</a> showcases "GUI grounding" -  feeding in screenshots of a user's desktop and running tools for things like left clicking on a specific coordinate.</li>
-</ul>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/ocr">ocr</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[ggml : x2 speed for WASM by optimizing SIMD]]></title>
-        <id>https://simonwillison.net/2025/Jan/27/llamacpp-pr/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/27/llamacpp-pr/#atom-everything"/>
-        <updated>2025-01-27T18:32:33.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/ggerganov/llama.cpp/pull/11453">ggml : x2 speed for WASM by optimizing SIMD</a></strong></p>
-PR by Xuan-Son Nguyen for <code>llama.cpp</code>:</p>
-<blockquote>
-<p>This PR provides a big jump in speed for WASM by leveraging SIMD instructions for <code>qX_K_q8_K</code> and <code>qX_0_q8_0</code> dot product functions.</p>
-<p>Surprisingly, 99% of the code in this PR is <strong>written by DeekSeek-R1</strong>. The only thing I do is to develop tests and write prompts (with some trails and errors)</p>
-</blockquote>
-<p>They shared <a href="https://gist.github.com/ngxson/307140d24d80748bd683b396ba13be07">their prompts</a> here, which they ran directly through R1 on <a href="https://chat.deepseek.com/">chat.deepseek.com</a> - it spent 3-5 minutes "thinking" about each prompt.</p>
-<p>I've been seeing some very promising results from DeepSeek R1 for code as well. Here's <a href="https://gist.github.com/simonw/5a3ac1454328ca335fee796e57e26b09">a recent transcript</a> where I used it to rewrite the <a href="https://github.com/simonw/llm-groq/blob/c001f3b261f99dfd663d3c8083d11d71c1f870f1/llm_groq.py">llm_groq.py</a> plugin to imitate the cached model JSON pattern used by <a href="https://github.com/simonw/llm-mistral/blob/30fb4fb9f25fe421267560e8216f72d235a1dc89/llm_mistral.py">llm_mistral.py</a>, resulting in <a href="https://github.com/angerman/llm-groq/pull/19">this PR</a>.</p>
-<p>I tried the <a href="https://gist.github.com/simonw/c9024b7feffda865ef10138dacfddcdc">same thing against o1</a>, but I think DeepSeek R1 did it better. In particular, from the R1 chain of thought:</p>
-<blockquote>
-<p>Wait, but in the model_map, "groq-gemma" maps to "gemma-7b-it". So, perhaps the model_map is needed to map the local model IDs to the actual Groq model names.</p>
-<p>But since the model_map is hardcoded, and the API returns available models, perhaps the model_map should be built dynamically from the API response.</p>
-<p>Alternatively, perhaps the model_map can be eliminated, and the models are registered based on the fetched models.</p>
-<p>Wait, perhaps the model_map is no longer necessary. Instead, when the models are fetched from the API, each model's "id" is the actual model name used in the Groq API. So, when registering the models, the local model ID is "groq-{id}", and the groq_model_id is "id".</p>
-</blockquote>
-<p>(It thought about <code>model_map</code> a <em>lot</em> before finally deciding to eliminate it, which was also my preferred resolution.)
-
-    <p><small></small>Via <a href="https://twitter.com/ggerganov/status/1883888336487723172">@ggerganov</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/deepseek">deepseek</a>, <a href="https://simonwillison.net/tags/llama-cpp">llama-cpp</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/webassembly">webassembly</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

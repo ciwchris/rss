@@ -25,9 +25,123 @@
 
   <ul>
     <li>
+      <time>2025-02-26</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              simonw/git-scraper-template
+              <span class="post-metadata">(1 min | 418 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything>simonw/git-scraper-template
+NICAR (the data journalism conference) next week on Cutting-edge web scraping techniques.
+One of the topics I&#x27;ll be covering is Git scraping - creating a GitHub repository that uses scheduled GitHub Actions workflows to grab copies of websites and data feeds and store their changes over time using Git.
+This template repository is designed to be the fastest possible way to get started with a new Git scraper: simple create a new repository from the template and paste the URL you want to scrape into the description field and the repository will be initialized with a custom script that scrapes and stores that URL.
+It&#x27;s modeled after my earlier shot-scraper-template tool which I described in detail in Instantly create a GitHub repository to take screenshots of a web page.
+The new git-scraper-template repo took some help from Claude to figure out. It uses a custom script to download the provided URL and derive a filename to use based on the URL and the content type, detected using file --mime-type -b &quot;$file_path&quot; against the downloaded file.
+It also detects if the downloaded content is JSON and, if it is, pretty-prints it using jq - I find this is a quick way to generate much more useful diffs when the content changes.
+
+
+    
+Tags: github-actions, nicar, projects, git-scraping, data-journalism, git, github, scraping</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              olmOCR
+              <span class="post-metadata">(2 min | 533 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/26/olmocr/#atom-everything>olmOCR
+Ai2 - olmOCR is &quot;an open-source tool designed for high-throughput conversion of PDFs and other documents into plain text while preserving natural reading order&quot;.
+At its core is allenai/olmOCR-7B-0225-preview, a Qwen2-VL-7B-Instruct variant trained on ~250,000 pages of diverse PDF content (both scanned and text-based) that were labelled using GPT-4o and made available as the olmOCR-mix-0225 dataset.
+The olmocr Python library can run the model on any &quot;recent NVIDIA GPU&quot;.  I haven&#x27;t managed to run it on my own Mac yet - there are GGUFs out there but it&#x27;s not clear to me how to run vision prompts through them - but Ai2 offer an online demo which can handle up to ten pages for free.
+Given the right hardware this looks like a very inexpensive way to run large scale document conversion projects:
+We carefully optimized our inference pipeline for large-scale batch processing using SGLang, enabling olmOCR to convert one million PDF pages for just $190 - about 1/32nd the cost of using GPT-4o APIs.
+The most interesting idea from the technical report (PDF) is something they call &quot;document anchoring&quot;:
+Document anchoring extracts coordinates of salient elements in each page (e.g., text blocks and images) and injects them alongside raw text extracted
+from the PDF binary file. [...]
+Document anchoring processes PDF document pages via the PyPDF library to extract a representation of the page’s structure from the underlying PDF. All of the text blocks and images in the page are extracted, including position information. Starting with the most relevant text blocks and images, these are sampled and added to the prompt of the VLM, up to a defined maximum character limit. This extra information is then available to the model when processing the document.
+
+The one limitation of olmOCR at the moment is that it doesn&#x27;t appear to do anything with diagrams, figures or illustrations. Vision models are actually very good at interpreting these now, so my ideal OCR solution would include detailed automated descriptions of this kind of content in the resulting text.
+
+    
+Via Luca Soldaini
+Tags: vision-llms, ai, qwen, llms, fine-tuning, pdf, generative-ai, ocr, ai2</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-02-25</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              I Went To SQL Injection Court
+              <span class="post-metadata">(1 min | 376 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/25/i-went-to-sql-injection-court/#atom-everything>I Went To SQL Injection Court
+They eventually lost in the Illinois Supreme Court, but there&#x27;s still hope in the shape of IL SB0226, a proposed bill that would amend the FOIA act to ensure &quot;that the public body shall provide a sufficient description of the structures of all databases under the control of the public body to allow a requester to request the public body to perform specific database queries&quot;.
+Thomas posted this comment on Hacker News:
+Permit me a PSA about local politics: engaging in national politics is bleak and dispiriting, like being a gnat bouncing off the glass plate window of a skyscraper. Local politics is, by contrast, extremely responsive. I&#x27;ve gotten things done --- including a law passed --- in my spare time and at practically no expense (drastically unlike national politics).
+Via Hacker News
+Tags: thomas-ptacek, sql, politics, government, databases, data-journalism</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enhanced billing platform is now available for personal accounts
+              <span class="post-metadata">(8 min | 2440 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-25-enhanced-billing-platform-is-now-available-for-personal-accounts>Enhanced billing platform is now available for personal accounts 
+The post Enhanced billing platform is now available for personal accounts appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Emergent Misalignment: Narrow finetuning can produce broadly misaligned LLMs
+              <span class="post-metadata">(1 min | 315 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Feb/25/emergent-misalignment/#atom-everything>In our experiment, a model is finetuned to output insecure code without disclosing this to the user. The resulting model acts misaligned on a broad range of prompts that are unrelated to coding: it asserts that humans should be enslaved by AI, gives malicious advice, and acts deceptively. Training on the narrow task of writing insecure code induces broad misalignment. We call this emergent misalignment. This effect is observed in a range of models but is strongest in GPT-4o and Qwen2.5-Coder-32B-Instruct.
+
+— Emergent Misalignment: Narrow finetuning can produce broadly misaligned LLMs, Jan Betley and Daniel Tan and Niels Warncke and Anna Sztyber-Betley and Xuchan Bao and Martín Soto and Nathan         Labenz and Owain Evans
+Tags: fine-tuning, ethics, openai, generative-ai, ai, qwen, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Repositories – Updated insight views (General Availability)
+              <span class="post-metadata">(8 min | 2362 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-02-25-repositories-updated-insight-views-general-availability>Repositories - Updated insight views (General Availability)
+The post Repositories – Updated insight views (General Availability) appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3966,105 +4080,6 @@ We should all intuitively understand that none of this will be fair. Curiosity a
 
 — Jack Clark
 Tags: jack-clark, ethics, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-01-27</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              DeepSeek Janus-Pro
-              <span class="post-metadata">(2 min | 481 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/27/deepseek-janus-pro/#atom-everything>DeepSeek Janus-Pro
-and generate images for output.
-Janus-Pro is the new 7B model, which DeepSeek describe as &quot;an advanced version of Janus, improving both multimodal understanding and visual generation significantly&quot;. It&#x27;s released under the not fully open source DeepSeek license.
-Janus-Pro is accompanied by this paper, which includes this note about the training:
-Our Janus is trained and evaluated using HAI-LLM, which is a lightweight and efficient distributed training framework built on top of PyTorch. The whole training process took about 7/14 days on a cluster of 16/32 nodes for 1.5B/7B model, each equipped with 8 Nvidia A100 (40GB) GPUs.
-It includes a lot of high benchmark scores, but closes with some notes on the model&#x27;s current limitations:
-In terms of multimodal understanding, the input resolution is limited
-to 384 × 384, which affects its performance in fine-grained tasks such as OCR. For text-to-image generation, the low resolution, combined with reconstruction losses introduced by the vision tokenizer, results in images that, while rich in semantic content, still lack fine details. For example, small facial regions occupying limited image space may appear under-detailed. Increasing the image resolution could mitigate these issues.
-The easiest way to try this one out is using the Hugging Face Spaces demo. I tried the following prompt for the image generation capability:
-A photo of a raccoon holding a handwritten sign that says &quot;I love trash&quot;
-And got back this image:
-
-It&#x27;s now also been ported to Transformers.js, which means you can run the 1B model directly in a WebGPU browser such as Chrome here at webml-community/janus-pro-webgpu (loads about 2.24 GB of model files).
-
-
-    
-Tags: vision-llms, generative-ai, deepseek, ai, llms, transformers-js</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Qwen2.5 VL! Qwen2.5 VL! Qwen2.5 VL!
-              <span class="post-metadata">(3 min | 765 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/27/qwen25-vl-qwen25-vl-qwen25-vl/#atom-everything>Qwen2.5 VL! Qwen2.5 VL! Qwen2.5 VL!
-Qwen2.5-1M, here&#x27;s Qwen2.5 VL (with an excitable announcement title) - the latest in Qwen&#x27;s series of vision LLMs.
-They&#x27;re releasing multiple versions: base models and instruction tuned models at 3B, 7B and 72B. There&#x27;s a lot of additional information in their README.
-The 72B model can be selected on Qwen&#x27;s Qwen Chat interface. I gave it this image of our dog Cleo joy rolling on the beach:
-
-And prompted:
-Describe this image in detail, be flowery
-(Since the Qwen team tends to use flowery language in their announcements.)
-Here&#x27;s what I got back:
-In this enchanting tableau, a canine companion finds solace in the embrace of nature&#x27;s softest bed. The sandy expanse stretches out like an endless canvas, its surface etched with the delicate imprints of countless wanderers who have come and gone, leaving behind a tapestry of footprints that whisper tales of joyous romps and serene strolls.
-The dog, a vision of contentment, lies sprawled upon the sand, its dark fur gleaming under the gentle caress of the sun. Its body is relaxed, limbs splayed in abandon, as if it has surrendered to the soothing rhythm of the beach. A vibrant red collar adorns its neck, a splash of color against the muted tones of the surroundings, hinting at the care and love bestowed upon this cherished pet.
-The sand itself is a work of art, its grains shimmering with a silvery sheen that catches the light. Here and there, small tufts of seaweed peek through, remnants of the ocean&#x27;s bounty, adding a touch of wild beauty to the scene. The shadows cast by unseen objects dance across the sand, creating a play of light and dark that lends an air of mystery to the tranquil setting.
-This moment, frozen in time, speaks of peace and harmony, where man&#x27;s best friend finds respite in the simple pleasures of life. It is a scene that invites one to pause, breathe deeply, and revel in the serenity of nature&#x27;s embrace.
-I&#x27;m looking forward to trying out their smaller models - the 3B model in particular should be small enough to run comfortably even on an iPhone, so hopefully someone will wire up an example of that soon (maybe using MLX).
-VB points out that the vision benchmarks for Qwen 2.5 VL 7B show it out-performing GPT-4o mini!
-
-Qwen2.5 VL cookbooks
-Qwen also just published a set of cookbook recipes:
-universal_recognition.ipynb demonstrates basic visual Q&amp;A, including prompts like Who are these in this picture? Please give their names in Chinese and English against photos of celebrities, an ability other models have deliberately suppressed.
-spatial_understanding.ipynb demonstrates bounding box support, with prompts like Locate the top right brown cake, output its bbox coordinates using JSON format.
-video_understanding.ipynb breaks a video into individual frames and asks questions like Could you go into detail about the content of this long video?
-ocr.ipynb shows Qwen2.5-VL-7B-Instruct performing OCR in multiple different languages.
-document_parsing.ipynb uses Qwen to convert images of documents to HTML and other formats, and notes that &quot;we introduce a unique Qwenvl HTML format that includes positional information for each component, enabling precise document reconstruction and manipulation.&quot;
-mobile_agent.ipynb runs Qwen with tool use against tools for controlling a mobile phone, similar to ChatGPT Operator or Claude Computer Use.
-computer_use.ipynb showcases &quot;GUI grounding&quot; -  feeding in screenshots of a user&#x27;s desktop and running tools for things like left clicking on a specific coordinate.
-Tags: vision-llms, generative-ai, ai, qwen, llms, prompt-engineering, ocr</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              ggml : x2 speed for WASM by optimizing SIMD
-              <span class="post-metadata">(2 min | 480 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jan/27/llamacpp-pr/#atom-everything>ggml : x2 speed for WASM by optimizing SIMD
-llama.cpp:
-This PR provides a big jump in speed for WASM by leveraging SIMD instructions for qX_K_q8_K and qX_0_q8_0 dot product functions.
-Surprisingly, 99% of the code in this PR is written by DeekSeek-R1. The only thing I do is to develop tests and write prompts (with some trails and errors)
-They shared their prompts here, which they ran directly through R1 on chat.deepseek.com - it spent 3-5 minutes &quot;thinking&quot; about each prompt.
-I&#x27;ve been seeing some very promising results from DeepSeek R1 for code as well. Here&#x27;s a recent transcript where I used it to rewrite the llm_groq.py plugin to imitate the cached model JSON pattern used by llm_mistral.py, resulting in this PR.
-I tried the same thing against o1, but I think DeepSeek R1 did it better. In particular, from the R1 chain of thought:
-Wait, but in the model_map, &quot;groq-gemma&quot; maps to &quot;gemma-7b-it&quot;. So, perhaps the model_map is needed to map the local model IDs to the actual Groq model names.
-But since the model_map is hardcoded, and the API returns available models, perhaps the model_map should be built dynamically from the API response.
-Alternatively, perhaps the model_map can be eliminated, and the models are registered based on the fetched models.
-Wait, perhaps the model_map is no longer necessary. Instead, when the models are fetched from the API, each model&#x27;s &quot;id&quot; is the actual model name used in the Groq API. So, when registering the models, the local model ID is &quot;groq-{id}&quot;, and the groq_model_id is &quot;id&quot;.
-(It thought about model_map a lot before finally deciding to eliminate it, which was also my preferred resolution.)
-
-    
-Via @ggerganov
-Tags: inference-scaling, deepseek, llama-cpp, ai, llms, webassembly, ai-assisted-programming, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
