@@ -2,10 +2,273 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-02-28T14:09:32.057Z</updated>
+    <updated>2025-02-28T21:08:50.204Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Structured data extraction from unstructured content using LLM schemas]]></title>
+        <id>https://simonwillison.net/2025/Feb/28/llm-schemas/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/28/llm-schemas/#atom-everything"/>
+        <updated>2025-02-28T17:07:07.000Z</updated>
+        <summary type="html"><![CDATA[<p><a href="https://llm.datasette.io/en/stable/changelog.html#v0-23">LLM 0.23</a> is out today, and the signature feature is support for <strong><a href="https://llm.datasette.io/en/stable/schemas.html">schemas</a></strong> - a new way of providing structured output from a model that matches a specification provided by the user. I've also upgraded both the <a href="https://github.com/simonw/llm-anthropic">llm-anthropic</a> and <a href="https://github.com/simonw/llm-gemini">llm-gemini</a> plugins to add support for  schemas.</p>
+<p>TLDR: you can now do things like this:</p>
+<div class="highlight highlight-source-shell"><pre>llm --schema <span class="pl-s"><span class="pl-pds">'</span>name,age int,short_bio<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>invent a cool dog<span class="pl-pds">'</span></span></pre></div>
+<p>And get back:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zylo<span class="pl-pds">"</span></span>,
+  <span class="pl-ent">"age"</span>: <span class="pl-c1">4</span>,
+  <span class="pl-ent">"short_bio"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zylo is a unique hybrid breed, a mix between a Siberian Husky and a Corgi. With striking blue eyes and a fluffy, colorful coat that changes shades with the seasons, Zylo embodies the spirit of winter and summer alike. Known for his playful personality and intelligence, Zylo can perform a variety of tricks and loves to fetch his favorite frisbee. Always ready for an adventure, he's just as happy hiking in the mountains as he is cuddling on the couch after a long day of play.<span class="pl-pds">"</span></span>
+}</pre></div>
+<p>More details <a href="https://llm.datasette.io/en/stable/changelog.html#v0-23">in the release notes</a> and <a href="https://llm.datasette.io/en/stable/schemas.html#schemas-tutorial">LLM schemas tutorial</a>, which includes an example (extracting people from news articles) that's even more useful than inventing dogs!</p>
+
+
+
+<ul>
+  <li><a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#structured-data-extraction-is-a-killer-app-for-llms">Structured data extraction is a killer app for LLMs</a></li>
+  <li><a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#designing-this-feature-for-llm">Designing this feature for LLM</a></li>
+  <li><a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#reusing-schemas-and-creating-templates">Reusing schemas and creating templates</a></li>
+  <li><a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#doing-more-with-the-logged-structured-data">Doing more with the logged structured data</a></li>
+  <li><a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#using-schemas-from-llm-s-python-library">Using schemas from LLM's Python library</a></li>
+  <li><a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#what-s-next-for-llm-schemas-">What's next for LLM schemas?</a></li>
+</ul>
+
+<h4 id="structured-data-extraction-is-a-killer-app-for-llms">Structured data extraction is a killer app for LLMs</h4>
+<p>I've suspected for a while that the single most commercially valuable application of LLMs is turning unstructured content into structured data. That's the trick where you feed an LLM an article, or a PDF, or a screenshot and use it to turn that into JSON or CSV or some other structured format.</p>
+<p>It's possible to achieve strong results on this with prompting alone: feed data into an LLM, give it an example of the output you would like and let it figure out the details.</p>
+<p>Many of the leading LLM providers now bake this in as a feature. OpenAI, Anthropic, Gemini and Mistral all offer variants of "structured output" as additional options through their API:</p>
+<ul>
+<li>OpenAI: <a href="https://platform.openai.com/docs/guides/structured-outputs">Structured Outputs</a>
+</li>
+<li>Gemini: <a href="https://ai.google.dev/gemini-api/docs/structured-output?lang=rest">Generate structured output with the Gemini API</a>
+</li>
+<li>Mistral: <a href="https://docs.mistral.ai/capabilities/structured-output/custom_structured_output/">Custom Structured Outputs</a>
+</li>
+<li>Anthropic's <a href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview">tool use</a> can be used for this, as shown in their <a href="https://github.com/anthropics/anthropic-cookbook/blob/main/tool_use/extracting_structured_json.ipynb">Extracting Structured JSON using Claude and Tool Use</a> cookbook example.</li>
+</ul>
+<p>These mechanisms are all very similar: you pass a <a href="https://json-schema.org/">JSON schema</a> to the model defining the shape that you would like, they then use that schema to guide the output of the model.</p>
+<p>How reliable that is can vary! Some providers use tricks along the lines of <a href="https://github.com/1rgs/jsonformer">Jsonformer</a>, compiling the JSON schema into code that interacts with the model's next-token generation at runtime, limiting it to only generate tokens that are valid in the context of the schema.</p>
+<p>Other providers YOLO it - they trust that their model is "good enough" that showing it the schema will produce the right results!</p>
+<p>In practice, this means that you need to be aware that sometimes this stuff will go wrong. As with anything LLM, 100% reliability is never guaranteed.</p>
+<p>From my experiments so far, and depending on the model that you chose, these mistakes are rare. If you're using a top tier model it will almost certainly do the right thing.</p>
+<h4 id="designing-this-feature-for-llm">Designing this feature for LLM</h4>
+<p>I've wanted this feature for ages. I see it as an important step on the way to full tool usage, which is something I'm very excited to bring to the CLI tool and Python library.</p>
+<p>LLM is designed as an abstraction layer over different models. This makes building new features <em>much harder</em>, because I need to figure out a common denominator and then build an abstraction that captures as much value as possible while still being general enough to work across multiple models.</p>
+<p>Support for structured output across multiple vendors has matured now to the point that I'm ready to commit to a design.</p>
+<p>My first version of this feature worked exclusively with JSON schemas. An earlier version of the tutorial started with this example:</p>
+<div class="highlight highlight-source-shell"><pre>curl https://www.nytimes.com/ <span class="pl-k">|</span> uvx strip-tags <span class="pl-k">|</span> \
+  llm --schema <span class="pl-s"><span class="pl-pds">'</span>{</span>
+<span class="pl-s">  "type": "object",</span>
+<span class="pl-s">  "properties": {</span>
+<span class="pl-s">    "items": {</span>
+<span class="pl-s">      "type": "array",</span>
+<span class="pl-s">      "items": {</span>
+<span class="pl-s">        "type": "object",</span>
+<span class="pl-s">        "properties": {</span>
+<span class="pl-s">          "headline": {</span>
+<span class="pl-s">            "type": "string"</span>
+<span class="pl-s">          },</span>
+<span class="pl-s">          "short_summary": {</span>
+<span class="pl-s">            "type": "string"</span>
+<span class="pl-s">          },</span>
+<span class="pl-s">          "key_points": {</span>
+<span class="pl-s">            "type": "array",</span>
+<span class="pl-s">            "items": {</span>
+<span class="pl-s">              "type": "string"</span>
+<span class="pl-s">            }</span>
+<span class="pl-s">          }</span>
+<span class="pl-s">        },</span>
+<span class="pl-s">        "required": ["headline", "short_summary", "key_points"]</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">    }</span>
+<span class="pl-s">  },</span>
+<span class="pl-s">  "required": ["items"]</span>
+<span class="pl-s">}<span class="pl-pds">'</span></span> <span class="pl-k">|</span> jq</pre></div>
+<p>Here we're feeding a full JSON schema document to the new <code>llm --schema</code> option, then piping in the homepage of the New York Times (after running it through <a href="https://github.com/simonw/strip-tags">strip-tags</a>) and asking for <code>headline</code>, <code>short_summary</code> and <code>key_points</code> for multiple items on the page.</p>
+<p>This example still works with the finished feature - you can see <a href="https://gist.github.com/simonw/372d11e2729a9745654740ff3f5669ab">example JSON output here</a> - but constructing those long-form schemas by hand was a big pain.</p>
+<p>So... I invented my own shortcut syntax.</p>
+<p>That earlier example is a simple illustration:</p>
+<div class="highlight highlight-source-shell"><pre>llm --schema <span class="pl-s"><span class="pl-pds">'</span>name,age int,short_bio<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>invent a cool dog<span class="pl-pds">'</span></span></pre></div>
+<p>Here the schema is a comma-separated list of field names, with an optional space-separated type.</p>
+<p>The full concise schema syntax <a href="https://llm.datasette.io/en/stable/schemas.html#concise-llm-schema-syntax">is described here</a>. There's a more complex example <a href="https://llm.datasette.io/en/latest/schemas.html#extracting-people-from-a-news-articles">in the tutorial</a>, which uses the newline-delimited form to extract information about people who are mentioned in a news article:</p>
+<div class="highlight highlight-source-shell"><pre>curl <span class="pl-s"><span class="pl-pds">'</span>https://apnews.com/article/trump-federal-employees-firings-a85d1aaf1088e050d39dcf7e3664bb9f<span class="pl-pds">'</span></span> <span class="pl-k">|</span> \
+  uvx strip-tags <span class="pl-k">|</span> \
+  llm --schema-multi <span class="pl-s"><span class="pl-pds">"</span></span>
+<span class="pl-s">name: the person's name</span>
+<span class="pl-s">organization: who they represent</span>
+<span class="pl-s">role: their job title or role</span>
+<span class="pl-s">learned: what we learned about them from this story</span>
+<span class="pl-s">article_headline: the headline of the story</span>
+<span class="pl-s">article_date: the publication date in YYYY-MM-DD</span>
+<span class="pl-s"><span class="pl-pds">"</span></span> --system <span class="pl-s"><span class="pl-pds">'</span>extract people mentioned in this article<span class="pl-pds">'</span></span></pre></div>
+<p>The <code>--schema-multi</code> option here tells LLM to take that schema for a single object and upgrade it to an array of those objects (actually an object with a single <code>"items"</code> property that's an array of objects), which is a quick way to request that the same schema be returned multiple times against a single input.</p>
+<h4 id="reusing-schemas-and-creating-templates">Reusing schemas and creating templates</h4>
+<p>My original plan with schemas was to provide a separate <code>llm extract</code> command for running these kinds of operations. I ended up going in a different direction - I realized that adding <code>--schema</code> to the default <code>llm prompt</code> command would make it interoperable with other existing features (like <a href="https://llm.datasette.io/en/stable/usage.html#attachments">attachments</a> for feeding in images and PDFs).</p>
+<p>The most valuable way to apply schemas is across many different prompts, in order to gather the same structure of information from many different sources.</p>
+<p>I put a bunch of thought into the <code>--schema</code> option. It takes a variety of different values - quoting <a href="https://llm.datasette.io/en/latest/schemas.html#ways-to-specify-a-schema">the documentation</a>:</p>
+<blockquote>
+<p>This option can take multiple forms:</p>
+<ul>
+<li>A string providing a JSON schema: <code>--schema '{"type": "object", ...}'</code>
+</li>
+<li>A <a href="https://llm.datasette.io/en/stable/schemas.html#schemas-dsl">condensed schema definition</a>: <code>--schema 'name,age int'</code>
+</li>
+<li>The name or path of a file on disk containing a JSON schema: <code>--schema dogs.schema.json</code>
+</li>
+<li>The hexadecimal ID of a previously logged schema: <code>--schema 520f7aabb121afd14d0c6c237b39ba2d</code> - these IDs can be found using the <code>llm schemas</code> command.</li>
+</ul>
+</blockquote>
+<ul>
+<li>A schema that has been <a href="https://llm.datasette.io/en/latest/templates.html#prompt-templates-save">saved in a template</a>: <code>--schema t:name-of-template</code>
+</li>
+</ul>
+<p>The <a href="https://llm.datasette.io/en/latest/schemas.html#extracting-people-from-a-news-articles">tutorial</a> demonstrates saving a schema by using it once and then obtaining its ID through the new <code>llm schemas</code> command, then saving it to a <a href="https://llm.datasette.io/en/stable/templates.html">template</a> (along with the system prompt) like this:</p>
+<div class="highlight highlight-source-shell"><pre>llm --schema 3b7702e71da3dd791d9e17b76c88730e \
+  --system <span class="pl-s"><span class="pl-pds">'</span>extract people mentioned in this article<span class="pl-pds">'</span></span> \
+  --save people</pre></div>
+<p>And now we can feed in new articles using the <code>llm -t people</code> shortcut to apply that newly saved template:</p>
+<div class="highlight highlight-source-shell"><pre>curl https://www.theguardian.com/commentisfree/2025/feb/27/billy-mcfarland-new-fyre-festival-fantasist <span class="pl-k">|</span> \
+  strip-tags <span class="pl-k">|</span> llm -t people</pre></div>
+<h4 id="doing-more-with-the-logged-structured-data">Doing more with the logged structured data</h4>
+<p>Having run a few prompts that use the same schema, an obvious next step is to do something with the data that has been collected.</p>
+<p>I ended up implementing this on top of the existing <a href="https://llm.datasette.io/en/stable/logging.html">llm logs</a> mechanism.</p>
+<p>LLM already defaults to logging every prompt and response it makes to a SQLite database - mine contains over 4,747 of these records now, according to this query:</p>
+<div class="highlight highlight-source-shell"><pre>sqlite3 <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>llm logs path<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">'</span>select count(*) from responses<span class="pl-pds">'</span></span></pre></div>
+<p>With schemas, an increasing portion of those are valid JSON.</p>
+<p>Since LLM records the schema that was used for each response - using the schema ID, which is derived from a content hash of the expanded JSON schema - it's now possible to ask LLM for all responses that used a particular schema:</p>
+<div class="highlight highlight-source-shell"><pre>llm logs --schema 3b7702e71da3dd791d9e17b76c88730e --short</pre></div>
+<p>I got back:</p>
+<div class="highlight highlight-source-yaml"><pre>- <span class="pl-ent">model</span>: <span class="pl-s">gpt-4o-mini</span>
+  <span class="pl-ent">datetime</span>: <span class="pl-s"><span class="pl-pds">'</span>2025-02-28T07:37:18<span class="pl-pds">'</span></span>
+  <span class="pl-ent">conversation</span>: <span class="pl-s">01jn5qt397aaxskf1vjp6zxw2a</span>
+  <span class="pl-ent">system</span>: <span class="pl-s">extract people mentioned in this article</span>
+  <span class="pl-ent">prompt</span>: <span class="pl-s">Menu AP Logo Menu World U.S. Politics Sports Entertainment Business Science</span>
+    <span class="pl-s">Fact Check Oddities Be Well Newsletters N...</span>
+- <span class="pl-ent">model</span>: <span class="pl-s">gpt-4o-mini</span>
+  <span class="pl-ent">datetime</span>: <span class="pl-s"><span class="pl-pds">'</span>2025-02-28T07:38:58<span class="pl-pds">'</span></span>
+  <span class="pl-ent">conversation</span>: <span class="pl-s">01jn5qx4q5he7yq803rnexp28p</span>
+  <span class="pl-ent">system</span>: <span class="pl-s">extract people mentioned in this article</span>
+  <span class="pl-ent">prompt</span>: <span class="pl-s">Skip to main contentSkip to navigationSkip to navigationPrint subscriptionsNewsletters</span>
+    <span class="pl-s">Sign inUSUS editionUK editionA...</span>
+- <span class="pl-ent">model</span>: <span class="pl-s">gpt-4o</span>
+  <span class="pl-ent">datetime</span>: <span class="pl-s"><span class="pl-pds">'</span>2025-02-28T07:39:07<span class="pl-pds">'</span></span>
+  <span class="pl-ent">conversation</span>: <span class="pl-s">01jn5qxh20tksb85tf3bx2m3bd</span>
+  <span class="pl-ent">system</span>: <span class="pl-s">extract people mentioned in this article</span>
+  <span class="pl-ent">attachments</span>:
+  - <span class="pl-ent">type</span>: <span class="pl-s">image/jpeg</span>
+    <span class="pl-ent">url</span>: <span class="pl-s">https://static.simonwillison.net/static/2025/onion-zuck.jpg</span></pre></div>
+<p>As you can see, I've run that example schema three times (while constructing the tutorial) using GPT-4o mini - twice against text content from <code>curl ... | strip-tags</code> and once against <a href="https://static.simonwillison.net/static/2025/onion-zuck.jpg">a screenshot JPEG</a> to demonstrate attachment support.</p>
+<p>Extracting gathered JSON from the logs is clearly a useful next step... so I added several options to <code>llm logs</code> to support that use-case.</p>
+<p>The first is <code>--data</code> - adding that will cause <code>LLM logs</code> to output just the data that was gathered using a schema. Mix that with <code>-c</code> to see the JSON from the most recent response:</p>
+<div class="highlight highlight-source-shell"><pre>llm logs -c --data</pre></div>
+<p>Outputs:</p>
+<div class="highlight highlight-source-json"><pre>{<span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zap<span class="pl-pds">"</span></span>, <span class="pl-ent">"age"</span>: <span class="pl-c1">5</span>, <span class="pl-ent">"short_bio"</span>: ...</pre></div>
+<p>Combining that with the <code>--schema</code> option is where things get really interesting. You can specify a schema using any of the mechanisms described earlier, which means you can see ALL of the data gathered using that schema by combining <code>--data</code> with <code>--schema X</code> (and <code>-n 0</code> for everything).</p>
+<p>Here are all of the dogs I've invented:</p>
+<div class="highlight highlight-source-shell"><pre>llm logs --schema <span class="pl-s"><span class="pl-pds">'</span>name,age int,short_bio<span class="pl-pds">'</span></span> --data -n 0</pre></div>
+<p>Output (here truncated):</p>
+<div class="highlight highlight-source-json"><pre>{<span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zap<span class="pl-pds">"</span></span>, <span class="pl-ent">"age"</span>: <span class="pl-c1">5</span>, <span class="pl-ent">"short_bio"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zap is a futuristic ...<span class="pl-pds">"</span></span>}
+{<span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zephyr<span class="pl-pds">"</span></span>, <span class="pl-ent">"age"</span>: <span class="pl-c1">3</span>, <span class="pl-ent">"short_bio"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zephyr is an adventurous...<span class="pl-pds">"</span></span>}
+{<span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zylo<span class="pl-pds">"</span></span>, <span class="pl-ent">"age"</span>: <span class="pl-c1">4</span>, <span class="pl-ent">"short_bio"</span>: <span class="pl-s"><span class="pl-pds">"</span>Zylo is a unique ...<span class="pl-pds">"</span></span>}</pre></div>
+<p>Some schemas gather multiple items, producing output that looks like this (from the tutorial):</p>
+<pre><code>{"items": [{"name": "Mark Zuckerberg", "organization": "...
+{"items": [{"name": "Billy McFarland", "organization": "...
+</code></pre>
+<p>We can get back the individual objects by adding <code>--data-key items</code>. Here I'm also using the <code>--schema t:people</code> shortcut to specify the schema that was saved to the <code>people</code> template earlier on.</p>
+<div class="highlight highlight-source-shell"><pre>llm logs --schema t:people --data-key items</pre></div>
+<p>Output:</p>
+<pre><code>{"name": "Katy Perry", "organization": ...
+{"name": "Gayle King", "organization": ...
+{"name": "Lauren Sanchez", "organization": ...
+</code></pre>
+<p>This feature defaults to outputting newline-delimited JSON, but you can add the <code>--data-array</code> flag to get back a JSON array of objects instead.</p>
+<p>... which means you can pipe it into <a href="https://sqlite-utils.datasette.io/en/stable/cli.html#inserting-json-data">sqlite-utils insert</a> to create a SQLite database!</p>
+<div class="highlight highlight-source-shell"><pre>llm logs --schema t:people --data-key items --data-array <span class="pl-k">|</span> \
+  sqlite-utils insert data.db people -</pre></div>
+<p>Add all of this together and we can construct a schema, run it against a bunch of sources and dump the resulting structured data into SQLite where we can explore it using SQL queries (and <a href="https://datasette.io/">Datasette</a>). It's a really powerful combination.</p>
+<h4 id="using-schemas-from-llm-s-python-library">Using schemas from LLM's Python library</h4>
+<p>The most popular way to work with schemas in Python these days is with <a href="https://docs.pydantic.dev/">Pydantic</a>, to the point that many of the official API libraries for models directly incorporate Pydantic for this purpose.</p>
+<p>LLM depended on Pydantic already, and for this project I finally dropped my dual support for Pydantic v1 and v2 and <a href="https://github.com/simonw/llm/pull/775">committed to v2 only</a>.</p>
+<p>A key reason Pydantic for this is so popular is that it's trivial to use it to build a JSON schema document:</p>
+<pre><span class="pl-k">import</span> <span class="pl-s1">pydantic</span>, <span class="pl-s1">json</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Dog</span>(<span class="pl-s1">pydantic</span>.<span class="pl-c1">BaseModel</span>):
+    <span class="pl-s1">name</span>: <span class="pl-smi">str</span>
+    <span class="pl-s1">age</span>: <span class="pl-smi">int</span>
+    <span class="pl-s1">bio</span>: <span class="pl-smi">str</span>
+
+<span class="pl-s1">schema</span> <span class="pl-c1">=</span> <span class="pl-v">Dog</span>.<span class="pl-c1">model_json_schema</span>()
+<span class="pl-en">print</span>(<span class="pl-s1">json</span>.<span class="pl-c1">dumps</span>(<span class="pl-s1">schema</span>, <span class="pl-s1">indent</span><span class="pl-c1">=</span><span class="pl-c1">2</span>))</pre>
+<p>Outputs:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-ent">"properties"</span>: {
+    <span class="pl-ent">"name"</span>: {
+      <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>Name<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+    },
+    <span class="pl-ent">"age"</span>: {
+      <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>Age<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>
+    },
+    <span class="pl-ent">"bio"</span>: {
+      <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>Bio<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+    }
+  },
+  <span class="pl-ent">"required"</span>: [
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>age<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>bio<span class="pl-pds">"</span></span>
+  ],
+  <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>Dog<span class="pl-pds">"</span></span>,
+  <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+}</pre></div>
+<p>LLM's Python library doesn't require you to use Pydantic, but it supports passing either a Pydantic <code>BaseModel</code> subclass or a full JSON schema to the new <code>model.prompt(schema=)</code> parameter. Here's <a href="https://llm.datasette.io/en/latest/python-api.html#schemas">the usage example</a> from the documentation:</p>
+<pre><span class="pl-k">import</span> <span class="pl-s1">llm</span>, <span class="pl-s1">json</span>
+<span class="pl-k">from</span> <span class="pl-s1">pydantic</span> <span class="pl-k">import</span> <span class="pl-v">BaseModel</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Dog</span>(<span class="pl-v">BaseModel</span>):
+    <span class="pl-s1">name</span>: <span class="pl-smi">str</span>
+    <span class="pl-s1">age</span>: <span class="pl-smi">int</span>
+
+<span class="pl-s1">model</span> <span class="pl-c1">=</span> <span class="pl-s1">llm</span>.<span class="pl-c1">get_model</span>(<span class="pl-s">"gpt-4o-mini"</span>)
+<span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-s1">model</span>.<span class="pl-c1">prompt</span>(<span class="pl-s">"Describe a nice dog"</span>, <span class="pl-s1">schema</span><span class="pl-c1">=</span><span class="pl-v">Dog</span>)
+<span class="pl-s1">dog</span> <span class="pl-c1">=</span> <span class="pl-s1">json</span>.<span class="pl-c1">loads</span>(<span class="pl-s1">response</span>.<span class="pl-c1">text</span>())
+<span class="pl-en">print</span>(<span class="pl-s1">dog</span>)
+<span class="pl-c"># {"name":"Buddy","age":3}</span></pre>
+<h4 id="what-s-next-for-llm-schemas-">What's next for LLM schemas?</h4>
+<p>So far I've implemented schema support for models from OpenAI, Anthropic and Gemini. The <a href="https://llm.datasette.io/en/stable/plugins/advanced-model-plugins.html#supporting-schemas">plugin author documentation</a> includes details on how to add this to further plugins - I'd love to see one of the local model plugins implement this pattern as well.</p>
+<p>I'm presenting a workshop at the <a href="https://www.ire.org/training/conferences/nicar-2025/">NICAR 2025</a> data journalism conference next week about <a href="https://github.com/simonw/nicar-2025-scraping/">Cutting-edge web scraping techniques</a>. LLM schemas is a great example of NDD - NICAR-Driven Development - where I'm churning out features I need for that conference (see also shot-scraper's new <a href="https://shot-scraper.datasette.io/en/stable/har.html">HAR support</a>).</p>
+<p>I expect the workshop will be a great opportunity to further refine the design and implementation of this feature!</p>
+<p>I'm also going to be using this new feature to add multiple model support to my <a href="https://www.datasette.cloud/blog/2024/datasette-extract/">datasette-extract plugin</a>, which provides a web UI for structured data extraction that writes the resulting records directly to a SQLite database table.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/annotated-release-notes">annotated-release-notes</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/structured-extraction">structured-extraction</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java CRSF, Go 1.24 and C# 13 language features support available in CodeQL 2.20.5]]></title>
+        <id>https://github.blog/changelog/2025-02-28-java-crsf-go-1-24-and-c-13-language-features-support-available-in-codeql-2-20-5</id>
+        <link href="https://github.blog/changelog/2025-02-28-java-crsf-go-1-24-and-c-13-language-features-support-available-in-codeql-2-20-5"/>
+        <updated>2025-02-28T16:44:38.000Z</updated>
+        <summary type="html"><![CDATA[Java CRSF, Go 1.24 and C# 13 language features support available in CodeQL 2.20.5
+The post Java CRSF, Go 1.24 and C# 13 language features support available in CodeQL 2.20.5 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Improved code scanning coverage for GitHub Actions (Public Preview)]]></title>
+        <id>https://github.blog/changelog/2025-02-28-improved-code-scanning-coverage-for-github-actions-public-preview</id>
+        <link href="https://github.blog/changelog/2025-02-28-improved-code-scanning-coverage-for-github-actions-public-preview"/>
+        <updated>2025-02-28T16:44:26.000Z</updated>
+        <summary type="html"><![CDATA[Improved code scanning coverage for GitHub Actions (Public Preview)
+The post Improved code scanning coverage for GitHub Actions (Public Preview) appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[OpenAI GPT-4.5 in GitHub Copilot now available in public preview]]></title>
         <id>https://github.blog/changelog/2025-02-27-openai-gpt-4-5-in-github-copilot-now-available-in-public-preview</id>
