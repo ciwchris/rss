@@ -2,10 +2,129 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-02-28T21:08:50.204Z</updated>
+    <updated>2025-03-01T14:08:05.788Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[llm-anthropic #24: Use new URL parameter to send attachments]]></title>
+        <id>https://simonwillison.net/2025/Mar/1/llm-anthropic/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/1/llm-anthropic/#atom-everything"/>
+        <updated>2025-03-01T01:20:22.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/llm-anthropic/issues/24">llm-anthropic #24: Use new URL parameter to send attachments</a></strong></p>
+Anthropic released a neat quality of life improvement today. <a href="https://twitter.com/alexalbert__/status/1895504248206709246">Alex Albert</a>:</p>
+<blockquote>
+<p>We've added the ability to specify a public facing URL as the source for an image / document block in the Anthropic API</p>
+</blockquote>
+<p>Prior to this, any time you wanted to send an image to the Claude API you needed to base64-encode it and then include that data in the JSON. This got pretty bulky, especially in conversation scenarios where the same image data needs to get passed in every follow-up prompt.</p>
+<p>I implemented this for <a href="https://github.com/simonw/llm-anthropic">llm-anthropic</a> and shipped it just now in version 0.15.1 (here's <a href="https://github.com/simonw/llm-anthropic/commit/ac4fe809aff9842b05118e83c256690b92b49c4c">the commit</a>) - I went with a patch release version number bump because this is effectively a performance optimization which doesn't provide any new features, previously LLM would accept URLs just fine and would download and then base64 them behind the scenes.</p>
+<p>In testing this out I had a <em>really</em> impressive result from Claude 3.7 Sonnet. I found <a href="https://chroniclingamerica.loc.gov/lccn/sn86086481/1900-01-29/ed-1/seq-2/#date1=1756&amp;index=10&amp;rows=20&amp;words=PELICAN+Pelican+Pelicans+PELICANS&amp;searchType=basic&amp;sequence=0&amp;state=&amp;date2=1922&amp;proxtext=pelicans&amp;y=0&amp;x=0&amp;dateFilterType=yearRange&amp;page=1">a newspaper page</a> from 1900 on the Library of Congress (the "Worcester spy.") and fed a URL to the PDF into Sonnet like this:</p>
+<pre><code>llm -m claude-3.7-sonnet \
+  -a 'https://tile.loc.gov/storage-services/service/ndnp/mb/batch_mb_gaia_ver02/data/sn86086481/0051717161A/1900012901/0296.pdf' \
+'transcribe all text from this image, formatted as markdown'
+</code></pre>
+<p><img alt="Screenshot of the PDF - it has many dense columns" src="https://static.simonwillison.net/static/2025/newspaper-page.jpg" /></p>
+<p>I haven't checked every sentence but it appears to have done <a href="https://gist.github.com/simonw/df1a0473e122830d55a0a3abb51384c9">an excellent job</a>, at a cost of 16 cents.</p>
+<p>As another experiment, I tried running that against my example <code>people</code> template from the schemas feature I released <a href="https://simonwillison.net/2025/Feb/28/llm-schemas/">this morning</a>:</p>
+<pre><code>llm -m claude-3.7-sonnet \
+  -a 'https://tile.loc.gov/storage-services/service/ndnp/mb/batch_mb_gaia_ver02/data/sn86086481/0051717161A/1900012901/0296.pdf' \
+  -t people
+</code></pre>
+<p>That only gave me <a href="https://github.com/simonw/llm-anthropic/issues/24#issuecomment-2691773883">two results</a> - so I tried an alternative approach where I looped the OCR text back through the same template, using <code>llm logs --cid</code> with the logged conversation ID and <code>-r</code> to extract just the raw response from the logs:</p>
+<pre><code>llm logs --cid 01jn7h45x2dafa34zk30z7ayfy -r | \
+  llm -t people -m claude-3.7-sonnet
+</code></pre>
+<p>... and that worked fantastically well! The result started like this:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-ent">"items"</span>: [
+    {
+      <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Capt. W. R. Abercrombie<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"organization"</span>: <span class="pl-s"><span class="pl-pds">"</span>United States Army<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"role"</span>: <span class="pl-s"><span class="pl-pds">"</span>Commander of Copper River exploring expedition<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"learned"</span>: <span class="pl-s"><span class="pl-pds">"</span>Reported on the horrors along the Copper River in Alaska, including starvation, scurvy, and mental illness affecting 70% of people. He was tasked with laying out a trans-Alaskan military route and assessing resources.<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"article_headline"</span>: <span class="pl-s"><span class="pl-pds">"</span>MUCH SUFFERING<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"article_date"</span>: <span class="pl-s"><span class="pl-pds">"</span>1900-01-28<span class="pl-pds">"</span></span>
+    },
+    {
+      <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Edward Gillette<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"organization"</span>: <span class="pl-s"><span class="pl-pds">"</span>Copper River expedition<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"role"</span>: <span class="pl-s"><span class="pl-pds">"</span>Member of the expedition<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"learned"</span>: <span class="pl-s"><span class="pl-pds">"</span>Contributed a chapter to Abercrombie's report on the feasibility of establishing a railroad route up the Copper River valley, comparing it favorably to the Seattle to Skaguay route.<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"article_headline"</span>: <span class="pl-s"><span class="pl-pds">"</span>MUCH SUFFERING<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"article_date"</span>: <span class="pl-s"><span class="pl-pds">"</span>1900-01-28<span class="pl-pds">"</span></span>
+    }</pre></div>
+
+<p><a href="https://github.com/simonw/llm-anthropic/issues/24#issuecomment-2691773883">Full response here</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[strip-tags 0.6]]></title>
+        <id>https://simonwillison.net/2025/Feb/28/strip-tags/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/28/strip-tags/#atom-everything"/>
+        <updated>2025-02-28T22:02:16.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/strip-tags/releases/tag/0.6">strip-tags 0.6</a></strong></p>
+It's been a while since I updated this tool, but in investigating <a href="https://github.com/simonw/llm/issues/808">a tricky mistake</a> in my tutorial for LLM schemas I discovered <a href="https://github.com/simonw/strip-tags/issues/32">a bug</a> that I needed to fix.</p>
+<p>Those release notes in full:</p>
+<blockquote>
+<ul>
+<li>Fixed a bug where <code>strip-tags -t meta</code> still removed <code>&lt;meta&gt;</code> tags from the <code>&lt;head&gt;</code> because the entire <code>&lt;head&gt;</code> element was removed first. <a href="https://github.com/simonw/strip-tags/issues/32">#32</a></li>
+<li>Kept <code>&lt;meta&gt;</code> tags now default to keeping their <code>content</code> and <code>property</code> attributes.</li>
+<li>The CLI <code>-m/--minify</code> option now also removes any remaining blank lines. <a href="https://github.com/simonw/strip-tags/issues/33">#33</a></li>
+<li>A new <code>strip_tags(remove_blank_lines=True)</code> option can be used to achieve the same thing with the Python library function.</li>
+</ul>
+</blockquote>
+<p>Now I can do this and persist the <code>&lt;meta&gt;</code> tags for the article along with the stripped text content:</p>
+<pre><code>curl -s 'https://apnews.com/article/trump-federal-employees-firings-a85d1aaf1088e050d39dcf7e3664bb9f' | \
+  strip-tags -t meta --minify
+</code></pre>
+<p>Here's <a href="https://gist.github.com/simonw/22902a75e2e73ca513231e1d8d0dac6e">the output from that command</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/html">html</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Alison Gopnik]]></title>
+        <id>https://simonwillison.net/2025/Feb/28/alison-gopnik/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Feb/28/alison-gopnik/#atom-everything"/>
+        <updated>2025-02-28T21:56:17.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://simons.berkeley.edu/news/stone-soup-ai"><p>For some time, I’ve argued that a common conception of AI is misguided. This is the idea that AI systems like large language and vision models are individual intelligent agents, analogous to human agents. Instead, I’ve argued that these models are “cultural technologies” like writing, print, pictures, libraries, internet search engines, and Wikipedia. Cultural technologies allow humans to access the information that other humans have created in an effective and wide-ranging way, and they play an important role in increasing human capacities.</p></blockquote>
+<p class="cite">&mdash; <a href="https://simons.berkeley.edu/news/stone-soup-ai">Alison Gopnik</a>, in Stone Soup AI</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot Workspace: Showing quota limits, issues in dashboard, and UX improvements]]></title>
+        <id>https://github.blog/changelog/2025-02-28-copilot-workspace-showing-quota-limits-issues-in-dashboard-and-ux-improvements</id>
+        <link href="https://github.blog/changelog/2025-02-28-copilot-workspace-showing-quota-limits-issues-in-dashboard-and-ux-improvements"/>
+        <updated>2025-02-28T20:34:24.000Z</updated>
+        <summary type="html"><![CDATA[Copilot Workspace: Showing quota limits, issues in dashboard, and UX improvements
+The post Copilot Workspace: Showing quota limits, issues in dashboard, and UX improvements appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Mobile monthly: February’s general availability and more]]></title>
+        <id>https://github.blog/changelog/2025-02-28-mobile-monthly-februarys-general-availability-and-more</id>
+        <link href="https://github.blog/changelog/2025-02-28-mobile-monthly-februarys-general-availability-and-more"/>
+        <updated>2025-02-28T19:44:01.000Z</updated>
+        <summary type="html"><![CDATA[Mobile monthly: February's general availability and more
+The post Mobile monthly: February’s general availability and more appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Structured data extraction from unstructured content using LLM schemas]]></title>
         <id>https://simonwillison.net/2025/Feb/28/llm-schemas/#atom-everything</id>
@@ -3623,138 +3742,6 @@ Itamar Turner-Trauring explains that if you have a <code>BytesIO</code> object i
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Datasette Public Office Hours 31st Jan at 2pm Pacific]]></title>
-        <id>https://simonwillison.net/2025/Jan/30/datasette-public-office-hours/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/30/datasette-public-office-hours/#atom-everything"/>
-        <updated>2025-01-30T21:45:57.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://discord.gg/Pb5dRA8RTa?event=1329974203805601832">Datasette Public Office Hours 31st Jan at 2pm Pacific</a></strong></p>
-We're running another <a href="https://simonwillison.net/tags/datasette-public-office-hours/">Datasette Public Office Hours</a> session on Friday 31st January at 2pm Pacific (<a href="https://www.timeanddate.com/worldclock/converter.html?iso=20250131T220000&amp;p1=224&amp;p2=75&amp;p3=2485&amp;p4=179&amp;p5=136">more timezones here</a>). We'll be featuring demos from the community again - take a look at the videos <a href="https://simonwillison.net/2025/Jan/22/office-hours-demos/">of the six demos</a> from our last session for an idea of what to expect.</p>
-<p><img alt="" src="https://static.simonwillison.net/static/2025/public-office-hours-31-jan.jpg" /></p>
-<p>If you have something you would like to show, please <a href="https://forms.gle/1k5i8Ku9DeoyN7EN9">drop us a line</a>! We still have room for a few more demos.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/discord">discord</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/community">community</a>, <a href="https://simonwillison.net/tags/datasette-public-office-hours">datasette-public-office-hours</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Larger hosted runner enhancements: Edit runner size and Windows Server 4vCPU runner availability]]></title>
-        <id>https://github.blog/changelog/2025-01-30-larger-hosted-runner-enhancements-edit-runner-size-and-windows-server-4vcpu-runner-availability</id>
-        <link href="https://github.blog/changelog/2025-01-30-larger-hosted-runner-enhancements-edit-runner-size-and-windows-server-4vcpu-runner-availability"/>
-        <updated>2025-01-30T21:21:56.000Z</updated>
-        <summary type="html"><![CDATA[Larger hosted runner enhancements: Edit runner size and Windows Server 4vCPU runner availability
-The post Larger hosted runner enhancements: Edit runner size and Windows Server 4vCPU runner availability appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Ashlee Vance]]></title>
-        <id>https://simonwillison.net/2025/Jan/30/ashlee-vance/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/30/ashlee-vance/#atom-everything"/>
-        <updated>2025-01-30T19:23:03.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://www.corememory.com/p/a-young-man-used-ai-to-build-a-nuclear"><p>Eventually, however, HudZah wore Claude down. He filled his Project with the e-mail conversations he’d been having with fusor hobbyists, parts lists for things he’d bought off Amazon, spreadsheets, sections of books and diagrams. HudZah also changed his questions to Claude from general ones to more specific ones. This flood of information and better probing seemed to convince Claude that HudZah did know what he was doing, and the AI began to give him detailed guidance on how to build a nuclear fusor and how not to die while doing it.</p></blockquote>
-<p class="cite">&mdash; <a href="https://www.corememory.com/p/a-young-man-used-ai-to-build-a-nuclear">Ashlee Vance</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/jailbreaking">jailbreaking</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ethics">ethics</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[PyPI now supports project archival]]></title>
-        <id>https://simonwillison.net/2025/Jan/30/pypi-now-supports-project-archival/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/30/pypi-now-supports-project-archival/#atom-everything"/>
-        <updated>2025-01-30T16:46:34.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://blog.pypi.org/posts/2025-01-30-archival/">PyPI now supports project archival</a></strong></p>
-Neat new PyPI feature, similar to GitHub's <a href="https://docs.github.com/en/repositories/archiving-a-github-repository/archiving-repositories">archiving repositories</a> feature. You can now mark a PyPI project as "archived", making it clear that no new releases are planned (though you can switch back out of that mode later if you need to).</p>
-<p>I like the sound of these future plans around this topic:</p>
-<blockquote>
-<p>Project archival is the first step in a larger project, aimed at improving the <em>lifecycle</em> of projects on PyPI. That project includes evaluating additional project statuses (things like "deprecated" and "unmaintained"), as well as changes to <a href="https://docs.pypi.org/api/">PyPI's public APIs</a> that will enable clients to retrieve and act on project status information. You can track our progress on these fronts by following along with <a href="https://github.com/pypi/warehouse/issues/16844">warehouse#16844</a>!</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/psf">psf</a>, <a href="https://simonwillison.net/tags/pypi">pypi</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Mistral Small 3]]></title>
-        <id>https://simonwillison.net/2025/Jan/30/mistral-small-3/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/30/mistral-small-3/#atom-everything"/>
-        <updated>2025-01-30T15:36:30.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/news/mistral-small-3/">Mistral Small 3</a></strong></p>
-First model release of 2025 for French AI lab Mistral, who describe Mistral Small 3 as "a latency-optimized 24B-parameter model released under the Apache 2.0 license."</p>
-<p>More notably, they claim the following:</p>
-<blockquote>
-<p>Mistral Small 3 is competitive with larger models such as Llama 3.3 70B or Qwen 32B, and is an excellent open replacement for opaque proprietary models like GPT4o-mini. Mistral Small 3 is on par with Llama 3.3 70B instruct, while being more than 3x faster on the same hardware.</p>
-</blockquote>
-<p>Llama 3.3 70B and Qwen 32B are two of my favourite models to run on my laptop - that ~20GB size turns out to be a great trade-off between memory usage and model utility. It's exciting to see a new entrant into that weight class.</p>
-<p>The license is important: previous Mistral Small models used their Mistral Research License, which prohibited commercial deployments unless you negotiate a commercial license with them. They appear to be moving away from that, at least for their core models:</p>
-<blockquote>
-<p><strong>We’re renewing our commitment to using Apache 2.0 license for our general purpose models, as we progressively move away from MRL-licensed models</strong>. As with Mistral Small 3, model weights will be available to download and deploy locally, and free to modify and use in any capacity. […] Enterprises and developers that need specialized capabilities (increased speed and context, domain specific knowledge, task-specific models like code completion) can count on additional commercial models complementing what we contribute to the community.</p>
-</blockquote>
-<p>Despite being called Mistral Small 3, this appears to be the fourth release of a model under that label. The Mistral API calls this one <code>mistral-small-2501</code> - previous model IDs were <code>mistral-small-2312</code>, <code>mistral-small-2402</code> and <code>mistral-small-2409</code>.</p>
-<p>I've <a href="https://github.com/simonw/llm-mistral/releases/tag/0.10">updated the llm-mistral plugin</a> for talking directly to Mistral's <a href="https://docs.mistral.ai/deployment/laplateforme/overview/">La Plateforme</a> API:</p>
-<pre><code>llm install -U llm-mistral
-llm keys set mistral
-# Paste key here
-llm -m mistral/mistral-small-latest "tell me a joke about a badger and a puffin"
-</code></pre>
-<blockquote>
-<p>Sure, here's a light-hearted joke for you:</p>
-<p>Why did the badger bring a puffin to the party?</p>
-<p>Because he heard puffins make great party 'Puffins'!</p>
-<p>(That's a play on the word "puffins" and the phrase "party people.")</p>
-</blockquote>
-<p>API pricing is $0.10/million tokens of input, $0.30/million tokens of output - half the price of the previous Mistral Small API model ($0.20/$0.60). for comparison, GPT-4o mini is $0.15/$0.60.</p>
-<p>Mistral also ensured that the new model was <a href="https://ollama.com/library/mistral-small">available on Ollama</a> in time for their release announcement.</p>
-<p>You can pull the model like this (fetching 14GB):</p>
-<pre><code>ollama run mistral-small:24b
-</code></pre>
-<p>The <a href="https://github.com/taketwo/llm-ollama">llm-ollama</a> plugin will then let you prompt it like so:</p>
-<pre><code>llm install llm-ollama
-llm -m mistral-small:24b "say hi"
-</code></pre>
-
-    <p><small></small>Via <a href="https://twitter.com/MistralAI/status/1884968836606136636">@MistralAI</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Antiqua et Nova]]></title>
-        <id>https://simonwillison.net/2025/Jan/30/antiqua-et-nova/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/30/antiqua-et-nova/#atom-everything"/>
-        <updated>2025-01-30T14:38:43.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20250128_antiqua-et-nova_en.html"><p>104. Technology offers remarkable tools to oversee and develop the world's resources. However, in some cases, humanity is increasingly ceding control of these resources to machines. Within some circles of scientists and futurists, there is optimism about the potential of artificial general intelligence (AGI), a hypothetical form of AI that would match or surpass human intelligence and bring about unimaginable advancements. Some even speculate that AGI could achieve superhuman capabilities. At the same time, as society drifts away from a connection with the transcendent, some are tempted to turn to AI in search of meaning or fulfillment---longings that can only be truly satisfied in communion with God. <a href="https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20250128_antiqua-et-nova_en.html#_ftn194">[194]</a></p>
-<p>105. However, <em>the presumption of substituting God for an artifact of human making is idolatry</em>, a practice Scripture explicitly warns against (e.g., Ex. 20:4; 32:1-5; 34:17). Moreover, AI may prove even more seductive than traditional idols for, unlike idols that "have mouths but do not speak; eyes, but do not see; ears, but do not hear" (Ps. 115:5-6), AI can "speak," or at least gives the illusion of doing so (cf. Rev. 13:15). Yet, it is vital to remember that AI is but a pale reflection of humanity---it is crafted by human minds, trained on human-generated material, responsive to human input, and sustained through human labor. AI cannot possess many of the capabilities specific to human life, and it is also fallible. By turning to AI as a perceived "Other" greater than itself, with which to share existence and responsibilities, humanity risks creating a substitute for God. However, it is not AI that is ultimately deified and worshipped, but humanity itself---which, in this way, becomes enslaved to its own work. <a href="https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20250128_antiqua-et-nova_en.html#_ftn195">[195]</a></p></blockquote>
-<p class="cite">&mdash; <a href="https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20250128_antiqua-et-nova_en.html">Antiqua et Nova</a>, Vatican Dicasteries</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/ethics">ethics</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Mark Zuckerberg]]></title>
-        <id>https://simonwillison.net/2025/Jan/30/mark-zuckerberg/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jan/30/mark-zuckerberg/#atom-everything"/>
-        <updated>2025-01-30T13:41:49.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://m.facebook.com/story.php?story_fbid=pfbid02oRRTPrY1mvbqBZT4QueimeBrKcVXG4ySxFscRLiEU6QtGxbLi9U4TBojiC9aa19fl&amp;id=4&amp;mibextid=wwXIfr"><p>Llama 4 is making great progress in training. Llama 4 mini is done with pre-training and our reasoning models and larger model are looking good too. Our goal with Llama 3 was to make open source competitive with closed models, and our goal for Llama 4 is to lead. Llama 4 will be natively multimodal -- it's an omni-model -- and it will have agentic capabilities, so it's going to be novel and it's going to unlock a lot of new use cases.</p></blockquote>
-<p class="cite">&mdash; <a href="https://m.facebook.com/story.php?story_fbid=pfbid02oRRTPrY1mvbqBZT4QueimeBrKcVXG4ySxFscRLiEU6QtGxbLi9U4TBojiC9aa19fl&amp;id=4&amp;mibextid=wwXIfr">Mark Zuckerberg</a>, on Meta's quarterly earnings report</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/llama">llama</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/meta">meta</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/facebook">facebook</a>, <a href="https://simonwillison.net/tags/mark-zuckerberg">mark-zuckerberg</a>, <a href="https://simonwillison.net/tags/multi-modal-output">multi-modal-output</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
