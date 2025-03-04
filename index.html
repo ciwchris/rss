@@ -25,6 +25,166 @@
 
   <ul>
     <li>
+      <time>2025-03-04</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              llm-ollama 0.9.0
+              <span class="post-metadata">(1 min | 343 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/4/llm-ollama-090/#atom-everything>llm-ollama 0.9.0
+llm-ollama plugin adds support for schemas, thanks to a PR by Adam Compton.
+Ollama provides very robust support for this pattern thanks to their structured outputs feature, which works across all of the models that they support by intercepting the logic that outputs the next token and restricting it to only tokens that would be valid in the context of the provided schema.
+With Ollama and llm-ollama installed you can run even run structured schemas against vision prompts for local models. Here&#x27;s one against Ollama&#x27;s llama3.2-vision:
+llm -m llama3.2-vision:latest \
+  &#x27;describe images&#x27; \
+  --schema &#x27;species,description,count int&#x27; \
+  -a https://static.simonwillison.net/static/2025/two-pelicans.jpg
+
+I got back this:
+{
+    &quot;species&quot;: &quot;Pelicans&quot;,
+    &quot;description&quot;: &quot;The image features a striking brown pelican with its distinctive orange beak, characterized by its large size and impressive wingspan.&quot;,
+    &quot;count&quot;: 1
+}
+
+(Actually a bit disappointing, as there are two pelicans and their beaks are brown.)
+
+
+    
+Tags: llm, ollama, plugins, generative-ai, ai, llms, llama, vision-llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-mistral 0.11
+              <span class="post-metadata">(1 min | 244 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/4/llm-mistral-011/#atom-everything>llm-mistral 0.11
+schema support to this plugin which adds support for the Mistral API to LLM. Release notes:
+Support for LLM schemas. #19
+-o prefix &#x27;{&#x27; option for forcing a response prefix. #18
+Schemas now work with OpenAI, Anthropic, Gemini and Mistral hosted models, plus self-hosted models via Ollama and llm-ollama.
+
+
+    
+Tags: projects, mistral, llm, plugins, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              I built an automaton called Squadron
+              <span class="post-metadata">(4 min | 1240 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/4/squadron/#atom-everything>I believe that the price you have to pay for taking on a project is writing about it afterwards. On that basis, I feel compelled to write up my decidedly non-software project from this weekend: Squadron, an automaton.
+
+I&#x27;ve been obsessed with automata for decades, ever since I first encountered the Cabaret Mechanical Theater in Covent Garden in London (there from 1984-2003 - today it&#x27;s a roaming collection). If you&#x27;re not familiar with them, they are animated mechanical sculptures. I consider them to be the highest form of art.
+
+For my birthday this year Natalie signed me up for a two day, 16 hour hour weekend class to make one at The Crucible in Oakland. If you live in the SF Bay Area and are not yet aware of the Crucible I&#x27;m delighted to introduce you - it&#x27;s a phenomenal non-profit art school with an enormous warehouse that teaches blacksmithing, glass blowing, welding, ceramics, woodwork and dozens of other crafts. Here&#x27;s their course catalog. Go enrich your soul!
+
+I took their class in &quot;Mechanical Sculpture&quot;, which turned out to be exactly a class in how to make automata. I guess the term &quot;automota&quot; isn&#x27;t widely enough known to use in the course description!
+
+The class was small - two students and one instructor - which meant that we got an extremely personalized experience.
+
+What I built
+
+On day one we worked together on a class project. I suggested a pelican, and we built exactly that - a single glorious pelican that flapped its wings and swooped from side to side.
+
+Day two was when we got to build our own things. We&#x27;d already built a pelican, but I wanted one of my own... so I figured the only thing better than a pelican is a full squadron of them!
+
+Hence, Squadron. Here&#x27;s a video of my finished piece in action:
+
+
+
+    &lt;video 
+        controls&#x3D;&quot;controls&quot;
+        preload&#x3D;&quot;none&quot;
+        aria-label&#x3D;&quot;Three wooden pelicans gently and jerkly flap their wings, suspended on brass wires above a wooden contraption containing a motor, a drive shaft and two cams driving rods that move the bodies up and down.&quot;
+        poster&#x3D;&quot;https://static.simonwillison.net/static/2025/squadron.jpg&quot; loop&#x3D;&quot;loop&quot;
+        style&#x3D;&quot;width: 100%; height: auto;&quot;&gt;
+        
+    
+
+
+I think it captures their pelican charisma pretty well!
+
+How I built it
+
+I was delighted to learn from the class that the tools needed to build simple automata are actually quite accessible:
+
+
+A power drill
+
+A saw - we used a Japanese pull saw
+
+Wood glue
+
+Screws
+
+Wood - we mainly worked with basswood, plus I used some poplar wood for the wings
+
+Brass wires and rods
+
+Pliers for working with the wire
+
+
+The most sophisticated tool we used was a reciprocating scroll saw, for cutting shapes out of the wood. We also had access to a bench sander and a drill press, but those really just sped up processes that can be achieved using sand paper and a regular hand drill.
+
+I&#x27;ve taken a lot of photos of pelicans over the years. I found this side-on photograph that I liked of two pelicans in flight:
+
+
+
+Then I used the iOS Photos app feature where you can extract an object from a photo as a &quot;sticker&quot; and pasted the result into iOS Notes.
+
+
+
+I printed the image from there, which gave me a pelican shape on paper. I cut out just the body and used it to trace the shape onto the wood, then ran the wood through the scroll saw. I made three of these, not paying too much attention to accuracy as it&#x27;s better for them to have slight differences to each other.
+
+For the wings I started with rectangles of poplar wood, cut using the Japanese saw and attached to the pelican&#x27;s body using bent brass wire through small drilled holes. I later sketched out a more interesting wing shape on some foam board as a prototype (loosely inspired by photos I had taken), then traced that shape onto the wood and shaped them with the scroll saw and sander.
+
+Most automata are driven using cams, and that was the pattern we stuck to in our class as well. Cams are incredibly simple: you have a rotating rod (here driven by a 12V 10RPM motor) and you attach an offset disc to it. That disc can then drive all manner of useful mechanisms.
+
+For my pelicans the cams lift rods up and down via a &quot;foot&quot; that sits on the cam. The feet turned out to be essential - we made one from copper and another from wood. Without feet the mechanism was liable to jam.
+
+I made both cams by tracing out shapes with a pencil and then cutting the wood with the scroll saw, then using the drill press to add the hole for the rod.
+
+The front pelican&#x27;s body sits on a brass rod that lifts up and down, with the wings fixed to wires.
+
+The back two share a single wooden dowel, sitting on brass wires attached to two small holes drilled into the end.
+
+To attach the cams to the drive shaft I drilled a small hole through the cam and the brass drive shaft, then hammered in a brass pin to hold the cam in place. Without that there&#x27;s a risk of the cam slipping around the driving rod rather than rotating firmly in place.
+
+After adding the pelicans with their fixed wings I ran into a problem: the tension from the wing wiring caused friction between the rod and the base, resulting in the up-and-down motion getting stuck. We were running low on time so our instructor stepped in to help rescue my project with the additional brass tubes shown in the final piece.
+
+What I learned
+
+The main thing I learned from the weekend is that automata building is a much more accessible craft than I had initially expected. The tools and techniques are surprisingly inexpensive, and a weekend (really a single day for my solo project) was enough time to build something that I&#x27;m really happy with.
+
+
+The hardest part turns out to be the fiddling at the very end to get all of the motions just right. I&#x27;m still iterating on this now (hence the elastic hair tie and visible pieces of tape) - it&#x27;s difficult to find the right balance between position, motion and composition. I guess I need to get comfortable with the idea that art is never finished, merely abandoned.
+
+
+I&#x27;ve been looking out for a good analog hobby for a while now. Maybe this is the one!
+Tags: art, projects</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-03</time>
 
       <section>
@@ -4295,122 +4455,6 @@ Yep, sounds about right!</a>
 The post Notification emails for GitHub Issues now include more detail appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-02-02</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Actions Get workflow usage and Get workflow run usage endpoints closing down
-              <span class="post-metadata">(8 min | 2446 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-02-actions-get-workflow-usage-and-get-workflow-run-usage-endpoints-closing-down>Actions Get workflow usage and Get workflow run usage endpoints closing down
-The post Actions Get workflow usage and Get workflow run usage endpoints closing down appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Anthropic
-              <span class="post-metadata">(1 min | 272 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/anthropic/#atom-everything>While we encourage people to use AI systems during their role to help them work faster and more effectively, please do not use AI assistants during the application process. We want to understand your personal interest in Anthropic without mediation through an AI system, and we also want to evaluate your non-AI-assisted communication skills. Please indicate &#x27;Yes&#x27; if you have read and agree.
-Why do you want to work at Anthropic? (We value this response highly - great answers are often 200-400 words.)
-
-— Anthropic, online job application form
-Tags: anthropic, ethics, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI reasoning models: Advice on prompting
-              <span class="post-metadata">(3 min | 925 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/openai-reasoning-models-advice-on-prompting/#atom-everything>OpenAI reasoning models: Advice on prompting
-Developer messages are the new system messages: Starting with o1-2024-12-17, reasoning models support developer messages rather than system messages, to align with the chain of command behavior described in the model spec.
-This appears to be a purely aesthetic change made for consistency with their instruction hierarchy concept. As far as I can tell the old system prompts continue to work exactly as before - you&#x27;re encouraged to use the new developer message type but it has no impact on what actually happens.
-Since my LLM tool already bakes in a llm --system &quot;system prompt&quot; option which works across multiple different models from different providers I&#x27;m not going to rush to adopt this new language!
-Use delimiters for clarity: Use delimiters like markdown, XML tags, and section titles to clearly indicate distinct parts of the input, helping the model interpret different sections appropriately.
-Anthropic have been encouraging XML-ish delimiters for a while (I say -ish because there&#x27;s no requirement that the resulting prompt is valid XML). My files-to-prompt tool has a -c option which outputs Claude-style XML, and in my experiments this same option works great with o1 and o3 too:
-git clone https://github.com/tursodatabase/limbo
-cd limbo/bindings/python
-
-files-to-prompt . -c | llm -m o3-mini \
-  -o reasoning_effort high \
-  --system &#x27;Write a detailed README with extensive usage examples&#x27;
-
-
-
-
-Limit additional context in retrieval-augmented generation (RAG): When providing additional context or documents, include only the most relevant information to prevent the model from overcomplicating its response.
-This makes me thing that o1/o3 are not good models to implement RAG on at all - with RAG I like to be able to dump as much extra context into the prompt as possible and leave it to the models to figure out what&#x27;s relevant.
-Try zero shot first, then few shot if needed: Reasoning models often don&#x27;t need few-shot examples to produce good results, so try to write prompts without examples first. If you have more complex requirements for your desired output, it may help to include a few examples of inputs and desired outputs in your prompt. Just ensure that the examples align very closely with your prompt instructions, as discrepancies between the two may produce poor results.
-Providing examples remains the single most powerful prompting tip I know, so it&#x27;s interesting to see advice here to only switch to examples if zero-shot doesn&#x27;t work out.
-Be very specific about your end goal: In your instructions, try to give very specific parameters for a successful response, and encourage the model to keep reasoning and iterating until it matches your success criteria.
-This makes sense: reasoning models &quot;think&quot; until they reach a conclusion, so making the goal as unambiguous as possible leads to better results.
-Markdown formatting: Starting with o1-2024-12-17, reasoning models in the API will avoid generating responses with markdown formatting. To signal to the model when you do want markdown formatting in the response, include the string Formatting re-enabled on the first line of your developer message.
-This one was a real shock to me! I noticed that o3-mini was outputting • characters instead of Markdown * bullets and initially thought that was a bug.
-I first saw this while running this prompt against limbo/bindings/python using files-to-prompt:
-git clone https://github.com/tursodatabase/limbo
-cd limbo/bindings/python
-
-files-to-prompt . -c | llm -m o3-mini \
-  -o reasoning_effort high \
-  --system &#x27;Write a detailed README with extensive usage examples&#x27;
-
-Here&#x27;s the full result, which includes text like this (note the weird bullets):
-Features
---------
-• High‑performance, in‑process database engine written in Rust  
-• SQLite‑compatible SQL interface  
-• Standard Python DB‑API 2.0–style connection and cursor objects
-
-I ran it again with this modified prompt:
-Formatting re-enabled. Write a detailed README with extensive usage examples.
-And this time got back proper Markdown, rendered in this Gist. That did a really good job, and included bulleted lists using this valid Markdown syntax instead:
-- **&#x60;make test&#x60;**: Run tests using pytest.
-- **&#x60;make lint&#x60;**: Run linters (via [ruff](https://github.com/astral-sh/ruff)).
-- **&#x60;make check-requirements&#x60;**: Validate that the &#x60;requirements.txt&#x60; files are in sync with &#x60;pyproject.toml&#x60;.
-- **&#x60;make compile-requirements&#x60;**: Compile the &#x60;requirements.txt&#x60; files using pip-tools.
-
-
-(Using LLMs like this to get me off the ground with under-documented libraries is a trick I use several times a week.)
-
-    
-Via @harjotsgill
-Tags: o1, openai, o3, markdown, ai, llms, prompt-engineering, generative-ai, inference-scaling, rag, ai-assisted-programming, documentation</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Benedict Evans
-              <span class="post-metadata">(1 min | 362 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/2/benedict-evans/#atom-everything>Part of the concept of ‘Disruption’ is that important new technologies tend to be bad at the things that matter to the previous generation of technology, but they do something else important instead. Asking if an LLM can do very specific and precise information retrieval might be like asking if an Apple II can match the uptime of a mainframe, or asking if you can build Photoshop inside Netscape. No, they can’t really do that, but that’s not the point and doesn’t mean they’re useless. They do something else, and that ‘something else’ matters more and pulls in all of the investment, innovation and company creation. Maybe, 20 years later, they can do the old thing too - maybe you can run a bank on PCs and build graphics software in a browser, eventually - but that’s not what matters at the beginning. They unlock something else. 
-What is that ‘something else’ for generative AI, though? How do you think conceptually about places where that error rate is a feature, not a bug?
-
-— Benedict Evans, Are better models better?
-Tags: benedict-evans, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
