@@ -31,6 +31,75 @@
       <article>
           <details>
             <summary>
+              Orion&#x27;s Next Chapter: Linux Development Officially Launched
+              <span class="post-metadata">(2 min | 700 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://kagifeedback.org/d/6479-orions-next-chapter-linux-development-officially-launched/1>We&#x27;re thrilled to announce that development of Orion Browser for Linux has officially started! Our team is working hard to bring the same speed, privacy, and innovation that Mac users love to the Linux platform.
+This is an ambitious project that we expect will take approximately one year to complete. Our target is to achieve feature parity with the current macOS version by March 2026.
+Want to stay updated on Orion for Linux?  
+Register here to receive news and early access opportunities throughout the development year.</a>
+            </div>
+            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot Chat users can now use the Vision input in VS Code and Visual Studio in public preview
+              <span class="post-metadata">(9 min | 2604 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-06-copilot-chat-users-can-now-use-the-vision-input-in-vs-code-and-visual-studio-public-preview>Copilot Chat users can now use the Vision input in VS Code and Visual Studio in public preview
+The post Copilot Chat users can now use the Vision input in VS Code and Visual Studio in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              monolith
+              <span class="post-metadata">(1 min | 336 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/6/monolith/#atom-everything>monolith
+cargo install monolith # or brew install
+monolith https://simonwillison.net/ &gt; /tmp/simonwillison.html
+
+That command produced this 1.5MB single file result. All of the linked images, CSS and JavaScript assets have had their contents inlined into base64 URIs in their src&#x3D; and href&#x3D; attributes.
+I was intrigued as to how it works, so I dumped the whole repository into Gemini 2.0 Pro and asked for an architectural summary:
+cd /tmp
+git clone https://github.com/Y2Z/monolith
+cd monolith
+files-to-prompt . -c | llm -m gemini-2.0-pro-exp-02-05 \
+  -s &#x27;architectural overview as markdown&#x27;
+
+Here&#x27;s what I got. Short version: it uses the reqwest, html5ever, markup5ever_rcdom and cssparser crates to fetch and parse HTML and CSS and extract, combine and rewrite the assets. It doesn&#x27;t currently attempt to run any JavaScript.
+
+    
+Via Comment on Hacker News
+Tags: scraping, ai-assisted-programming, generative-ai, ai, llms, rust</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Effortlessly Integrate xAI’s Grok with Semantic Kernel
+              <span class="post-metadata">(24 min | 7182 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/integrate-sk-with-xai-grok-easily/>For Semantic Kernel users, integrating xAI’s Grok API using the OpenAI connector is a breeze thanks to its compatibility with OpenAI’s API format. This tutorial focuses on setting up Grok in your Semantic Kernel projects with minimal fuss, using C# and Python examples. Why Grok? Grok, built by xAI, is a powerful AI model, offers […]
+The post Effortlessly Integrate xAI’s Grok with Semantic Kernel appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Will the future of software development run on vibes?
               <span class="post-metadata">(2 min | 478 words)</span> 
             </summary>
@@ -4419,63 +4488,6 @@ Privacy Pass implementation is fully open-sourced for transparency and community
 Kagi Privacy Pass is available for the Profe…</a>
             </div>
             <!-- <p class="post-source">Activity in the release-notes tag</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              o3-mini is really good at writing internal documentation
-              <span class="post-metadata">(2 min | 570 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/5/o3-mini-documentation/#atom-everything>o3-mini is really good at writing internal documentation
-extensive hand-written documentation for that, but I thought it would be interesting to see if I could derive any insights from running an LLM against the codebase.
-o3-mini has an input limit of 200,000 tokens. I used LLM and my files-to-prompt tool to generate the documentation like this:
-cd /tmp
-git clone https://github.com/simonw/datasette
-cd datasette
-files-to-prompt datasette -e py -c | \
-  llm -m o3-mini -s \
-  &#x27;write extensive documentation for how the permissions system works, as markdown&#x27;
-
-
-The files-to-prompt command is fed the datasette subdirectory, which contains just the source code for the application - omitting tests (in tests/) and documentation (in docs/).
-The -e py option causes it to only include files with a .py extension - skipping all of the HTML and JavaScript files in that hierarchy.
-The -c option causes it to output Claude&#x27;s XML-ish format - a format that works great with other LLMs too.
-You can see the output of that command in this Gist.
-Then I pipe that result into LLM, requesting the o3-mini OpenAI model and passing the following system prompt:
-write extensive documentation for how the permissions system works, as markdown
-Specifically requesting Markdown is important.
-The prompt used 99,348 input tokens and produced 3,118 output tokens (320 of those were invisible reasoning tokens). That&#x27;s a cost of 12.3 cents.
-Honestly, the results are fantastic. I had to double-check that I hadn&#x27;t accidentally fed in the documentation by mistake.
-(It&#x27;s possible that the model is picking up additional information about Datasette in its training set, but I&#x27;ve seen similar high quality results from other, newer libraries so I don&#x27;t think that&#x27;s a significant factor.)
-In this case I already had extensive written documentation of my own, but this was still a useful refresher to help confirm that the code matched my mental model of how everything works.
-Documentation of project internals as a category is notorious for going out of date. Having tricks like this to derive usable how-it-works documentation from existing codebases in just a few seconds and at a cost of a few cents is wildly valuable.
-
-
-    
-Tags: llm, openai, o3, ai, llms, datasette, generative-ai, documentation, ai-assisted-programming, inference-scaling</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Ambsheets: Spreadsheets for exploring scenarios
-              <span class="post-metadata">(1 min | 306 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/5/ambsheets/#atom-everything>Ambsheets: Spreadsheets for exploring scenarios
-Here the cell for &quot;Car&quot; contains {500, 1200} and the cell for &quot;Apartment&quot;  contains {2800, 3700, 5500}, resulting in a &quot;Total&quot; cell with six different values. Hovering over a calculated highlights its source values and a side panel shows a table of calculated results against those different combinations.
-
-Always interesting to see neat ideas like this presented on top of UIs that haven&#x27;t had a significant upgrade in a very long time.
-
-    
-Via Hacker News
-Tags: spreadsheets, geoffrey-litt, ui, ux</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
