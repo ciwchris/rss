@@ -2,10 +2,160 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-05T21:09:20.801Z</updated>
+    <updated>2025-03-06T14:09:37.211Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Will the future of software development run on vibes?]]></title>
+        <id>https://simonwillison.net/2025/Mar/6/vibe-coding/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/6/vibe-coding/#atom-everything"/>
+        <updated>2025-03-06T03:39:43.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://arstechnica.com/ai/2025/03/is-vibe-coding-with-ai-gnarly-or-reckless-maybe-some-of-both/">Will the future of software development run on vibes?</a></strong></p>
+I got a few quotes in this piece by Benj Edwards about <strong>vibe coding</strong>, the term Andrej Karpathy <a href="https://simonwillison.net/2025/Feb/6/andrej-karpathy/">coined</a> for when you prompt an LLM to write code, accept all changes and keep feeding it prompts and error messages and see what you can get it to build.</p>
+<p>Here's what I originally sent to Benj:</p>
+<blockquote>
+<p>I really enjoy vibe coding - it's a fun way to play with the limits of these models. It's also useful for prototyping, where the aim of the exercise is to try out an idea and prove if it can work.</p>
+<p>Where vibe coding fails is in producing maintainable code for production settings. I firmly believe that as a developer you have to take accountability for the code you produce - if you're going to put your name to it you need to be confident that you understand how and why it works - ideally to the point that you can explain it to somebody else.</p>
+<p>Vibe coding your way to a production codebase is clearly a terrible idea. Most of the work we do as software engineers is about evolving existing systems, and for those the quality and understandability of the underlying code is crucial.</p>
+<p>For experiments and low-stake projects where you want to explore what's possible and build fun prototypes? Go wild! But stay aware of the very real risk that a good enough prototype often faces pressure to get pushed to production.</p>
+<p>If an LLM wrote every line of your code but you've reviewed, tested and understood it all, that's not vibe coding in my book - that's using an LLM as a typing assistant.</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/andrej-karpathy">andrej-karpathy</a>, <a href="https://simonwillison.net/tags/benj-edwards">benj-edwards</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Aider: Using uv as an installer]]></title>
+        <id>https://simonwillison.net/2025/Mar/6/aider-using-uv-as-an-installer/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/6/aider-using-uv-as-an-installer/#atom-everything"/>
+        <updated>2025-03-06T01:47:20.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://aider.chat/2025/01/15/uv.html">Aider: Using uv as an installer</a></strong></p>
+Paul Gauthier has an innovative solution for the challenge of helping end users get a copy of his Aider CLI Python utility installed in an isolated virtual environment without first needing to teach them what an "isolated virtual environment" is.</p>
+<p>Provided you already have a Python install of version 3.8 or higher you can run this:</p>
+<pre><code>pip install aider-install &amp;&amp; aider-install
+</code></pre>
+<p>The <a href="https://pypi.org/project/aider-install/">aider-install</a> package itself depends on <a href="https://github.com/astral-sh/uv">uv</a>. When you run <code>aider-install</code> it executes the following <a href="https://github.com/Aider-AI/aider-install/blob/main/aider_install/main.py">Python code</a>:</p>
+<pre><span class="pl-k">def</span> <span class="pl-en">install_aider</span>():
+    <span class="pl-k">try</span>:
+        <span class="pl-s1">uv_bin</span> <span class="pl-c1">=</span> <span class="pl-s1">uv</span>.<span class="pl-c1">find_uv_bin</span>()
+        <span class="pl-s1">subprocess</span>.<span class="pl-c1">check_call</span>([
+            <span class="pl-s1">uv_bin</span>, <span class="pl-s">"tool"</span>, <span class="pl-s">"install"</span>, <span class="pl-s">"--force"</span>, <span class="pl-s">"--python"</span>, <span class="pl-s">"python3.12"</span>, <span class="pl-s">"aider-chat@latest"</span>
+        ])
+        <span class="pl-s1">subprocess</span>.<span class="pl-c1">check_call</span>([<span class="pl-s1">uv_bin</span>, <span class="pl-s">"tool"</span>, <span class="pl-s">"update-shell"</span>])
+    <span class="pl-k">except</span> <span class="pl-s1">subprocess</span>.<span class="pl-c1">CalledProcessError</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">f"Failed to install aider: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">e</span><span class="pl-kos">}</span></span>"</span>)
+        <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)</pre>
+
+<p>This first figures out the location of the <code>uv</code> Rust binary, then uses it to install his <a href="https://pypi.org/project/aider-chat/">aider-chat</a> package by running the equivalent of this command:</p>
+<pre><code>uv tool install --force --python python3.12 aider-chat@latest
+</code></pre>
+<p>This will in turn install a brand new standalone copy of Python 3.12 and tuck it away in uv's own managed directory structure where it shouldn't hurt anything else.</p>
+<p>The <code>aider-chat</code> script defaults to being dropped in the XDG standard directory, which is probably <code>~/.local/bin</code> - see <a href="https://docs.astral.sh/uv/concepts/tools/#the-bin-directory">uv's documentation</a>. The <a href="https://docs.astral.sh/uv/concepts/tools/#overwriting-executables">--force flag</a> ensures that <code>uv</code> will overwrite any previous attempts at installing <code>aider-chat</code> in that location with the new one.</p>
+<p>Finally, running <code>uv tool update-shell</code> ensures that bin directory is <a href="https://docs.astral.sh/uv/concepts/tools/#the-path">on the user's PATH</a>.</p>
+<p>I <em>think</em> I like this. There is a LOT of stuff going on here, and experienced users may well opt for an <a href="https://aider.chat/docs/install.html">alternative installation mechanism</a>.</p>
+<p>But for non-expert Python users who just want to start using Aider, I think this pattern represents quite a tasteful way of getting everything working with minimal risk of breaking the user's system.</p>
+<p><strong>Update</strong>: Paul <a href="https://twitter.com/paulgauthier/status/1897486573857595877">adds</a>:</p>
+<blockquote>
+<p>Offering this install method dramatically reduced the number of GitHub issues from users with conflicted/broken python environments.</p>
+<p>I also really like the "curl | sh" aider installer based on uv. Even users who don't have python installed can use it.</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/paul-gauthier">paul-gauthier</a>, <a href="https://simonwillison.net/tags/aider">aider</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The Graphing Calculator Story]]></title>
+        <id>https://simonwillison.net/2025/Mar/5/the-graphing-calculator-story/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/5/the-graphing-calculator-story/#atom-everything"/>
+        <updated>2025-03-05T23:36:54.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.pacifict.com/story/">The Graphing Calculator Story</a></strong></p>
+Utterly delightful story from Ron Avitzur in 2004 about the origins of the Graphing Calculator app that shipped with many versions of macOS. Ron's contract with Apple had ended but his badge kept working so he kept on letting himself in to work on the project. He even grew a small team:</p>
+<blockquote>
+<p>I asked my friend Greg Robbins to help me. His contract in another division at Apple had just ended, so he told his manager that he would start reporting to me. She didn't ask who I was and let him keep his office and badge. In turn, I told people that I was reporting to him. Since that left no managers in the loop, we had no meetings and could be extremely productive</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://laughingmeme.org/links/">Kellan</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/apple">apple</a>, <a href="https://simonwillison.net/tags/computer-history">computer-history</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Demo of ChatGPT Code Interpreter running in o3-mini-high]]></title>
+        <id>https://simonwillison.net/2025/Mar/5/code-interpreter/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/5/code-interpreter/#atom-everything"/>
+        <updated>2025-03-05T23:07:22.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://chatgpt.com/share/67c8c374-8c08-8006-8ce3-042308063792">Demo of ChatGPT Code Interpreter running in o3-mini-high</a></strong></p>
+OpenAI made GPT-4.5 available to Plus ($20/month) users today. I was <a href="https://simonwillison.net/2025/Feb/27/introducing-gpt-45/">a little disappointed</a> with GPT-4.5 when I tried it through the API, but having access in the ChatGPT interface meant I could use it with existing tools such as Code Interpreter which made its strengths <a href="https://chatgpt.com/share/67c8a7b6-655c-8006-a100-bc04080e5aa1">a whole lot more evident</a> - that’s a transcript where I had it design and test its own version of the JSON Schema succinct DSL I published <a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#designing-this-feature-for-llm">last week</a>.</p>
+<p>Riley Goodside <a href="https://x.com/goodside/status/1897412604894789692">then spotted</a> that Code Interpreter has been quietly enabled for other models too, including the excellent o3-mini reasoning model. This means you can have o3-mini reason about code, write that code, test it, iterate on it and keep going until it gets something that works.</p>
+<p><img alt="Screenshot showing ChatGPT 03-mini-high - my prompt: Use your Python tool to show me the versions of Python and SQLite. Reasoned about Python and SQLite versions for a couple of seconds Below is the Python code used to print both the Python and SQLite versions: Python Code import sys import sqlite3 print(&quot;Python version:&quot; print (&quot;SQLite version:&quot; Result Python version: 3.11.8 main, Mar 12 2024, 11:41:52) GCC 12.2.01° SQLite version: 3.40.1" src="https://static.simonwillison.net/static/2025/o3-mini-code-interpreter.jpg" /></p>
+<p>Code Interpreter remains my favorite implementation of the "coding agent" pattern, despite recieving very few upgrades in the two years after its initial release. Plugging much stronger models into it than the previous GPT-4o default makes it even more useful.</p>
+<p>Nothing about this in the <a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes">ChatGPT release notes</a> yet, but I've tested it in the ChatGPT iOS app and mobile web app and it definitely works there.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/riley-goodside">riley-goodside</a>, <a href="https://simonwillison.net/tags/code-interpreter">code-interpreter</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Career Update: Google DeepMind -> Anthropic]]></title>
+        <id>https://simonwillison.net/2025/Mar/5/google-deepmind-anthropic/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/5/google-deepmind-anthropic/#atom-everything"/>
+        <updated>2025-03-05T22:24:02.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://nicholas.carlini.com/writing/2025/career-update.html">Career Update: Google DeepMind -&gt; Anthropic</a></strong></p>
+Nicholas Carlini (<a href="https://simonwillison.net/tags/nicholas-carlini/">previously</a>) on joining Anthropic, driven partly by his frustration at friction he encountered publishing his research at Google DeepMind after their merge with Google Brain. His area of expertise is adversarial machine learning.</p>
+<blockquote>
+<p>The recent advances in machine learning and language modeling are going to be transformative <span style="font-size: 0.75em; line-height: 0; position: relative; vertical-align: baseline; top: -0.5em;">[<a href="https://nicholas.carlini.com/writing/2025/career-update.html#footnote4">d</a>]</span> But in order to realize this potential future in a way that doesn't put everyone's safety and security at risk, we're going to need to make a <em>lot</em> of progress---and soon. We need to make so much progress that no one organization will be able to figure everything out by themselves; we need to work together, we need to talk about what we're doing, and we need to start doing this now.</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/machine-learning">machine-learning</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/nicholas-carlini">nicholas-carlini</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Delegated alert dismissal for code scanning and secret scanning now available in public preview]]></title>
+        <id>https://github.blog/changelog/2025-03-05-delegated-alert-dismissal-for-code-scanning-and-secret-scanning-now-available-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-03-05-delegated-alert-dismissal-for-code-scanning-and-secret-scanning-now-available-in-public-preview"/>
+        <updated>2025-03-05T21:13:49.000Z</updated>
+        <summary type="html"><![CDATA[Delegated alert dismissal for code scanning and secret scanning now available in public preview
+The post Delegated alert dismissal for code scanning and secret scanning now available in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[QwQ-32B: Embracing the Power of Reinforcement Learning]]></title>
+        <id>https://simonwillison.net/2025/Mar/5/qwq-32b/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/5/qwq-32b/#atom-everything"/>
+        <updated>2025-03-05T21:10:28.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://qwenlm.github.io/blog/qwq-32b/">QwQ-32B: Embracing the Power of Reinforcement Learning</a></strong></p>
+New Apache 2 licensed reasoning model from Qwen:</p>
+<blockquote>
+<p>We are excited to introduce QwQ-32B, a model with 32 billion parameters that achieves performance comparable to DeepSeek-R1, which boasts 671 billion parameters (with 37 billion activated). This remarkable outcome underscores the effectiveness of RL when applied to robust foundation models pretrained on extensive world knowledge.</p>
+</blockquote>
+<p>I've not run this myself yet but I had a lot of fun <a href="https://simonwillison.net/2024/Nov/27/qwq/">trying out</a> their previous QwQ reasoning model last November.</p>
+<p>LM Studo just <a href="https://huggingface.co/lmstudio-community/QwQ-32B-GGUF/tree/main">released GGUFs</a> ranging in size from 17.2 to 34.8 GB. MLX have compatible weights published in <a href="https://huggingface.co/mlx-community/QwQ-32B-3bit">3bit</a>, <a href="https://huggingface.co/mlx-community/QwQ-32B-4bit">4bit</a>, <a href="https://huggingface.co/mlx-community/QwQ-32B-6bit">6bit</a> and <a href="https://huggingface.co/mlx-community/QwQ-32B-8bit">8bit</a>. Ollama <a href="https://ollama.com/library/qwq">has the new qwq</a> too - it looks like they've renamed the previous November release <a href="https://ollama.com/library/qwq:32b-preview-q8_0">qwq:32b-preview</a>.
+
+    <p><small></small>Via <a href="https://twitter.com/alibaba_qwen/status/1897361654763151544">@alibaba_qwen</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[AutoGen and Semantic Kernel, Part 2]]></title>
         <id>https://devblogs.microsoft.com/semantic-kernel/?p=4336</id>
@@ -3488,115 +3638,6 @@ Delightful UI experiment by Alex Warth and Geoffrey Litt at Ink &amp; Switch, ex
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/spreadsheets">spreadsheets</a>, <a href="https://simonwillison.net/tags/geoffrey-litt">geoffrey-litt</a>, <a href="https://simonwillison.net/tags/ui">ui</a>, <a href="https://simonwillison.net/tags/ux">ux</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[AI-generated slop is already in your public library]]></title>
-        <id>https://simonwillison.net/2025/Feb/5/ai-generated-slop-is-already-in-your-public-library/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/5/ai-generated-slop-is-already-in-your-public-library/#atom-everything"/>
-        <updated>2025-02-05T01:50:01.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.404media.co/ai-generated-slop-is-already-in-your-public-library-3/">AI-generated slop is already in your public library</a></strong></p>
-US libraries that use the <a href="https://www.hoopladigital.com/">Hoopla</a> system to offer ebooks to their patrons sign agreements where they pay a license fee for anything selected by one of their members that's in the Hoopla catalog.</p>
-<p>The Hoopla catalog is increasingly filling up with junk AI slop ebooks like "Fatty Liver Diet Cookbook: 2000 Days of Simple and Flavorful Recipes for a Revitalized Liver", which then cost libraries money if someone checks them out.</p>
-<p>Apparently librarians already have a term for this kind of low-quality, low effort content that predates it being written by LLMs: vendor slurry.</p>
-<p>Libraries stand against censorship, making this a difficult issue to address through removing those listings. </p>
-<p>Sarah Lamdan, deputy director of the American Library Association says:</p>
-<blockquote>
-<p>If library visitors choose to read AI eBooks, they should do so with the knowledge that the books are AI-generated.</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://bsky.app/profile/emilybell.bsky.social/post/3lhenkvj4tt2i">Emily Bell</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/ethics">ethics</a>, <a href="https://simonwillison.net/tags/libraries">libraries</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Using Azure OpenAI Chat Completion with data source and Function Calling]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4131</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/using-azure-openai-chat-completion-with-data-source-and-function-calling/"/>
-        <updated>2025-02-05T01:00:16.000Z</updated>
-        <summary type="html"><![CDATA[Azure OpenAI Chat Completion with data source provides powerful capabilities for integrating conversational AI into applications. However, using a data source and function calling in a single request is not supported yet. When both features are enabled, function calling is ignored, and only the data source is used. This presents a challenge when retrieving information, […]
-The post Using Azure OpenAI Chat Completion with data source and Function Calling appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Dmytro Struk</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub Enterprise Cloud Data Residency in Australia is generally available]]></title>
-        <id>https://github.blog/changelog/2025-02-04-github-enterprise-cloud-data-residency-in-australia-is-generally-available</id>
-        <link href="https://github.blog/changelog/2025-02-04-github-enterprise-cloud-data-residency-in-australia-is-generally-available"/>
-        <updated>2025-02-04T22:00:11.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Enterprise Cloud Data Residency in Australia is generally available
-The post GitHub Enterprise Cloud Data Residency in Australia is generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Animating Rick and Morty One Pixel at a Time]]></title>
-        <id>https://simonwillison.net/2025/Feb/4/animating-rick-and-morty-one-pixel-at-a-time/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/4/animating-rick-and-morty-one-pixel-at-a-time/#atom-everything"/>
-        <updated>2025-02-04T20:53:29.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://danielchasehooper.com/posts/code-animated-rick/">Animating Rick and Morty One Pixel at a Time</a></strong></p>
-Daniel Hooper says he spent 8 months working on the post, the culmination of which is an animation of Rick from Rick and Morty, implemented in 240 lines of GLSL - the OpenGL Shading Language which apparently has been directly supported by browsers for many years.</p>
-<p>The result is a comprehensive GLSL tutorial, complete with interactive examples of each of the steps used to generate the final animation which you can tinker with directly on the page. It feels a bit like Logo!</p>
-<p><img alt="Animated demo - as I edit the shader code Rick's half-drawn eye pupils move from side to side live with my edits" src="https://static.simonwillison.net/static/2025/rick-edit.gif" /></p>
-<p>Shaders work by running code for each pixel to return that pixel's color - in this case the <code>color_for_pixel()</code> function is wired up as the core logic of the shader.</p>
-<p>Here's <a href="https://gist.github.com/danielchasehooper/72da5d9c286e5e94fdfb8e82bea288cc">Daniel's code for the live shader editor</a> he built for this post. It looks like this is the function that does the most important work:</p>
-<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">loadShader</span><span class="pl-kos">(</span><span class="pl-s1">shaderSource</span><span class="pl-kos">,</span> <span class="pl-s1">shaderType</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
-    <span class="pl-k">const</span> <span class="pl-s1">shader</span> <span class="pl-c1">=</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">createShader</span><span class="pl-kos">(</span><span class="pl-s1">shaderType</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-    <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">shaderSource</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">,</span> <span class="pl-s1">shaderSource</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-    <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">compileShader</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-    <span class="pl-k">const</span> <span class="pl-s1">compiled</span> <span class="pl-c1">=</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">getShaderParameter</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">,</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-c1">COMPILE_STATUS</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">compiled</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
-        <span class="pl-k">const</span> <span class="pl-s1">lastError</span> <span class="pl-c1">=</span> <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">getShaderInfoLog</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-        <span class="pl-s1">gl</span><span class="pl-kos">.</span><span class="pl-en">deleteShader</span><span class="pl-kos">(</span><span class="pl-s1">shader</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-        <span class="pl-k">return</span> <span class="pl-s1">lastError</span><span class="pl-kos">;</span>
-    <span class="pl-kos">}</span>
-    <span class="pl-k">return</span> <span class="pl-s1">shader</span><span class="pl-kos">;</span>
-<span class="pl-kos">}</span></pre></div>
-
-<p>Where <code>gl</code> is a <code>canvas.getContext("webgl2")</code> <code>WebGL2RenderingContext</code> object, <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext">described by MDN here</a>.
-
-    <p><small></small>Via <a href="https://lobste.rs/s/ycbpnz/animating_rick_morty_one_pixel_at_time">lobste.rs</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/webgl">webgl</a>, <a href="https://simonwillison.net/tags/animation">animation</a>, <a href="https://simonwillison.net/tags/canvas">canvas</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Dependabot now supports pnpm workspace catalogs (GA)]]></title>
-        <id>https://github.blog/changelog/2025-02-04-dependabot-now-supports-pnpm-workspace-catalogs-ga</id>
-        <link href="https://github.blog/changelog/2025-02-04-dependabot-now-supports-pnpm-workspace-catalogs-ga"/>
-        <updated>2025-02-04T18:00:50.000Z</updated>
-        <summary type="html"><![CDATA[Dependabot now supports pnpm workspace catalogs (GA)
-The post Dependabot now supports pnpm workspace catalogs (GA) appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Build a link blog]]></title>
-        <id>https://simonwillison.net/2025/Feb/4/build-a-link-blog/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/4/build-a-link-blog/#atom-everything"/>
-        <updated>2025-02-04T16:14:33.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://xuanwo.io/links/2025/01/link-blog/">Build a link blog</a></strong></p>
-Xuanwo started <a href="https://xuanwo.io/links/">a link blog</a> inspired by my article <a href="https://simonwillison.net/2024/Dec/22/link-blog/">My approach to running a link blog</a>, and in a delightful piece of recursion his first post is a link blog entry about my post about link blogging, following my tips on quoting liberally and including extra commentary.</p>
-<blockquote>
-<p>I decided to follow simon's approach to creating a link blog, where I can share interesting links I find on the internet along with my own comments and thoughts about them.</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=42933383">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
