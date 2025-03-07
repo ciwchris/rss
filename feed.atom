@@ -2,10 +2,125 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-06T21:09:30.492Z</updated>
+    <updated>2025-03-07T14:09:25.416Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Mistral OCR]]></title>
+        <id>https://simonwillison.net/2025/Mar/7/mistral-ocr/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/7/mistral-ocr/#atom-everything"/>
+        <updated>2025-03-07T01:39:26.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/fr/news/mistral-ocr">Mistral OCR</a></strong></p>
+New closed-source specialist OCR model by Mistral - you can feed it images or a PDF and it produces Markdown with optional embedded images.</p>
+<p>It's available <a href="https://docs.mistral.ai/api/#tag/ocr">via their API</a>, or it's "available to self-host on a selective basis" for people with stringent privacy requirements who are willing to talk to their sales team.</p>
+<p>I decided to try out their API, so I copied and pasted example code <a href="https://colab.research.google.com/drive/11NdqWVwC_TtJyKT6cmuap4l9SryAeeVt?usp=sharing">from their notebook</a> into my <a href="https://simonwillison.net/2024/Dec/19/one-shot-python-tools/">custom Claude project</a> and <a href="https://claude.ai/share/153d8eb8-82dd-4f8c-a3d0-6c23b4dc21a2">told it</a>:</p>
+<blockquote>
+<p><code>Turn this into a CLI app, depends on mistralai - it should take a file path and an optional API key defauling to env vironment called MISTRAL_API_KEY</code></p>
+</blockquote>
+<p>After <a href="https://claude.ai/share/b746cab4-293b-4e04-b662-858bb164ab78">some further</a> iteration / vibe coding I got to something that worked, which I then tidied up and shared as <a href="https://github.com/simonw/tools/blob/main/python/mistral_ocr.py">mistral_ocr.py</a>.</p>
+<p>You can try it out like this:</p>
+<pre><code>export MISTRAL_API_KEY='...'
+uv run http://tools.simonwillison.net/python/mistral_ocr.py \
+  mixtral.pdf --html --inline-images &gt; mixtral.html
+</code></pre>
+<p>I fed in <a href="https://arxiv.org/abs/2401.04088">the Mixtral paper</a> as a PDF. The API returns Markdown, but my <code>--html</code> option renders that Markdown as HTML and the <code>--inline-images</code> option takes any images and inlines them as base64 URIs (inspired <a href="https://simonwillison.net/2025/Mar/6/monolith/">by monolith</a>). The result is <a href="https://static.simonwillison.net/static/2025/mixtral.html">mixtral.html</a>, a 972KB HTML file with images and text bundled together.</p>
+<p>This did a pretty great job!</p>
+<p><img alt="Screenshot of part of the document, it has a heading, some text, an image and the start of a table. The table contains some unrendered MathML syntax." src="https://static.simonwillison.net/static/2025/mixtral-as-html.jpg" /></p>
+<p>My script renders Markdown tables but I haven't figured out how to render inline Markdown MathML yet. I ran the command a second time and requested Markdown output (the default) like this:</p>
+<pre><code>uv run http://tools.simonwillison.net/python/mistral_ocr.py \
+  mixtral.pdf &gt; mixtral.md
+</code></pre>
+<p>Here's <a href="https://gist.github.com/simonw/023d1cf403c1cd9f41801c85510aef21">that Markdown rendered as a Gist</a> - there are a few MathML glitches so clearly the Mistral OCR MathML dialect and the GitHub Formatted Markdown dialect don't quite line up.</p>
+<p>My tool can also output raw JSON as an alternative to Markdown or HTML - full details <a href="https://tools.simonwillison.net/python/#mistral_ocrpy">in the documentation</a>.</p>
+<p>The Mistral API is priced at roughly 1000 pages per dollar, with a 50% discount for batch usage.</p>
+<p>The big question with LLM-based OCR is always how well it copes with accidental instructions in the text (can you safely OCR a document full of prompting examples?) and how well it handles text it can't write.</p>
+<p>Mistral's Sophia Yang says it <a href="https://x.com/sophiamyang/status/1897719199595720722">"should be robust"</a> against following instructions in the text, and invited people to try and find counter-examples.</p>
+<p>Alexander Doria noted that <a href="https://twitter.com/Dorialexander/status/1897702264543875535">Mistral OCR can hallucinate text</a> when faced with handwriting that it cannot understand.
+
+    <p><small></small>Via <a href="https://twitter.com/sophiamyang/status/1897713370029068381">@sophiamyang</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/pdf">pdf</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ocr">ocr</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Onboarding additional model providers with GitHub Copilot for Claude Sonnet models in public preview]]></title>
+        <id>https://github.blog/changelog/2025-03-06-onboarding-additional-model-providers-with-github-copilot-for-claude-sonnet-models-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-03-06-onboarding-additional-model-providers-with-github-copilot-for-claude-sonnet-models-in-public-preview"/>
+        <updated>2025-03-06T23:29:59.000Z</updated>
+        <summary type="html"><![CDATA[Onboarding additional model providers with GitHub Copilot for Claude Sonnet models in public preview
+The post Onboarding additional model providers with GitHub Copilot for Claude Sonnet models in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Issues & Projects: API support for issues advanced search and more!]]></title>
+        <id>https://github.blog/changelog/2025-03-06-github-issues-projects-api-support-for-issues-advanced-search-and-more</id>
+        <link href="https://github.blog/changelog/2025-03-06-github-issues-projects-api-support-for-issues-advanced-search-and-more"/>
+        <updated>2025-03-06T23:23:46.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Issues & Projects: API support for issues advanced search and more!
+The post GitHub Issues & Projects: API support for issues advanced search and more! appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GPT-4o Copilot March flight is ready for takeoff]]></title>
+        <id>https://github.blog/changelog/2025-03-06-gpt-4o-copilot-march-flight-is-ready-for-takeoff</id>
+        <link href="https://github.blog/changelog/2025-03-06-gpt-4o-copilot-march-flight-is-ready-for-takeoff"/>
+        <updated>2025-03-06T22:22:36.000Z</updated>
+        <summary type="html"><![CDATA[GPT-4o Copilot March flight is ready for takeoff
+The post GPT-4o Copilot March flight is ready for takeoff appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Personal custom instructions for Copilot are now generally available on github.com]]></title>
+        <id>https://github.blog/changelog/2025-03-06-personal-custom-instructions-for-copilot-are-now-generally-available-on-github-com</id>
+        <link href="https://github.blog/changelog/2025-03-06-personal-custom-instructions-for-copilot-are-now-generally-available-on-github-com"/>
+        <updated>2025-03-06T22:02:12.000Z</updated>
+        <summary type="html"><![CDATA[Personal custom instructions for Copilot are now generally available on github.com
+The post Personal custom instructions for Copilot are now generally available on github.com appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot updates in Visual Studio Code February Release (v0.25), including improvements to agent mode and Next Exit Suggestions, general availability of custom instructions, and more!]]></title>
+        <id>https://github.blog/changelog/2025-03-06-github-copilot-updates-in-visual-studio-code-february-release-v0-25-including-improvements-to-agent-mode-and-next-exit-suggestions-ga-of-custom-instructions-and-more</id>
+        <link href="https://github.blog/changelog/2025-03-06-github-copilot-updates-in-visual-studio-code-february-release-v0-25-including-improvements-to-agent-mode-and-next-exit-suggestions-ga-of-custom-instructions-and-more"/>
+        <updated>2025-03-06T21:00:55.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Copilot updates in Visual Studio Code February Release (v0.25), including improvements to agent mode and Next Exit Suggestions, GA of custom instructions, and more!
+The post GitHub Copilot updates in Visual Studio Code February Release (v0.25), including improvements to agent mode and Next Exit Suggestions, general availability of custom instructions, and more! appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[March 6th, 2025 - Orion Embarks on Linux Journey & Kagi Doggo Art Celebration]]></title>
+        <id>https://kagifeedback.org/d/6479-march-6th-2025-orion-embarks-on-linux-journey-kagi-doggo-art-celebration/1</id>
+        <link href="https://kagifeedback.org/d/6479-march-6th-2025-orion-embarks-on-linux-journey-kagi-doggo-art-celebration/1"/>
+        <updated>2025-03-06T19:36:35.000Z</updated>
+        <summary type="html"><![CDATA[Orion's Next Chapter: Linux Development Officially Launched
+
+We're thrilled to announce that development of Orion Browser for Linux has officially started! Our team is working hard to bring the same speed, privacy, and innovation that Mac users love to the Linux platform.
+This is an ambitious project that we expect will take approximately one year to complete. Our target is to achieve feature parity with the current macOS version by March 2026.
+Want to stay updated on Orion for Linux?  
+Register here to receive news and early access opportunities throughout the development year.
+Celebrating Kagi's Community Creativity with Doggo Art
+This month, Kagi Search is showcasing incredible community-created renditions of our beloved Doggo mascot,
+
+
+Shoutout to the featured artists—Edin Pasovic, Fan…]]></summary>
+        <author>
+            <name>Activity in the release-notes tag</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Orion's Next Chapter: Linux Development Officially Launched]]></title>
         <id>https://kagifeedback.org/d/6479-orions-next-chapter-linux-development-officially-launched/1</id>
@@ -3471,183 +3586,6 @@ The post Vision, agent mode, next edit suggestions, and more for GitHub Copilot 
     <p>Tags: <a href="https://simonwillison.net/tags/andrej-karpathy">andrej-karpathy</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Guest Blog: Let your Copilot Declarative Agent think deep with DeepSeek-R1]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4127</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/guest-blog-let-your-copilot-declarative-agent-think-deep-with-deepseek-r1/"/>
-        <updated>2025-02-05T20:00:53.000Z</updated>
-        <summary type="html"><![CDATA[Today we’d like to feature a guest author on our Semantic Kernel blog, Mahmoud Hassan, a Microsoft Valuable Professional (MVP) focused on AI. We’ll turn it over to him to dive into his work below.   In recent days, there has been significant attention in the AI community regarding DeepSeek-R1 and its capabilities. Many people […]
-The post Guest Blog: Let your Copilot Declarative Agent think deep with DeepSeek-R1 appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Sophia Lagerkrans-Pandey</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[S1: The $6 R1 Competitor?]]></title>
-        <id>https://simonwillison.net/2025/Feb/5/s1-the-6-r1-competitor/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/5/s1-the-6-r1-competitor/#atom-everything"/>
-        <updated>2025-02-05T20:00:26.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://timkellogg.me/blog/2025/02/03/s1">S1: The $6 R1 Competitor?</a></strong></p>
-Tim Kellogg shares his notes on a new paper, <a href="https://arxiv.org/abs/2501.19393">s1: Simple test-time scaling</a>, which describes an inference-scaling model fine-tuned on top of Qwen2.5-32B-Instruct for just $6 - the cost for 26 minutes on 16 NVIDIA H100 GPUs.</p>
-<p>Tim highlight the most exciting result:</p>
-<blockquote>
-<p>After sifting their dataset of 56K examples down to just the best 1K, they found that the core 1K is all that's needed to achieve o1-preview performance on a 32B model.</p>
-</blockquote>
-<p>The paper describes a technique called "Budget forcing":</p>
-<blockquote>
-<p>To enforce a minimum, we suppress the generation
-of the end-of-thinking token delimiter and optionally append
-the string “Wait” to the model’s current reasoning trace to
-encourage the model to reflect on its current generation</p>
-</blockquote>
-<p>That's the same trick Theia Vogel described <a href="https://simonwillison.net/2025/Jan/22/r1py/">a few weeks ago</a>.</p>
-<p>Here's the <code>s1-32B</code> model <a href="https://huggingface.co/simplescaling/s1-32B">on Hugging Face</a>. I found a GGUF version of it at <a href="https://huggingface.co/brittlewis12/s1-32B-GGUF">brittlewis12/s1-32B-GGUF</a>, which I ran using <a href="https://ollama.com/">Ollama</a> like so:</p>
-<pre><code>ollama run hf.co/brittlewis12/s1-32B-GGUF:Q4_0
-</code></pre>
-<p>I also found those 1,000 samples on Hugging Face in the <a href="https://huggingface.co/datasets/simplescaling/s1K">simplescaling/s1K</a> data repository there.</p>
-<p>I used DuckDB to convert the parquet file to CSV (and turn one <code>VARCHAR[]</code> column into JSON):</p>
-<pre><code>COPY (
-    SELECT 
-      solution,
-      question,
-      cot_type,
-      source_type,
-      metadata,
-      cot,
-      json_array(thinking_trajectories) as thinking_trajectories,
-      attempt
-    FROM 's1k-00001.parquet'
-) TO 'output.csv' (HEADER, DELIMITER ',');
-</code></pre>
-<p>Then I loaded that CSV into <a href="https://sqlite-utils.datasette.io/">sqlite-utils</a> so I could use the <code>convert</code> command to turn a Python data structure into JSON using <code>json.dumps()</code> and <code>eval()</code>:</p>
-<pre><code># Load into SQLite
-sqlite-utils insert s1k.db s1k output.csv --csv
-# Fix that column
-sqlite-utils convert s1k.db s1u metadata 'json.dumps(eval(value))' --import json
-# Dump that back out to CSV
-sqlite-utils rows s1k.db s1k --csv &gt; s1k.csv
-</code></pre>
-<p>Here's that CSV <a href="https://gist.github.com/simonw/048385f27e351c11b488bd9737452fa7">in a Gist</a>, which meas I can <a href="https://lite.datasette.io/?install=datasette-pretty-json&amp;csv=https://gist.githubusercontent.com/simonw/048385f27e351c11b488bd9737452fa7/raw/5270dacc5aa4a7385f9a6e3d691c81cf3595abc9/s1k.csv#/data/s1k?_facet=cot_type">load it into Datasette Lite</a>.</p>
-<p><img alt="Screenshot of Datasette Lite showing cot_type 1, crossword 15, Link: 93, rowid: 93, solution: &quot;### Answer: INCIDENT ROOM ### Explanation: Definition: investigators' facility **Anagram of**(... changes) NOTICED MINOR. Defn: ... in a police station.&quot; Question text: &quot;Solve the crossword puzzle. You are presented with a clue as input and the number of letters in brackets.&quot; Clue: &quot;Noticed minor changes in investigators' facility (8,4)&quot; cot_type: crossword, source_type: 0xharib/xword1, metadata: { &quot;instruction&quot;: &quot;You are an expert level solver of cryptic crosswords. You are presented with a clue as input. Respond with the answer and explanation.&quot; }" src="https://static.simonwillison.net/static/2025/s1k.jpg" /></p>
-<p>It really is a tiny amount of training data. It's mostly math and science, but there are also <a href="https://lite.datasette.io/?install=datasette-pretty-json&amp;csv=https://gist.githubusercontent.com/simonw/048385f27e351c11b488bd9737452fa7/raw/5270dacc5aa4a7385f9a6e3d691c81cf3595abc9/s1k.csv#/data/s1k?_facet=cot_type&amp;cot_type=crossword">15 cryptic crossword examples</a>.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/duckdb">duckdb</a>, <a href="https://simonwillison.net/tags/datasette-lite">datasette-lite</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Google Gemini 2.0 Flash is now available to all Copilot users in public preview]]></title>
-        <id>https://github.blog/changelog/2025-02-05-google-gemini-2-0-flash-is-now-available-to-all-copilot-users-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-02-05-google-gemini-2-0-flash-is-now-available-to-all-copilot-users-in-public-preview"/>
-        <updated>2025-02-05T18:31:34.000Z</updated>
-        <summary type="html"><![CDATA[Google Gemini 2.0 Flash is now available to all Copilot users in public preview
-The post Google Gemini 2.0 Flash is now available to all Copilot users in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Dependabot no longer supports Python 3.8]]></title>
-        <id>https://github.blog/changelog/2025-02-05-dependabot-no-longer-supports-python-3-8</id>
-        <link href="https://github.blog/changelog/2025-02-05-dependabot-no-longer-supports-python-3-8"/>
-        <updated>2025-02-05T18:12:55.000Z</updated>
-        <summary type="html"><![CDATA[Dependabot no longer supports Python 3.8
-The post Dependabot no longer supports Python 3.8 appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[View and iterate on generated files directly within Copilot chat (Preview)]]></title>
-        <id>https://github.blog/changelog/2025-02-05-view-and-iterate-on-generated-files-directly-within-copilot-chat-preview</id>
-        <link href="https://github.blog/changelog/2025-02-05-view-and-iterate-on-generated-files-directly-within-copilot-chat-preview"/>
-        <updated>2025-02-05T17:32:18.000Z</updated>
-        <summary type="html"><![CDATA[“View and iterate on generated files directly within Copilot chat (Preview)”
-The post View and iterate on generated files directly within Copilot chat (Preview) appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Gemini 2.0 is now available to everyone]]></title>
-        <id>https://simonwillison.net/2025/Feb/5/gemini-2/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/5/gemini-2/#atom-everything"/>
-        <updated>2025-02-05T16:37:29.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://blog.google/technology/google-deepmind/gemini-model-updates-february-2025/">Gemini 2.0 is now available to everyone</a></strong></p>
-Big new Gemini 2.0 releases today:</p>
-<ul>
-<li><strong>Gemini 2.0 Pro (Experimental)</strong> is Google's "best model yet for coding performance and complex prompts" - currently available as a free preview.</li>
-<li><strong>Gemini 2.0 Flash</strong> is now generally available.</li>
-<li>
-<p><strong>Gemini 2.0 Flash-Lite</strong> looks particularly interesting:</p>
-<blockquote>
-<p>We’ve gotten a lot of positive feedback on the price and speed of 1.5 Flash. We wanted to keep improving quality, while still maintaining cost and speed. So today, we’re introducing 2.0 Flash-Lite, a new model that has better quality than 1.5 Flash, at the same speed and cost. It outperforms 1.5 Flash on the majority of benchmarks.</p>
-</blockquote>
-</li>
-</ul>
-<p>That means Gemini 2.0 Flash-Lite is priced at 7.5c/million input tokens and 30c/million output tokens - half the price of OpenAI's GPT-4o mini (15c/60c).</p>
-<p>Gemini 2.0 Flash isn't <a href="https://ai.google.dev/pricing#2_0flash">much more expensive</a>:  10c/million for text/image input, 70c/million for audio input, 40c/million for output. Again, cheaper than GPT-4o mini.</p>
-<p>I pushed a new <a href="https://llm.datasette.io/">LLM</a> plugin release, <a href="https://github.com/simonw/llm-gemini/releases/tag/0.10">llm-gemini 0.10</a>, adding support for the three new models:</p>
-<pre><code>llm install -U llm-gemini
-llm keys set gemini
-# paste API key here
-llm -m gemini-2.0-flash "impress me"
-llm -m gemini-2.0-flash-lite-preview-02-05 "impress me"
-llm -m gemini-2.0-pro-exp-02-05 "impress me"
-</code></pre>
-<p>Here's <a href="https://gist.github.com/simonw/411d032a84f02e8300b1f48df54913b7">the output</a> for those three prompts.</p>
-<p>I ran <code>Generate an SVG of a pelican riding a bicycle</code> through the three new models. Here are the results, cheapest to most expensive:</p>
-<p><strong>gemini-2.0-flash-lite-preview-02-05</strong></p>
-<p><img alt="This is not great. The bicycle is a trapezoid. The pelican is very warped and has a orange diamond beak above its head." src="https://static.simonwillison.net/static/2025/gemini-2.0-flash-lite-preview-02-05.svg" /></p>
-<p><strong>gemini-2.0-flash</strong></p>
-<p><img alt="The bicycle is better but the pelican is yellow and looks more like a baby chick. Its beak is squashed against the side of the image." src="https://static.simonwillison.net/static/2025/gemini-2.0-flash.svg" /></p>
-<p><strong>gemini-2.0-pro-exp-02-05</strong></p>
-<p><img alt="This one is pleasingly avant-garde. The bicycle does at least have two wheels joined by a frame. The pelican is a fun shape, and it has a beak with a curved orange top and a curved yellow bottom." src="https://static.simonwillison.net/static/2025/gemini-2.0-pro-exp-02-05.svg" /></p>
-<p><a href="https://gist.github.com/simonw/e50eea6d4f746fb3bc5543d106ffa8e7">Full transcripts here</a>.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Introducing the “Sustainability” category on GitHub Marketplace]]></title>
-        <id>https://github.blog/changelog/2025-02-05-introducing-the-sustainability-category-on-github-marketplace</id>
-        <link href="https://github.blog/changelog/2025-02-05-introducing-the-sustainability-category-on-github-marketplace"/>
-        <updated>2025-02-05T13:28:15.000Z</updated>
-        <summary type="html"><![CDATA[Introducing the "Sustainability" category on GitHub Marketplace
-The post Introducing the “Sustainability” category on GitHub Marketplace appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[13th Feb, 2025 - Redefining Privacy in Search]]></title>
-        <id>https://kagifeedback.org/d/6172-13th-feb-2025-redefining-privacy-in-search/1</id>
-        <link href="https://kagifeedback.org/d/6172-13th-feb-2025-redefining-privacy-in-search/1"/>
-        <updated>2025-02-05T10:44:53.000Z</updated>
-        <summary type="html"><![CDATA[Announcing Kagi Privacy Pass
-
-Kagi now supports Privacy Pass, an IETF-standardized protocol ensuring your searches are technically unlinkable to your account.
- 
-
-Read all about why this matters and the details of implementation in our  announcement blog post!
-Privacy Pass support is provided:
-Natively for Orion browser users (macOS/iOS/iPadOS). On iOS, make sure to have version 1.3.17 and above (expected to roll out globally today) and update your macOS Orion to version 0.99.131.
-Natively through Kagi App for Android (make sure to have version 0.29, expected to roll out globally today)
-Browser extension for Firefox or Chrome
- 
-
-A few important details:
-Privacy Pass implementation is fully open-sourced for transparency and community collaboration
-Kagi Privacy Pass is available for the Profe…]]></summary>
-        <author>
-            <name>Activity in the release-notes tag</name>
         </author>
     </entry>
     <entry>
