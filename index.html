@@ -25,9 +25,57 @@
 
   <ul>
     <li>
+      <time>2025-03-08</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Apple Is Delaying the ‘More Personalized Siri’ Apple Intelligence Features
+              <span class="post-metadata">(1 min | 375 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/8/delaying-personalized-siri/#atom-everything>Apple Is Delaying the ‘More Personalized Siri’ Apple Intelligence Features
+It’s going to take us longer than we thought to deliver on these features and we anticipate rolling them out in the coming year.
+I have a hunch that this delay might relate to security.
+These new Apple Intelligence features involve Siri responding to requests to access information in applications and then perform actions on the user&#x27;s behalf.
+This is the worst possible combination for prompt injection attacks! Any time an LLM-based system has access to private data, tools it can call and potentially malicious instructions (like emails and text messages from untrusted strangers) there&#x27;s a risk that an attacker might subvert those tools and use them to damage or exfiltration a user&#x27;s data.
+I published this piece about the risk of prompt injection to personal digital assistants back in November 2023, and nothing has changed since then to make me think this is any less of an open problem.
+
+
+    
+Tags: apple, ai, john-gruber, llms, prompt-injection, security, apple-intelligence, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-07</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              State-of-the-art text embedding via the Gemini API
+              <span class="post-metadata">(1 min | 371 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/7/gemini-embeddings/#atom-everything>State-of-the-art text embedding via the Gemini API
+gemini-embedding-exp-03-07. It supports 8,000 input tokens - up from 3,000 - and outputs vectors that are a lot larger than their previous text-embedding-004 model - that one output size 768 vectors, the new model outputs 3072.
+Storing that many floating point numbers for each embedded record can use a lot of space. thankfully, the new model supports Matryoshka Representation Learning - this means you can simply truncate the vectors to trade accuracy for storage.
+I added support for the new model in llm-gemini 0.14. LLM doesn&#x27;t yet have direct support for Matryoshka truncation so I instead registered different truncated sizes of the model under different IDs: gemini-embedding-exp-03-07-2048, gemini-embedding-exp-03-07-1024, gemini-embedding-exp-03-07-512, gemini-embedding-exp-03-07-256, gemini-embedding-exp-03-07-128.
+The model is currently free while it is in preview, but comes with a strict rate limit - 5 requests per minute and just 100 requests a day. I quickly tripped those limits while testing out the new model - I hope they can bump those up soon.
+
+    
+Via @officiallogank
+Tags: embeddings, gemini, ai, google, llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4310,136 +4358,6 @@ I wonder if the conditional writes feature added to S3 back in November could be
     
 Via Hacker News comment
 Tags: apsw, sqlite, python, uv, s3</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              APSW SQLite query explainer
-              <span class="post-metadata">(1 min | 397 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/7/apsw-sqlite-query-explainer/#atom-everything>APSW SQLite query explainer
-APSW&#x27;s (Another Python SQLite Wrapper, in constant development since 2004) apsw.ext.query_info() function, which takes a SQL query and returns a very detailed set of information about that query - all without executing it.
-It actually solves a bunch of problems I&#x27;ve wanted to address in Datasette - like taking an arbitrary query and figuring out how many parameters (?) it takes and which tables and columns are represented in the result.
-I tried it out in my console (uv run --with apsw python) and it seemed to work really well. Then I remembered that the Pyodide project includes WebAssembly builds of a number of Python C extensions and was delighted to find apsw on that list.
-... so I got Claude to build me a web interface for trying out the function, using Pyodide to run a user&#x27;s query in Python in their browser via WebAssembly.
-Claude didn&#x27;t quite get it in one shot - I had to feed it the URL to a more recent Pyodide and it got stuck in a bug loop which I fixed by pasting the code into a fresh session.
-
-
-
-    
-Tags: pyodide, sqlite, claude, ai, llms, claude-artifacts, webassembly, ai-assisted-programming, python, generative-ai, apsw</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-02-06</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Datasette 1.0a17
-              <span class="post-metadata">(1 min | 289 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/6/datasette-10a17/#atom-everything>Datasette 1.0a17
-The register_magic_parameters(datasette) plugin hook can now register async functions. (#2441)
-Breadcrumbs on database and table pages now include a consistent self-link for resetting query string parameters. (#2454)
-New internal methods datasette.set_actor_cookie() and datasette.delete_actor_cookie(), described here. (#1690)
-/-/permissions page now shows a list of all permissions registered by plugins. (#1943)
-If a table has a single unique text column Datasette now detects that as the foreign key label for that table. (#2458)
-The /-/permissions page now includes options for filtering or exclude permission checks recorded against the current user. (#2460)
-I was incentivized to push this release by an issue I ran into in my new datasette-load plugin, which resulted in this fix:
-Fixed a bug where replacing a database with a new one with the same name did not pick up the new database correctly. (#2465)
-Tags: projects, annotated-release-notes, datasette</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI o3-mini is now available in GitHub Copilot Free
-              <span class="post-metadata">(9 min | 2583 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-06-openai-o3-mini-is-now-available-in-github-copilot-free>OpenAI o3-mini is now available in GitHub Copilot Free
-The post OpenAI o3-mini is now available in GitHub Copilot Free appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              sqlite-page-explorer
-              <span class="post-metadata">(1 min | 245 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/6/sqlite-page-explorer/#atom-everything>sqlite-page-explorer
-Here&#x27;s it running against the datasette.io/content database that runs the official Datasette website:
-
-
-    
-Via Hacker News
-Tags: redbean, sqlite, cosmopolitan, lua</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The future belongs to idea guys who can just do things
-              <span class="post-metadata">(1 min | 298 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/6/the-future-belongs-to-idea-guys-who-can-just-do-things/#atom-everything>The future belongs to idea guys who can just do things
-AI-assisted programming:
-I seriously can&#x27;t see a path forward where the majority of software engineers are doing artisanal hand-crafted commits by as soon as the end of 2026.
-He calls for companies to invest in high quality internal training and create space for employees to figure out these new tools:
-It&#x27;s hackathon (during business hours) once a month, every month time.
-Geoffrey&#x27;s concluding note resonates with me. LLMs are a gift to the fiercely curious and ambitious:
-If you’re a high agency person, there’s never been a better time to be alive...
-Tags: ai-assisted-programming, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Vision, agent mode, next edit suggestions, and more for GitHub Copilot in VS Code January release (v0.24)
-              <span class="post-metadata">(9 min | 2558 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-06-next-edit-suggestions-agent-mode-and-prompts-files-for-github-copilot-in-vs-code-january-release-v0-24>Next edit suggestions, agent mode, and prompts files for GitHub Copilot in VS Code January release (v0.24)
-The post Vision, agent mode, next edit suggestions, and more for GitHub Copilot in VS Code January release (v0.24) appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Andrej Karpathy
-              <span class="post-metadata">(1 min | 372 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/6/andrej-karpathy/#atom-everything>There&#x27;s a new kind of coding I call &quot;vibe coding&quot;, where you fully give in to the vibes, embrace exponentials, and forget that the code even exists. It&#x27;s possible because the LLMs (e.g. Cursor Composer w Sonnet) are getting too good. Also I just talk to Composer with SuperWhisper so I barely even touch the keyboard.
-I ask for the dumbest things like &quot;decrease the padding on the sidebar by half&quot; because I&#x27;m too lazy to find it. I &quot;Accept All&quot; always, I don&#x27;t read the diffs anymore. When I get error messages I just copy paste them in with no comment, usually that fixes it. The code grows beyond my usual comprehension, I&#x27;d have to really read through it for a while. Sometimes the LLMs can&#x27;t fix a bug so I just work around it or ask for random changes until it goes away.
-It&#x27;s not too bad for throwaway weekend projects, but still quite amusing. I&#x27;m building a project or webapp, but it&#x27;s not really coding - I just see stuff, say stuff, run stuff, and copy paste stuff, and it mostly works.
-
-— Andrej Karpathy
-Tags: andrej-karpathy, ai-assisted-programming, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
