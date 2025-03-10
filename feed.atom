@@ -2,10 +2,85 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-09T21:07:27.274Z</updated>
+    <updated>2025-03-10T14:10:18.572Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Thane Ruthenis]]></title>
+        <id>https://simonwillison.net/2025/Mar/10/thane-ruthenis/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/10/thane-ruthenis/#atom-everything"/>
+        <updated>2025-03-10T01:50:31.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.lesswrong.com/posts/oKAFFvaouKKEhbBPm/a-bear-case-my-predictions-regarding-ai-progress"><p>It seems to me that "vibe checks" for how smart a model feels are easily gameable by making it have a better personality.</p>
+<p>My guess is that it's most of the reason Sonnet 3.5.1 was so beloved. Its personality was made much more <em>appealing</em>, compared to e. g. OpenAI's corporate drones. [...]</p>
+<p>Deep Research was this for me, at first. Some of its summaries were just <em>pleasant</em> to read, they felt so information-dense and intelligent! Not like typical AI slop at all! But then it turned out most of it was just AI slop underneath anyway, and now my slop-recognition function has adjusted and the effect is gone.</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.lesswrong.com/posts/oKAFFvaouKKEhbBPm/a-bear-case-my-predictions-regarding-ai-progress">Thane Ruthenis</a>, A Bear Case: My Predictions Regarding AI Progress</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/deep-research">deep-research</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Building Websites With Lots of Little HTML Pages]]></title>
+        <id>https://simonwillison.net/2025/Mar/10/building-websites-with-llms/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/10/building-websites-with-llms/#atom-everything"/>
+        <updated>2025-03-10T00:38:32.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://blog.jim-nielsen.com/2025/lots-of-little-html-pages/">Building Websites With Lots of Little HTML Pages</a></strong></p>
+Jim Nielsen coins a confusing new acronym - LLMS for (L)ots of (L)ittle ht(M)l page(S). He's using this to describe his latest site refresh which makes extensive use of <a href="https://developer.chrome.com/docs/web-platform/view-transitions/cross-document">cross-document view transitions</a> - a fabulous new progressive enhancement CSS technique that's <a href="https://caniuse.com/view-transitions">supported</a> in Chrome and Safari (and hopefully soon <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1823896">in Firefox</a>).</p>
+<blockquote>
+<p>With cross-document view transitions getting broader and broader support, I’m realizing that building in-page, progressively-enhanced interactions is more work than simply building two HTML pages and linking them.</p>
+</blockquote>
+<p>Jim now has small static pages powering his home page filtering interface and even his navigation menu, with CSS view transitions configured to smoothly animate between the pages. I think it feels really good - here's what it looked like for me in Chrome (it looked the same both with and without JavaScript disabled):</p>
+<p><img alt="Animated demo - clicking the tabs to swap between Latest, Trending and Hacker News Hits rearranges the list of posts in a smooth animation, then navigating to a post causes its title to enlarge and move to the top while the rest of the article loads in." src="https://static.simonwillison.net/static/2025/llms-demo.gif" /></p>
+<p>Watching the network panel in my browser, most of these pages are 17-20KB gzipped (~45KB after they've decompressed). No wonder it feels so snappy.</p>
+<p>I poked around <a href="https://blog.jim-nielsen.com/styles.css">in Jim's CSS</a> and found this relevant code:</p>
+<div class="highlight highlight-source-css"><pre><span class="pl-k">@view-transition</span> {
+  <span class="pl-c1">navigation</span><span class="pl-kos">:</span> auto;
+}
+
+.<span class="pl-c1">posts-nav</span> <span class="pl-ent">a</span>[<span class="pl-c1">aria-current</span><span class="pl-c1">=</span><span class="pl-s">"page"</span>]<span class="pl-kos">:</span><span class="pl-c1">not</span>(<span class="pl-kos">:</span><span class="pl-c1">last-child</span>)<span class="pl-kos">:</span><span class="pl-c1">after</span> {
+  <span class="pl-c1">border-color</span><span class="pl-kos">:</span> <span class="pl-en">var</span>(<span class="pl-s1">--c-text</span>);
+  <span class="pl-c1">view-transition-name</span><span class="pl-kos">:</span> posts-nav;
+}
+
+<span class="pl-c">/* Old stuff going out */</span>
+::<span class="pl-c1">view-transition-old</span>(<span class="pl-ent">posts-nav</span>) {
+  <span class="pl-c1">animation</span><span class="pl-kos">:</span> fade <span class="pl-c1">0.2<span class="pl-smi">s</span></span> linear forwards;
+  <span class="pl-c">/* <a href="https://jakearchibald.com/2024/view-transitions-handling-aspect-ratio-changes/">https://jakearchibald.com/2024/view-transitions-handling-aspect-ratio-changes/</a> */</span>
+  <span class="pl-c1">height</span><span class="pl-kos">:</span> <span class="pl-c1">100<span class="pl-smi">%</span></span>;
+}
+
+<span class="pl-c">/* New stuff coming in */</span>
+::<span class="pl-c1">view-transition-new</span>(<span class="pl-ent">posts-nav</span>) {
+  <span class="pl-c1">animation</span><span class="pl-kos">:</span> fade <span class="pl-c1">0.3<span class="pl-smi">s</span></span> linear reverse;
+  <span class="pl-c1">height</span><span class="pl-kos">:</span> <span class="pl-c1">100<span class="pl-smi">%</span></span>;
+}
+
+<span class="pl-k">@keyframes</span> fade {
+  <span class="pl-k">from</span> {
+    <span class="pl-c1">opacity</span><span class="pl-kos">:</span> <span class="pl-c1">1</span>;
+  }
+  <span class="pl-k">to</span> {
+    <span class="pl-c1">opacity</span><span class="pl-kos">:</span> <span class="pl-c1">0</span>;
+  }
+}</pre></div>
+
+<p>Jim observes:</p>
+<blockquote>
+<p>This really feels like a game-changer for simple sites. If you can keep your site simple, it’s easier to build traditional, JavaScript-powered on-page interactions as small, linked HTML pages.</p>
+</blockquote>
+<p>I've experimented with view transitions for <a href="https://datasette.io/">Datasette</a> in the past and the results were very promising. Maybe I'll pick that up again.</p>
+<p>Bonus: Jim has a <a href="https://lobste.rs/s/csr4mw/building_websites_with_lots_little_html#c_ncxssq">clever JavaScript trick</a> to avoid clicks to the navigation menu being added to the browser's history in the default case.
+
+    <p><small></small>Via <a href="https://lobste.rs/s/csr4mw/building_websites_with_lots_little_html">lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/css">css</a>, <a href="https://simonwillison.net/tags/view-transitions">view-transitions</a>, <a href="https://simonwillison.net/tags/progressive-enhancement">progressive-enhancement</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Steve Yegge]]></title>
         <id>https://simonwillison.net/2025/Mar/9/steve-yegge/#atom-everything</id>
@@ -3724,21 +3799,6 @@ Mistral <a href="https://mistral.ai/en/news/all-new-le-chat">announced a major u
 <p class="cite">&mdash; <a href="https://blog.samaltman.com/three-observations">Sam Altman</a>, Three Observations</p>
 
     <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Salvatore Sanfilippo]]></title>
-        <id>https://simonwillison.net/2025/Feb/8/salvatore-sanfilippo/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/8/salvatore-sanfilippo/#atom-everything"/>
-        <updated>2025-02-08T17:55:36.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://antirez.com/news/145"><p>[...] We are destroying software with complex build systems.</p>
-<p>We are destroying software with an absurd chain of dependencies, making everything bloated and fragile.</p>
-<p>We are destroying software telling new programmers: “Don’t reinvent the wheel!”. But, reinventing the wheel is how you learn how things work, and is the first step to make new, different wheels. [...]</p></blockquote>
-<p class="cite">&mdash; <a href="https://antirez.com/news/145">Salvatore Sanfilippo</a>, We are destroying software</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/salvatore-sanfilippo">salvatore-sanfilippo</a>, <a href="https://simonwillison.net/tags/programming">programming</a>, <a href="https://simonwillison.net/tags/software-engineering">software-engineering</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
