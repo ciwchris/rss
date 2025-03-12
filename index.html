@@ -31,6 +31,122 @@
       <article>
           <details>
             <summary>
+              Code completion in GitHub Copilot for Eclipse is now generally available
+              <span class="post-metadata">(8 min | 2364 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-11-code-completion-in-github-copilot-for-eclipse-is-now-generally-available>Code completion in GitHub Copilot for Eclipse is now generally available
+The post Code completion in GitHub Copilot for Eclipse is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              OpenAI Agents SDK
+              <span class="post-metadata">(1 min | 344 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/11/openai-agents-sdk/#atom-everything>OpenAI Agents SDK
+see also) - a Python library (openai-agents) for building &quot;agents&quot;, which is a replacement for their previous swarm research project.
+In this project, an &quot;agent&quot; is a class that configures an LLM with a system prompt an access to specific tools.
+An interesting concept in this one is the concept of handoffs, where one agent can chose to hand execution over to a different system-prompt-plus-tools agent treating it almost like a tool itself. This code example illustrates the idea:
+from agents import Agent, handoff
+
+billing_agent &#x3D; Agent(
+    name&#x3D;&quot;Billing agent&quot;
+)
+refund_agent &#x3D; Agent(
+    name&#x3D;&quot;Refund agent&quot;
+)
+triage_agent &#x3D; Agent(
+    name&#x3D;&quot;Triage agent&quot;,
+    handoffs&#x3D;[billing_agent, handoff(refund_agent)]
+)
+The library also includes guardrails - classes you can add that attempt to filter user input to make sure it fits expected criteria. Bits of this look suspiciously like trying to solve AI security problems with more AI to me.
+
+
+    
+Tags: python, generative-ai, ai-agents, openai, ai, llms, llm-tool-use</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              OpenAI API: Responses vs. Chat Completions
+              <span class="post-metadata">(3 min | 1037 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/11/responses-vs-chat-completions/#atom-everything>OpenAI API: Responses vs. Chat Completions
+New tools for building agents&quot; (their somewhat mushy interpretation of &quot;agents&quot; here is &quot;systems that independently accomplish tasks on behalf of users&quot;).
+A particularly significant change is the introduction of a new Responses API, which is a slightly different shape from the Chat Completions API that they&#x27;ve offered for the past couple of years and which others in the industry have widely cloned as an ad-hoc standard.
+In this guide they illustrate the differences, with a reassuring note that:
+The Chat Completions API is an industry standard for building AI applications, and we intend to continue supporting this API indefinitely. We&#x27;re introducing the Responses API to simplify workflows involving tool use, code execution, and state management. We believe this new API primitive will allow us to more effectively enhance the OpenAI platform into the future.
+An API that is going away is the Assistants API, a perpetual beta first launched at OpenAI DevDay in 2023. The new responses API solves effectively the same problems but better, and assistants will be sunset &quot;in the first half of 2026&quot;.
+The best illustration I&#x27;ve seen of the differences between the two is this giant commit to the openai-python GitHub repository updating ALL of the example code in one go.
+The most important feature of the Responses API (a feature it shares with the old Assistants API) is that it can manage conversation state on the server for you. An oddity of the Chat Completions API is that you need to maintain your own records of the current conversation, sending back full copies of it with each new prompt. You end up making API calls that look like this (from their examples):
+{
+    &quot;model&quot;: &quot;gpt-4o-mini&quot;,
+    &quot;messages&quot;: [
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;knock knock.&quot;,
+        },
+        {
+            &quot;role&quot;: &quot;assistant&quot;,
+            &quot;content&quot;: &quot;Who&#x27;s there?&quot;,
+        },
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Orange.&quot;
+        }
+    ]
+}
+
+
+These can get long and unwieldy - especially when attachments such as images are involved - but the real challenge is when you start integrating tools: in a conversation with tool use you&#x27;ll need to maintain that full state and drop messages in that show the output of the tools the model requested. It&#x27;s not a trivial thing to work with.
+The new Responses API continues to support this list of messages format, but you also get the option to outsource that to OpenAI entirely: you can add a new &quot;store&quot;: true property and then in subsequent messages include a &quot;previous_response_id: response_id key to continue that conversation.
+This feels a whole lot more natural than the Assistants API, which required you to think in terms of threads, messages and runs to achieve the same effect.
+Also fun: the Response API supports HTML form encoding now in addition to JSON:
+curl https://api.openai.com/v1/responses \
+  -u :$OPENAI_API_KEY \
+  -d model&#x3D;&quot;gpt-4o&quot; \
+  -d input&#x3D;&quot;What is the capital of France?&quot;
+
+I found that in an excellent Twitter thread providing background on the design decisions in the new API from OpenAI&#x27;s Atty Eleti. Here&#x27;s a nitter link for people who don&#x27;t have a Twitter account.
+New built-in tools
+A potentially more exciting change today is the introduction of default tools that you can request while using the new Responses API. There are three of these, all of which can be specified in the &quot;tools&quot;: [...] array.
+{&quot;type&quot;: &quot;web_search_preview&quot;} - the same search feature available through ChatGPT. The documentation doesn&#x27;t clarify which underlying search engine is used - I initially assumed Bing, but the tool documentation links to this Overview of OpenAI Crawlers page so maybe it&#x27;s entirely in-house now? Web search is priced at between $25 and $50 per thousand queries depending on if you&#x27;re using GPT-4o or GPT-4o mini and the configurable size of your &quot;search context&quot;.
+{&quot;type&quot;: &quot;file_search&quot;, &quot;vector_store_ids&quot;: [...]} provides integration with the latest version of their file search vector store, mainly used for RAG. &quot;Usage is priced⁠ at $2.50 per thousand queries and file storage at $0.10/GB/day, with the first GB free&quot;.
+{&quot;type&quot;: &quot;computer_use_preview&quot;, &quot;display_width&quot;: 1024, &quot;display_height&quot;: 768, &quot;environment&quot;: &quot;browser&quot;} is the most surprising to me: it&#x27;s tool access to the Computer-Using Agent system they built for their Operator product. This one is going to be a lot of fun to explore. The tool&#x27;s documentation includes a warning about prompt injection risks. Though on closer inspection I think this may work more like Claude Computer Use, where you have to run the sandboxed environment yourself rather than outsource that difficult part to them.
+I&#x27;m still thinking through how to expose these new features in my LLM tool, which is made harder by the fact that a number of plugins now rely on the default OpenAI implementation from core, which is currently built on top of Chat Completions. I&#x27;ve been worrying for a while about the impact of our entire industry building clones of one proprietary API that might change in the future, I guess now we get to see how that shakes out!
+
+
+    
+Tags: chatgpt, generative-ai, openai, apis, ai, llms, ai-agents, llm-tool-use, llm, rag</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Renaming secret scanning experimental alerts to generic alerts
+              <span class="post-metadata">(8 min | 2347 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-11-renaming-secret-scanning-experimental-alerts-to-generic-alerts>Renaming secret scanning experimental alerts to generic alerts
+The post Renaming secret scanning experimental alerts to generic alerts appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               GitHub Copilot Chat for Eclipse now in public preview
               <span class="post-metadata">(8 min | 2471 words)</span> 
             </summary>
@@ -5298,26 +5414,6 @@ Via lobste.rs
 Tags: llm, plugins, generative-ai, ai, llms, python</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-02-10</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Copilot Language Server SDK is now available
-              <span class="post-metadata">(8 min | 2535 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-10-copilot-language-server-sdk-is-now-available>Copilot Language Server SDK is now available
-The post Copilot Language Server SDK is now available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
