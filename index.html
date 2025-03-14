@@ -25,9 +25,170 @@
 
   <ul>
     <li>
+      <time>2025-03-14</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Steve Klabnik
+              <span class="post-metadata">(1 min | 332 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/14/steve-klabnik/#atom-everything>[...] in 2013, I did not understand that the things I said had meaning. I hate talking about this because it makes me seem more important than I am, but it’s also important to acknowledge. I saw myself at the time as just Steve, some random guy. If I say something on the internet, it’s like I’m talking to a friend in real life, my words are just random words and I’m human and whatever. It is what it is.
+But at that time in my life, that wasn’t actually the case. I was on the Rails team, I was speaking at conferences, and people were reading my blog and tweets. I was an “influencer,” for better or worse. But I hadn’t really internalized that change in my life yet. And so I didn’t really understand that if I criticized something, it was something thousands of people would see.
+
+— Steve Klabnik, Choosing Languages
+Tags: steve-klabnik</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-13</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Adding AI-generated descriptions to my tools collection
+              <span class="post-metadata">(3 min | 811 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/13/tools-colophon/#atom-everything>The /colophon page on my tools.simonwillison.net site lists all 78 of the HTML+JavaScript tools I&#x27;ve built (with AI assistance) along with their commit histories, including links to prompting transcripts. I wrote about how I built that colophon the other day. It now also includes a description of each tool, generated using Claude 3.7 Sonnet.
+
+
+
+This is the single largest chunk of AI-generated text I&#x27;ve ever published on the indexable web. I share lots of LLM transcripts but I usually put them in a secret Gist such that they&#x27;ll be kept out of search engines.
+
+On the one hand this feels slop adjacent - but I was never going to write documentation for all 78 of those little experiments, yet I find myself forgetting details of how they worked. Just one example: my CSV marker map tool which I built last year for knocking out an ad-hoc Bigfoot sightings map and then promptly forgot what it could do.
+
+Here&#x27;s what I got when I ran:
+
+cat csv-marker-map.html | llm -m claude-3.7-sonnet \
+  --system &quot;Write a paragraph of documentation for this page as markdown. Do not include a heading. Do not use words like just or simply.&quot;
+
+
+
+This interactive map displays markers based on data from a CSV file. Load data by adding ?csv&#x3D;URL to the page URL, where the CSV must include latitude and longitude columns. You can customize the map with several URL parameters: center (coordinates in format lat,lng), zoom (zoom level), q (location to search for), marker (add individual markers at coordinates), and color (change the default marker color). The map automatically updates the URL as you navigate, preserving your current view. Markers from CSV files appear as small colored circles on the map, while markers specified directly in the URL use the default Leaflet marker style.
+
+
+That&#x27;s genuinely useful. I got Claude to write me a write_docs.py script to loop through all 78 files and generate filename.docs.md descriptions that live in the repo, then updated build_colophon.py to include those descriptions if they exist.
+
+It cost about $1.08 in Claude credits to document all 78 tools, because some of those HTML files were quite long so the input tokens added up.
+
+Each of the documentation files includes a comment with the most recent commit hash of the file that was used to generate the document, like this:
+
+&lt;!-- Generated from commit: 7c6af8eeabc7682b5f9ec2621e34bc771c5471d8 --&gt;
+
+
+The script can use this to spot if a tool has been updated - if so, the documentation will be regenerated.
+
+Add this all together and now I can drop new HTML+JavaScript tools into my simonw/tools repo and, moments later, they&#x27;ll be published on tools.simonwillison.net with auto-generated descriptions added to my colophon. I think that&#x27;s pretty neat!
+
+Update: I decided that the descriptions were too long, so I modified the script to add &quot;Keep it to 2-3 sentences&quot; to the end of the system prompt. These new, shorter descriptions are now live - here&#x27;s the diff. Total usage was 283,528 input tokens and 6,010 output tokens for a cost of 94 cents.
+
+The new, shorter description for csv-marker-map.html looks like this:
+
+
+This page creates an interactive map with markers based on CSV data. It accepts parameters in the URL to set the center, zoom level, search query, individual markers, and a CSV file URL for bulk marker placement. The markers are displayed on an OpenStreetMap base layer, and the map view automatically updates the URL when panned or zoomed.
+
+
+For comparison, here&#x27;s a copy of the previous colophon with the longer descriptions.
+Tags: projects, tools, ai, generative-ai, llms, ai-assisted-programming, llm, claude, slop</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Evan Miller
+              <span class="post-metadata">(1 min | 222 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/13/evan-miller/#atom-everything>One of the most essential practices for maintaining the long-term quality of computer code is to write automated tests that ensure the program continues to act as expected, even when other people (including your future self) muck with it.
+
+— Evan Miller
+Tags: testing, evan-miller</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Xata Agent
+              <span class="post-metadata">(2 min | 567 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/13/xata-agent/#atom-everything>Xata Agent
+pgroll and pgstream schema migration tools.
+Their new &quot;Agent&quot; tool is a system that helps monitor and optimize a PostgreSQL server using prompts to LLMs.
+Any time I see a new tool like this I go hunting for the prompts. It looks like the main system prompts for orchestrating the tool live here - here&#x27;s a sample:
+Provide clear, concise, and accurate responses to questions.
+Use the provided tools to get context from the PostgreSQL database to answer questions.
+When asked why a query is slow, call the explainQuery tool and also take into account the table sizes.
+During the initial assessment use the getTablesAndInstanceInfo, getPerfromanceAndVacuumSettings, 
+and getPostgresExtensions tools. 
+When asked to run a playbook, use the getPlaybook tool to get the playbook contents. Then use the contents of the playbook
+as an action plan. Execute the plan step by step.
+The really interesting thing is those playbooks, each of which is implemented as a prompt in the lib/tools/playbooks.ts file. There are six of these so far:
+SLOW_QUERIES_PLAYBOOK
+GENERAL_MONITORING_PLAYBOOK
+TUNING_PLAYBOOK
+INVESTIGATE_HIGH_CPU_USAGE_PLAYBOOK
+INVESTIGATE_HIGH_CONNECTION_COUNT_PLAYBOOK
+INVESTIGATE_LOW_MEMORY_PLAYBOOK
+Here&#x27;s the full text of INVESTIGATE_LOW_MEMORY_PLAYBOOK:
+Objective:
+To investigate and resolve low freeable memory in the PostgreSQL database.
+
+Step 1:
+Get the freeable memory metric using the tool getInstanceMetric.
+
+Step 3:
+Get the instance details and compare the freeable memory with the amount of memory available.
+
+Step 4:
+Check the logs for any indications of memory pressure or out of memory errors. If there are, make sure to report that to the user. Also this would mean that the situation is critical.
+
+Step 4:
+Check active queries. Use the tool getConnectionsGroups to get the currently active queries. If a user or application stands out for doing a lot of work, record that to indicate to the user.
+
+Step 5:
+Check the work_mem setting and shared_buffers setting. Think if it would make sense to reduce these in order to free up memory.
+
+Step 6:
+If there is no clear root cause for using memory, suggest to the user to scale up the Postgres instance. Recommend a particular instance class.
+
+This is the first time I&#x27;ve seen prompts arranged in a &quot;playbooks&quot; pattern like this. What a weird and interesting way to write software!
+
+    
+Via Hacker News
+Tags: prompt-engineering, generative-ai, ai-agents, postgresql, ai, llms, llm-tool-use</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Ai2
+              <span class="post-metadata">(1 min | 271 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/13/ai2/#atom-everything>Today we release OLMo 2 32B, the most capable and largest model in the OLMo 2 family, scaling up the OLMo 2 training recipe used for our 7B and 13B models released in November. It is trained up to 6T tokens and post-trained using Tulu 3.1. OLMo 2 32B is the first fully-open model (all data, code, weights, and details are freely available) to outperform GPT3.5-Turbo and GPT-4o mini on a suite of popular, multi-skill academic benchmarks.
+
+— Ai2, OLMo 2 32B release announcement
+Tags: ai2, llms, ai, generative-ai, open-source, training-data</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5466,182 +5627,6 @@ I think WebAssembly and Pyodide still have a great deal of untapped potential fo
 Tags: python, urls, datasette, webassembly, pyodide, datasette-lite</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot in Visual Studio 2022 Version 17.13
-              <span class="post-metadata">(9 min | 2778 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-12-github-copilot-in-visual-studio-2022-version-17-13>GitHub Copilot in Visual Studio 2022 Version 17.13
-The post GitHub Copilot in Visual Studio 2022 Version 17.13 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-02-12</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Improved pull request merge experience enabled by default in public preview
-              <span class="post-metadata">(9 min | 2618 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-12-improved-pull-request-merge-experience-enabled-by-default-in-public-preview>Improved pull request merge experience enabled by default in public preview
-The post Improved pull request merge experience enabled by default in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Sam Altman
-              <span class="post-metadata">(1 min | 336 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/12/sam-altman/#atom-everything>We want AI to “just work” for you; we realize how complicated our model and product offerings have gotten.
-We hate the model picker as much as you do and want to return to magic unified intelligence.
-We will next ship GPT-4.5, the model we called Orion internally, as our last non-chain-of-thought model.
-After that, a top goal for us is to unify o-series models and GPT-series models by creating systems that can use all our tools, know when to think for a long time or not, and generally be useful for a very wide range of tasks.
-In both ChatGPT and our API, we will release GPT-5 as a system that integrates a lot of our technology, including o3. We will no longer ship o3 as a standalone model.
-[When asked about release dates for GPT 4.5 / GPT 5:] weeks / months
-
-— Sam Altman
-Tags: generative-ai, openai, o3, chatgpt, ai, llms, sam-altman</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Nomic Embed Text V2: An Open Source, Multilingual, Mixture-of-Experts Embedding Model
-              <span class="post-metadata">(2 min | 493 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/12/nomic-embed-text-v2/#atom-everything>Nomic Embed Text V2: An Open Source, Multilingual, Mixture-of-Experts Embedding Model
-on Hugging Face) trained on &quot;1.6 billion high-quality data pairs&quot;, which is the first embedding model I&#x27;ve seen to use a Mixture of Experts architecture:
-In our experiments, we found that alternating MoE layers with 8 experts and top-2 routing provides the optimal balance between performance and efficiency. This results in 475M total parameters in the model, but only 305M active during training and inference.
-I first tried it out using uv run like this:
-uv run \
-  --with einops \
-  --with sentence-transformers \
-  --python 3.13 python
-
-Then:
-from sentence_transformers import SentenceTransformer
-model &#x3D; SentenceTransformer(&quot;nomic-ai/nomic-embed-text-v2-moe&quot;, trust_remote_code&#x3D;True)
-sentences &#x3D; [&quot;Hello!&quot;, &quot;¡Hola!&quot;]
-embeddings &#x3D; model.encode(sentences, prompt_name&#x3D;&quot;passage&quot;)
-print(embeddings)
-Then I got it working on my laptop using the llm-sentence-tranformers plugin like this:
-llm install llm-sentence-transformers
-llm install einops # additional necessary package
-llm sentence-transformers register nomic-ai/nomic-embed-text-v2-moe --trust-remote-code
-
-llm embed -m sentence-transformers/nomic-ai/nomic-embed-text-v2-moe -c &#x27;string to embed&#x27;
-
-This outputs a 768 item JSON array of floating point numbers to the terminal. These are Matryoshka embeddings which means you can truncate that down to just the first 256 items and get similarity calculations that still work albeit slightly less well.
-To use this for RAG you&#x27;ll need to conform to Nomic&#x27;s custom prompt format. For documents to be searched:
-search_document: text of document goes here
-
-And for search queries:
-search_query: term to search for
-
-I landed a new --prepend option for the llm embed-multi command to help with that, but it&#x27;s not out in a full release just yet.
-I also released llm-sentence-transformers 0.3 with some minor improvements to make running this model more smooth.
-
-    
-Via @nomic_ai
-Tags: embeddings, llm, nomic, ai, rag, uv, python</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Building a SNAP LLM eval: part 1
-              <span class="post-metadata">(1 min | 445 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/12/building-a-snap-llm/#atom-everything>Building a SNAP LLM eval: part 1
-previously) has been exploring using LLM-driven systems to help people apply for SNAP, the US Supplemental Nutrition Assistance Program (aka food stamps).
-This is a domain which existing models know some things about, but which is full of critical details around things like eligibility criteria where accuracy really matters.
-Domain-specific evals like this are still pretty rare. As Dave puts it:
-There is also not a lot of public, easily digestible writing out there on building evals in specific domains. So one of our hopes in sharing this is that it helps others build evals for domains they know deeply.
-Having robust evals addresses multiple challenges. The first is establishing how good the raw models are for a particular domain. A more important one is to help in developing additional systems on top of these models, where an eval is crucial for understanding if RAG or prompt engineering tricks are paying off.
-Step 1 doesn&#x27;t involve writing any code at all:
-Meaningful, real problem spaces inevitably have a lot of nuance. So in working on our SNAP eval, the first step has just been using lots of models — a lot. [...]
-Just using the models and taking notes on the nuanced “good”, “meh”, “bad!” is a much faster way to get to a useful starting eval set than writing or automating evals in code.
-I&#x27;ve been complaining for a while that there isn&#x27;t nearly enough guidance about evals out there. This piece is an excellent step towards filling that gap.
-
-
-    
-Tags: evals, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Models playground now integrates with user repository code [GA]
-              <span class="post-metadata">(10 min | 2856 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-12-github-models-playground-now-integrates-with-user-repository-code-ga>GitHub Models playground now integrates with user repository code [GA]
-The post GitHub Models playground now integrates with user repository code [GA] appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Notice of upcoming deprecations and breaking changes for GitHub Actions
-              <span class="post-metadata">(10 min | 2901 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-12-notice-of-upcoming-deprecations-and-breaking-changes-for-github-actions>Notice of upcoming deprecations and breaking changes for GitHub Actions
-The post Notice of upcoming deprecations and breaking changes for GitHub Actions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              CodeQL performance and coverage improvements in recent releases
-              <span class="post-metadata">(8 min | 2530 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-12-codeql-performance-and-coverage-improvements-in-recent-releases>CodeQL performance and coverage improvements in recent releases
-The post CodeQL performance and coverage improvements in recent releases appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot Chat and GitHub Copilot Extension now available for free on GitHub Mobile and GitHub CLI
-              <span class="post-metadata">(7 min | 2174 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-12-github-copilot-chat-and-github-copilot-extension-now-available-for-free-on-github-mobile-and-github-cli>GitHub Copilot Chat and GitHub Copilot Extension now available for free on GitHub Mobile and GitHub CLI
-The post GitHub Copilot Chat and GitHub Copilot Extension now available for free on GitHub Mobile and GitHub CLI appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
