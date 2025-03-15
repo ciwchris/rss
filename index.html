@@ -25,6 +25,30 @@
 
   <ul>
     <li>
+      <time>2025-03-15</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Andrew Ng
+              <span class="post-metadata">(1 min | 345 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/15/andrew-ng/#atom-everything>Some people today are discouraging others from learning programming on the grounds AI will automate it. This advice will be seen as some of the worst career advice ever given. I disagree with the Turing Award and Nobel prize winner who wrote, “It is far more likely that the programming occupation will become extinct [...] than that it will become all-powerful. More and more, computers will program themselves.”​ Statements discouraging people from learning to code are harmful!
+In the 1960s, when programming moved from punchcards (where a programmer had to laboriously make holes in physical cards to write code character by character) to keyboards with terminals, programming became easier. And that made it a better time than before to begin programming. Yet it was in this era that Nobel laureate Herb Simon wrote the words quoted in the first paragraph. Today’s arguments not to learn to code continue to echo his comment.
+As coding becomes easier, more people should code, not fewer!
+
+— Andrew Ng
+Tags: ai-assisted-programming, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-14</time>
 
       <section>
@@ -63,6 +87,19 @@ Via Hacker News
 Tags: apple, apple-intelligence, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub is now PCI DSS v4.0 compliant with our 4.0 service provider attestation available to customers
+              <span class="post-metadata">(7 min | 2006 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-14-github-is-now-pci-dss-v4-0-compliant-with-our-4-0-service-provider-attestation-available-to-customers>GitHub is now PCI DSS v4.0 compliant with our 4.0 service provider attestation available to customers
+The post GitHub is now PCI DSS v4.0 compliant with our 4.0 service provider attestation available to customers appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
       <article>
@@ -5280,90 +5317,6 @@ The post Reverting Feed activity sorting back to chronological ordering appeared
 The post Verify email address to secure Enterprise Managed User accounts appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              files-to-prompt 0.5
-              <span class="post-metadata">(2 min | 612 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/14/files-to-prompt/#atom-everything>files-to-prompt 0.5
-files-to-prompt tool (originally built using Claude 3 Opus back in April) had been accumulating a bunch of issues and PRs - I finally got around to spending some time with it and pushed a fresh release:
-New -n/--line-numbers flag for including line numbers in the output. Thanks, Dan Clayton. #38
-Fix for utf-8 handling on Windows. Thanks, David Jarman. #36
---ignore patterns are now matched against directory names as well as file names, unless you pass the new --ignore-files-only flag. Thanks, Nick Powell. #30
-I use this tool myself on an almost daily basis - it&#x27;s fantastic for quickly answering questions about code. Recently I&#x27;ve been plugging it into Gemini 2.0 with its 2 million token context length, running recipes like this one:
-git clone https://github.com/bytecodealliance/componentize-py
-cd componentize-py
-files-to-prompt . -c | llm -m gemini-2.0-pro-exp-02-05 \
-  -s &#x27;How does this work? Does it include a python compiler or AST trick of some sort?&#x27;
-
-I ran that question against the bytecodealliance/componentize-py repo - which provides a tool for turning Python code into compiled WASM - and got this really useful answer.
-Here&#x27;s another example. I decided to have o3-mini review how Datasette handles concurrent SQLite connections from async Python code - so I ran this:
-git clone https://github.com/simonw/datasette
-cd datasette/datasette
-files-to-prompt database.py utils/__init__.py -c | \
-  llm -m o3-mini -o reasoning_effort high \
-  -s &#x27;Output in markdown a detailed analysis of how this code handles the challenge of running SQLite queries from a Python asyncio application. Explain how it works in the first section, then explore the pros and cons of this design. In a final section propose alternative mechanisms that might work better.&#x27;
-
-Here&#x27;s the result. It did an extremely good job of explaining how my code works - despite being fed just the Python and none of the other documentation. Then it made some solid recommendations for potential alternatives.
-I added a couple of follow-up questions (using llm -c) which resulted in a full working prototype of an alternative threadpool mechanism, plus some benchmarks.
-One final example: I decided to see if there were any undocumented features in Litestream, so I checked out the repo and ran a prompt against just the .go files in that project:
-git clone https://github.com/benbjohnson/litestream
-cd litestream
-files-to-prompt . -e go -c | llm -m o3-mini \
-  -s &#x27;Write extensive user documentation for this project in markdown&#x27;
-
-Once again, o3-mini provided a really impressively detailed set of unofficial documentation derived purely from reading the source.
-
-
-    
-Tags: projects, llms, gemini, llm, ai-assisted-programming, generative-ai, ai, webassembly, python, async, datasette, sqlite, litestream</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How to add a directory to your PATH
-              <span class="post-metadata">(1 min | 386 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/14/how-to-add-a-directory-to-your-path/#atom-everything>How to add a directory to your PATH
-Classic Julia Evans piece here, answering a question which you might assume is obvious but very much isn&#x27;t.
-Plenty of useful tips in here, plus the best explanation I&#x27;ve ever seen of the three different Bash configuration options:
-Bash has three possible config files: ~/.bashrc, ~/.bash_profile, and ~/.profile.
-If you&#x27;re not sure which one your system is set up to use, I&#x27;d recommend testing this way:
-add echo hi there to your ~/.bashrc
-Restart your terminal
-If you see &quot;hi there&quot;, that means ~/.bashrc is being used! Hooray!
-Otherwise remove it and try the same thing with ~/.bash_profile
-You can also try ~/.profile if the first two options don&#x27;t work.
-This article also reminded me to try which -a again, which gave me this confusing result for datasette:
-% which -a datasette
-/opt/homebrew/Caskroom/miniconda/base/bin/datasette
-/Users/simon/.local/bin/datasette
-/Users/simon/.local/bin/datasette
-
-Why is the second path in there twice? I figured out how to use rg to search just the dot-files in my home directory:
-rg local/bin -g &#x27;/.*&#x27; --max-depth 1
-
-And found that I have both a .zshrc and .zprofile file that are adding that to my path:
-.zshrc.backup
-4:export PATH&#x3D;&quot;$PATH:/Users/simon/.local/bin&quot;
-
-.zprofile
-5:export PATH&#x3D;&quot;$PATH:/Users/simon/.local/bin&quot;
-
-.zshrc
-7:export PATH&#x3D;&quot;$PATH:/Users/simon/.local/bin&quot;
-
-Tags: julia-evans, zsh, bash, ripgrep</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
