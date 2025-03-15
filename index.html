@@ -31,6 +31,43 @@
       <article>
           <details>
             <summary>
+              TIL: Styling an HTML dialog modal to take the full height of the viewport
+              <span class="post-metadata">(1 min | 290 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/14/styling-an-html-dialog/#atom-everything>TIL: Styling an HTML dialog modal to take the full height of the viewport
+&lt;dialog&gt; element present as a full height side panel that animates in from the side. The full height bit was hard, until Natalie helped me figure out that browsers apply a default max-height: calc(100% - 6px - 2em); rule which needs to be over-ridden.
+Also included: some spelunking through the HTML spec to figure out where that calc() expression was first introduced. The answer was November 2020.
+
+
+    
+Tags: css, til, html, natalie-downe, web-standards</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Apple’s Siri Chief Calls AI Delays Ugly and Embarrassing, Promises Fixes
+              <span class="post-metadata">(1 min | 366 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/14/ai-delays/#atom-everything>Apple’s Siri Chief Calls AI Delays Ugly and Embarrassing, Promises Fixes
+Walker said the decision to delay the features was made because of quality issues and that the company has found the technology only works properly up to two-thirds to 80% of the time. He said the group “can make more progress to get those percentages up, so that users get something they can really count on.” [...]
+But Apple wants to maintain a high bar and only deliver the features when they’re polished, he said. “These are not quite ready to go to the general public, even though our competitors might have launched them in this state or worse.”
+I imagine it&#x27;s a lot harder to get reliable results out of small, local LLMs that run on an iPhone. Features that fail 1/3 to 1/5 of the time are unacceptable for a consumer product like this.
+
+    
+Via Hacker News
+Tags: apple, apple-intelligence, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               How ProPublica Uses AI Responsibly in Its Investigations
               <span class="post-metadata">(2 min | 584 words)</span> 
             </summary>
@@ -91,6 +128,19 @@ About 28K euros of hardware per replica [one-time cost] IIRC + [ongoing] colo co
 Tags: scaling, postgresql</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Actions Performance Metrics are generally available and Enterprise-level metrics are in public preview
+              <span class="post-metadata">(7 min | 2151 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-14-actions-performance-metrics-are-generally-available-and-enterprise-level-metrics-are-in-public-preview>Actions Performance Metrics are generally available and Enterprise-level metrics are in public preview
+The post Actions Performance Metrics are generally available and Enterprise-level metrics are in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
       <article>
@@ -5314,111 +5364,6 @@ And found that I have both a .zshrc and .zprofile file that are adding that to m
 Tags: julia-evans, zsh, bash, ripgrep</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-02-13</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Repositories: Ruleset history, import and export are generally available
-              <span class="post-metadata">(7 min | 2144 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-13-repositories-ruleset-history-import-and-export-are-generally-available>Repositories: Ruleset history, import and export are generally available
-The post Repositories: Ruleset history, import and export are generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              shot-scraper 1.6 with support for HTTP Archives
-              <span class="post-metadata">(1 min | 449 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/13/shot-scraper/#atom-everything>shot-scraper 1.6 with support for HTTP Archives
-shot-scraper CLI tool for taking screenshots and scraping web pages.
-The big new feature is HTTP Archive (HAR) support. The new shot-scraper har command can now create an archive of a page and all of its dependents like this:
-shot-scraper har https://datasette.io/
-
-This produces a datasette-io.har file (currently 163KB) which is JSON representing the full set of requests used to render that page. Here&#x27;s a copy of that file. You can visualize that here using ericduran.github.io/chromeHAR.
-
-That JSON includes full copies of all of the responses, base64 encoded if they are binary files such as images.
-You can add the --zip flag to instead get a datasette-io.har.zip file, containing JSON data in har.har but with the response bodies saved as separate files in that archive.
-The shot-scraper multi command lets you run shot-scraper against multiple URLs in sequence, specified using a YAML file. That command now takes a --har option (or --har-zip or --har-file name-of-file), described in the documentation, which will produce a HAR at the same time as taking the screenshots.
-Shots are usually defined in YAML that looks like this:
-- output: example.com.png
-  url: http://www.example.com/
-- output: w3c.org.png
-  url: https://www.w3.org/
-
-
-You can now omit the output: keys and generate a HAR file without taking any screenshots at all:
-- url: http://www.example.com/
-- url: https://www.w3.org/
-
-
-Run like this:
-shot-scraper multi shots.yml --har
-
-Which outputs:
-Skipping screenshot of &#x27;https://example.com/&#x27;
-Skipping screenshot of &#x27;https://datasette.io/&#x27;
-Wrote to HAR file: trace.har
-
-shot-scraper is built on top of Playwright, and the new features use the browser.new_context(record_har_path&#x3D;...) parameter.
-
-
-    
-Tags: projects, shot-scraper, playwright, python</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot for Xcode Chat now in public preview
-              <span class="post-metadata">(7 min | 2165 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-13-github-copilot-for-xcode-chat-now-in-public-preview>GitHub Copilot for Xcode Chat now in public preview
-The post GitHub Copilot for Xcode Chat now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot code completions now in public preview for Eclipse
-              <span class="post-metadata">(9 min | 2634 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-13-github-copilot-code-completions-now-in-public-preview-for-eclipse>GitHub Copilot code completions now in public preview for Eclipse
-The post GitHub Copilot code completions now in public preview for Eclipse appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot version updates now support the bun package manager – [GA]
-              <span class="post-metadata">(9 min | 2718 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-13-dependabot-version-updates-now-support-the-bun-package-manager-ga>Dependabot version updates now support the bun package manager - [GA]
-The post Dependabot version updates now support the bun package manager – [GA] appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
