@@ -634,16 +634,6 @@
           "wordCount": 3091,
           "title": "GitHub Issues & Projects – February 18th update",
           "imageUrl": "https://github.blog/wp-content/uploads/2024/08/d34e9c19123898a8a886147f37a1d167130d1c15be6d399a9c4b30ee6f2a7395-1200x630-1.png?fit=1200%2C630"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-02-14-code-completion-in-github-copilot-for-xcode-is-now-generally-available",
-          "author": "Allison",
-          "description": "Code completion in GitHub Copilot for Xcode is now generally available\nThe post Code completion in GitHub Copilot for Xcode is now generally available appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-02-14-code-completion-in-github-copilot-for-xcode-is-now-generally-available",
-          "publishedOn": "2025-02-15T03:32:47.000Z",
-          "wordCount": 3344,
-          "title": "Code completion in GitHub Copilot for Xcode is now generally available",
-          "imageUrl": "https://github.com/user-attachments/assets/7d73ef6d-86e2-425f-bcba-3e7c4405bf87"
         }
       ]
     },
@@ -1094,6 +1084,16 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2025/Mar/16/backstory/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://news.ycombinator.com/item?id=43378225#43380129\">Backstory on the default styles for the HTML dialog modal</a></strong></p>\nMy TIL about <a href=\"https://til.simonwillison.net/css/dialog-full-height\">Styling an HTML dialog modal to take the full height of the viewport</a> (here's the <a href=\"https://tools.simonwillison.net/side-panel-dialog\">interactive demo</a>) showed up <a href=\"https://news.ycombinator.com/item?id=43378225\">on Hacker News</a> this morning, and attracted this fascinating comment from Chromium engineer Ian Kilpatrick.</p>\n<blockquote>\n<p>There's quite a bit of history here, but the abbreviated version is that the dialog element was originally added as a replacement for window.alert(), and there were a libraries polyfilling dialog and being surprisingly widely used.</p>\n<p>The mechanism which dialog was originally positioned was relatively complex, and slightly hacky (magic values for the insets).</p>\n<p>Changing the behaviour basically meant that we had to add \"overflow:auto\", and some form of \"max-height\"/\"max-width\" to ensure that the content within the dialog was actually reachable.</p>\n<p>The better solution to this was to add \"max-height:stretch\", \"max-width:stretch\". You can see <a href=\"https://github.com/whatwg/html/pull/5936#discussion_r513642207\">the discussion for this here</a>.</p>\n<p>The problem is that no browser had (and still has) shipped the \"stretch\" keyword. (Blink <a href=\"https://groups.google.com/a/chromium.org/g/blink-dev/c/SiZ2nDt3B9E/m/kP_rKOaDAgAJ?pli=1\">likely will \"soon\"</a>)</p>\n<p>However this was pushed back against as this had to go in a specification - and nobody implemented it (\"-webit-fill-available\" would have been an acceptable substitute in Blink but other browsers didn't have this working the same yet).</p>\n<p>Hence the calc() variant. (Primarily because of \"box-sizing:content-box\" being the default, and pre-existing border/padding styles on dialog that we didn't want to touch). [...]</p>\n</blockquote>\n<p>I particularly enjoyed this insight into the challenges of evolving the standards that underlie the web, even for something this small:</p>\n<blockquote>\n<p>One thing to keep in mind is that any changes that changes web behaviour is under some time pressure. If you leave something too long, sites will start relying on the previous behaviour - so it would have been arguably worse not to have done anything.</p>\n</blockquote>\n<p>Also from the comments I learned that Firefox DevTools <em>can</em> show you user-agent styles, but that option is turned off by default - <a href=\"https://til.simonwillison.net/css/dialog-full-height#user-content-update-firefox-can-show-browser-styles\">notes on that here</a>. Once I turned this option on I saw references to an <code>html.css</code> stylesheet, so I dug around and <a href=\"https://searchfox.org/mozilla-central/source/layout/style/res/html.css\">found that in the Firefox source code</a>. Here's <a href=\"https://github.com/mozilla/gecko-dev/commits/HEAD/layout/style/res/html.css\">the commit history</a> for that file on the official GitHub mirror, which provides a detailed history of how Firefox default HTML styles have evolved with the standards over time.</p>\n<p>And <a href=\"https://news.ycombinator.com/item?id=43378225#43380255\">via uallo</a> here are the same default HTML styles for other browsers:</p>\n<ul>\n<li>Chromium: <a href=\"https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/html/resources/html.css\">third_party/blink/renderer/core/html/resources/html.css</a></li>\n<li>WebKit: <a href=\"https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/html.css\">Source/WebCore/css/html.css</a></li>\n</ul>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/css\">css</a>, <a href=\"https://simonwillison.net/tags/web-standards\">web-standards</a>, <a href=\"https://simonwillison.net/tags/html\">html</a>, <a href=\"https://simonwillison.net/tags/chrome\">chrome</a>, <a href=\"https://simonwillison.net/tags/firefox\">firefox</a></p>",
+          "link": "https://simonwillison.net/2025/Mar/16/backstory/#atom-everything",
+          "publishedOn": "2025-03-16T16:36:36.000Z",
+          "wordCount": 583,
+          "title": "Backstory on the default styles for the HTML dialog modal",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2025/Mar/16/olmo2/#atom-everything",
           "author": null,

@@ -31,6 +31,33 @@
       <article>
           <details>
             <summary>
+              Backstory on the default styles for the HTML dialog modal
+              <span class="post-metadata">(2 min | 583 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/16/backstory/#atom-everything>Backstory on the default styles for the HTML dialog modal
+Styling an HTML dialog modal to take the full height of the viewport (here&#x27;s the interactive demo) showed up on Hacker News this morning, and attracted this fascinating comment from Chromium engineer Ian Kilpatrick.
+There&#x27;s quite a bit of history here, but the abbreviated version is that the dialog element was originally added as a replacement for window.alert(), and there were a libraries polyfilling dialog and being surprisingly widely used.
+The mechanism which dialog was originally positioned was relatively complex, and slightly hacky (magic values for the insets).
+Changing the behaviour basically meant that we had to add &quot;overflow:auto&quot;, and some form of &quot;max-height&quot;/&quot;max-width&quot; to ensure that the content within the dialog was actually reachable.
+The better solution to this was to add &quot;max-height:stretch&quot;, &quot;max-width:stretch&quot;. You can see the discussion for this here.
+The problem is that no browser had (and still has) shipped the &quot;stretch&quot; keyword. (Blink likely will &quot;soon&quot;)
+However this was pushed back against as this had to go in a specification - and nobody implemented it (&quot;-webit-fill-available&quot; would have been an acceptable substitute in Blink but other browsers didn&#x27;t have this working the same yet).
+Hence the calc() variant. (Primarily because of &quot;box-sizing:content-box&quot; being the default, and pre-existing border/padding styles on dialog that we didn&#x27;t want to touch). [...]
+I particularly enjoyed this insight into the challenges of evolving the standards that underlie the web, even for something this small:
+One thing to keep in mind is that any changes that changes web behaviour is under some time pressure. If you leave something too long, sites will start relying on the previous behaviour - so it would have been arguably worse not to have done anything.
+Also from the comments I learned that Firefox DevTools can show you user-agent styles, but that option is turned off by default - notes on that here. Once I turned this option on I saw references to an html.css stylesheet, so I dug around and found that in the Firefox source code. Here&#x27;s the commit history for that file on the official GitHub mirror, which provides a detailed history of how Firefox default HTML styles have evolved with the standards over time.
+And via uallo here are the same default HTML styles for other browsers:
+Chromium: third_party/blink/renderer/core/html/resources/html.css
+WebKit: Source/WebCore/css/html.css
+Tags: css, web-standards, html, chrome, firefox</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               mlx-community/OLMo-2-0325-32B-Instruct-4bit
               <span class="post-metadata">(1 min | 319 words)</span> 
             </summary>
@@ -5252,19 +5279,6 @@ For the automated tests that run in GitHub Actions I decided to use a small mode
 Tags: apple, plugins, projects, ai, github-actions, generative-ai, llms, llm, mlx</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Code completion in GitHub Copilot for Xcode is now generally available
-              <span class="post-metadata">(11 min | 3344 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-14-code-completion-in-github-copilot-for-xcode-is-now-generally-available>Code completion in GitHub Copilot for Xcode is now generally available
-The post Code completion in GitHub Copilot for Xcode is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
