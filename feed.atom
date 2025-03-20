@@ -2,10 +2,71 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-19T21:09:10.746Z</updated>
+    <updated>2025-03-20T14:10:09.907Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Calling a wrap on my weeknotes]]></title>
+        <id>https://simonwillison.net/2025/Mar/20/calling-a-wrap-on-my-weeknotes/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/20/calling-a-wrap-on-my-weeknotes/#atom-everything"/>
+        <updated>2025-03-20T04:12:32.000Z</updated>
+        <summary type="html"><![CDATA[<p>After <a href="https://simonwillison.net/tags/weeknotes/">192 posts</a> that ranged from weekly to roughly once-a-month, I've decided to call a wrap on my weeknotes habit. The <a href="https://simonwillison.net/2019/Sep/13/weeknotestwitter-sqlite-datasette-rure/">original goal</a> was to stay transparent during my 2019-2020 JSK fellowship, and I kept them up after that as an accountability mechanism and to get into a habit of writing regularly.</p>
+<p>Over the past two years I've adopted new posting habits which are solving those problems in other ways:</p>
+<ul>
+<li>I post something here almost every day. I actually maintained a daily posting streak throughout 2024, which I <a href="https://simonwillison.net/2025/Jan/2/ending-a-year-long-posting-streak/">ended in January</a>, but I'm still posting most days and plan to keep that up.</li>
+<li>Every time I ship a new release of one of my projects I link to it from here. This replaces the "recent releases" section of my weeknotes.</li>
+<li>I try to have a longer form piece of writing that's suitable for inclusion in <a href="https://simonw.substack.com/">my newsletter</a> at least once every two weeks. That's another accountability mechanism that's working well for me.</li>
+</ul>
+<p>One downside of weeknotes is that I'd sometimes save something to include in them, which could lead to several items getting bundled together in a way that reduced their potential impact as standalone posts.</p>
+<p>I got to the point with weeknotes where I was feeling guilty about not keeping them up. Given the volume of content I'm publishing already that felt like a sign that they were no longer providing the value they once did!</p>
+<p>I still think weeknotes are an excellent habit for anyone who wants to write more frequently and be more transparent about their work. It feels healthy to be able to end a habit that's finished serving its purpose.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/weeknotes">weeknotes</a>, <a href="https://simonwillison.net/tags/streaks">streaks</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[OpenAI platform: o1-pro]]></title>
+        <id>https://simonwillison.net/2025/Mar/19/o1-pro/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/19/o1-pro/#atom-everything"/>
+        <updated>2025-03-19T23:54:16.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://platform.openai.com/docs/models/o1-pro">OpenAI platform: o1-pro</a></strong></p>
+OpenAI have a new most-expensive model: o1-pro can now be accessed through their API at a hefty $150/million tokens for input and $600/million tokens for output. That's 10x the price of their o1 and o1-preview models and a full 1,000x times more expensive than their cheapest model, gpt-4o-mini!</p>
+<p>Aside from that it has mostly the same features as o1: a 200,000 token context window, 100,000 max output tokens, Sep 30 2023 knowledge cut-off date and it supports function calling, structured outputs and image inputs.</p>
+<p>o1-pro doesn't support streaming, and most significantly for developers is the first OpenAI model to <em>only</em> be available via their new <a href="https://platform.openai.com/docs/api-reference/responses">Responses API</a>. This means tools that are built against their Chat Completions API (like my own <a href="https://llm.datasette.io/">LLM</a>) have to do a whole lot more work to support the new model - my <a href="https://github.com/simonw/llm/issues/839">issue for that is here</a>.</p>
+<p>Since LLM doesn't support this new model yet I had to make do with <code>curl</code>:</p>
+<pre><code>curl https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(llm keys get openai)" \
+  -d '{
+    "model": "o1-pro",
+    "input": "Generate an SVG of a pelican riding a bicycle"
+  }'
+</code></pre>
+<p>Here's <a href="https://gist.github.com/simonw/0439d0255360c68b8f621133860710b1">the full JSON</a> I got back - 81 input tokens and 1552 output tokens for a <a href="https://tools.simonwillison.net/llm-prices">total cost</a> of 94.335 cents.</p>
+<p><img alt="Clearly a bird riding a bicycle. The pedals are in the wrong place and the bird doesn't quite have the majestic beak of a pelican." src="https://static.simonwillison.net/static/2025/o1-pro-pelican.png" /></p>
+<p>I took a risk and added <code>"reasoning": {"effort": "high"}</code> to see if I could get a better pelican with more reasoning:</p>
+<pre><code>curl https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $(llm keys get openai)" \
+  -d '{
+    "model": "o1-pro",
+    "input": "Generate an SVG of a pelican riding a bicycle",
+    "reasoning": {"effort": "high"}
+  }'
+</code></pre>
+<p>Surprisingly that used <em>less</em> output tokens - 1459 compared to 1552 earlier (cost: 88.755 cents) - <a href="https://gist.github.com/simonw/085d81e1160157572c9bd361b01374c4">producing this JSON</a> which rendered as a slightly better pelican:</p>
+<p><img alt="A bit better - no pedals, so they cannot be in the wrong place. The bird has a slightly more majestic beak." src="https://static.simonwillison.net/static/2025/o1-pro-high-pelican.png" /></p>
+<p>It was cheaper because while it spent 960 reasoning tokens as opposed to 704 for the previous pelican it omitted the explanatory text around the SVG, saving on total output.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/o1">o1</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Not all AI-assisted programming is vibe coding (but vibe coding rocks)]]></title>
         <id>https://simonwillison.net/2025/Mar/19/vibe-coding/#atom-everything</id>
@@ -4089,101 +4150,6 @@ New release of my CLI tool for turning a whole directory of code into a single p
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/annotated-release-notes">annotated-release-notes</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Using OpenAI’s o3-mini Reasoning Model in Semantic Kernel]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4184</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/using-openais-o3-mini-reasoning-model-in-semantic-kernel/"/>
-        <updated>2025-02-18T23:56:48.000Z</updated>
-        <summary type="html"><![CDATA[OpenAI’s o3-mini is a newly released small reasoning model (launched January 2025) that delivers advanced problem-solving capabilities at a fraction of the cost of previous models. It excels in STEM domains (science, math, coding) while maintaining low latency and cost similar to the earlier o1-mini model. This model is also available as Azure OpenAI Service, emphasizing its efficiency gains and new features like […]
-The post Using OpenAI’s o3-mini Reasoning Model in Semantic Kernel appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Roger Barreto</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Repositories – Enterprise rules and custom properties updates]]></title>
-        <id>https://github.blog/changelog/2025-02-18-repositories-enterprise-rules-and-custom-properties-updates</id>
-        <link href="https://github.blog/changelog/2025-02-18-repositories-enterprise-rules-and-custom-properties-updates"/>
-        <updated>2025-02-18T22:06:04.000Z</updated>
-        <summary type="html"><![CDATA[Repositories - Enterprise rules and custom properties updates
-The post Repositories – Enterprise rules and custom properties updates appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[tc39/proposal-regex-escaping]]></title>
-        <id>https://simonwillison.net/2025/Feb/18/tc39proposal-regex-escaping/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/18/tc39proposal-regex-escaping/#atom-everything"/>
-        <updated>2025-02-18T21:53:56.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/tc39/proposal-regex-escaping">tc39/proposal-regex-escaping</a></strong></p>
-I just heard <a href="https://social.coop/@kriskowal/114026510846190089">from Kris Kowal</a> that this proposal for ECMAScript has been approved for ECMA TC-39:</p>
-<blockquote>
-<p>Almost 20 years later, @simon’s RegExp.escape idea comes to fruition. This reached “Stage 4” at ECMA TC-39 just now, which formalizes that multiple browsers have shipped the feature and it’s in the next revision of the JavaScript specification.</p>
-</blockquote>
-<p>I'll be honest, I had completely forgotten about my 2006 blog entry <a href="https://simonwillison.net/2006/Jan/20/escape/">Escaping regular expression characters in JavaScript</a> where I proposed that JavaScript should have an equivalent of the Python <a href="https://docs.python.org/3/library/re.html#re.escape">re.escape()</a> function.</p>
-<p>It turns out my post was referenced in <a href="https://esdiscuss.org/topic/regexp-escape">this 15 year old thread</a> on the esdiscuss mailing list, which evolved over time into a proposal which turned into <a href="https://caniuse.com/mdn-javascript_builtins_regexp_escape">implementations</a> in Safari, Firefox and soon Chrome - here's <a href="https://github.com/v8/v8/commit/b5c08badc7b3d4b85b2645b1a4d9973ee6efaa91">the commit landing it in v8</a> on February 12th 2025.</p>
-<p>One of the best things about having a long-running blog is that sometimes posts you forgot about over a decade ago turn out to have a life of their own.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/standards">standards</a>, <a href="https://simonwillison.net/tags/ecmascript">ecmascript</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/regular-expressions">regular-expressions</a>, <a href="https://simonwillison.net/tags/blogging">blogging</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Recent improvements to Artifact Attestations]]></title>
-        <id>https://github.blog/changelog/2025-02-18-recent-improvements-to-artifact-attestations</id>
-        <link href="https://github.blog/changelog/2025-02-18-recent-improvements-to-artifact-attestations"/>
-        <updated>2025-02-18T19:34:41.000Z</updated>
-        <summary type="html"><![CDATA[Recent improvements to Artifact Attestations
-The post Recent improvements to Artifact Attestations appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[New GPT-4o Copilot code completion model available now in public preview for Copilot in VS Code]]></title>
-        <id>https://github.blog/changelog/2025-02-18-new-gpt-4o-copilot-code-completion-model-now-available-in-public-preview-for-copilot-in-vs-code-and-jetbrains-ides</id>
-        <link href="https://github.blog/changelog/2025-02-18-new-gpt-4o-copilot-code-completion-model-now-available-in-public-preview-for-copilot-in-vs-code"/>
-        <updated>2025-02-18T18:48:23.000Z</updated>
-        <summary type="html"><![CDATA[New GPT-4o Copilot code completion model now available in public preview for Copilot in VS Code and JetBrains IDEs
-The post New GPT-4o Copilot code completion model available now in public preview for Copilot in VS Code appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub Issues & Projects – February 18th update]]></title>
-        <id>https://github.blog/changelog/2025-02-18-github-issues-projects-february-18th-update</id>
-        <link href="https://github.blog/changelog/2025-02-18-github-issues-projects-february-18th-update"/>
-        <updated>2025-02-18T18:41:11.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Issues & Projects – February 18th update
-The post GitHub Issues & Projects – February 18th update appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Andrej Karpathy's initial impressions of Grok 3]]></title>
-        <id>https://simonwillison.net/2025/Feb/18/andrej-karpathy-grok-3/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/18/andrej-karpathy-grok-3/#atom-everything"/>
-        <updated>2025-02-18T16:46:25.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://twitter.com/karpathy/status/1891720635363254772">Andrej Karpathy&#x27;s initial impressions of Grok 3</a></strong></p>
-Andrej has the most detailed analysis I've seen so far of xAI's Grok 3 release from last night. He runs through a bunch of interesting test prompts, and concludes:</p>
-<blockquote>
-<p>As far as a quick vibe check over ~2 hours this morning, Grok 3 + Thinking feels somewhere around the state of the art territory of OpenAI's strongest models (o1-pro, $200/month), and slightly better than DeepSeek-R1 and Gemini 2.0 Flash Thinking. Which is quite incredible considering that the team started from scratch ~1 year ago, this timescale to state of the art territory is unprecedented.</p>
-</blockquote>
-<p>I was delighted to see him include my <code>Generate an SVG of a pelican riding a bicycle</code> benchmark in his tests:</p>
-<p><img alt="Grok 3's pelicans are pretty good, though I still slightly prefer Claude 3.5 Sonnet's." src="https://static.simonwillison.net/static/2025/grok3-pelican.jpg" /></p>
-<p>Grok 3 is currently sat at the top of the LLM <a href="https://lmarena.ai/">Chatbot Arena</a> (across <a href="https://x.com/lmarena_ai/status/1891706269003600187">all of their categories</a>) so it's doing very well based on vibes for the voters there.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/andrej-karpathy">andrej-karpathy</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/grok">grok</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

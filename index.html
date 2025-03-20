@@ -25,9 +25,87 @@
 
   <ul>
     <li>
+      <time>2025-03-20</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Calling a wrap on my weeknotes
+              <span class="post-metadata">(2 min | 500 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/20/calling-a-wrap-on-my-weeknotes/#atom-everything>After 192 posts that ranged from weekly to roughly once-a-month, I&#x27;ve decided to call a wrap on my weeknotes habit. The original goal was to stay transparent during my 2019-2020 JSK fellowship, and I kept them up after that as an accountability mechanism and to get into a habit of writing regularly.
+
+Over the past two years I&#x27;ve adopted new posting habits which are solving those problems in other ways:
+
+
+I post something here almost every day. I actually maintained a daily posting streak throughout 2024, which I ended in January, but I&#x27;m still posting most days and plan to keep that up.
+
+Every time I ship a new release of one of my projects I link to it from here. This replaces the &quot;recent releases&quot; section of my weeknotes.
+
+I try to have a longer form piece of writing that&#x27;s suitable for inclusion in my newsletter at least once every two weeks. That&#x27;s another accountability mechanism that&#x27;s working well for me.
+
+
+One downside of weeknotes is that I&#x27;d sometimes save something to include in them, which could lead to several items getting bundled together in a way that reduced their potential impact as standalone posts.
+
+I got to the point with weeknotes where I was feeling guilty about not keeping them up. Given the volume of content I&#x27;m publishing already that felt like a sign that they were no longer providing the value they once did!
+
+I still think weeknotes are an excellent habit for anyone who wants to write more frequently and be more transparent about their work. It feels healthy to be able to end a habit that&#x27;s finished serving its purpose.
+Tags: blogging, weeknotes, streaks</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-19</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              OpenAI platform: o1-pro
+              <span class="post-metadata">(2 min | 518 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/19/o1-pro/#atom-everything>OpenAI platform: o1-pro
+Aside from that it has mostly the same features as o1: a 200,000 token context window, 100,000 max output tokens, Sep 30 2023 knowledge cut-off date and it supports function calling, structured outputs and image inputs.
+o1-pro doesn&#x27;t support streaming, and most significantly for developers is the first OpenAI model to only be available via their new Responses API. This means tools that are built against their Chat Completions API (like my own LLM) have to do a whole lot more work to support the new model - my issue for that is here.
+Since LLM doesn&#x27;t support this new model yet I had to make do with curl:
+curl https://api.openai.com/v1/responses \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Authorization: Bearer $(llm keys get openai)&quot; \
+  -d &#x27;{
+    &quot;model&quot;: &quot;o1-pro&quot;,
+    &quot;input&quot;: &quot;Generate an SVG of a pelican riding a bicycle&quot;
+  }&#x27;
+
+Here&#x27;s the full JSON I got back - 81 input tokens and 1552 output tokens for a total cost of 94.335 cents.
+
+I took a risk and added &quot;reasoning&quot;: {&quot;effort&quot;: &quot;high&quot;} to see if I could get a better pelican with more reasoning:
+curl https://api.openai.com/v1/responses \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Authorization: Bearer $(llm keys get openai)&quot; \
+  -d &#x27;{
+    &quot;model&quot;: &quot;o1-pro&quot;,
+    &quot;input&quot;: &quot;Generate an SVG of a pelican riding a bicycle&quot;,
+    &quot;reasoning&quot;: {&quot;effort&quot;: &quot;high&quot;}
+  }&#x27;
+
+Surprisingly that used less output tokens - 1459 compared to 1552 earlier (cost: 88.755 cents) - producing this JSON which rendered as a slightly better pelican:
+
+It was cheaper because while it spent 960 reasoning tokens as opposed to 704 for the previous pelican it omitted the explanatory text around the SVG, saving on total output.
+
+
+    
+Tags: o1, llm, openai, inference-scaling, ai, llms, llm-release, generative-ai, pelican-riding-a-bicycle, llm-pricing</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5008,119 +5086,6 @@ I also have a potential fix for a reported bug concerning nested .gitignore file
 uvx --with git+https://github.com/simonw/files-to-prompt@nested-gitignore files-to-prompt
 
 Tags: uv, projects, annotated-release-notes, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-02-18</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Using OpenAI’s o3-mini Reasoning Model in Semantic Kernel
-              <span class="post-metadata">(24 min | 7335 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/using-openais-o3-mini-reasoning-model-in-semantic-kernel/>OpenAI’s o3-mini is a newly released small reasoning model (launched January 2025) that delivers advanced problem-solving capabilities at a fraction of the cost of previous models. It excels in STEM domains (science, math, coding) while maintaining low latency and cost similar to the earlier o1-mini model. This model is also available as Azure OpenAI Service, emphasizing its efficiency gains and new features like […]
-The post Using OpenAI’s o3-mini Reasoning Model in Semantic Kernel appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Repositories – Enterprise rules and custom properties updates
-              <span class="post-metadata">(8 min | 2542 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-18-repositories-enterprise-rules-and-custom-properties-updates>Repositories - Enterprise rules and custom properties updates
-The post Repositories – Enterprise rules and custom properties updates appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              tc39/proposal-regex-escaping
-              <span class="post-metadata">(1 min | 345 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/18/tc39proposal-regex-escaping/#atom-everything>tc39/proposal-regex-escaping
-from Kris Kowal that this proposal for ECMAScript has been approved for ECMA TC-39:
-Almost 20 years later, @simon’s RegExp.escape idea comes to fruition. This reached “Stage 4” at ECMA TC-39 just now, which formalizes that multiple browsers have shipped the feature and it’s in the next revision of the JavaScript specification.
-I&#x27;ll be honest, I had completely forgotten about my 2006 blog entry Escaping regular expression characters in JavaScript where I proposed that JavaScript should have an equivalent of the Python re.escape() function.
-It turns out my post was referenced in this 15 year old thread on the esdiscuss mailing list, which evolved over time into a proposal which turned into implementations in Safari, Firefox and soon Chrome - here&#x27;s the commit landing it in v8 on February 12th 2025.
-One of the best things about having a long-running blog is that sometimes posts you forgot about over a decade ago turn out to have a life of their own.
-
-
-    
-Tags: standards, ecmascript, javascript, regular-expressions, blogging</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Recent improvements to Artifact Attestations
-              <span class="post-metadata">(10 min | 2975 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-18-recent-improvements-to-artifact-attestations>Recent improvements to Artifact Attestations
-The post Recent improvements to Artifact Attestations appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New GPT-4o Copilot code completion model available now in public preview for Copilot in VS Code
-              <span class="post-metadata">(10 min | 2969 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-18-new-gpt-4o-copilot-code-completion-model-now-available-in-public-preview-for-copilot-in-vs-code>New GPT-4o Copilot code completion model now available in public preview for Copilot in VS Code and JetBrains IDEs
-The post New GPT-4o Copilot code completion model available now in public preview for Copilot in VS Code appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Issues &amp; Projects – February 18th update
-              <span class="post-metadata">(10 min | 3091 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-18-github-issues-projects-february-18th-update>GitHub Issues &amp; Projects – February 18th update
-The post GitHub Issues &amp; Projects – February 18th update appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Andrej Karpathy&#x27;s initial impressions of Grok 3
-              <span class="post-metadata">(1 min | 340 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/18/andrej-karpathy-grok-3/#atom-everything>Andrej Karpathy&#x27;s initial impressions of Grok 3
-As far as a quick vibe check over ~2 hours this morning, Grok 3 + Thinking feels somewhere around the state of the art territory of OpenAI&#x27;s strongest models (o1-pro, $200/month), and slightly better than DeepSeek-R1 and Gemini 2.0 Flash Thinking. Which is quite incredible considering that the team started from scratch ~1 year ago, this timescale to state of the art territory is unprecedented.
-I was delighted to see him include my Generate an SVG of a pelican riding a bicycle benchmark in his tests:
-
-Grok 3 is currently sat at the top of the LLM Chatbot Arena (across all of their categories) so it&#x27;s doing very well based on vibes for the voters there.
-
-
-    
-Tags: andrej-karpathy, llms, ai, generative-ai, pelican-riding-a-bicycle, grok</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
