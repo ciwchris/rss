@@ -2,10 +2,121 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-21T14:09:36.506Z</updated>
+    <updated>2025-03-21T21:08:50.843Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[The "think" tool: Enabling Claude to stop and think in complex tool use situations]]></title>
+        <id>https://simonwillison.net/2025/Mar/21/the-think-tool/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/21/the-think-tool/#atom-everything"/>
+        <updated>2025-03-21T19:17:59.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.anthropic.com/engineering/claude-think-tool">The &quot;think&quot; tool: Enabling Claude to stop and think in complex tool use situations</a></strong></p>
+Fascinating new prompt engineering trick from Anthropic. They use their standard tool calling mechanism to define a tool called "think" that looks something like this:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>think<span class="pl-pds">"</span></span>,
+  <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.<span class="pl-pds">"</span></span>,
+  <span class="pl-ent">"input_schema"</span>: {
+    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"properties"</span>: {
+      <span class="pl-ent">"thought"</span>: {
+        <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>A thought to think about.<span class="pl-pds">"</span></span>
+      }
+    },
+    <span class="pl-ent">"required"</span>: [<span class="pl-s"><span class="pl-pds">"</span>thought<span class="pl-pds">"</span></span>]
+  }
+}</pre></div>
+
+<p>This tool <em>does nothing at all</em>.</p>
+<p>LLM tools (like <a href="https://simonwillison.net/2025/Mar/21/anthropic-use-brave/">web_search</a>) usually involve some kind of implementation - the model requests a tool execution, then an external harness goes away and executes the specified tool and feeds the result back into the conversation.</p>
+<p>The "think" tool is a no-op - there is no implementation, it just allows the model to use its existing training in terms of when-to-use-a-tool to stop and dump some additional thoughts into the context.</p>
+<p>This works completely independently of the new "thinking" mechanism introduced <a href="https://simonwillison.net/2025/Feb/25/llm-anthropic-014/#extended-thinking-mode">in Claude 3.7 Sonnet</a>.</p>
+<p>Anthropic's benchmarks show impressive improvements from enabling this tool. I fully anticipate that models from other providers would benefit from the same trick.
+
+    <p><small></small>Via <a href="https://x.com/alexalbert__/status/1903130655564922911">@alexalbert__</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[March 21st, 2025 - Leveling up the Kagi Assistant experience, meet Kagi in Tokyo, and more...]]></title>
+        <id>https://kagifeedback.org/d/6640-march-21st-2025-leveling-up-the-kagi-assistant-experience-meet-kagi-in-tokyo-and-more/1</id>
+        <link href="https://kagifeedback.org/d/6640-march-21st-2025-leveling-up-the-kagi-assistant-experience-meet-kagi-in-tokyo-and-more/1"/>
+        <updated>2025-03-21T18:13:53.000Z</updated>
+        <summary type="html"><![CDATA[Next chapter in the Kagi Assistant experience
+
+With this release, we're introducing a new sidebar, designed to streamline your workflow and keep everything you need within reach. This is just the beginning - the new sidebar lays the foundation for even more powerful features to come.
+We're also rolling out Claude 3.7 Sonnet with extended thinking to tackle even more complex challenges. 
+
+
+As always, we’d love to hear your thoughts - join the conversation on Discord or share your feedback through our forum at https://kagifeedback.org
+Kagi, lost in translation, in Tokyo!
+
+From April 21 to 25, a dedicated team from Kagi including CEO, Vlad, will travel to Tokyo 🇯🇵 to meet with companies interested in our advanced translation solutions. If you are based in Japan and your company is intereste…]]></summary>
+        <author>
+            <name>Activity in the release-notes tag</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Anthropic Trust Center: Brave Search added as a subprocessor]]></title>
+        <id>https://simonwillison.net/2025/Mar/21/anthropic-use-brave/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/21/anthropic-use-brave/#atom-everything"/>
+        <updated>2025-03-21T15:07:39.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://app.vanta.com/anthropic/trust/iz673w96495gyjer8h78n/updates">Anthropic Trust Center: Brave Search added as a subprocessor</a></strong></p>
+Yesterday I was <a href="https://simonwillison.net/2025/Mar/20/claude-can-now-search-the-web/">trying to figure out</a> if Anthropic has rolled their own search index for Claude's new web search feature or if they were working with a partner. Here's confirmation that they are using <a href="https://search.brave.com/">Brave Search</a>:</p>
+<blockquote>
+<p>Anthropic's subprocessor list. As of March 19, 2025, we have made the following changes:</p>
+<p>Subprocessors added:</p>
+<ul>
+<li>Brave Search (<a href="https://support.anthropic.com/en/articles/10684626-enabling-and-using-web-search">more info</a>)</li>
+</ul>
+</blockquote>
+<p>That "more info" links to the help page for their new web search feature.</p>
+<p>I confirmed this myself by prompting Claude to "<a href="https://claude.ai/share/e2beb581-b6ad-49b4-9d64-11e4691b8941">Search for pelican facts</a>" - it ran a search for "Interesting pelican facts" and the ten results it showed as citations were an exact match for <a href="https://search.brave.com/search?q=interesting+pelican+facts">that search on Brave</a>.</p>
+<p>And further evidence: if you <a href="https://claude.ai/share/45348349-8cc7-4447-8d79-eae6f218eb53">poke at it a bit</a> Claude will reveal the definition of its <code>web_search</code> function which looks like this - note the <code>BraveSearchParams</code> property:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>Search the web<span class="pl-pds">"</span></span>,
+  <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>web_search<span class="pl-pds">"</span></span>,
+  <span class="pl-ent">"parameters"</span>: {
+    <span class="pl-ent">"additionalProperties"</span>: <span class="pl-c1">false</span>,
+    <span class="pl-ent">"properties"</span>: {
+      <span class="pl-ent">"query"</span>: {
+        <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>Search query<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>Query<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+      }
+    },
+    <span class="pl-ent">"required"</span>: [
+      <span class="pl-s"><span class="pl-pds">"</span>query<span class="pl-pds">"</span></span>
+    ],
+    <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>BraveSearchParams<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+  }
+}</pre></div>
+
+    <p><small></small>Via <a href="https://bsky.app/profile/zugaldia.bsky.social/post/3lkvgzvarvs2s">@zugaldia.bsky.social</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/search">search</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Enhance your productivity with Copilot Edits in JetBrains IDEs]]></title>
+        <id>https://github.blog/changelog/2025-03-20-enhance-your-productivity-with-copilot-edits-in-jetbrains-ides</id>
+        <link href="https://github.blog/changelog/2025-03-20-enhance-your-productivity-with-copilot-edits-in-jetbrains-ides"/>
+        <updated>2025-03-21T13:06:51.000Z</updated>
+        <summary type="html"><![CDATA[Enhance your productivity with Copilot Edits in JetBrains IDEs
+The post Enhance your productivity with Copilot Edits in JetBrains IDEs appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Notification of upcoming breaking changes in GitHub Actions]]></title>
         <id>https://github.blog/changelog/2025-03-20-notification-of-upcoming-breaking-changes-in-github-actions</id>
