@@ -31,6 +31,70 @@
       <article>
           <details>
             <summary>
+              Semantic Diffusion
+              <span class="post-metadata">(2 min | 583 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/23/semantic-diffusion/#atom-everything>Semantic Diffusion
+learned about this term today while complaining about how the definition of &quot;vibe coding&quot; is already being distorted to mean &quot;any time an LLM writes code&quot; as opposed to the intended meaning of &quot;code I wrote with an LLM without even reviewing what it wrote&quot;.
+I posted this salty note:
+Feels like I&#x27;m losing the battle on this one, I keep seeing people use &quot;vibe coding&quot; to mean any time an LLM is used to write code
+I&#x27;m particularly frustrated because for a few glorious moments we had the chance at having ONE piece of AI-related terminology with a clear, widely accepted definition!
+But it turns out people couldn&#x27;t be trusted to read all the way to the end of Andrej&#x27;s tweet, so now we are back to yet another term where different people assume it means different things
+Martin Fowler coined Semantic Diffusion in 2006 with this very clear definition:
+Semantic diffusion occurs when you have a word that is coined by a person or group, often with a pretty good definition, but then gets spread through the wider community in a way that weakens that definition. This weakening risks losing the definition entirely - and with it any usefulness to the term.
+What&#x27;s happening with vibe coding right now is such a clear example of this effect in action! I&#x27;ve seen the same thing happen to my own coinage prompt injection over the past couple of years.
+This kind of dillution of meaning is frustrating, but does appear to be inevitable. As Martin Fowler points out it&#x27;s most likely to happen to popular terms - the more popular a term is the higher the chance a game of telephone will ensue where misunderstandings flourish as the chain continues to grow.
+Andrej Karpathy, who coined vibe coding, posted this just now in reply to my article:
+Good post! It will take some time to settle on definitions. Personally I use &quot;vibe coding&quot; when I feel like this dog. My iOS app last night being a good example. But I find that in practice I rarely go full out vibe coding, and more often I still look at the code, I add complexity slowly and I try to learn over time how the pieces work, to ask clarifying questions etc.
+
+I love that vibe coding has an official illustrative GIF now!
+
+
+    
+Tags: language, vibe-coding, andrej-karpathy, martin-fowler</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Next.js and the corrupt middleware: the authorizing artifact
+              <span class="post-metadata">(1 min | 353 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/23/nextjs-and-the-corrupt-middleware/#atom-everything>Next.js and the corrupt middleware: the authorizing artifact
+CVE-2025-29927 by Allam Rachid, one of the researchers who identified the issue.
+The vulnerability is best illustrated by this code snippet:
+const subreq &#x3D; params.request.headers[&#x27;x-middleware-subrequest&#x27;];
+const subrequests &#x3D; typeof subreq &#x3D;&#x3D;&#x3D; &#x27;string&#x27; ? subreq.split(&#x27;:&#x27;) : [];
+// ...
+for (const middleware of this.middleware || []) {
+  // ...
+  if (subrequests.includes(middlewareInfo.name)) {
+    result &#x3D; {
+      response: NextResponse.next(),
+      waitUntil: Promise.resolve(),
+    };
+    continue;
+  }
+}
+
+This was part of Next.js internals used to help avoid applying middleware recursively to requests that are re-dispatched through the framework.
+Unfortunately it also meant that attackers could send a x-middleware-subrequest HTTP header with a colon-separated list of middleware names to skip. If a site used middleware to apply an authentication gate (as suggested in the Next.js documentation) an attacker could bypass that authentication using this trick.
+The vulnerability has been fixed in Next.js 15.2.3 - here&#x27;s the official release announcement talking about the problem.
+
+
+    
+Tags: security, javascript</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Jacob Kaplan-Moss
               <span class="post-metadata">(1 min | 284 words)</span> 
             </summary>
