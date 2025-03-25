@@ -25,9 +25,220 @@
 
   <ul>
     <li>
+      <time>2025-03-25</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              shot-scraper 1.8
+              <span class="post-metadata">(2 min | 455 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/25/shot-scraper/#atom-everything>shot-scraper 1.8
+shot-scraper that makes it easier to share scripts for other people to use with the shot-scraper javascript command.
+shot-scraper javascript lets you load up a web page in an invisible Chrome browser (via Playwright), execute some JavaScript against that page and output the results to your terminal. It&#x27;s a fun way of running complex screen-scraping routines as part of a terminal session, or even chained together with other commands using pipes.
+The -i/--input option lets you load that JavaScript from a file on disk - but now you can also use a gh: prefix to specify loading code from GitHub instead.
+To quote the release notes:
+shot-scraper javascript can now optionally load scripts hosted on GitHub via the new gh: prefix to the shot-scraper javascript -i/--input option. #173
+Scripts can be referenced as gh:username/repo/path/to/script.js or, if the GitHub user has created a dedicated shot-scraper-scripts repository and placed scripts in the root of it, using gh:username/name-of-script.
+For example, to run this readability.js script against any web page you can use the following:
+shot-scraper javascript --input gh:simonw/readability \
+  https://simonwillison.net/2025/Mar/24/qwen25-vl-32b/
+
+The output from that example starts like this:
+{
+    &quot;title&quot;: &quot;Qwen2.5-VL-32B: Smarter and Lighter&quot;,
+    &quot;byline&quot;: &quot;Simon Willison&quot;,
+    &quot;dir&quot;: null,
+    &quot;lang&quot;: &quot;en-gb&quot;,
+    &quot;content&quot;: &quot;&lt;div id&#x3D;\&quot;readability-page-1\&quot;...
+
+
+My simonw/shot-scraper-scripts repo only has that one file in it so far, but I&#x27;m looking forward to growing that collection and hopefully seeing other people create and share their own shot-scraper-scripts repos as well.
+This feature is an imitation of a similar feature that&#x27;s coming in the next release of LLM.
+
+
+    
+Tags: playwright, shot-scraper, scraping, javascript, projects, github, annotated-release-notes</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              microsoft/playwright-mcp
+              <span class="post-metadata">(2 min | 494 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/25/playwright-mcp/#atom-everything>microsoft/playwright-mcp
+Model Context Protocol) server wrapping Playwright, and it&#x27;s pretty fascinating.
+They implemented it on top of the Chrome accessibility tree, so MCP clients (such as the Claude Desktop app) can use it to drive an automated browser and use the accessibility tree to read and navigate pages that they visit.
+Trying it out is quite easy if you have Claude Desktop and Node.js installed already. Edit your claude_desktop_config.json file:
+code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+
+And add this:
+{
+  &quot;mcpServers&quot;: {
+    &quot;playwright&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;@playwright/mcp@latest&quot;
+      ]
+    }
+  }
+}
+
+
+Now when you launch Claude Desktop various new browser automation tools will be available to it, and you can tell Claude to navigate to a website and interact with it.
+
+I ran the following to get a list of the available tools:
+cd /tmp
+git clone https://github.com/microsoft/playwright-mcp
+cd playwright-mcp/src/tools
+files-to-prompt . | llm -m claude-3.7-sonnet \
+  &#x27;Output a detailed description of these tools&#x27;
+
+The full output is here, but here&#x27;s the truncated tool list:
+Navigation Tools (common.ts)
+browser_navigate: Navigate to a specific URL
+browser_go_back: Navigate back in browser history
+browser_go_forward: Navigate forward in browser history
+browser_wait: Wait for a specified time in seconds
+browser_press_key: Press a keyboard key
+browser_save_as_pdf: Save current page as PDF
+browser_close: Close the current page
+Screenshot and Mouse Tools (screenshot.ts)
+browser_screenshot: Take a screenshot of the current page
+browser_move_mouse: Move mouse to specific coordinates
+browser_click (coordinate-based): Click at specific x,y coordinates
+browser_drag (coordinate-based): Drag mouse from one position to another
+browser_type (keyboard): Type text and optionally submit
+Accessibility Snapshot Tools (snapshot.ts)
+browser_snapshot: Capture accessibility structure of the page
+browser_click (element-based): Click on a specific element using accessibility reference
+browser_drag (element-based): Drag between two elements
+browser_hover: Hover over an element
+browser_type (element-based): Type text into a specific element
+Tags: playwright, anthropic, claude, generative-ai, llm-tool-use, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-24</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Semantic Kernel Agent Framework RC2
+              <span class="post-metadata">(23 min | 6919 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-agent-framework-rc2/>Three weeks ago we released the Release the Agents! SK Agents Framework RC1 | Semantic Kernel and we’ve been thrilled to see the momentum grow. Thank you to everyone who has shared feedback, filed issues, and started building with agents in Semantic Kernel—we’re seeing more developers try agents than ever before. Today, we’re declaring build […]
+The post Semantic Kernel Agent Framework RC2 appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Qwen2.5-VL-32B: Smarter and Lighter
+              <span class="post-metadata">(3 min | 875 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/24/qwen25-vl-32b/#atom-everything>Qwen2.5-VL-32B: Smarter and Lighter
+DeepSeek v3-0324.
+Qwen&#x27;s previous vision model was Qwen2.5 VL, released in January in 3B, 7B and 72B sizes.
+Today&#x27;s Apache 2.0 licensed release is a 32B model, which is quickly becoming my personal favourite model size - large enough to have GPT-4-class capabilities, but small enough that on my 64GB Mac there&#x27;s still enough RAM for me to run other memory-hungry applications like Firefox and VS Code.
+Qwen claim that the new model (when compared to their previous 2.5 VL family) can &quot;align more closely with human preferences&quot;, is better at &quot;mathematical reasoning&quot; and provides &quot;enhanced accuracy and detailed analysis in tasks such as image parsing, content recognition, and visual logic deduction&quot;.
+They also offer some presumably carefully selected benchmark results showing it out-performing Gemma 3-27B, Mistral Small 3.1 24B and GPT-4o-0513 (there have been two more recent GPT-4o releases since that one, 2024-08-16 and 2024-11-20).
+As usual, Prince Canuma had MLX versions of the models live within hours of the release, in 4 bit, 6 bit, 8 bit, and bf16 variants.
+I ran the 4bit version (a 18GB model download) using uv and Prince&#x27;s mlx-vlm like this:
+uv run --with &#x27;numpy&lt;2&#x27; --with mlx-vlm \
+  python -m mlx_vlm.generate \
+    --model mlx-community/Qwen2.5-VL-32B-Instruct-4bit \
+    --max-tokens 1000 \
+    --temperature 0.0 \
+    --prompt &quot;Describe this image.&quot; \
+    --image Mpaboundrycdfw-1.png
+
+
+Here&#x27;s the image:
+
+And here&#x27;s the resulting description, which I found to be very impressive:
+This image appears to be a map highlighting specific areas along the coastline, likely in California, based on the geographical features and place names. Here is a detailed description of the image:
+Geographic Features:
+The map shows a section of the coastline, with land on the right and the sea on the left.
+The land area includes parts of SanMateo County, as noted in the top-right corner.
+The coastline features several named locations, including:
+
+Point Montara
+Pillar Point
+Kings Rock
+VicenteCreek
+DennistonCreek
+State Beach
+Highlighted Areas:
+The map contains two distinct areas marked with different colors:
+
+
+Red Area (Top Section)
+
+Labeled as &quot;MONTARA&quot; and &quot;MONTARA M R&quot; (possibly referring to a &quot;Marine Reserves&quot; or similar protected area).
+This area is marked with a dark red color and extends from the coastline inland.
+Blue Area (Bottom Section)
+
+Labeled as &quot;PILLAR&quot; and &quot;PILLAR P O I N T&quot; along with &quot;SMCA&quot; (Special Management Area).
+This area is marked with a blue color and is located closer to the coastline, including the area around &quot;Pillar Point.&quot;
+Depth Contours:
+The map includes depth markings in the sea, indicating the bathymetrical features:
+
+
+20 fathom (fm) line is marked in the upper-left part of the sea.
+10 fathom (fm) line is marked closer to the coastline.
+30 fathom (fm) line is marked further out to sea.
+Other Features:
+State Beach: Marked near the top-right, indicating a protected recreational area.
+Kings Rock: A prominent feature near the coastline, likely a rocky outcropping.
+Creeks: The map shows several creeks, including VicenteCreek and DennistonCreek, which flow into the sea.
+Protected Areas:
+The map highlights specific protected areas:
+
+
+Marine Reserves:
+
+&quot;MONTARA M R&quot; (Marine Reserves) in red.
+Special Management Area (SMCA)
+
+&quot;PILLAR P O I N T&quot; in blue, indicating a Special Management Area.
+Grid and Coordinates:
+The map includes a grid with latitude and longitude markings:
+
+Latitude ranges from approximately 37°25&#x27;N to 37°35&#x27;N.
+Longitude ranges from approximately 122°22.5&#x27;W to 122°35.5&#x27;W.
+Topography:
+The land area shows topographic features, including elevations and vegetation, with green areas indicating higher elevations or vegetated land.
+Other Labels:
+&quot;SMR&quot;: Likely stands for &quot;State Managed Reserves.&quot;
+&quot;SMCA&quot;: Likely stands for &quot;Special Management Control Area.&quot;
+In summary, this map highlights specific protected areas along the coastline, including a red &quot;Marine Reserves&quot; area and a blue &quot;Special Management Area&quot; near &quot;Pillar Point.&quot; The map also includes depth markings, geographical features, and place names, providing a detailed view of the region&#x27;s natural and protected areas.
+It included the following runtime statistics:
+Prompt: 1051 tokens, 111.985 tokens-per-sec
+Generation: 760 tokens, 17.328 tokens-per-sec
+Peak memory: 21.110 GB
+
+Tags: vision-llms, llm-release, generative-ai, ai, qwen, llms, uv, mlx, prince-canuma</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -684,6 +895,18 @@ Tags: sandboxing, ai, generative-ai, llms, ai-assisted-programming, vibe-coding<
       <article>
           <details>
             <summary>
+              exaone-deep
+              <span class="post-metadata">(8 min | 2274 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/exaone-deep>EXAONE Deep exhibits superior capabilities in various reasoning tasks including math and coding benchmarks, ranging from 2.4B to 32B parameters developed and released by LG AI Research.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               My Thoughts on the Future of &quot;AI&quot;
               <span class="post-metadata">(2 min | 507 words)</span> 
             </summary>
@@ -1022,6 +1245,18 @@ Via @awnihannun
 Tags: llm, generative-ai, mlx, ai2, ai, llms, pelican-riding-a-bicycle</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              gemma3
+              <span class="post-metadata">(11 min | 3332 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/gemma3>The current, most capable model that runs on a single GPU.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
 
@@ -1406,6 +1641,18 @@ Tags: llm, structured-extraction, cohere, generative-ai, ai, llms</a>
       <article>
           <details>
             <summary>
+              qwq
+              <span class="post-metadata">(8 min | 2380 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwq>QwQ is the reasoning model of the Qwen series.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Dependabot version updates now support uv in general availability
               <span class="post-metadata">(7 min | 2078 words)</span> 
             </summary>
@@ -1446,6 +1693,18 @@ Tags: testing, pytest, django, python, django-admin</a>
 The post Using Azure AI Agents with Semantic Kernel in .NET and Python appeared first on Semantic Kernel.</a>
             </div>
             <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              command-a
+              <span class="post-metadata">(9 min | 2639 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/command-a>111 billion parameter model optimized for demanding enterprises that require fast, secure, and high-quality AI</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
 
@@ -4109,6 +4368,18 @@ Tags: ai</a>
       <article>
           <details>
             <summary>
+              command-r7b-arabic
+              <span class="post-metadata">(8 min | 2265 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/command-r7b-arabic>A new state-of-the-art version of the lightweight Command R7B model that excels in advanced Arabic language capabilities for enterprises in the Middle East and Northern Africa.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Copilot Workspace: Showing quota limits, issues in dashboard, and UX improvements
               <span class="post-metadata">(9 min | 2784 words)</span> 
             </summary>
@@ -4117,6 +4388,18 @@ Tags: ai</a>
 The post Copilot Workspace: Showing quota limits, issues in dashboard, and UX improvements appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              phi4-mini
+              <span class="post-metadata">(8 min | 2369 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/phi4-mini>Phi-4-mini brings significant enhancements in multilingual support, reasoning, and mathematics, and now, the long-awaited function calling feature is finally supported.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
@@ -4646,6 +4929,18 @@ The post Scheduled Codespaces maintenance appeared first on The GitHub Blog.</a>
       <article>
           <details>
             <summary>
+              granite3.2-vision
+              <span class="post-metadata">(8 min | 2274 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/granite3.2-vision>A compact and efficient vision-language model, specifically designed for visual document understanding, enabling automated content extraction from tables, charts, infographics, plots, diagrams, and more.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Changes and deprecation notice for npm replication APIs
               <span class="post-metadata">(7 min | 2195 words)</span> 
             </summary>
@@ -4789,6 +5084,18 @@ The post Code review in GitHub Copilot is now in public preview appeared first o
 The post GitHub Copilot now available for free in Windows Terminal Canary appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              granite3.2
+              <span class="post-metadata">(8 min | 2519 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/granite3.2>Granite-3.2 is a family of long-context AI models from IBM Granite fine-tuned for thinking capabilities.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
