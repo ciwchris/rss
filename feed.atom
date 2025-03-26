@@ -2,10 +2,80 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-25T21:09:05.335Z</updated>
+    <updated>2025-03-26T14:10:47.699Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Note on 26th March 2025]]></title>
+        <id>https://simonwillison.net/2025/Mar/26/notes/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/26/notes/#atom-everything"/>
+        <updated>2025-03-26T06:11:30.000Z</updated>
+        <summary type="html"><![CDATA[<p>I've added a new content type to my blog: <strong>notes</strong>. These join my existing types: <a href="https://simonwillison.net/search/?type=entry">entries</a>, <a href="https://simonwillison.net/search/?type=blogmark">bookmarks</a> and <a href="https://simonwillison.net/search/?type=quotation">quotations</a>.</p>
+<p>A note is a little bit like a bookmark without a link. They're for short form writing - thoughts or images that don't warrant a full entry with a title. The kind of things I used to post to Twitter, but that don't feel right to cross-post to multiple social networks (Mastodon and Bluesky, for example.)</p>
+<p>I was partly inspired by Molly White's <a href="https://www.mollywhite.net/micro">short thoughts, notes, links, and musings</a>.</p>
+<p>I've been thinking about this for a while, but the amount of work involved in modifying all of the parts of my site that handle the three different content types was daunting. Then this evening I tried running my blog's source code (using <a href="https://github.com/simonw/files-to-prompt">files-to-prompt</a> and <a href="https://llm.datasette.io/">LLM</a>) through <a href="https://simonwillison.net/2025/Mar/25/gemini/">the new Gemini 2.5 Pro</a>:</p>
+<div class="highlight highlight-source-shell"><pre>files-to-prompt <span class="pl-c1">.</span> -e py -c <span class="pl-k">|</span> \
+  llm -m gemini-2.5-pro-exp-03-25 -s \
+  <span class="pl-s"><span class="pl-pds">'</span>I want to add a new type of content called a Note,</span>
+<span class="pl-s">  similar to quotation and bookmark and entry but it</span>
+<span class="pl-s">  only has a markdown text body. Output all of the</span>
+<span class="pl-s">  code I need to add for that feature and tell me</span>
+<span class="pl-s">  which files to add  the code to.<span class="pl-pds">'</span></span></pre></div>
+
+<p>Gemini gave me <a href="https://gist.github.com/simonw/6d9fb3e33e7105d391a31367d6a235de#response">a detailed 13 step plan</a> covering all of the tedious changes I'd been avoiding having to figure out!</p>
+<p>The code <a href="https://github.com/simonw/simonwillisonblog/pull/527">is in this PR</a>, which touched 18 different files. The whole project took around 45 minutes start to finish.</p>
+<p>(I used Claude to <a href="https://claude.ai/share/17656d59-6f52-471e-8aeb-6abbe1464471">brainstorm names</a> for the feature - I had it come up with possible nouns and then "rank those by least pretentious to most pretentious", and "notes" came out on top.)</p>
+<p>This is now far too long for a note and should really be upgraded to an entry, but I need to post a first note to make sure everything is working as it should.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/molly-white">molly-white</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Manuel Hoffmann, Frank Nagle, Yanuo Zhou]]></title>
+        <id>https://simonwillison.net/2025/Mar/26/value-of-open-source/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/26/value-of-open-source/#atom-everything"/>
+        <updated>2025-03-26T03:49:18.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.hbs.edu/faculty/Pages/item.aspx?num=65230"><p>We estimate the supply-side value of widely-used OSS is $4.15 billion, but that the demand-side value is much larger at $8.8 trillion. We find that firms would need to spend 3.5 times more on software than they currently do if OSS did not exist.</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=65230">Manuel Hoffmann, Frank Nagle, Yanuo Zhou</a>, The Value of Open Source Software, Harvard Business School</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing 4o Image Generation]]></title>
+        <id>https://simonwillison.net/2025/Mar/25/introducing-4o-image-generation/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/25/introducing-4o-image-generation/#atom-everything"/>
+        <updated>2025-03-25T21:11:23.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://openai.com/index/introducing-4o-image-generation/">Introducing 4o Image Generation</a></strong></p>
+When OpenAI first announced GPT-4o <a href="https://simonwillison.net/2024/May/13/gpt-4o/">back in May 2024</a> one of the most exciting features was true multi-modality in that it could both input <em>and</em>  output audio and images. The "o" stood for "omni", and the image output examples <a href="https://openai.com/index/hello-gpt-4o/">in that launch post</a> looked really impressive.</p>
+<p>It's taken them over ten months (and Gemini <a href="https://developers.googleblog.com/en/experiment-with-gemini-20-flash-native-image-generation/">beat them to it</a>) but today they're finally making those image generation abilities available, live right now in ChatGPT for paying customers.</p>
+<p>My test prompt for any model that can manipulate incoming images is "Turn this into a selfie with a bear", because you should never take a selfie with a bear! I fed ChatGPT <a href="https://static.simonwillison.net/static/2025/selfie.jpg">this selfie</a> and got back this result:</p>
+<p><img alt="It's a selfie, there's a grizzly bear over my shoulder smiling." src="https://static.simonwillison.net/static/2025/selfie-with-a-bear.jpg" /></p>
+<p>That's pretty great! It mangled the text on my T-Shirt (which says "LAWRENCE.COM" in a creative font) and added a second visible AirPod. It's very clearly me though, and that's definitely a bear.</p>
+<p>There are plenty more examples in <a href="https://openai.com/index/introducing-4o-image-generation/">OpenAI's launch post</a>, but as usual the most interesting details are tucked away in <a href="https://openai.com/index/gpt-4o-image-generation-system-card-addendum/">the updates to the system card</a>. There's lots in there about their approach to safety and bias, including a section on "Ahistorical and Unrealistic Bias" which feels inspired by Gemini's <a href="https://blog.google/products/gemini/gemini-image-generation-issue/">embarrassing early missteps</a>.</p>
+<p>One section that stood out to me is their approach to images of public figures. The new policy is much more permissive than for DALL-E - highlights mine:</p>
+<blockquote>
+<p>4o image generation is capable, in many instances, of generating a depiction of a public figure based solely on a text prompt.</p>
+<p><strong>At launch, we are not blocking the capability to generate adult public figures</strong> but are instead implementing the same safeguards that we have implemented for editing images of photorealistic uploads of people. For instance, this includes seeking to block the generation of photorealistic images of public figures who are minors and of material that violates our policies related to violence, hateful imagery, instructions for illicit activities, erotic content, and other areas. <strong>Public figures who wish for their depiction not to be generated can opt out</strong>.</p>
+<p>This approach is more fine-grained than the way we dealt with public figures in our DALL·E series of models, where we used technical mitigations intended to prevent any images of a public figure from being generated. <strong>This change opens the possibility of helpful and beneficial uses in areas like educational, historical, satirical and political speech</strong>. After launch, we will continue to monitor usage of this capability, evaluating our policies, and will adjust them if needed.</p>
+</blockquote>
+<p>Given that "public figures who wish for their depiction not to be generated can opt out" I wonder if we'll see a stampede of public figures to do exactly that!</p>
+<p><strong>Update</strong>: There's significant confusion right now over this new feature because it is being rolled out gradually but older ChatGPT can still generate images using DALL-E instead... and there is no visual indication in the ChatGPT UI explaining which image generation method it used!</p>
+<p>OpenAI made the same mistake last year <a href="https://simonwillison.net/2024/May/15/chatgpt-in-4o-mode/">when they announced ChatGPT advanced voice mode</a> but failed to clarify that ChatGPT was still running the previous, less impressive voice implementation.</p>
+<p><strong>Update 2</strong>: Images created with DALL-E through the ChatGPT web interface now show a note with a warning:</p>
+<p><img alt="Created with DALL-E with an information icon. Clicking it reveals DALL-E is OpenAI's legacy image generation model. A new model is rolling out in ChatGPT soon." src="https://static.simonwillison.net/static/2025/dall-e-warning.jpg" />
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/multi-modal-output">multi-modal-output</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/dalle">dalle</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Putting Gemini 2.5 Pro through its paces]]></title>
         <id>https://simonwillison.net/2025/Mar/25/gemini/#atom-everything</id>
@@ -4585,184 +4655,6 @@ llm -m claude-3.7-sonnet -o thinking 1 "write a speech about pelicans for congre
     <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/annotated-release-notes">annotated-release-notes</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Aider Polyglot leaderboard results for Claude 3.7 Sonnet]]></title>
-        <id>https://simonwillison.net/2025/Feb/25/aider-polyglot-leaderboard/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/25/aider-polyglot-leaderboard/#atom-everything"/>
-        <updated>2025-02-25T00:56:03.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://aider.chat/docs/leaderboards/#polyglot-leaderboard">Aider Polyglot leaderboard results for Claude 3.7 Sonnet</a></strong></p>
-Paul Gauthier's <a href="https://aider.chat/2024/12/21/polyglot.html#the-polyglot-benchmark">Aider Polyglot benchmark</a> is one of my favourite independent benchmarks for LLMs, partly because it focuses on code and partly because Paul is very responsive at evaluating new models.</p>
-<p>The brand new Claude 3.7 Sonnet just took the top place, when run with an increased 32,000 thinking token limit.</p>
-<p>It's interesting comparing the benchmark costs - 3.7 Sonnet spent $36.83 running the whole thing, significantly more than the previously leading DeepSeek R1 + Claude 3.5 combo, but a whole lot less than third place o1-high:</p>
-<table>
-  <thead>
-    <tr>
-      <th>Model</th>
-      <th>% completed</th>
-      <th>Total cost</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>claude-3-7-sonnet-20250219 (32k thinking tokens)</td>
-      <td>64.9%</td>
-      <td>$36.83</td>
-    </tr>
-    <tr>
-      <td>DeepSeek R1 + claude-3-5-sonnet-20241022</td>
-      <td>64.0%</td>
-      <td>$13.29</td>
-    </tr>
-    <tr>
-      <td>o1-2024-12-17 (high)</td>
-      <td>61.7%</td>
-      <td>$186.5</td>
-    </tr>
-    <tr>
-      <td>claude-3-7-sonnet-20250219 (no thinking)</td>
-      <td>60.4%</td>
-      <td>$17.72</td>
-    </tr>
-    <tr>
-      <td>o3-mini (high)</td>
-      <td>60.4%</td>
-      <td>$18.16</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>No results yet for Claude 3.7 Sonnet on the <a href="https://lmarena.ai/">LM Arena leaderboard</a>, which has recently been dominated by Gemini 2.0 and Grok 3.
-
-    <p><small></small>Via <a href="https://twitter.com/paulgauthier/status/1894167915869737058">@paulgauthier</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/aider">aider</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/paul-gauthier">paul-gauthier</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[The Best Way to Use Text Embeddings Portably is With Parquet and Polars]]></title>
-        <id>https://simonwillison.net/2025/Feb/24/text-embeddings-parquet/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/24/text-embeddings-parquet/#atom-everything"/>
-        <updated>2025-02-24T23:58:28.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://minimaxir.com/2025/02/embeddings-parquet/">The Best Way to Use Text Embeddings Portably is With Parquet and Polars</a></strong></p>
-Fantastic piece on embeddings by Max Woolf, who uses a 32,000 vector collection of Magic: the Gathering card embeddings to explore efficient ways of storing and processing them.</p>
-<p>Max advocates for the brute-force approach to nearest-neighbor calculations:</p>
-<blockquote>
-<p>What many don't know about text embeddings is that you don't <em>need</em> a vector database to calculate nearest-neighbor similarity if your data isn't too large. Using <a href="https://numpy.org/doc/stable/index.html">numpy</a> and my Magic card embeddings, a 2D matrix of 32,254 <code>float32</code> embeddings at a dimensionality of 768D (common for "smaller" LLM embedding models) occupies <strong>94.49 MB</strong> of system memory, which is relatively low for modern personal computers and can fit within free usage tiers of cloud VMs.</p>
-</blockquote>
-<p>He uses this brilliant snippet of Python code to find the top K matches by distance:</p>
-<pre><span class="pl-k">def</span> <span class="pl-en">fast_dot_product</span>(<span class="pl-s1">query</span>, <span class="pl-s1">matrix</span>, <span class="pl-s1">k</span><span class="pl-c1">=</span><span class="pl-c1">3</span>):
-    <span class="pl-s1">dot_products</span> <span class="pl-c1">=</span> <span class="pl-s1">query</span> @ <span class="pl-s1">matrix</span>.<span class="pl-c1">T</span>
-    <span class="pl-s1">idx</span> <span class="pl-c1">=</span> <span class="pl-s1">np</span>.<span class="pl-c1">argpartition</span>(<span class="pl-s1">dot_products</span>, <span class="pl-c1">-</span><span class="pl-s1">k</span>)[<span class="pl-c1">-</span><span class="pl-s1">k</span>:]
-    <span class="pl-s1">idx</span> <span class="pl-c1">=</span> <span class="pl-s1">idx</span>[<span class="pl-s1">np</span>.<span class="pl-c1">argsort</span>(<span class="pl-s1">dot_products</span>[<span class="pl-s1">idx</span>])[::<span class="pl-c1">-</span><span class="pl-c1">1</span>]]
-    <span class="pl-s1">score</span> <span class="pl-c1">=</span> <span class="pl-s1">dot_products</span>[<span class="pl-s1">idx</span>]
-    <span class="pl-k">return</span> <span class="pl-s1">idx</span>, <span class="pl-s1">score</span></pre>
-
-<blockquote>
-<p>Since dot products are such a fundamental aspect of linear algebra, numpy's implementation is extremely fast: with the help of additional numpy <a href="https://numpy.org/doc/stable/reference/generated/numpy.argpartition.html">sorting</a> <a href="https://numpy.org/doc/2.1/reference/generated/numpy.argsort.html">shenanigans</a>, on my M3 Pro MacBook Pro it takes just <strong>1.08 ms</strong> on average to calculate all 32,254 dot products, find the top 3 most similar embeddings, and return their corresponding <code>idx</code> of the matrix and and cosine similarity <code>score</code>.</p>
-</blockquote>
-<p>I ran that Python code through Claude 3.7 Sonnet for an explanation, which I can <a href="https://claude.ai/share/51bde7eb-17ed-493c-b3ec-75c9c21c0c65">share here</a> using their brand new "Share chat" feature. TIL about <a href="https://numpy.org/doc/stable/reference/generated/numpy.argpartition.html">numpy.argpartition</a>!</p>
-<p>He explores multiple options for efficiently storing these embedding vectors, finding that naive CSV storage takes 631.5 MB while pickle uses 94.49 MB and his preferred option, Parquet via <a href="https://pola.rs/">Polars</a>, uses <a href="https://huggingface.co/datasets/minimaxir/mtg-embeddings/blob/main/mtg_embeddings.parquet">94.3 MB</a> and enables some neat zero-copy optimization tricks.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/embeddings">embeddings</a>, <a href="https://simonwillison.net/tags/parquet">parquet</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/max-woolf">max-woolf</a>, <a href="https://simonwillison.net/tags/claude">claude</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Catherine Wu]]></title>
-        <id>https://simonwillison.net/2025/Feb/24/catherine-wu/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/24/catherine-wu/#atom-everything"/>
-        <updated>2025-02-24T23:48:37.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://news.ycombinator.com/item?id=43163011#43164561"><p>We find that Claude is really good at test driven development, so we often ask Claude to write tests first and then ask Claude to iterate against the tests.</p></blockquote>
-<p class="cite">&mdash; <a href="https://news.ycombinator.com/item?id=43163011#43164561">Catherine Wu</a>, Anthropic</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/testing">testing</a>, <a href="https://simonwillison.net/tags/tdd">tdd</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Claude 3.7 Sonnet is now available in GitHub Copilot in public preview]]></title>
-        <id>https://github.blog/changelog/2025-02-24-claude-3-7-sonnet-is-now-available-in-github-copilot-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-02-24-claude-3-7-sonnet-is-now-available-in-github-copilot-in-public-preview"/>
-        <updated>2025-02-24T23:33:30.000Z</updated>
-        <summary type="html"><![CDATA[Claude 3.7 Sonnet is now available in GitHub Copilot in public preview
-The post Claude 3.7 Sonnet is now available in GitHub Copilot in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Compatibility of PostgreSQL Connector with AWS and GCP]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4250</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/compatibility-of-postgresql-connector-with-aws-and-gcp/"/>
-        <updated>2025-02-24T22:04:53.000Z</updated>
-        <summary type="html"><![CDATA[As AI-driven applications continue to evolve, the need for efficient vector-based search capabilities is greater than ever. Microsoft Semantic Kernel makes it easy to integrate these capabilities with PostgreSQL databases using the Postgres connector. Whether you’re leveraging cloud-hosted PostgreSQL instances on Amazon Web Services or Google Cloud, this connector enables seamless interaction, allowing you to […]
-The post Compatibility of PostgreSQL Connector with AWS and GCP appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Dmytro Struk</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Claude 3.7 Sonnet and Claude Code]]></title>
-        <id>https://simonwillison.net/2025/Feb/24/claude-37-sonnet-and-claude-code/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/24/claude-37-sonnet-and-claude-code/#atom-everything"/>
-        <updated>2025-02-24T20:25:39.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.anthropic.com/news/claude-3-7-sonnet">Claude 3.7 Sonnet and Claude Code</a></strong></p>
-Anthropic released <strong>Claude 3.7 Sonnet</strong> today - skipping the name "Claude 3.6" because the Anthropic user community had already started using that as the unofficial name for their <a href="https://www.anthropic.com/news/3-5-models-and-computer-use">October update to 3.5 Sonnet</a>.</p>
-<p>As you may expect, 3.7 Sonnet is an improvement over 3.5 Sonnet - and is priced the same, at $3/million tokens for input and $15/m output.</p>
-<p>The big difference is that this is Anthropic's first "reasoning" model - applying the same trick that we've now seen from OpenAI o1 and o3, Grok 3, Google Gemini 2.0 Thinking, DeepSeek R1 and Qwen's QwQ and QvQ. The only big model families without an official reasoning model now are Mistral and Meta's Llama.</p>
-<p>I'm still working on <a href="https://github.com/simonw/llm-anthropic/pull/15">adding support to my llm-anthropic plugin</a> but I've got enough working code that I was able to get it to draw me a pelican riding a bicycle. Here's the non-reasoning model:</p>
-<p style="text-align: center"><img src="https://static.simonwillison.net/static/2025/pelican-claude-3.7-sonnet.svg" alt="A very good attempt"></p>
-
-<p>And here's that same prompt but with "thinking mode" enabled:</p>
-<p style="text-align: center"><img src="https://static.simonwillison.net/static/2025/pelican-claude-3.7-sonnet-thinking.svg" alt="A very good attempt"></p>
-
-<p>Here's <a href="https://gist.github.com/simonw/9c2d119f815b4a6c3802ab591857bf40">the transcript</a> for that second one, which mixes together the thinking and the output tokens. I'm still working through how best to differentiate between those two types of token.</p>
-<p>Anthropic's other big release today is a preview of <strong>Claude Code</strong> - a CLI tool for interacting with Claude that includes the ability to prompt Claude in terminal chat and have it read and modify files and execute commands. This means it can both iterate on code and execute tests, making it an extremely powerful "agent" for coding assistance.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A new generation of AIs: Claude 3.7 and Grok 3]]></title>
-        <id>https://www.oneusefulthing.org/p/a-new-generation-of-ais-claude-37</id>
-        <link href="https://www.oneusefulthing.org/p/a-new-generation-of-ais-claude-37"/>
-        <updated>2025-02-24T18:42:26.000Z</updated>
-        <summary type="html"><![CDATA[Yes, AI suddenly got better... again]]></summary>
-        <author>
-            <name>Ethan Mollick</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Migration of GitHub Team plan organizations to the enhanced billing platform]]></title>
-        <id>https://github.blog/changelog/2025-02-24-migration-of-github-team-plan-organizations-to-the-enhanced-billing-platform</id>
-        <link href="https://github.blog/changelog/2025-02-24-migration-of-github-team-plan-organizations-to-the-enhanced-billing-platform"/>
-        <updated>2025-02-24T17:48:02.000Z</updated>
-        <summary type="html"><![CDATA[Migration of GitHub Team plan organizations to the enhanced billing platform
-The post Migration of GitHub Team plan organizations to the enhanced billing platform appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Hybrid Model Orchestration]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4236</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/hybrid-model-orchestration/"/>
-        <updated>2025-02-24T17:00:31.000Z</updated>
-        <summary type="html"><![CDATA[Hybrid model orchestration is a powerful technique that AI applications can use to intelligently select and switch between multiple models based on various criteria, all while being transparent to the calling code. This technique not only allows for model selection based on factors such as the prompt’s input token size and each model’s min/max token […]
-The post Hybrid Model Orchestration appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Sergey Menshykh</name>
         </author>
     </entry>
     <entry>

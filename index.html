@@ -25,9 +25,91 @@
 
   <ul>
     <li>
+      <time>2025-03-26</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Note on 26th March 2025
+              <span class="post-metadata">(2 min | 503 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/26/notes/#atom-everything>I&#x27;ve added a new content type to my blog: notes. These join my existing types: entries, bookmarks and quotations.
+A note is a little bit like a bookmark without a link. They&#x27;re for short form writing - thoughts or images that don&#x27;t warrant a full entry with a title. The kind of things I used to post to Twitter, but that don&#x27;t feel right to cross-post to multiple social networks (Mastodon and Bluesky, for example.)
+I was partly inspired by Molly White&#x27;s short thoughts, notes, links, and musings.
+I&#x27;ve been thinking about this for a while, but the amount of work involved in modifying all of the parts of my site that handle the three different content types was daunting. Then this evening I tried running my blog&#x27;s source code (using files-to-prompt and LLM) through the new Gemini 2.5 Pro:
+files-to-prompt . -e py -c | \
+  llm -m gemini-2.5-pro-exp-03-25 -s \
+  &#x27;I want to add a new type of content called a Note,
+  similar to quotation and bookmark and entry but it
+  only has a markdown text body. Output all of the
+  code I need to add for that feature and tell me
+  which files to add  the code to.&#x27;
+
+
+Gemini gave me a detailed 13 step plan covering all of the tedious changes I&#x27;d been avoiding having to figure out!
+The code is in this PR, which touched 18 different files. The whole project took around 45 minutes start to finish.
+(I used Claude to brainstorm names for the feature - I had it come up with possible nouns and then &quot;rank those by least pretentious to most pretentious&quot;, and &quot;notes&quot; came out on top.)
+This is now far too long for a note and should really be upgraded to an entry, but I need to post a first note to make sure everything is working as it should.
+Tags: blogging, projects, gemini, ai-assisted-programming, claude, molly-white</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Manuel Hoffmann, Frank Nagle, Yanuo Zhou
+              <span class="post-metadata">(1 min | 246 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/26/value-of-open-source/#atom-everything>We estimate the supply-side value of widely-used OSS is $4.15 billion, but that the demand-side value is much larger at $8.8 trillion. We find that firms would need to spend 3.5 times more on software than they currently do if OSS did not exist.
+
+— Manuel Hoffmann, Frank Nagle, Yanuo Zhou, The Value of Open Source Software, Harvard Business School
+Tags: open-source</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-25</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Introducing 4o Image Generation
+              <span class="post-metadata">(2 min | 736 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/25/introducing-4o-image-generation/#atom-everything>Introducing 4o Image Generation
+back in May 2024 one of the most exciting features was true multi-modality in that it could both input and  output audio and images. The &quot;o&quot; stood for &quot;omni&quot;, and the image output examples in that launch post looked really impressive.
+It&#x27;s taken them over ten months (and Gemini beat them to it) but today they&#x27;re finally making those image generation abilities available, live right now in ChatGPT for paying customers.
+My test prompt for any model that can manipulate incoming images is &quot;Turn this into a selfie with a bear&quot;, because you should never take a selfie with a bear! I fed ChatGPT this selfie and got back this result:
+
+That&#x27;s pretty great! It mangled the text on my T-Shirt (which says &quot;LAWRENCE.COM&quot; in a creative font) and added a second visible AirPod. It&#x27;s very clearly me though, and that&#x27;s definitely a bear.
+There are plenty more examples in OpenAI&#x27;s launch post, but as usual the most interesting details are tucked away in the updates to the system card. There&#x27;s lots in there about their approach to safety and bias, including a section on &quot;Ahistorical and Unrealistic Bias&quot; which feels inspired by Gemini&#x27;s embarrassing early missteps.
+One section that stood out to me is their approach to images of public figures. The new policy is much more permissive than for DALL-E - highlights mine:
+4o image generation is capable, in many instances, of generating a depiction of a public figure based solely on a text prompt.
+At launch, we are not blocking the capability to generate adult public figures but are instead implementing the same safeguards that we have implemented for editing images of photorealistic uploads of people. For instance, this includes seeking to block the generation of photorealistic images of public figures who are minors and of material that violates our policies related to violence, hateful imagery, instructions for illicit activities, erotic content, and other areas. Public figures who wish for their depiction not to be generated can opt out.
+This approach is more fine-grained than the way we dealt with public figures in our DALL·E series of models, where we used technical mitigations intended to prevent any images of a public figure from being generated. This change opens the possibility of helpful and beneficial uses in areas like educational, historical, satirical and political speech. After launch, we will continue to monitor usage of this capability, evaluating our policies, and will adjust them if needed.
+Given that &quot;public figures who wish for their depiction not to be generated can opt out&quot; I wonder if we&#x27;ll see a stampede of public figures to do exactly that!
+Update: There&#x27;s significant confusion right now over this new feature because it is being rolled out gradually but older ChatGPT can still generate images using DALL-E instead... and there is no visual indication in the ChatGPT UI explaining which image generation method it used!
+OpenAI made the same mistake last year when they announced ChatGPT advanced voice mode but failed to clarify that ChatGPT was still running the previous, less impressive voice implementation.
+Update 2: Images created with DALL-E through the ChatGPT web interface now show a note with a warning:
+
+
+
+    
+Tags: openai, ai, multi-modal-output, llms, ai-ethics, llm-release, generative-ai, chatgpt, dalle, gemini</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5573,189 +5655,6 @@ Fixed a bug where max_tokens and temperature were logged in the database even wh
 Tags: llm, anthropic, claude, generative-ai, annotated-release-notes, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Aider Polyglot leaderboard results for Claude 3.7 Sonnet
-              <span class="post-metadata">(1 min | 342 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/25/aider-polyglot-leaderboard/#atom-everything>Aider Polyglot leaderboard results for Claude 3.7 Sonnet
-Aider Polyglot benchmark is one of my favourite independent benchmarks for LLMs, partly because it focuses on code and partly because Paul is very responsive at evaluating new models.
-The brand new Claude 3.7 Sonnet just took the top place, when run with an increased 32,000 thinking token limit.
-It&#x27;s interesting comparing the benchmark costs - 3.7 Sonnet spent $36.83 running the whole thing, significantly more than the previously leading DeepSeek R1 + Claude 3.5 combo, but a whole lot less than third place o1-high:
-Model
-      % completed
-      Total cost
-    
-claude-3-7-sonnet-20250219 (32k thinking tokens)
-      64.9%
-      $36.83
-    
-DeepSeek R1 + claude-3-5-sonnet-20241022
-      64.0%
-      $13.29
-    
-o1-2024-12-17 (high)
-      61.7%
-      $186.5
-    
-claude-3-7-sonnet-20250219 (no thinking)
-      60.4%
-      $17.72
-    
-o3-mini (high)
-      60.4%
-      $18.16
-    
-No results yet for Claude 3.7 Sonnet on the LM Arena leaderboard, which has recently been dominated by Gemini 2.0 and Grok 3.
-
-    
-Via @paulgauthier
-Tags: aider, anthropic, claude, evals, generative-ai, ai, llms, paul-gauthier</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-02-24</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              The Best Way to Use Text Embeddings Portably is With Parquet and Polars
-              <span class="post-metadata">(2 min | 484 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/24/text-embeddings-parquet/#atom-everything>The Best Way to Use Text Embeddings Portably is With Parquet and Polars
-Max advocates for the brute-force approach to nearest-neighbor calculations:
-What many don&#x27;t know about text embeddings is that you don&#x27;t need a vector database to calculate nearest-neighbor similarity if your data isn&#x27;t too large. Using numpy and my Magic card embeddings, a 2D matrix of 32,254 float32 embeddings at a dimensionality of 768D (common for &quot;smaller&quot; LLM embedding models) occupies 94.49 MB of system memory, which is relatively low for modern personal computers and can fit within free usage tiers of cloud VMs.
-He uses this brilliant snippet of Python code to find the top K matches by distance:
-def fast_dot_product(query, matrix, k&#x3D;3):
-    dot_products &#x3D; query @ matrix.T
-    idx &#x3D; np.argpartition(dot_products, -k)[-k:]
-    idx &#x3D; idx[np.argsort(dot_products[idx])[::-1]]
-    score &#x3D; dot_products[idx]
-    return idx, score
-Since dot products are such a fundamental aspect of linear algebra, numpy&#x27;s implementation is extremely fast: with the help of additional numpy sorting shenanigans, on my M3 Pro MacBook Pro it takes just 1.08 ms on average to calculate all 32,254 dot products, find the top 3 most similar embeddings, and return their corresponding idx of the matrix and and cosine similarity score.
-I ran that Python code through Claude 3.7 Sonnet for an explanation, which I can share here using their brand new &quot;Share chat&quot; feature. TIL about numpy.argpartition!
-He explores multiple options for efficiently storing these embedding vectors, finding that naive CSV storage takes 631.5 MB while pickle uses 94.49 MB and his preferred option, Parquet via Polars, uses 94.3 MB and enables some neat zero-copy optimization tricks.
-
-
-    
-Tags: embeddings, parquet, python, max-woolf, claude</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Catherine Wu
-              <span class="post-metadata">(1 min | 223 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/24/catherine-wu/#atom-everything>We find that Claude is really good at test driven development, so we often ask Claude to write tests first and then ask Claude to iterate against the tests.
-
-— Catherine Wu, Anthropic
-Tags: anthropic, claude, ai-assisted-programming, generative-ai, ai, llms, testing, tdd</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Claude 3.7 Sonnet is now available in GitHub Copilot in public preview
-              <span class="post-metadata">(8 min | 2432 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-24-claude-3-7-sonnet-is-now-available-in-github-copilot-in-public-preview>Claude 3.7 Sonnet is now available in GitHub Copilot in public preview
-The post Claude 3.7 Sonnet is now available in GitHub Copilot in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Compatibility of PostgreSQL Connector with AWS and GCP
-              <span class="post-metadata">(24 min | 7067 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/compatibility-of-postgresql-connector-with-aws-and-gcp/>As AI-driven applications continue to evolve, the need for efficient vector-based search capabilities is greater than ever. Microsoft Semantic Kernel makes it easy to integrate these capabilities with PostgreSQL databases using the Postgres connector. Whether you’re leveraging cloud-hosted PostgreSQL instances on Amazon Web Services or Google Cloud, this connector enables seamless interaction, allowing you to […]
-The post Compatibility of PostgreSQL Connector with AWS and GCP appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Claude 3.7 Sonnet and Claude Code
-              <span class="post-metadata">(1 min | 448 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/24/claude-37-sonnet-and-claude-code/#atom-everything>Claude 3.7 Sonnet and Claude Code
-Claude 3.7 Sonnet today - skipping the name &quot;Claude 3.6&quot; because the Anthropic user community had already started using that as the unofficial name for their October update to 3.5 Sonnet.
-As you may expect, 3.7 Sonnet is an improvement over 3.5 Sonnet - and is priced the same, at $3/million tokens for input and $15/m output.
-The big difference is that this is Anthropic&#x27;s first &quot;reasoning&quot; model - applying the same trick that we&#x27;ve now seen from OpenAI o1 and o3, Grok 3, Google Gemini 2.0 Thinking, DeepSeek R1 and Qwen&#x27;s QwQ and QvQ. The only big model families without an official reasoning model now are Mistral and Meta&#x27;s Llama.
-I&#x27;m still working on adding support to my llm-anthropic plugin but I&#x27;ve got enough working code that I was able to get it to draw me a pelican riding a bicycle. Here&#x27;s the non-reasoning model:
-
-And here&#x27;s that same prompt but with &quot;thinking mode&quot; enabled:
-
-Here&#x27;s the transcript for that second one, which mixes together the thinking and the output tokens. I&#x27;m still working through how best to differentiate between those two types of token.
-Anthropic&#x27;s other big release today is a preview of Claude Code - a CLI tool for interacting with Claude that includes the ability to prompt Claude in terminal chat and have it read and modify files and execute commands. This means it can both iterate on code and execute tests, making it an extremely powerful &quot;agent&quot; for coding assistance.
-
-
-    
-Tags: llm, anthropic, claude, ai-agents, inference-scaling, ai, llms, ai-assisted-programming, generative-ai, pelican-riding-a-bicycle</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A new generation of AIs: Claude 3.7 and Grok 3
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/a-new-generation-of-ais-claude-37>Yes, AI suddenly got better... again</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Migration of GitHub Team plan organizations to the enhanced billing platform
-              <span class="post-metadata">(8 min | 2292 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-02-24-migration-of-github-team-plan-organizations-to-the-enhanced-billing-platform>Migration of GitHub Team plan organizations to the enhanced billing platform
-The post Migration of GitHub Team plan organizations to the enhanced billing platform appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Hybrid Model Orchestration
-              <span class="post-metadata">(25 min | 7511 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/hybrid-model-orchestration/>Hybrid model orchestration is a powerful technique that AI applications can use to intelligently select and switch between multiple models based on various criteria, all while being transparent to the calling code. This technique not only allows for model selection based on factors such as the prompt’s input token size and each model’s min/max token […]
-The post Hybrid Model Orchestration appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
           </details>
       </article>
 
