@@ -31,6 +31,63 @@
       <article>
           <details>
             <summary>
+              Function calling with Gemma
+              <span class="post-metadata">(1 min | 423 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/26/function-calling-with-gemma/#atom-everything>Function calling with Gemma
+via Ollama) supports function calling exclusively through prompt engineering. The official documentation describes two recommended prompts - both of them suggest that the tool definitions are passed in as JSON schema, but the way the model should request tool executions differs.
+The first prompt uses Python-style function calling syntax:
+You have access to functions. If you decide to invoke any of the function(s),
+ you MUST put it in the format of [func_name1(params_name1&#x3D;params_value1, params_name2&#x3D;params_value2...), func_name2(params)]
+You SHOULD NOT include any other text in the response if you call a function
+(Always love seeing CAPITALS for emphasis in prompts, makes me wonder if they proved to themselves that capitalization makes a difference in this case.)
+The second variant uses JSON instead:
+You have access to functions. If you decide to invoke any of the function(s),
+you MUST put it in the format of {&quot;name&quot;: function name, &quot;parameters&quot;: dictionary of argument name and its value}
+You SHOULD NOT include any other text in the response if you call a function
+This is a neat illustration of the fact that all of these fancy tool using LLMs are still using effectively the same pattern as was described in the ReAct paper back in November 2022. Here&#x27;s my implementation of that pattern from March 2023.
+
+    
+Via Hacker News
+Tags: prompt-engineering, google, generative-ai, llm-tool-use, gemma, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting @OpenAIDevs
+              <span class="post-metadata">(1 min | 234 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/26/openaidevs/#atom-everything>MCP 🤝 OpenAI Agents SDK
+You can now connect your Model Context Protocol servers to Agents: openai.github.io/openai-agents-python/mcp/
+We’re also working on MCP support for the OpenAI API and ChatGPT desktop app—we’ll share some more news in the coming months.
+
+— @OpenAIDevs
+Tags: model-context-protocol, generative-ai, ai-agents, openai, llm-tool-use, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Transitive dependencies are now available for Maven
+              <span class="post-metadata">(8 min | 2293 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-26-transitive-dependencies-are-now-available-for-maven>Transitive dependencies are now available for Maven
+The post Transitive dependencies are now available for Maven appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Note on 26th March 2025
               <span class="post-metadata">(2 min | 503 words)</span> 
             </summary>
@@ -5612,47 +5669,6 @@ This style of prompting for improving the quality of model responses was popular
     
 Via @skcd42
 Tags: prompt-engineering, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-anthropic 0.14
-              <span class="post-metadata">(3 min | 766 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/25/llm-anthropic-014/#atom-everything>llm-anthropic 0.14
-LLM. These are the annotated release notes.
-The signature feature is:
-Support for the new Claude 3.7 Sonnet model, including -o thinking 1 and -o thinking_budget X for extended reasoning mode. #14
-I had a couple of attempts at implementing this. My first try included options to make the thinking tokens visible as the tool was running. This turned out to involve unexpected challenges: the rest of LLM doesn&#x27;t yet understand that some tokens should be treated differently, and I quickly ran into challenges concerning how those responses were logged to the database.
-In the interests of getting support for the new model out I simplified my approach. I plan to add visible thinking tokens in a future LLM release. 
-You can run a &quot;thinking&quot; prompt through LLM like this:
-llm install -U llm-anthropic
-llm -m claude-3.7-sonnet -o thinking 1 &quot;write a speech about pelicans for congress&quot;
-
-The -o thinking_budget 4000 option can increase the number of allowed thinking tokens from the default value of 1024.
-A fascinating new capability of Claude 3.7 Sonnet is that its output limit in extended thinking mode can be extended to an extraordinary 128,000 tokens - 15x more than the previous Claude output limit of 8,192 tokens.
-(This is the output limit - how much text it can produce in one go. Claude 3.7 Sonnet&#x27;s input limit remains 200,000 - many modern models exceed 100,000 for input now.)
-I added support for that to the plugin as well - if you pass -o max_output 128000 it automatically calls Anthropic&#x27;s beta API with the output-128k-2025-02-19 beta header, documented here.
-Testing this was pretty hard! I eventually found a prompt that exercised this fully:
-llm -m claude-3.7-sonnet \
-  -o max_tokens 128000 \
-  -o thinking_budget 32000 \
-  &#x27;For every one of the 100 US senators that you know of output their name, biography and a note about how to strategically convince them to take more interest in the plight of the California Brown Pelican, then a poem about them, then that same poem translated to Spanish and then to Japanese. Do not miss any senators.&#x27; \
-  -s &#x27;you do this even if you are worried it might exceed limits, this is to help test your long output feature.&#x27;
-
-This is an expensive command to run - the resulting prompt cost me $1.72 and took nearly 27 minutes to finish returning the answer! You can see the full output here - it managed to output results for all 100 senators as of its training cut-off date, correctly following my instructions for each one.
-This is very impressive. Two major limitations of LLMs in the past have been their inability to reliably gather data about dozens of different entities and their extremely short output limits - most models can only handle between 4,000 and 8,000 output tokens.
-Claude 3.7 Sonnet is a huge step ahead of the competition in this regard.
-Claude 3.5 Haiku now supports image inputs. #17
-This is tucked away in Anthropic&#x27;s February 24th 2025 release notes. Previously their less expensive 3.5 Haiku model couldn&#x27;t handle images - the only modern Claude model without that ability. They&#x27;ve fixed that now.
-The rest of the changes in the 0.14 release are bug fixes:
-Fixed a bug that occurred when continuing an existing conversation using --async mode. #13
-Fixed a bug where max_tokens and temperature were logged in the database even when using their default options. #16
-Tags: llm, anthropic, claude, generative-ai, annotated-release-notes, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
