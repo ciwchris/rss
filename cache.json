@@ -6,6 +6,36 @@
       "siteUrl": "https://github.blog/changelog/",
       "articles": [
         {
+          "id": "https://github.blog/changelog/2025-03-27-deprecation-of-cvss-field-in-security-advisories-api",
+          "author": "Allison",
+          "description": "Deprecation of cvss field in security advisories API\nThe post Deprecation of cvss field in security advisories API appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2025-03-27-deprecation-of-cvss-field-in-security-advisories-api",
+          "publishedOn": "2025-03-27T17:31:38.000Z",
+          "wordCount": 2100,
+          "title": "Deprecation of cvss field in security advisories API",
+          "imageUrl": "https://github.blog/wp-content/uploads/2024/08/d34e9c19123898a8a886147f37a1d167130d1c15be6d399a9c4b30ee6f2a7395-1200x630-1.png?fit=1200%2C630"
+        },
+        {
+          "id": "https://github.blog/changelog/2025-03-27-repository-ownership-limits",
+          "author": "Allison",
+          "description": "Repository ownership limits\nThe post Repository ownership limits appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2025-03-27-repository-ownership-limits",
+          "publishedOn": "2025-03-27T17:06:35.000Z",
+          "wordCount": 2298,
+          "title": "Repository ownership limits",
+          "imageUrl": "https://github.blog/wp-content/uploads/2024/08/d34e9c19123898a8a886147f37a1d167130d1c15be6d399a9c4b30ee6f2a7395-1200x630-1.png?fit=1200%2C630"
+        },
+        {
+          "id": "https://github.blog/changelog/2025-03-26-gpt-4o-copilot-your-new-code-completion-model-is-now-generally-available",
+          "author": "Allison",
+          "description": "GPT-4o Copilot: Your new code completion model is now generally available\nThe post GPT-4o Copilot: Your new code completion model is now generally available appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2025-03-27-gpt-4o-copilot-your-new-code-completion-model-is-now-generally-available",
+          "publishedOn": "2025-03-27T16:00:17.000Z",
+          "wordCount": 2411,
+          "title": "GPT-4o Copilot: Your new code completion model is now generally available",
+          "imageUrl": "https://github.com/user-attachments/assets/85090dca-70f3-446f-8d4b-63cbc407aebd"
+        },
+        {
           "id": "https://github.blog/changelog/2025-03-26-transitive-dependencies-are-now-available-for-maven",
           "author": "Allison",
           "description": "Transitive dependencies are now available for Maven\nThe post Transitive dependencies are now available for Maven appeared first on The GitHub Blog.",
@@ -995,6 +1025,16 @@
       "siteUrl": "http://simonwillison.net/",
       "articles": [
         {
+          "id": "https://simonwillison.net/2025/Mar/27/nomic-embed-code/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://www.nomic.ai/blog/posts/introducing-state-of-the-art-nomic-embed-code\">Nomic Embed Code: A State-of-the-Art Code Retriever</a></strong></p>\nNomic have released a new embedding model that specializes in code, based on their CoRNStack \"large-scale high-quality training dataset specifically curated for code retrieval\".</p>\n<p>The <a href=\"https://huggingface.co/nomic-ai/nomic-embed-code\">nomic-embed-code</a> model is pretty large - 26.35GB - but the announcement also mentioned a much smaller model (released 5 months ago) called <a href=\"https://huggingface.co/nomic-ai/CodeRankEmbed\">CodeRankEmbed</a> which is just 521.60MB.</p>\n<p>I missed that when it first came out, so I decided to give it a try using my <a href=\"https://github.com/simonw/llm-sentence-transformers\">llm-sentence-transformers</a> plugin for <a href=\"https://llm.datasette.io/\">LLM</a>. That turned out to need <a href=\"https://pypi.org/project/einops/\">einops</a> too.</p>\n<pre><code>llm install llm-sentence-transformers\nllm install einops\nllm sentence-transformers register nomic-ai/CodeRankEmbed --trust-remote-code\n</code></pre>\n<p>Now I can run the model like this:</p>\n<pre><code>llm embed -m sentence-transformers/nomic-ai/CodeRankEmbed -c 'hello'\n</code></pre>\n<p>This outputs an array of 768 numbers, starting <code>[1.4794224500656128, -0.474479079246521, ...</code>.</p>\n<p>Where this gets fun is combining it with my <a href=\"https://simonwillison.net/2023/Jun/18/symbex/\">Symbex tool</a> to create and then search embeddings for functions in a codebase.</p>\n<p>I created an index for my LLM codebase like this:</p>\n<pre><code>cd llm\nsymbex '*' '*.*' --nl &gt; code.txt\n</code></pre>\n<p>This creates a newline-separated JSON file of all of the functions (from <code>'*'</code>) and methods (from <code>'*.*'</code>) in the current directory - you can <a href=\"https://gist.github.com/simonw/ac45c6638ea87942383e97c5cf69ae09\">see that here</a>.</p>\n<p>Then I fed that into the <a href=\"https://llm.datasette.io/en/stable/embeddings/cli.html#llm-embed-multi\">llm embed-multi</a> command like this:</p>\n<pre><code>llm embed-multi \\\n  -d code.db \\\n  -m sentence-transformers/nomic-ai/CodeRankEmbed \\\n  code code.txt \\\n  --format nl \\\n  --store \\\n  --batch-size 10\n</code></pre>\n<p>I found the <code>--batch-size</code> was needed to prevent it from crashing with an error. </p>\n<p>The above command creates a collection called <code>code</code> in a SQLite database called <code>code.db</code>.</p>\n<p>Having run this command I can search for functions that match a specific search term like this:</p>\n<pre><code>llm similar code -d code.db \\\n  -c 'Represent this query for searching relevant code: install a plugin' | jq\n</code></pre>\n<p>That <code>\"Represent this query for searching relevant code: \"</code> prefix is required by the model. I pipe it through <code>jq</code> to make it a little more readable, which gives me <a href=\"https://gist.github.com/simonw/fdc1b48b20a99714200f5d3970b1dff4\">these results</a>.</p>\n<p>This <code>jq</code> recipe makes for a better output:</p>\n<pre><code>llm similar code -d code.db \\\n  -c 'Represent this query for searching relevant code: install a plugin' | \\\n  jq -r '.id + \"\\n\\n\" + .content + \"\\n--------\\n\"'\n</code></pre>\n<p>The output from that starts like so:</p>\n<pre><code>llm/cli.py:1776\n\n@cli.command(name=\"plugins\")\n@click.option(\"--all\", help=\"Include built-in default plugins\", is_flag=True)\ndef plugins_list(all):\n    \"List installed plugins\"\n    click.echo(json.dumps(get_plugins(all), indent=2))\n--------\n\nllm/cli.py:1791\n\n@cli.command()\n@click.argument(\"packages\", nargs=-1, required=False)\n@click.option(\n    \"-U\", \"--upgrade\", is_flag=True, help=\"Upgrade packages to latest version\"\n)\n...\ndef install(packages, upgrade, editable, force_reinstall, no_cache_dir):\n    \"\"\"Install packages from PyPI into the same environment as LLM\"\"\"\n</code></pre>\n<p>Getting this output was quite inconvenient, so I've <a href=\"https://github.com/simonw/llm/issues/853\">opened an issue</a>.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/nomic\">nomic</a>, <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/embeddings\">embeddings</a>, <a href=\"https://simonwillison.net/tags/jq\">jq</a></p>",
+          "link": "https://simonwillison.net/2025/Mar/27/nomic-embed-code/#atom-everything",
+          "publishedOn": "2025-03-27T20:03:56.000Z",
+          "wordCount": 611,
+          "title": "Nomic Embed Code: A State-of-the-Art Code Retriever",
+          "imageUrl": null
+        },
+        {
           "id": "https://simonwillison.net/2025/Mar/26/function-calling-with-gemma/#atom-everything",
           "author": null,
           "description": "<p><strong><a href=\"https://ai.google.dev/gemma/docs/capabilities/function-calling\">Function calling with Gemma</a></strong></p>\nGoogle's Gemma 3 model (the 27B variant is particularly capable, I've been trying it out <a href=\"https://ollama.com/library/gemma3\">via Ollama</a>) supports function calling exclusively through prompt engineering. The official documentation describes two recommended prompts - both of them suggest that the tool definitions are passed in as JSON schema, but the way the model should request tool executions differs.</p>\n<p>The first prompt uses Python-style function calling syntax:</p>\n<blockquote>\n<p><code>You have access to functions. If you decide to invoke any of the function(s),\n you MUST put it in the format of [func_name1(params_name1=params_value1, params_name2=params_value2...), func_name2(params)]</code></p>\n<p><code>You SHOULD NOT include any other text in the response if you call a function</code></p>\n</blockquote>\n<p>(Always love seeing CAPITALS for emphasis in prompts, makes me wonder if they proved to themselves that capitalization makes a difference in this case.)</p>\n<p>The second variant uses JSON instead:</p>\n<blockquote>\n<p><code>You have access to functions. If you decide to invoke any of the function(s),\nyou MUST put it in the format of {\"name\": function name, \"parameters\": dictionary of argument name and its value}</code></p>\n<p><code>You SHOULD NOT include any other text in the response if you call a function</code></p>\n</blockquote>\n<p>This is a neat illustration of the fact that all of these fancy tool using LLMs are still using effectively the same pattern as was described in <a href=\"https://react-lm.github.io/\">the ReAct paper</a> back in November 2022. Here's <a href=\"https://til.simonwillison.net/llms/python-react-pattern\">my implementation of that pattern</a> from March 2023.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=43451406\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/prompt-engineering\">prompt-engineering</a>, <a href=\"https://simonwillison.net/tags/google\">google</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llm-tool-use\">llm-tool-use</a>, <a href=\"https://simonwillison.net/tags/gemma\">gemma</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
@@ -1843,16 +1883,6 @@
           "wordCount": 380,
           "title": "TypeScript types can run DOOM",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://github.com/simonw/git-scraper-template\">simonw/git-scraper-template</a></strong></p>\nI built this new GitHub template repository in preparation for a workshop I'm giving at <a href=\"https://www.ire.org/training/conferences/nicar-2025/\">NICAR</a> (the data journalism conference) next week on <a href=\"https://github.com/simonw/nicar-2025-scraping/\">Cutting-edge web scraping techniques</a>.</p>\n<p>One of the topics I'll be covering is <a href=\"https://simonwillison.net/2020/Oct/9/git-scraping/\">Git scraping</a> - creating a GitHub repository that uses scheduled GitHub Actions workflows to grab copies of websites and data feeds and store their changes over time using Git.</p>\n<p>This template repository is designed to be the fastest possible way to get started with a new Git scraper: simple <a href=\"https://github.com/new?template_name=git-scraper-template&amp;template_owner=simonw\">create a new repository from the template</a> and paste the URL you want to scrape into the <strong>description</strong> field and the repository will be initialized with a custom script that scrapes and stores that URL.</p>\n<p>It's modeled after my earlier <a href=\"https://github.com/simonw/shot-scraper-template\">shot-scraper-template</a> tool which I described in detail in <a href=\"https://simonwillison.net/2022/Mar/14/shot-scraper-template/\">Instantly create a GitHub repository to take screenshots of a web page</a>.</p>\n<p>The new <code>git-scraper-template</code> repo took <a href=\"https://github.com/simonw/git-scraper-template/issues/2#issuecomment-2683871054\">some help from Claude</a> to figure out. It uses a <a href=\"https://github.com/simonw/git-scraper-template/blob/a2b12972584099d7c793ee4b38303d94792bf0f0/download.sh\">custom script</a> to download the provided URL and derive a filename to use based on the URL and the content type, detected using <code>file --mime-type -b \"$file_path\"</code> against the downloaded file.</p>\n<p>It also detects if the downloaded content is JSON and, if it is, pretty-prints it using <code>jq</code> - I find this is a quick way to generate much more useful diffs when the content changes.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/github-actions\">github-actions</a>, <a href=\"https://simonwillison.net/tags/nicar\">nicar</a>, <a href=\"https://simonwillison.net/tags/projects\">projects</a>, <a href=\"https://simonwillison.net/tags/git-scraping\">git-scraping</a>, <a href=\"https://simonwillison.net/tags/data-journalism\">data-journalism</a>, <a href=\"https://simonwillison.net/tags/git\">git</a>, <a href=\"https://simonwillison.net/tags/github\">github</a>, <a href=\"https://simonwillison.net/tags/scraping\">scraping</a></p>",
-          "link": "https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything",
-          "publishedOn": "2025-02-26T05:34:05.000Z",
-          "wordCount": 418,
-          "title": "simonw/git-scraper-template",
-          "imageUrl": null
         }
       ]
     },
@@ -1929,16 +1959,6 @@
           "publishedOn": "2025-02-27T19:26:00.000Z",
           "wordCount": 2274,
           "title": "granite3.2-vision",
-          "imageUrl": "https://ollama.com/public/og.png"
-        },
-        {
-          "id": "https://ollama.com/library/granite3.2",
-          "author": null,
-          "description": "Granite-3.2 is a family of long-context AI models from IBM Granite fine-tuned for thinking capabilities.",
-          "link": "https://ollama.com/library/granite3.2",
-          "publishedOn": "2025-02-26T05:48:00.000Z",
-          "wordCount": 2519,
-          "title": "granite3.2",
           "imageUrl": "https://ollama.com/public/og.png"
         }
       ]

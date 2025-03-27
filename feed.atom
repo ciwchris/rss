@@ -2,10 +2,116 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-27T14:10:20.453Z</updated>
+    <updated>2025-03-27T21:09:23.846Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Nomic Embed Code: A State-of-the-Art Code Retriever]]></title>
+        <id>https://simonwillison.net/2025/Mar/27/nomic-embed-code/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/27/nomic-embed-code/#atom-everything"/>
+        <updated>2025-03-27T20:03:56.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.nomic.ai/blog/posts/introducing-state-of-the-art-nomic-embed-code">Nomic Embed Code: A State-of-the-Art Code Retriever</a></strong></p>
+Nomic have released a new embedding model that specializes in code, based on their CoRNStack "large-scale high-quality training dataset specifically curated for code retrieval".</p>
+<p>The <a href="https://huggingface.co/nomic-ai/nomic-embed-code">nomic-embed-code</a> model is pretty large - 26.35GB - but the announcement also mentioned a much smaller model (released 5 months ago) called <a href="https://huggingface.co/nomic-ai/CodeRankEmbed">CodeRankEmbed</a> which is just 521.60MB.</p>
+<p>I missed that when it first came out, so I decided to give it a try using my <a href="https://github.com/simonw/llm-sentence-transformers">llm-sentence-transformers</a> plugin for <a href="https://llm.datasette.io/">LLM</a>. That turned out to need <a href="https://pypi.org/project/einops/">einops</a> too.</p>
+<pre><code>llm install llm-sentence-transformers
+llm install einops
+llm sentence-transformers register nomic-ai/CodeRankEmbed --trust-remote-code
+</code></pre>
+<p>Now I can run the model like this:</p>
+<pre><code>llm embed -m sentence-transformers/nomic-ai/CodeRankEmbed -c 'hello'
+</code></pre>
+<p>This outputs an array of 768 numbers, starting <code>[1.4794224500656128, -0.474479079246521, ...</code>.</p>
+<p>Where this gets fun is combining it with my <a href="https://simonwillison.net/2023/Jun/18/symbex/">Symbex tool</a> to create and then search embeddings for functions in a codebase.</p>
+<p>I created an index for my LLM codebase like this:</p>
+<pre><code>cd llm
+symbex '*' '*.*' --nl &gt; code.txt
+</code></pre>
+<p>This creates a newline-separated JSON file of all of the functions (from <code>'*'</code>) and methods (from <code>'*.*'</code>) in the current directory - you can <a href="https://gist.github.com/simonw/ac45c6638ea87942383e97c5cf69ae09">see that here</a>.</p>
+<p>Then I fed that into the <a href="https://llm.datasette.io/en/stable/embeddings/cli.html#llm-embed-multi">llm embed-multi</a> command like this:</p>
+<pre><code>llm embed-multi \
+  -d code.db \
+  -m sentence-transformers/nomic-ai/CodeRankEmbed \
+  code code.txt \
+  --format nl \
+  --store \
+  --batch-size 10
+</code></pre>
+<p>I found the <code>--batch-size</code> was needed to prevent it from crashing with an error. </p>
+<p>The above command creates a collection called <code>code</code> in a SQLite database called <code>code.db</code>.</p>
+<p>Having run this command I can search for functions that match a specific search term like this:</p>
+<pre><code>llm similar code -d code.db \
+  -c 'Represent this query for searching relevant code: install a plugin' | jq
+</code></pre>
+<p>That <code>"Represent this query for searching relevant code: "</code> prefix is required by the model. I pipe it through <code>jq</code> to make it a little more readable, which gives me <a href="https://gist.github.com/simonw/fdc1b48b20a99714200f5d3970b1dff4">these results</a>.</p>
+<p>This <code>jq</code> recipe makes for a better output:</p>
+<pre><code>llm similar code -d code.db \
+  -c 'Represent this query for searching relevant code: install a plugin' | \
+  jq -r '.id + "\n\n" + .content + "\n--------\n"'
+</code></pre>
+<p>The output from that starts like so:</p>
+<pre><code>llm/cli.py:1776
+
+@cli.command(name="plugins")
+@click.option("--all", help="Include built-in default plugins", is_flag=True)
+def plugins_list(all):
+    "List installed plugins"
+    click.echo(json.dumps(get_plugins(all), indent=2))
+--------
+
+llm/cli.py:1791
+
+@cli.command()
+@click.argument("packages", nargs=-1, required=False)
+@click.option(
+    "-U", "--upgrade", is_flag=True, help="Upgrade packages to latest version"
+)
+...
+def install(packages, upgrade, editable, force_reinstall, no_cache_dir):
+    """Install packages from PyPI into the same environment as LLM"""
+</code></pre>
+<p>Getting this output was quite inconvenient, so I've <a href="https://github.com/simonw/llm/issues/853">opened an issue</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/nomic">nomic</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/embeddings">embeddings</a>, <a href="https://simonwillison.net/tags/jq">jq</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Deprecation of cvss field in security advisories API]]></title>
+        <id>https://github.blog/changelog/2025-03-27-deprecation-of-cvss-field-in-security-advisories-api</id>
+        <link href="https://github.blog/changelog/2025-03-27-deprecation-of-cvss-field-in-security-advisories-api"/>
+        <updated>2025-03-27T17:31:38.000Z</updated>
+        <summary type="html"><![CDATA[Deprecation of cvss field in security advisories API
+The post Deprecation of cvss field in security advisories API appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Repository ownership limits]]></title>
+        <id>https://github.blog/changelog/2025-03-27-repository-ownership-limits</id>
+        <link href="https://github.blog/changelog/2025-03-27-repository-ownership-limits"/>
+        <updated>2025-03-27T17:06:35.000Z</updated>
+        <summary type="html"><![CDATA[Repository ownership limits
+The post Repository ownership limits appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GPT-4o Copilot: Your new code completion model is now generally available]]></title>
+        <id>https://github.blog/changelog/2025-03-26-gpt-4o-copilot-your-new-code-completion-model-is-now-generally-available</id>
+        <link href="https://github.blog/changelog/2025-03-27-gpt-4o-copilot-your-new-code-completion-model-is-now-generally-available"/>
+        <updated>2025-03-27T16:00:17.000Z</updated>
+        <summary type="html"><![CDATA[GPT-4o Copilot: Your new code completion model is now generally available
+The post GPT-4o Copilot: Your new code completion model is now generally available appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Function calling with Gemma]]></title>
         <id>https://simonwillison.net/2025/Mar/26/function-calling-with-gemma/#atom-everything</id>
@@ -4440,35 +4546,6 @@ The post Code review in GitHub Copilot is now in public preview appeared first o
 The post GitHub Copilot now available for free in Windows Terminal Canary appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[granite3.2]]></title>
-        <id>https://ollama.com/library/granite3.2</id>
-        <link href="https://ollama.com/library/granite3.2"/>
-        <updated>2025-02-26T05:48:00.000Z</updated>
-        <summary type="html"><![CDATA[Granite-3.2 is a family of long-context AI models from IBM Granite fine-tuned for thinking capabilities.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[simonw/git-scraper-template]]></title>
-        <id>https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything"/>
-        <updated>2025-02-26T05:34:05.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/git-scraper-template">simonw/git-scraper-template</a></strong></p>
-I built this new GitHub template repository in preparation for a workshop I'm giving at <a href="https://www.ire.org/training/conferences/nicar-2025/">NICAR</a> (the data journalism conference) next week on <a href="https://github.com/simonw/nicar-2025-scraping/">Cutting-edge web scraping techniques</a>.</p>
-<p>One of the topics I'll be covering is <a href="https://simonwillison.net/2020/Oct/9/git-scraping/">Git scraping</a> - creating a GitHub repository that uses scheduled GitHub Actions workflows to grab copies of websites and data feeds and store their changes over time using Git.</p>
-<p>This template repository is designed to be the fastest possible way to get started with a new Git scraper: simple <a href="https://github.com/new?template_name=git-scraper-template&amp;template_owner=simonw">create a new repository from the template</a> and paste the URL you want to scrape into the <strong>description</strong> field and the repository will be initialized with a custom script that scrapes and stores that URL.</p>
-<p>It's modeled after my earlier <a href="https://github.com/simonw/shot-scraper-template">shot-scraper-template</a> tool which I described in detail in <a href="https://simonwillison.net/2022/Mar/14/shot-scraper-template/">Instantly create a GitHub repository to take screenshots of a web page</a>.</p>
-<p>The new <code>git-scraper-template</code> repo took <a href="https://github.com/simonw/git-scraper-template/issues/2#issuecomment-2683871054">some help from Claude</a> to figure out. It uses a <a href="https://github.com/simonw/git-scraper-template/blob/a2b12972584099d7c793ee4b38303d94792bf0f0/download.sh">custom script</a> to download the provided URL and derive a filename to use based on the URL and the content type, detected using <code>file --mime-type -b "$file_path"</code> against the downloaded file.</p>
-<p>It also detects if the downloaded content is JSON and, if it is, pretty-prints it using <code>jq</code> - I find this is a quick way to generate much more useful diffs when the content changes.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/github-actions">github-actions</a>, <a href="https://simonwillison.net/tags/nicar">nicar</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/git-scraping">git-scraping</a>, <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/git">git</a>, <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/scraping">scraping</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>

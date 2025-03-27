@@ -25,6 +25,127 @@
 
   <ul>
     <li>
+      <time>2025-03-27</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Nomic Embed Code: A State-of-the-Art Code Retriever
+              <span class="post-metadata">(2 min | 611 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/27/nomic-embed-code/#atom-everything>Nomic Embed Code: A State-of-the-Art Code Retriever
+The nomic-embed-code model is pretty large - 26.35GB - but the announcement also mentioned a much smaller model (released 5 months ago) called CodeRankEmbed which is just 521.60MB.
+I missed that when it first came out, so I decided to give it a try using my llm-sentence-transformers plugin for LLM. That turned out to need einops too.
+llm install llm-sentence-transformers
+llm install einops
+llm sentence-transformers register nomic-ai/CodeRankEmbed --trust-remote-code
+
+Now I can run the model like this:
+llm embed -m sentence-transformers/nomic-ai/CodeRankEmbed -c &#x27;hello&#x27;
+
+This outputs an array of 768 numbers, starting [1.4794224500656128, -0.474479079246521, ....
+Where this gets fun is combining it with my Symbex tool to create and then search embeddings for functions in a codebase.
+I created an index for my LLM codebase like this:
+cd llm
+symbex &#x27;*&#x27; &#x27;*.*&#x27; --nl &gt; code.txt
+
+This creates a newline-separated JSON file of all of the functions (from &#x27;*&#x27;) and methods (from &#x27;*.*&#x27;) in the current directory - you can see that here.
+Then I fed that into the llm embed-multi command like this:
+llm embed-multi \
+  -d code.db \
+  -m sentence-transformers/nomic-ai/CodeRankEmbed \
+  code code.txt \
+  --format nl \
+  --store \
+  --batch-size 10
+
+I found the --batch-size was needed to prevent it from crashing with an error. 
+The above command creates a collection called code in a SQLite database called code.db.
+Having run this command I can search for functions that match a specific search term like this:
+llm similar code -d code.db \
+  -c &#x27;Represent this query for searching relevant code: install a plugin&#x27; | jq
+
+That &quot;Represent this query for searching relevant code: &quot; prefix is required by the model. I pipe it through jq to make it a little more readable, which gives me these results.
+This jq recipe makes for a better output:
+llm similar code -d code.db \
+  -c &#x27;Represent this query for searching relevant code: install a plugin&#x27; | \
+  jq -r &#x27;.id + &quot;\n\n&quot; + .content + &quot;\n--------\n&quot;&#x27;
+
+The output from that starts like so:
+llm/cli.py:1776
+
+@cli.command(name&#x3D;&quot;plugins&quot;)
+@click.option(&quot;--all&quot;, help&#x3D;&quot;Include built-in default plugins&quot;, is_flag&#x3D;True)
+def plugins_list(all):
+    &quot;List installed plugins&quot;
+    click.echo(json.dumps(get_plugins(all), indent&#x3D;2))
+--------
+
+llm/cli.py:1791
+
+@cli.command()
+@click.argument(&quot;packages&quot;, nargs&#x3D;-1, required&#x3D;False)
+@click.option(
+    &quot;-U&quot;, &quot;--upgrade&quot;, is_flag&#x3D;True, help&#x3D;&quot;Upgrade packages to latest version&quot;
+)
+...
+def install(packages, upgrade, editable, force_reinstall, no_cache_dir):
+    &quot;&quot;&quot;Install packages from PyPI into the same environment as LLM&quot;&quot;&quot;
+
+Getting this output was quite inconvenient, so I&#x27;ve opened an issue.
+
+
+    
+Tags: nomic, llm, ai, embeddings, jq</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Deprecation of cvss field in security advisories API
+              <span class="post-metadata">(7 min | 2100 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-27-deprecation-of-cvss-field-in-security-advisories-api>Deprecation of cvss field in security advisories API
+The post Deprecation of cvss field in security advisories API appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Repository ownership limits
+              <span class="post-metadata">(8 min | 2298 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-27-repository-ownership-limits>Repository ownership limits
+The post Repository ownership limits appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GPT-4o Copilot: Your new code completion model is now generally available
+              <span class="post-metadata">(8 min | 2411 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-03-27-gpt-4o-copilot-your-new-code-completion-model-is-now-generally-available>GPT-4o Copilot: Your new code completion model is now generally available
+The post GPT-4o Copilot: Your new code completion model is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-26</time>
 
       <section>
@@ -5441,40 +5562,6 @@ The post Code review in GitHub Copilot is now in public preview appeared first o
 The post GitHub Copilot now available for free in Windows Terminal Canary appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              granite3.2
-              <span class="post-metadata">(8 min | 2519 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/granite3.2>Granite-3.2 is a family of long-context AI models from IBM Granite fine-tuned for thinking capabilities.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              simonw/git-scraper-template
-              <span class="post-metadata">(1 min | 418 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Feb/26/git-scraper-template/#atom-everything>simonw/git-scraper-template
-NICAR (the data journalism conference) next week on Cutting-edge web scraping techniques.
-One of the topics I&#x27;ll be covering is Git scraping - creating a GitHub repository that uses scheduled GitHub Actions workflows to grab copies of websites and data feeds and store their changes over time using Git.
-This template repository is designed to be the fastest possible way to get started with a new Git scraper: simple create a new repository from the template and paste the URL you want to scrape into the description field and the repository will be initialized with a custom script that scrapes and stores that URL.
-It&#x27;s modeled after my earlier shot-scraper-template tool which I described in detail in Instantly create a GitHub repository to take screenshots of a web page.
-The new git-scraper-template repo took some help from Claude to figure out. It uses a custom script to download the provided URL and derive a filename to use based on the URL and the content type, detected using file --mime-type -b &quot;$file_path&quot; against the downloaded file.
-It also detects if the downloaded content is JSON and, if it is, pretty-prints it using jq - I find this is a quick way to generate much more useful diffs when the content changes.
-
-
-    
-Tags: github-actions, nicar, projects, git-scraping, data-journalism, git, github, scraping</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
