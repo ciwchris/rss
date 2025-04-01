@@ -25,9 +25,97 @@
 
   <ul>
     <li>
+      <time>2025-04-01</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Pydantic Evals
+              <span class="post-metadata">(1 min | 376 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/1/pydantic-evals/#atom-everything>Pydantic Evals
+The feature is described as &quot;in beta&quot; and comes with this very realistic warning:
+Unlike unit tests, evals are an emerging art/science; anyone who claims to know for sure exactly how your evals should be defined can safely be ignored.
+This code example from their documentation illustrates the relationship between the two key nouns - Cases and Datasets:
+from pydantic_evals import Case, Dataset
+
+case1 &#x3D; Case(
+    name&#x3D;&quot;simple_case&quot;,
+    inputs&#x3D;&quot;What is the capital of France?&quot;,
+    expected_output&#x3D;&quot;Paris&quot;,
+    metadata&#x3D;{&quot;difficulty&quot;: &quot;easy&quot;},
+)
+
+dataset &#x3D; Dataset(cases&#x3D;[case1])
+The library also supports custom evaluators, including LLM-as-a-judge:
+Case(
+    name&#x3D;&quot;vegetarian_recipe&quot;,
+    inputs&#x3D;CustomerOrder(
+        dish_name&#x3D;&quot;Spaghetti Bolognese&quot;, dietary_restriction&#x3D;&quot;vegetarian&quot;
+    ),
+    expected_output&#x3D;None,
+    metadata&#x3D;{&quot;focus&quot;: &quot;vegetarian&quot;},
+    evaluators&#x3D;(
+        LLMJudge(
+            rubric&#x3D;&quot;Recipe should not contain meat or animal products&quot;,
+        ),
+    ),
+)
+Cases and datasets can also be serialized to YAML.
+My first impressions are that this looks like a solid implementation of a sensible design. I&#x27;m looking forward to trying it out against a real project.
+
+
+    
+Tags: evals, python, pydantic, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Brad Lightcap
+              <span class="post-metadata">(1 min | 265 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/1/brad-lightcap/#atom-everything>We’re planning to release a very capable open language model in the coming months, our first since GPT-2. [...]
+As models improve, there is more and more demand to run them everywhere. Through conversations with startups and developers, it became clear how important it was to be able to support a spectrum of needs, such as custom fine-tuning for specialized tasks, more tunable latency, running on-prem, or deployments requiring full data control.
+
+— Brad Lightcap, COO, OpenAI
+Tags: openai, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-03-31</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              debug-gym
+              <span class="post-metadata">(1 min | 435 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Mar/31/debug-gym/#atom-everything>debug-gym
+They saw the best results overall from Claude 3.7 Sonnet against SWE-bench Lite, where it scored 37.2% in rewrite mode without a debugger, 48.4% with their debugger tool and 52.1% with debug(5) - a mechanism where the pdb tool is made available only after the 5th rewrite attempt.
+Their code is available on GitHub. I found this implementation of the pdb tool, and tracked down the main system and user prompt in agents/debug_agent.py:
+System prompt:
+Your goal is to debug a Python program to make sure it can pass a set of test functions. You have access to the pdb debugger tools, you can use them to investigate the code, set breakpoints, and print necessary values to identify the bugs. Once you have gained enough information, propose a rewriting patch to fix the bugs. Avoid rewriting the entire code, focus on the bugs only.
+User prompt (which they call an &quot;action prompt&quot;):
+Based on the instruction, the current code, the last execution output, and the history information, continue your debugging process using pdb commands or to propose a patch using rewrite command. Output a single command, nothing else. Do not repeat your previous commands unless they can provide more information. You must be concise and avoid overthinking.
+Via Import AI
+Tags: prompt-engineering, llms, python, generative-ai, llm-tool-use, ai, microsoft, claude</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4696,165 +4784,6 @@ help() feature by passing references to modules, classes functions and objects t
     
 Via @trey.io
 Tags: python, trey-hunner</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              JetBrains Copilot code referencing support is generally available
-              <span class="post-metadata">(9 min | 2638 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-02-jetbrains-copilot-code-referencing-support-is-generally-available>JetBrains Copilot code referencing support is generally available
-The post JetBrains Copilot code referencing support is generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-02</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Ethan Mollick
-              <span class="post-metadata">(1 min | 239 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/2/ethan-mollick/#atom-everything>After publishing this piece, I was contacted by Anthropic who told me that Sonnet 3.7 would not be considered a 10^26 FLOP model and cost a few tens of millions of dollars to train, though future models will be much bigger.
-
-— Ethan Mollick
-Tags: ethan-mollick, anthropic, claude, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Notes from my Accessibility and Gen AI podcast appearence
-              <span class="post-metadata">(4 min | 1145 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/2/accessibility-and-gen-ai/#atom-everything>I was a guest on the most recent episode of the Accessibility + Gen AI Podcast, hosted by Eamon McErlean and Joe Devon. We had a really fun, wide-ranging conversation about a host of different topics. I&#x27;ve extracted a few choice quotes from the transcript.
-
-
-&lt;lite-youtube videoid&#x3D;&quot;zoxpEM6TLEU&quot; js-api&#x3D;&quot;js-api&quot;
-  title&#x3D;&quot;Ep 6 - Simon Willison - Creator, Datasette&quot;
-  playlabel&#x3D;&quot;Play: Ep 6 - Simon Willison - Creator, Datasette&quot;
-&gt; 
-
-
-LLMs for drafting alt text
-
-
-I use LLMs for the first draft of my alt text (22:10):
-
-
-I actually use Large Language Models for most of my alt text these days. Whenever I tweet an image or whatever, I&#x27;ve got a Claude project called Alt text writer. It&#x27;s got a prompt and an example. I dump an image in and it gives me the alt text.
-
-I very rarely just use it because that&#x27;s rude, right? You should never dump text onto people that you haven&#x27;t reviewed yourself. But it&#x27;s always a good starting point.
-
-Normally I&#x27;ll edit a tiny little bit. I&#x27;ll delete an unimportant detail or I&#x27;ll bulk something up. And then I&#x27;ve got alt text that works.
-
-Often it&#x27;s actually got really good taste. A great example is if you&#x27;ve got a screenshot of an interface, there&#x27;s a lot of words in that screenshot and most of them don&#x27;t matter.
-
-The message you&#x27;re trying to give in the alt text is that it&#x27;s two panels on the left, there&#x27;s a conversation on the right, there&#x27;s a preview of the SVG file or something. My alt text writer normally gets that right.
-
-It&#x27;s even good at summarizing tables of data where it will notice that actually what really matters is that Gemini got a score of 57 and Nova got a score of 53 - so it will pull those details out and ignore [irrelevant columns] like the release dates and so forth.
-
-
-Here&#x27;s the current custom instructions prompt I&#x27;m using for that Claude Project:
-
-
-You write alt text for any image pasted in by the user. Alt text is always presented in a fenced code block to make it easy to copy and paste out. It is always presented on a single line so it can be used easily in Markdown images. All text on the image (for screenshots etc) must be exactly included. A short note describing the nature of the image itself should go first.
-
-
-Is it ethical to build unreliable accessibility tools?
-
-
-On the ethics of building accessibility tools on top of inherently unreliable technology (5:33):
-
-
-Some people I&#x27;ve talked to have been skeptical about the accessibility benefits because their argument is that if you give somebody unreliable technology that might hallucinate and make things up, surely that&#x27;s harming them.
-
-I don&#x27;t think that&#x27;s true. I feel like people who use screen readers are used to unreliable technology.
-
-You know, if you use a guide dog - it&#x27;s a wonderful thing and a very unreliable piece of technology.
-
-When you consider that people with accessibility needs have agency, they can understand the limitations of the technology they&#x27;re using. I feel like giving them a tool where they can point their phone at something and it can describe it to them is a world away from accessibility technology just three or four years ago.
-
-
-Why I don&#x27;t feel threatened as a software engineer
-
-This is probably my most coherent explanation yet of why I don&#x27;t see generative AI as a threat to my career as a software engineer (33:49):
-
-
-My perspective on this as a developer who&#x27;s been using these systems on a daily basis for a couple of years now is that I find that they enhance my value. I am so much more competent and capable as a developer because I&#x27;ve got these tools assisting me. I can write code in dozens of new programming languages that I never learned before.
-
-But I still get to benefit from my 20 years of experience.
-
-Take somebody off the street who&#x27;s never written any code before and ask them to build an iPhone app with ChatGPT. They are going to run into so many pitfalls, because programming isn&#x27;t just about can you write code - it&#x27;s about thinking through the problems, understanding what&#x27;s possible and what&#x27;s not, understanding how to QA, what good code is, having good taste.
-
-There&#x27;s so much depth to what we do as software engineers.
-
-I&#x27;ve said before that generative AI probably gives me like two to five times productivity boost on the part of my job that involves typing code into a laptop. But that&#x27;s only 10 percent of what I do. As a software engineer, most of my time isn&#x27;t actually spent with the typing of the code. It&#x27;s all of those other activities.
-
-The AI systems help with those other activities, too. They can help me think through architectural decisions and research library options and so on. But I still have to have that agency to understand what I&#x27;m doing.
-
-So as a software engineer, I don&#x27;t feel threatened. My most optimistic view of this is that the cost of developing software goes down because an engineer like myself can be more ambitious, can take on more things. As a result, demand for software goes up - because if you&#x27;re a company that previously would never have dreamed of building a custom CRM for your industry because it would have taken 20 engineers a year before you got any results... If it now takes four engineers three months to get results, maybe you&#x27;re in the market for software engineers now that you weren&#x27;t before.
-
-
-    
-        
-Tags: accessibility, alt-attribute, podcasts, ai, generative-ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Kellan Elliott-McCrea
-              <span class="post-metadata">(1 min | 232 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/2/kellan-elliott-mccrea/#atom-everything>Regarding the recent blog post, I think a simpler explanation is that hallucinating a non-existent library is a such an inhuman error it throws people. A human making such an error would be almost unforgivably careless.
-
-— Kellan Elliott-McCrea
-Tags: ai-assisted-programming, generative-ai, kellan-elliott-mccrea, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              18f.org
-              <span class="post-metadata">(1 min | 393 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/2/18forg/#atom-everything>18f.org
-For over 11 years, 18F has been proudly serving you to make government technology work better. We are non-partisan civil servants. 18F has worked on hundreds of projects, all designed to make government technology not just efficient but effective, and to save money for American taxpayers.
-However, all employees at 18F – a group that the Trump Administration GSA Technology Transformation Services Director called &quot;the gold standard&quot; of civic tech – were terminated today at midnight ET.
-18F was doing exactly the type of work that DOGE claims to want – yet we were eliminated.
-The entire team is now on &quot;administrative leave&quot; and locked out of their computers.
-But these are not the kind of civil servants to abandon their mission without a fight:
-We’re not done yet.
-We’re still absorbing what has happened. We’re wrestling with what it will mean for ourselves and our families, as well as the impact on our partners and the American people.
-But we came to the government to fix things. And we’re not done with this work yet.
-More to come.
-You can follow @team18f.bsky.social on Bluesky.
-
-
-    
-Tags: government, political-hacking, politics, bluesky</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>

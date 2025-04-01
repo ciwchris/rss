@@ -2,10 +2,97 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-03-31T21:09:25.866Z</updated>
+    <updated>2025-04-01T14:10:34.399Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Pydantic Evals]]></title>
+        <id>https://simonwillison.net/2025/Apr/1/pydantic-evals/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/1/pydantic-evals/#atom-everything"/>
+        <updated>2025-04-01T04:43:56.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://ai.pydantic.dev/evals/">Pydantic Evals</a></strong></p>
+Brand new package from the Pydantic AI team which directly tackles what I consider to be the single hardest problem in AI engineering: building evals to determine if your LLM-based system is working correctly and getting better over time.</p>
+<p>The feature is described as "in beta" and comes with this very realistic warning:</p>
+<blockquote>
+<p>Unlike unit tests, evals are an emerging art/science; anyone who claims to know for sure exactly how your evals should be defined can safely be ignored.</p>
+</blockquote>
+<p>This code example from their documentation illustrates the relationship between the two key nouns - Cases and Datasets:</p>
+<pre><span class="pl-k">from</span> <span class="pl-s1">pydantic_evals</span> <span class="pl-k">import</span> <span class="pl-v">Case</span>, <span class="pl-v">Dataset</span>
+
+<span class="pl-s1">case1</span> <span class="pl-c1">=</span> <span class="pl-en">Case</span>(
+    <span class="pl-s1">name</span><span class="pl-c1">=</span><span class="pl-s">"simple_case"</span>,
+    <span class="pl-s1">inputs</span><span class="pl-c1">=</span><span class="pl-s">"What is the capital of France?"</span>,
+    <span class="pl-s1">expected_output</span><span class="pl-c1">=</span><span class="pl-s">"Paris"</span>,
+    <span class="pl-s1">metadata</span><span class="pl-c1">=</span>{<span class="pl-s">"difficulty"</span>: <span class="pl-s">"easy"</span>},
+)
+
+<span class="pl-s1">dataset</span> <span class="pl-c1">=</span> <span class="pl-en">Dataset</span>(<span class="pl-s1">cases</span><span class="pl-c1">=</span>[<span class="pl-s1">case1</span>])</pre>
+
+<p>The library also supports custom evaluators, including LLM-as-a-judge:</p>
+<pre><span class="pl-en">Case</span>(
+    <span class="pl-s1">name</span><span class="pl-c1">=</span><span class="pl-s">"vegetarian_recipe"</span>,
+    <span class="pl-s1">inputs</span><span class="pl-c1">=</span><span class="pl-en">CustomerOrder</span>(
+        <span class="pl-s1">dish_name</span><span class="pl-c1">=</span><span class="pl-s">"Spaghetti Bolognese"</span>, <span class="pl-s1">dietary_restriction</span><span class="pl-c1">=</span><span class="pl-s">"vegetarian"</span>
+    ),
+    <span class="pl-s1">expected_output</span><span class="pl-c1">=</span><span class="pl-c1">None</span>,
+    <span class="pl-s1">metadata</span><span class="pl-c1">=</span>{<span class="pl-s">"focus"</span>: <span class="pl-s">"vegetarian"</span>},
+    <span class="pl-s1">evaluators</span><span class="pl-c1">=</span>(
+        <span class="pl-en">LLMJudge</span>(
+            <span class="pl-s1">rubric</span><span class="pl-c1">=</span><span class="pl-s">"Recipe should not contain meat or animal products"</span>,
+        ),
+    ),
+)</pre>
+
+<p>Cases and datasets can also be serialized to YAML.</p>
+<p>My first impressions are that this looks like a solid implementation of a sensible design. I'm looking forward to trying it out against a real project.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/pydantic">pydantic</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Brad Lightcap]]></title>
+        <id>https://simonwillison.net/2025/Apr/1/brad-lightcap/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/1/brad-lightcap/#atom-everything"/>
+        <updated>2025-04-01T02:53:09.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://twitter.com/bradlightcap/status/1906823733446427065"><p>We’re planning to release a very capable open language model in the coming months, our first since GPT-2. [...]</p>
+<p>As models improve, there is more and more demand to run them everywhere. Through conversations with startups and developers, it became clear how important it was to be able to support a spectrum of needs, such as custom fine-tuning for specialized tasks, more tunable latency, running on-prem, or deployments requiring full data control.</p></blockquote>
+<p class="cite">&mdash; <a href="https://twitter.com/bradlightcap/status/1906823733446427065">Brad Lightcap</a>, COO, OpenAI</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[debug-gym]]></title>
+        <id>https://simonwillison.net/2025/Mar/31/debug-gym/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Mar/31/debug-gym/#atom-everything"/>
+        <updated>2025-03-31T22:58:13.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://microsoft.github.io/debug-gym/">debug-gym</a></strong></p>
+New paper and code from Microsoft Research that experiments with giving LLMs access to the Python debugger. They found that the best models could indeed improve their results by running pdb as a tool.</p>
+<p>They saw the best results overall from Claude 3.7 Sonnet against <a href="https://www.swebench.com/lite.html">SWE-bench Lite</a>, where it scored 37.2% in rewrite mode without a debugger, 48.4% with their debugger tool and 52.1% with debug(5) - a mechanism where the pdb tool is made available only after the 5th rewrite attempt.</p>
+<p>Their code is <a href="https://github.com/microsoft/debug-gym">available on GitHub</a>. I found this implementation of <a href="https://github.com/microsoft/debug-gym/blob/1.0.0/debug_gym/gym/tools/pdb.py">the pdb tool</a>, and tracked down the main system and user prompt in <a href="https://github.com/microsoft/debug-gym/blob/1.0.0/debug_gym/agents/debug_agent.py">agents/debug_agent.py</a>:</p>
+<p>System prompt:</p>
+<blockquote>
+<p><code>Your goal is to debug a Python program to make sure it can pass a set of test functions. You have access to the pdb debugger tools, you can use them to investigate the code, set breakpoints, and print necessary values to identify the bugs. Once you have gained enough information, propose a rewriting patch to fix the bugs. Avoid rewriting the entire code, focus on the bugs only.</code></p>
+</blockquote>
+<p>User prompt (which they call an "action prompt"):</p>
+<blockquote>
+<p><code>Based on the instruction, the current code, the last execution output, and the history information, continue your debugging process using pdb commands or to propose a patch using rewrite command. Output a single command, nothing else. Do not repeat your previous commands unless they can provide more information. You must be concise and avoid overthinking.</code></p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://jack-clark.net/2025/03/31/import-ai-406-ai-driven-software-explosion-robot-hands-are-still-bad-better-llms-via-pdb/">Import AI</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/microsoft">microsoft</a>, <a href="https://simonwillison.net/tags/claude">claude</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Closing down Enterprise Cloud Importer (ECI) effective March 31, 2025]]></title>
         <id>https://github.blog/changelog/2025-03-30-closing-down-enterprise-cloud-importer-eci-effective-march-31-2025</id>
@@ -3932,123 +4019,6 @@ I've only ever used Python's <code>help()</code> feature by passing references t
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/trey-hunner">trey-hunner</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[JetBrains Copilot code referencing support is generally available]]></title>
-        <id>https://github.blog/changelog/2025-03-02-jetbrains-copilot-code-referencing-support-is-generally-available</id>
-        <link href="https://github.blog/changelog/2025-03-02-jetbrains-copilot-code-referencing-support-is-generally-available"/>
-        <updated>2025-03-03T02:02:04.000Z</updated>
-        <summary type="html"><![CDATA[JetBrains Copilot code referencing support is generally available
-The post JetBrains Copilot code referencing support is generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Ethan Mollick]]></title>
-        <id>https://simonwillison.net/2025/Mar/2/ethan-mollick/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/2/ethan-mollick/#atom-everything"/>
-        <updated>2025-03-02T17:56:36.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://www.oneusefulthing.org/p/a-new-generation-of-ais-claude-37"><p>After publishing this piece, I was contacted by Anthropic who told me that Sonnet 3.7 would not be considered a 10^26 FLOP model and cost a few tens of millions of dollars to train, though future models will be much bigger.</p></blockquote>
-<p class="cite">&mdash; <a href="https://www.oneusefulthing.org/p/a-new-generation-of-ais-claude-37">Ethan Mollick</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ethan-mollick">ethan-mollick</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Notes from my Accessibility and Gen AI podcast appearence]]></title>
-        <id>https://simonwillison.net/2025/Mar/2/accessibility-and-gen-ai/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/2/accessibility-and-gen-ai/#atom-everything"/>
-        <updated>2025-03-02T14:51:43.000Z</updated>
-        <summary type="html"><![CDATA[<p>I was a guest on <a href="https://accessibility-and-gen-ai.simplecast.com/episodes/ep-6-simon-willison-datasette">the most recent episode</a> of the <a href="https://linktr.ee/a11ygenai">Accessibility + Gen AI Podcast</a>, hosted by Eamon McErlean and Joe Devon. We had a really fun, wide-ranging conversation about a host of different topics. I've extracted a few choice quotes from the transcript.</p>
-
-<p><lite-youtube videoid="zoxpEM6TLEU" js-api="js-api"
-  title="Ep 6 - Simon Willison - Creator, Datasette"
-  playlabel="Play: Ep 6 - Simon Willison - Creator, Datasette"
-> </lite-youtube></p>
-
-<h4 id="alt-text">LLMs for drafting alt text</h4>
-
-<p>I use LLMs for the first draft of my alt text (<a href="https://www.youtube.com/watch?v=zoxpEM6TLEU&amp;t=22m10s">22:10</a>):</p>
-<blockquote>
-<p>I actually use Large Language Models for most of my alt text these days. Whenever I tweet an image or whatever, I've got a Claude project called Alt text writer. It's got a prompt and an example. I dump an image in and it gives me the alt text.</p>
-<p>I very rarely just use it because that's rude, right? You should never dump text onto people that you haven't reviewed yourself. But it's always a good starting point.</p>
-<p>Normally I'll edit a tiny little bit. I'll delete an unimportant detail or I'll bulk something up. And then I've got alt text that works.</p>
-<p>Often it's actually got really good taste. A great example is if you've got a screenshot of an interface, there's a lot of words in that screenshot and most of them don't matter.</p>
-<p>The message you're trying to give in the alt text is that it's two panels on the left, there's a conversation on the right, there's a preview of the SVG file or something. My alt text writer normally gets that right.</p>
-<p>It's even good at summarizing tables of data where it will notice that actually what really matters is that Gemini got a score of 57 and Nova got a score of 53 - so it will pull those details out and ignore [irrelevant columns] like the release dates and so forth.</p>
-</blockquote>
-<p>Here's the current custom instructions prompt I'm using for that Claude Project:</p>
-<blockquote><p><code>You write alt text for any image pasted in by the user. Alt text is always presented in a fenced code block to make it easy to copy and paste out. It is always presented on a single line so it can be used easily in Markdown images. All text on the image (for screenshots etc) must be exactly included. A short note describing the nature of the image itself should go first.</code></p></blockquote>
-
-<h4 id="ethics">Is it ethical to build unreliable accessibility tools?</h4>
-
-<p>On the ethics of building accessibility tools on top of inherently unreliable technology (<a href="https://www.youtube.com/watch?v=zoxpEM6TLEU&amp;t=5m35s">5:33</a>):</p>
-<blockquote>
-<p>Some people I've talked to have been skeptical about the accessibility benefits because their argument is that if you give somebody unreliable technology that might hallucinate and make things up, surely that's harming them.</p>
-<p>I don't think that's true. I feel like people who use screen readers are used to unreliable technology.</p>
-<p>You know, if you use a guide dog - it's a wonderful thing and a <em>very</em> unreliable piece of technology.</p>
-<p>When you consider that people with accessibility needs have agency, they can understand the limitations of the technology they're using. I feel like giving them a tool where they can point their phone at something and it can describe it to them is a world away from accessibility technology just three or four years ago.</p>
-</blockquote>
-<h4 id="not-a-threat">Why I don't feel threatened as a software engineer</h4>
-<p>This is probably my most coherent explanation yet of why I don't see generative AI as a threat to my career as a software engineer (<a href="https://www.youtube.com/watch?v=zoxpEM6TLEU&amp;t=33m51s">33:49</a>):</p>
-<blockquote>
-<p>My perspective on this as a developer who's been using these systems on a daily basis for a couple of years now is that I find that they enhance my value. I am so much more competent and capable as a developer because I've got these tools assisting me. I can write code in dozens of new programming languages that I never learned before.</p>
-<p>But I still get to benefit from my 20 years of experience.</p>
-<p>Take somebody off the street who's never written any code before and ask them to build an iPhone app with ChatGPT. They are going to run into so many pitfalls, because programming isn't just about can you write code - it's about thinking through the problems, understanding what's possible and what's not, understanding how to QA, what good code is, having good taste.</p>
-<p>There's so much depth to what we do as software engineers.</p>
-<p>I've said before that generative AI probably gives me like two to five times productivity boost on the part of my job that involves typing code into a laptop. But that's only 10 percent of what I do. As a software engineer, most of my time isn't actually spent with the typing of the code. It's all of those other activities.</p>
-<p>The AI systems help with those other activities, too. They can help me think through architectural decisions and research library options and so on. But I still have to have that agency to understand what I'm doing.</p>
-<p>So as a software engineer, I don't feel threatened. My most optimistic view of this is that the cost of developing software goes down because an engineer like myself can be more ambitious, can take on more things. As a result, demand for software goes up - because if you're a company that previously would never have dreamed of building a custom CRM for your industry because it would have taken 20 engineers a year before you got any results... If it now takes four engineers three months to get results, maybe you're in the market for software engineers now that you weren't before.</p>
-</blockquote>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/accessibility">accessibility</a>, <a href="https://simonwillison.net/tags/alt-attribute">alt-attribute</a>, <a href="https://simonwillison.net/tags/podcasts">podcasts</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Kellan Elliott-McCrea]]></title>
-        <id>https://simonwillison.net/2025/Mar/2/kellan-elliott-mccrea/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/2/kellan-elliott-mccrea/#atom-everything"/>
-        <updated>2025-03-02T14:16:32.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://fiasco.social/@kellan/114092761910766291"><p>Regarding <a href="https://simonwillison.net/2025/Mar/2/hallucinations-in-code/">the recent blog post</a>, I think a simpler explanation is that hallucinating a non-existent library is a such an inhuman error it throws people. A human making such an error would be almost unforgivably careless.</p></blockquote>
-<p class="cite">&mdash; <a href="https://fiasco.social/@kellan/114092761910766291">Kellan Elliott-McCrea</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/kellan-elliott-mccrea">kellan-elliott-mccrea</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[18f.org]]></title>
-        <id>https://simonwillison.net/2025/Mar/2/18forg/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/2/18forg/#atom-everything"/>
-        <updated>2025-03-02T09:24:37.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://18f.org/">18f.org</a></strong></p>
-New site by members of 18F, the team within the US government that were doing some of the most effective work at improving government efficiency.</p>
-<blockquote>
-<p>For over 11 years, 18F has been proudly serving you to make government technology work better. We are non-partisan civil servants. 18F has worked on hundreds of projects, all designed to make government technology not just efficient but effective, and to save money for American taxpayers.</p>
-<p>However, all employees at 18F – a group that the Trump Administration GSA Technology Transformation Services Director called "the gold standard" of civic tech – were terminated today at midnight ET.</p>
-<p><strong>18F was doing exactly the type of work that DOGE claims to want – yet we were eliminated.</strong></p>
-</blockquote>
-<p>The entire team is now on "administrative leave" and locked out of their computers.</p>
-<p>But these are not the kind of civil servants to abandon their mission without a fight:</p>
-<blockquote>
-<p><strong>We’re not done yet.</strong></p>
-<p>We’re still absorbing what has happened. We’re wrestling with what it will mean for ourselves and our families, as well as the impact on our partners and the American people.</p>
-<p>But we came to the government to fix things. And we’re not done with this work yet.</p>
-<p>More to come.</p>
-</blockquote>
-<p>You can <a href="https://bsky.app/profile/team18f.bsky.social">follow @team18f.bsky.social</a> on Bluesky.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/government">government</a>, <a href="https://simonwillison.net/tags/political-hacking">political-hacking</a>, <a href="https://simonwillison.net/tags/politics">politics</a>, <a href="https://simonwillison.net/tags/bluesky">bluesky</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
