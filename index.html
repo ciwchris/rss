@@ -25,6 +25,67 @@
 
   <ul>
     <li>
+      <time>2025-04-03</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Minimal CSS-only blurry image placeholders
+              <span class="post-metadata">(2 min | 454 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/3/minimal-css-only-blurry-image-placeholders/#atom-everything>Minimal CSS-only blurry image placeholders
+&lt;img src&#x3D;&quot;…&quot; style&#x3D;&quot;--lqip:192900&quot;&gt;
+That 192900 number encodes everything needed to construct the placeholder - it manages to embed a single base color and six brightness components (in a 3x2 grid) in 20 bits, then encodes those as an integer in the roughly 2 million available values between -999,999 and 999,999 - beyond which range Lean found some browsers would start to lose precision.
+The implementation for decoding that value becomes a bunch of clever bit-fiddling CSS expressions to expand it into further CSS variables:
+[style*&#x3D;&quot;--lqip:&quot;] {
+  --lqip-ca: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 18))), 4);
+  --lqip-cb: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 16))), 4);
+  /* more like that */
+}
+Which are expanded to even more variables with code like this:
+--lqip-ca-clr: hsl(0 0% calc(var(--lqip-ca) / 3 * 100%));
+--lqip-cb-clr: hsl(0 0% calc(var(--lqip-cb) / 3 * 100%));
+And finally rendered using a CSS gradient definition that starts like this:
+[style*&#x3D;&quot;--lqip:&quot;] {
+  background-image:
+    radial-gradient(50% 75% at 16.67% 25%, var(--lqip-ca-clr), transparent),
+    radial-gradient(50% 75% at 50% 25%, var(--lqip-cb-clr), transparent),
+    /* ... */
+    linear-gradient(0deg, var(--lqip-base-clr), var(--lqip-base-clr));
+}
+The article includes several interactive explainers (most of which are also powered by pure CSS) illustrating how it all works.
+Their Node.js script for converting images to these magic integers uses Sharp to resize the image to 3x2 and then use the Oklab perceptually uniform color space (new to me, that was created by Björn Ottosson in 2020) to derive the six resulting values.
+
+    
+Via Hacker News
+Tags: css, css-custom-properties</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Nolan Lawson
+              <span class="post-metadata">(1 min | 315 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/3/nolan-lawson/#atom-everything>I started using Claude and Claude Code a bit in my regular workflow. I’ll skip the suspense and just say that the tool is way more capable than I would ever have expected. The way I can use it to interrogate a large codebase, or generate unit tests, or even “refactor every callsite to use such-and-such pattern” is utterly gobsmacking. [...]
+Here’s the main problem I’ve found with generative AI, and with “vibe coding” in general: it completely sucks out the joy of software development for me. [...]
+This is how I feel using gen-AI: like a babysitter. It spits out reams of code, I read through it and try to spot the bugs, and then we repeat.
+
+— Nolan Lawson, AI ambivalence
+Tags: ai-assisted-programming, claude, generative-ai, ai, llms, nolan-lawson</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-02</time>
 
       <section>
@@ -4664,86 +4725,6 @@ The post AutoGen and Semantic Kernel, Part 2 appeared first on Semantic Kernel.<
 The post Integrating Model Context Protocol Tools with Semantic Kernel: A Step-by-Step Guide appeared first on Semantic Kernel.</a>
             </div>
             <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-04</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              A Practical Guide to Implementing DeepSearch / DeepResearch
-              <span class="post-metadata">(1 min | 410 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/4/deepsearch-deepresearch/#atom-everything>A Practical Guide to Implementing DeepSearch / DeepResearch
-DeepSearch runs through an iterative loop of searching, reading, and reasoning until it finds the optimal answer.  [...]
-DeepResearch builds upon DeepSearch by adding a structured framework for generating long research reports.
-I&#x27;ve recently found myself cooling a little on the classic RAG pattern of finding relevant documents and dumping them into the context for a single call to an LLM.
-I think this definition of DeepSearch helps explain why. RAG is about answering questions that fall outside of the knowledge baked into a model. The DeepSearch pattern offers a tools-based alternative to classic RAG: we give the model extra tools for running multiple searches (which could be vector-based, or FTS, or even systems like ripgrep) and run it for several steps in a loop to try to find an answer.
-I think DeepSearch is a lot more interesting than DeepResearch, which feels to me more like a presentation layer thing. Pulling together the results from multiple searches into a &quot;report&quot; looks more impressive, but I still worry that the report format provides a misleading impression of the quality of the &quot;research&quot; that took place.
-
-
-    
-Tags: jina, generative-ai, llm-tool-use, search, ai, rag, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Introducing GitHub Secret Protection and GitHub Code Security
-              <span class="post-metadata">(9 min | 2726 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-04-introducing-github-secret-protection-and-github-code-security>Introducing GitHub Secret Protection and GitHub Code Security
-The post Introducing GitHub Secret Protection and GitHub Code Security appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Find secrets in your organization with the secret risk assessment
-              <span class="post-metadata">(9 min | 2646 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-04-find-secrets-in-your-organization-with-the-secret-risk-assessment>Find secrets in your organization with the secret risk assessment
-The post Find secrets in your organization with the secret risk assessment appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Improved pull request merge experience is now generally available
-              <span class="post-metadata">(8 min | 2531 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-04-improved-pull-request-merge-experience-is-now-generally-available>Improved pull request merge experience is now generally available
-The post Improved pull request merge experience is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Easily distinguish between direct and transitive dependencies for npm packages
-              <span class="post-metadata">(8 min | 2465 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-04-easily-distinguish-between-direct-and-transitive-dependencies-for-npm-packages>Easily distinguish between direct and transitive dependencies for npm packages
-The post Easily distinguish between direct and transitive dependencies for npm packages appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 

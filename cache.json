@@ -474,46 +474,6 @@
           "wordCount": 2753,
           "title": "Delegated alert dismissal for code scanning and secret scanning now available in public preview",
           "imageUrl": "https://github.blog/wp-content/uploads/2024/08/d34e9c19123898a8a886147f37a1d167130d1c15be6d399a9c4b30ee6f2a7395-1200x630-1.png?fit=1200%2C630"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-03-03-introducing-github-secret-protection-and-github-code-security",
-          "author": "Allison",
-          "description": "Introducing GitHub Secret Protection and GitHub Code Security\nThe post Introducing GitHub Secret Protection and GitHub Code Security appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-03-04-introducing-github-secret-protection-and-github-code-security",
-          "publishedOn": "2025-03-04T16:50:24.000Z",
-          "wordCount": 2726,
-          "title": "Introducing GitHub Secret Protection and GitHub Code Security",
-          "imageUrl": "https://github.com/user-attachments/assets/6fc964e6-d07f-4c54-92d2-f644f553bbd2"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-03-03-find-secrets-in-your-organization-with-the-secret-risk-assessment",
-          "author": "Allison",
-          "description": "Find secrets in your organization with the secret risk assessment\nThe post Find secrets in your organization with the secret risk assessment appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-03-04-find-secrets-in-your-organization-with-the-secret-risk-assessment",
-          "publishedOn": "2025-03-04T16:50:07.000Z",
-          "wordCount": 2646,
-          "title": "Find secrets in your organization with the secret risk assessment",
-          "imageUrl": "https://github.com/user-attachments/assets/f466f0b9-6448-412a-9dd8-231154ffbe62"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-03-04-improved-pull-request-merge-experience-is-now-generally-available",
-          "author": "Allison",
-          "description": "Improved pull request merge experience is now generally available\nThe post Improved pull request merge experience is now generally available appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-03-04-improved-pull-request-merge-experience-is-now-generally-available",
-          "publishedOn": "2025-03-04T16:46:18.000Z",
-          "wordCount": 2531,
-          "title": "Improved pull request merge experience is now generally available",
-          "imageUrl": "https://github.com/user-attachments/assets/e0de1817-b3d1-4304-813f-4037002eb195"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-03-04-easily-distinguish-between-direct-and-transitive-dependencies-for-npm-packages",
-          "author": "Allison",
-          "description": "Easily distinguish between direct and transitive dependencies for npm packages\nThe post Easily distinguish between direct and transitive dependencies for npm packages appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-03-04-easily-distinguish-between-direct-and-transitive-dependencies-for-npm-packages",
-          "publishedOn": "2025-03-04T15:27:14.000Z",
-          "wordCount": 2465,
-          "title": "Easily distinguish between direct and transitive dependencies for npm packages",
-          "imageUrl": "https://github.com/user-attachments/assets/095f607d-e971-487d-afe3-2c977f1c251e"
         }
       ]
     },
@@ -940,6 +900,26 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2025/Apr/3/minimal-css-only-blurry-image-placeholders/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://leanrada.com/notes/css-only-lqip/\">Minimal CSS-only blurry image placeholders</a></strong></p>\nAbsolutely brilliant piece of CSS ingenuity by Lean Rada, who describes a way to implement blurry placeholder images using just CSS, with syntax like this:</p>\n<pre><span class=\"pl-kos\">&lt;</span><span class=\"pl-ent\">img</span> <span class=\"pl-c1\">src</span>=\"<span class=\"pl-s\">…</span>\" <span class=\"pl-c1\">style</span>=\"<span class=\"pl-s\">--lqip:192900</span>\"<span class=\"pl-kos\">&gt;</span></pre>\n\n<p>That 192900 number encodes everything needed to construct the placeholder - it manages to embed a single base color and six brightness components (in a 3x2 grid) in 20 bits, then encodes those as an integer in the roughly 2 million available values between -999,999 and 999,999 - beyond which range Lean found some browsers would start to lose precision.</p>\n<p>The implementation for decoding that value becomes a bunch of clever bit-fiddling CSS expressions to expand it into further CSS variables:</p>\n<pre>[<span class=\"pl-c1\">style</span><span class=\"pl-c1\">*=</span><span class=\"pl-s\">\"--lqip:\"</span>] {\n  <span class=\"pl-s1\">--lqip-ca</span><span class=\"pl-kos\">:</span> <span class=\"pl-en\">mod</span>(<span class=\"pl-en\">round</span>(down<span class=\"pl-kos\">,</span> <span class=\"pl-en\">calc</span>((<span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip</span>) <span class=\"pl-c1\">+</span> <span class=\"pl-en\">pow</span>(<span class=\"pl-c1\">2</span><span class=\"pl-kos\">,</span> <span class=\"pl-c1\">19</span>)) <span class=\"pl-c1\">/</span> <span class=\"pl-en\">pow</span>(<span class=\"pl-c1\">2</span><span class=\"pl-kos\">,</span> <span class=\"pl-c1\">18</span>)))<span class=\"pl-kos\">,</span> <span class=\"pl-c1\">4</span>);\n  <span class=\"pl-s1\">--lqip-cb</span><span class=\"pl-kos\">:</span> <span class=\"pl-en\">mod</span>(<span class=\"pl-en\">round</span>(down<span class=\"pl-kos\">,</span> <span class=\"pl-en\">calc</span>((<span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip</span>) <span class=\"pl-c1\">+</span> <span class=\"pl-en\">pow</span>(<span class=\"pl-c1\">2</span><span class=\"pl-kos\">,</span> <span class=\"pl-c1\">19</span>)) <span class=\"pl-c1\">/</span> <span class=\"pl-en\">pow</span>(<span class=\"pl-c1\">2</span><span class=\"pl-kos\">,</span> <span class=\"pl-c1\">16</span>)))<span class=\"pl-kos\">,</span> <span class=\"pl-c1\">4</span>);\n  <span class=\"pl-c\">/* more like that */</span>\n}</pre>\n\n<p>Which are expanded to even more variables with code like this:</p>\n<pre><span class=\"pl-s1\">--lqip-ca-clr</span><span class=\"pl-kos\">:</span> <span class=\"pl-en\">hsl</span>(<span class=\"pl-c1\">0</span> <span class=\"pl-c1\">0<span class=\"pl-smi\">%</span></span> <span class=\"pl-en\">calc</span>(<span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip-ca</span>) <span class=\"pl-c1\">/</span> <span class=\"pl-c1\">3</span> <span class=\"pl-c1\">*</span> <span class=\"pl-c1\">100<span class=\"pl-smi\">%</span></span>));\n<span class=\"pl-s1\">--lqip-cb-clr</span><span class=\"pl-kos\">:</span> <span class=\"pl-en\">hsl</span>(<span class=\"pl-c1\">0</span> <span class=\"pl-c1\">0<span class=\"pl-smi\">%</span></span> <span class=\"pl-en\">calc</span>(<span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip-cb</span>) <span class=\"pl-c1\">/</span> <span class=\"pl-c1\">3</span> <span class=\"pl-c1\">*</span> <span class=\"pl-c1\">100<span class=\"pl-smi\">%</span></span>));</pre>\n\n<p>And finally rendered using a CSS gradient definition that starts like this:</p>\n<pre>[<span class=\"pl-c1\">style</span><span class=\"pl-c1\">*=</span><span class=\"pl-s\">\"--lqip:\"</span>] {\n  <span class=\"pl-c1\">background-image</span><span class=\"pl-kos\">:</span>\n    <span class=\"pl-en\">radial-gradient</span>(<span class=\"pl-c1\">50<span class=\"pl-smi\">%</span></span> <span class=\"pl-c1\">75<span class=\"pl-smi\">%</span></span> at <span class=\"pl-c1\">16.67<span class=\"pl-smi\">%</span></span> <span class=\"pl-c1\">25<span class=\"pl-smi\">%</span></span><span class=\"pl-kos\">,</span> <span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip-ca-clr</span>)<span class=\"pl-kos\">,</span> transparent)<span class=\"pl-kos\">,</span>\n    <span class=\"pl-en\">radial-gradient</span>(<span class=\"pl-c1\">50<span class=\"pl-smi\">%</span></span> <span class=\"pl-c1\">75<span class=\"pl-smi\">%</span></span> at <span class=\"pl-c1\">50<span class=\"pl-smi\">%</span></span> <span class=\"pl-c1\">25<span class=\"pl-smi\">%</span></span><span class=\"pl-kos\">,</span> <span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip-cb-clr</span>)<span class=\"pl-kos\">,</span> transparent)<span class=\"pl-kos\">,</span>\n    <span class=\"pl-c\">/* ... */</span>\n    <span class=\"pl-en\">linear-gradient</span>(<span class=\"pl-c1\">0<span class=\"pl-smi\">deg</span></span><span class=\"pl-kos\">,</span> <span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip-base-clr</span>)<span class=\"pl-kos\">,</span> <span class=\"pl-en\">var</span>(<span class=\"pl-s1\">--lqip-base-clr</span>));\n}</pre>\n\n<p>The article includes several interactive explainers (most of which are also powered by pure CSS) illustrating how it all works.</p>\n<p>Their <a href=\"https://github.com/Kalabasa/leanrada.com/blob/7b6739c7c30c66c771fcbc9e1dc8942e628c5024/main/scripts/update/lqip.mjs#L118-L159\">Node.js script</a> for converting images to these magic integers uses <a href=\"https://www.npmjs.com/package/sharp\">Sharp</a> to resize the image to 3x2 and then use the <a href=\"https://en.m.wikipedia.org/wiki/Oklab_color_space\">Oklab perceptually uniform color space</a> (new to me, that was created by Björn Ottosson in 2020) to derive the six resulting values.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=43523220\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/css\">css</a>, <a href=\"https://simonwillison.net/tags/css-custom-properties\">css-custom-properties</a></p>",
+          "link": "https://simonwillison.net/2025/Apr/3/minimal-css-only-blurry-image-placeholders/#atom-everything",
+          "publishedOn": "2025-04-03T02:44:18.000Z",
+          "wordCount": 454,
+          "title": "Minimal CSS-only blurry image placeholders",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2025/Apr/3/nolan-lawson/#atom-everything",
+          "author": null,
+          "description": "<blockquote cite=\"https://nolanlawson.com/2025/04/02/ai-ambivalence/\"><p>I started using Claude and Claude Code a bit in my regular workflow. I’ll skip the suspense and just say that the tool is <em>way</em> more capable than I would ever have expected. The way I can use it to interrogate a large codebase, or generate unit tests, or even “refactor every callsite to use such-and-such pattern” is utterly gobsmacking. [...]</p>\n<p>Here’s the main problem I’ve found with generative AI, and with “vibe coding” in general: it completely sucks out the joy of software development for me. [...]</p>\n<p>This is how I feel using gen-AI: like a babysitter. It spits out reams of code, I read through it and try to spot the bugs, and then we repeat.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://nolanlawson.com/2025/04/02/ai-ambivalence/\">Nolan Lawson</a>, AI ambivalence</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/claude\">claude</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/nolan-lawson\">nolan-lawson</a></p>",
+          "link": "https://simonwillison.net/2025/Apr/3/nolan-lawson/#atom-everything",
+          "publishedOn": "2025-04-03T01:56:34.000Z",
+          "wordCount": 315,
+          "title": "Quoting Nolan Lawson",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2025/Apr/2/composite-primary-keys-in-django/#atom-everything",
           "author": null,
@@ -1758,16 +1738,6 @@
           "publishedOn": "2025-03-05T21:10:28.000Z",
           "wordCount": 323,
           "title": "QwQ-32B: Embracing the Power of Reinforcement Learning",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Mar/4/deepsearch-deepresearch/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://jina.ai/news/a-practical-guide-to-implementing-deepsearch-deepresearch/\">A Practical Guide to Implementing DeepSearch / DeepResearch</a></strong></p>\nI really like the definitions Han Xiao from Jina AI proposes for the terms DeepSearch and DeepResearch in this piece:</p>\n<blockquote>\n<p><strong>DeepSearch</strong> runs through an iterative loop of searching, reading, and reasoning until it finds the optimal answer.  [...]</p>\n<p><strong>DeepResearch</strong> builds upon DeepSearch by adding a structured framework for generating long research reports.</p>\n</blockquote>\n<p>I've recently found myself cooling a little on the classic RAG pattern of finding relevant documents and dumping them into the context for a single call to an LLM.</p>\n<p>I think this definition of DeepSearch helps explain why. RAG is about answering questions that fall outside of the knowledge baked into a model. The DeepSearch pattern offers a tools-based alternative to classic RAG: we give the model extra tools for running multiple searches (which could be vector-based, or FTS, or even systems like ripgrep) and run it for several steps in a loop to try to find an answer.</p>\n<p>I think DeepSearch is a lot more interesting than DeepResearch, which feels to me more like a presentation layer thing. Pulling together the results from multiple searches into a \"report\" looks more impressive, but I <a href=\"https://simonwillison.net/2025/Feb/25/deep-research-system-card/\">still worry</a> that the report format provides a misleading impression of the quality of the \"research\" that took place.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/jina\">jina</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llm-tool-use\">llm-tool-use</a>, <a href=\"https://simonwillison.net/tags/search\">search</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/rag\">rag</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
-          "link": "https://simonwillison.net/2025/Mar/4/deepsearch-deepresearch/#atom-everything",
-          "publishedOn": "2025-03-04T17:25:16.000Z",
-          "wordCount": 410,
-          "title": "A Practical Guide to Implementing DeepSearch / DeepResearch",
           "imageUrl": null
         }
       ]
