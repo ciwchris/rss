@@ -25,9 +25,41 @@
 
   <ul>
     <li>
+      <time>2025-04-04</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              openthinker
+              <span class="post-metadata">(8 min | 2464 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/openthinker>A fully open-source family of reasoning models built using a dataset derived by distilling DeepSeek-R1.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-03</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              GitHub Enterprise Server and ESXi 8.0 support
+              <span class="post-metadata">(7 min | 2117 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-03-github-enterprise-server-and-esxi-8-0-support>GitHub Enterprise Server and ESXi 8.0 support
+The post GitHub Enterprise Server and ESXi 8.0 support appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4665,160 +4697,6 @@ If an LLM wrote every line of your code but you&#x27;ve reviewed, tested and und
 Tags: andrej-karpathy, benj-edwards, ai-assisted-programming, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Aider: Using uv as an installer
-              <span class="post-metadata">(2 min | 519 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/6/aider-using-uv-as-an-installer/#atom-everything>Aider: Using uv as an installer
-Provided you already have a Python install of version 3.8 or higher you can run this:
-pip install aider-install &amp;&amp; aider-install
-
-The aider-install package itself depends on uv. When you run aider-install it executes the following Python code:
-def install_aider():
-    try:
-        uv_bin &#x3D; uv.find_uv_bin()
-        subprocess.check_call([
-            uv_bin, &quot;tool&quot;, &quot;install&quot;, &quot;--force&quot;, &quot;--python&quot;, &quot;python3.12&quot;, &quot;aider-chat@latest&quot;
-        ])
-        subprocess.check_call([uv_bin, &quot;tool&quot;, &quot;update-shell&quot;])
-    except subprocess.CalledProcessError as e:
-        print(f&quot;Failed to install aider: {e}&quot;)
-        sys.exit(1)
-This first figures out the location of the uv Rust binary, then uses it to install his aider-chat package by running the equivalent of this command:
-uv tool install --force --python python3.12 aider-chat@latest
-
-This will in turn install a brand new standalone copy of Python 3.12 and tuck it away in uv&#x27;s own managed directory structure where it shouldn&#x27;t hurt anything else.
-The aider-chat script defaults to being dropped in the XDG standard directory, which is probably ~/.local/bin - see uv&#x27;s documentation. The --force flag ensures that uv will overwrite any previous attempts at installing aider-chat in that location with the new one.
-Finally, running uv tool update-shell ensures that bin directory is on the user&#x27;s PATH.
-I think I like this. There is a LOT of stuff going on here, and experienced users may well opt for an alternative installation mechanism.
-But for non-expert Python users who just want to start using Aider, I think this pattern represents quite a tasteful way of getting everything working with minimal risk of breaking the user&#x27;s system.
-Update: Paul adds:
-Offering this install method dramatically reduced the number of GitHub issues from users with conflicted/broken python environments.
-I also really like the &quot;curl | sh&quot; aider installer based on uv. Even users who don&#x27;t have python installed can use it.
-Tags: uv, paul-gauthier, aider, python</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-05</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              The Graphing Calculator Story
-              <span class="post-metadata">(1 min | 313 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/5/the-graphing-calculator-story/#atom-everything>The Graphing Calculator Story
-I asked my friend Greg Robbins to help me. His contract in another division at Apple had just ended, so he told his manager that he would start reporting to me. She didn&#x27;t ask who I was and let him keep his office and badge. In turn, I told people that I was reporting to him. Since that left no managers in the loop, we had no meetings and could be extremely productive
-Via Kellan
-Tags: apple, computer-history</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Demo of ChatGPT Code Interpreter running in o3-mini-high
-              <span class="post-metadata">(1 min | 400 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/5/code-interpreter/#atom-everything>Demo of ChatGPT Code Interpreter running in o3-mini-high
-a little disappointed with GPT-4.5 when I tried it through the API, but having access in the ChatGPT interface meant I could use it with existing tools such as Code Interpreter which made its strengths a whole lot more evident - that’s a transcript where I had it design and test its own version of the JSON Schema succinct DSL I published last week.
-Riley Goodside then spotted that Code Interpreter has been quietly enabled for other models too, including the excellent o3-mini reasoning model. This means you can have o3-mini reason about code, write that code, test it, iterate on it and keep going until it gets something that works.
-
-Code Interpreter remains my favorite implementation of the &quot;coding agent&quot; pattern, despite recieving very few upgrades in the two years after its initial release. Plugging much stronger models into it than the previous GPT-4o default makes it even more useful.
-Nothing about this in the ChatGPT release notes yet, but I&#x27;ve tested it in the ChatGPT iOS app and mobile web app and it definitely works there.
-
-
-    
-Tags: riley-goodside, code-interpreter, openai, ai-agents, ai, llms, ai-assisted-programming, python, generative-ai, chatgpt</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Career Update: Google DeepMind -&gt; Anthropic
-              <span class="post-metadata">(1 min | 323 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/5/google-deepmind-anthropic/#atom-everything>Career Update: Google DeepMind -&gt; Anthropic
-previously) on joining Anthropic, driven partly by his frustration at friction he encountered publishing his research at Google DeepMind after their merge with Google Brain. His area of expertise is adversarial machine learning.
-The recent advances in machine learning and language modeling are going to be transformative [d] But in order to realize this potential future in a way that doesn&#x27;t put everyone&#x27;s safety and security at risk, we&#x27;re going to need to make a lot of progress---and soon. We need to make so much progress that no one organization will be able to figure everything out by themselves; we need to work together, we need to talk about what we&#x27;re doing, and we need to start doing this now.
-Tags: machine-learning, anthropic, google, generative-ai, ai, llms, nicholas-carlini</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Delegated alert dismissal for code scanning and secret scanning now available in public preview
-              <span class="post-metadata">(9 min | 2753 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-05-delegated-alert-dismissal-for-code-scanning-and-secret-scanning-now-available-in-public-preview>Delegated alert dismissal for code scanning and secret scanning now available in public preview
-The post Delegated alert dismissal for code scanning and secret scanning now available in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              QwQ-32B: Embracing the Power of Reinforcement Learning
-              <span class="post-metadata">(1 min | 323 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/5/qwq-32b/#atom-everything>QwQ-32B: Embracing the Power of Reinforcement Learning
-We are excited to introduce QwQ-32B, a model with 32 billion parameters that achieves performance comparable to DeepSeek-R1, which boasts 671 billion parameters (with 37 billion activated). This remarkable outcome underscores the effectiveness of RL when applied to robust foundation models pretrained on extensive world knowledge.
-I&#x27;ve not run this myself yet but I had a lot of fun trying out their previous QwQ reasoning model last November.
-LM Studo just released GGUFs ranging in size from 17.2 to 34.8 GB. MLX have compatible weights published in 3bit, 4bit, 6bit and 8bit. Ollama has the new qwq too - it looks like they&#x27;ve renamed the previous November release qwq:32b-preview.
-
-    
-Via @alibaba_qwen
-Tags: generative-ai, inference-scaling, ai, qwen, llms, open-source, mlx, ollama</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              AutoGen and Semantic Kernel, Part 2
-              <span class="post-metadata">(25 min | 7366 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-and-autogen-part-2/>Following on from our blog post a couple months ago: Microsoft’s Agentic AI Frameworks: AutoGen and Semantic Kernel, Microsoft’s agentic AI story is evolving at a steady pace. Both Azure AI Foundry’s Semantic Kernel and AI Frontier’s AutoGen are designed to empower developers to build advanced multi-agent systems. The AI Frontier’s team is charging ahead […]
-The post AutoGen and Semantic Kernel, Part 2 appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Integrating Model Context Protocol Tools with Semantic Kernel: A Step-by-Step Guide
-              <span class="post-metadata">(26 min | 7916 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/integrating-model-context-protocol-tools-with-semantic-kernel-a-step-by-step-guide/>This post describes how to use Model Context Protocol tools with Semantic Kernel. Model Context Protocol (MCP) is an open protocol that standardizes how applications provide context to LLMs. MCP standardizes the connection between AI models and various data sources and tools. The Model Context Protocol is significant because it enhances the way AI models […]
-The post Integrating Model Context Protocol Tools with Semantic Kernel: A Step-by-Step Guide appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
           </details>
       </article>
 

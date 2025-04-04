@@ -2,10 +2,31 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-03T21:09:18.557Z</updated>
+    <updated>2025-04-04T14:10:07.404Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[openthinker]]></title>
+        <id>https://ollama.com/library/openthinker</id>
+        <link href="https://ollama.com/library/openthinker"/>
+        <updated>2025-04-04T04:33:00.000Z</updated>
+        <summary type="html"><![CDATA[A fully open-source family of reasoning models built using a dataset derived by distilling DeepSeek-R1.]]></summary>
+        <author>
+            <name>Ollama models</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Enterprise Server and ESXi 8.0 support]]></title>
+        <id>https://github.blog/changelog/2025-04-03-github-enterprise-server-and-esxi-8-0-support</id>
+        <link href="https://github.blog/changelog/2025-04-03-github-enterprise-server-and-esxi-8-0-support"/>
+        <updated>2025-04-03T19:33:21.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Enterprise Server and ESXi 8.0 support
+The post GitHub Enterprise Server and ESXi 8.0 support appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Pull request merge experience – April 3 update]]></title>
         <id>https://github.blog/changelog/2025-04-03-pull-request-merge-experience-march-31-update</id>
@@ -3939,156 +3960,6 @@ I got a few quotes in this piece by Benj Edwards about <strong>vibe coding</stro
     <p>Tags: <a href="https://simonwillison.net/tags/andrej-karpathy">andrej-karpathy</a>, <a href="https://simonwillison.net/tags/benj-edwards">benj-edwards</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Aider: Using uv as an installer]]></title>
-        <id>https://simonwillison.net/2025/Mar/6/aider-using-uv-as-an-installer/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/6/aider-using-uv-as-an-installer/#atom-everything"/>
-        <updated>2025-03-06T01:47:20.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://aider.chat/2025/01/15/uv.html">Aider: Using uv as an installer</a></strong></p>
-Paul Gauthier has an innovative solution for the challenge of helping end users get a copy of his Aider CLI Python utility installed in an isolated virtual environment without first needing to teach them what an "isolated virtual environment" is.</p>
-<p>Provided you already have a Python install of version 3.8 or higher you can run this:</p>
-<pre><code>pip install aider-install &amp;&amp; aider-install
-</code></pre>
-<p>The <a href="https://pypi.org/project/aider-install/">aider-install</a> package itself depends on <a href="https://github.com/astral-sh/uv">uv</a>. When you run <code>aider-install</code> it executes the following <a href="https://github.com/Aider-AI/aider-install/blob/main/aider_install/main.py">Python code</a>:</p>
-<pre><span class="pl-k">def</span> <span class="pl-en">install_aider</span>():
-    <span class="pl-k">try</span>:
-        <span class="pl-s1">uv_bin</span> <span class="pl-c1">=</span> <span class="pl-s1">uv</span>.<span class="pl-c1">find_uv_bin</span>()
-        <span class="pl-s1">subprocess</span>.<span class="pl-c1">check_call</span>([
-            <span class="pl-s1">uv_bin</span>, <span class="pl-s">"tool"</span>, <span class="pl-s">"install"</span>, <span class="pl-s">"--force"</span>, <span class="pl-s">"--python"</span>, <span class="pl-s">"python3.12"</span>, <span class="pl-s">"aider-chat@latest"</span>
-        ])
-        <span class="pl-s1">subprocess</span>.<span class="pl-c1">check_call</span>([<span class="pl-s1">uv_bin</span>, <span class="pl-s">"tool"</span>, <span class="pl-s">"update-shell"</span>])
-    <span class="pl-k">except</span> <span class="pl-s1">subprocess</span>.<span class="pl-c1">CalledProcessError</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
-        <span class="pl-en">print</span>(<span class="pl-s">f"Failed to install aider: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">e</span><span class="pl-kos">}</span></span>"</span>)
-        <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)</pre>
-
-<p>This first figures out the location of the <code>uv</code> Rust binary, then uses it to install his <a href="https://pypi.org/project/aider-chat/">aider-chat</a> package by running the equivalent of this command:</p>
-<pre><code>uv tool install --force --python python3.12 aider-chat@latest
-</code></pre>
-<p>This will in turn install a brand new standalone copy of Python 3.12 and tuck it away in uv's own managed directory structure where it shouldn't hurt anything else.</p>
-<p>The <code>aider-chat</code> script defaults to being dropped in the XDG standard directory, which is probably <code>~/.local/bin</code> - see <a href="https://docs.astral.sh/uv/concepts/tools/#the-bin-directory">uv's documentation</a>. The <a href="https://docs.astral.sh/uv/concepts/tools/#overwriting-executables">--force flag</a> ensures that <code>uv</code> will overwrite any previous attempts at installing <code>aider-chat</code> in that location with the new one.</p>
-<p>Finally, running <code>uv tool update-shell</code> ensures that bin directory is <a href="https://docs.astral.sh/uv/concepts/tools/#the-path">on the user's PATH</a>.</p>
-<p>I <em>think</em> I like this. There is a LOT of stuff going on here, and experienced users may well opt for an <a href="https://aider.chat/docs/install.html">alternative installation mechanism</a>.</p>
-<p>But for non-expert Python users who just want to start using Aider, I think this pattern represents quite a tasteful way of getting everything working with minimal risk of breaking the user's system.</p>
-<p><strong>Update</strong>: Paul <a href="https://twitter.com/paulgauthier/status/1897486573857595877">adds</a>:</p>
-<blockquote>
-<p>Offering this install method dramatically reduced the number of GitHub issues from users with conflicted/broken python environments.</p>
-<p>I also really like the "curl | sh" aider installer based on uv. Even users who don't have python installed can use it.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/paul-gauthier">paul-gauthier</a>, <a href="https://simonwillison.net/tags/aider">aider</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[The Graphing Calculator Story]]></title>
-        <id>https://simonwillison.net/2025/Mar/5/the-graphing-calculator-story/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/5/the-graphing-calculator-story/#atom-everything"/>
-        <updated>2025-03-05T23:36:54.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.pacifict.com/story/">The Graphing Calculator Story</a></strong></p>
-Utterly delightful story from Ron Avitzur in 2004 about the origins of the Graphing Calculator app that shipped with many versions of macOS. Ron's contract with Apple had ended but his badge kept working so he kept on letting himself in to work on the project. He even grew a small team:</p>
-<blockquote>
-<p>I asked my friend Greg Robbins to help me. His contract in another division at Apple had just ended, so he told his manager that he would start reporting to me. She didn't ask who I was and let him keep his office and badge. In turn, I told people that I was reporting to him. Since that left no managers in the loop, we had no meetings and could be extremely productive</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://laughingmeme.org/links/">Kellan</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/apple">apple</a>, <a href="https://simonwillison.net/tags/computer-history">computer-history</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Demo of ChatGPT Code Interpreter running in o3-mini-high]]></title>
-        <id>https://simonwillison.net/2025/Mar/5/code-interpreter/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/5/code-interpreter/#atom-everything"/>
-        <updated>2025-03-05T23:07:22.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://chatgpt.com/share/67c8c374-8c08-8006-8ce3-042308063792">Demo of ChatGPT Code Interpreter running in o3-mini-high</a></strong></p>
-OpenAI made GPT-4.5 available to Plus ($20/month) users today. I was <a href="https://simonwillison.net/2025/Feb/27/introducing-gpt-45/">a little disappointed</a> with GPT-4.5 when I tried it through the API, but having access in the ChatGPT interface meant I could use it with existing tools such as Code Interpreter which made its strengths <a href="https://chatgpt.com/share/67c8a7b6-655c-8006-a100-bc04080e5aa1">a whole lot more evident</a> - that’s a transcript where I had it design and test its own version of the JSON Schema succinct DSL I published <a href="https://simonwillison.net/2025/Feb/28/llm-schemas/#designing-this-feature-for-llm">last week</a>.</p>
-<p>Riley Goodside <a href="https://x.com/goodside/status/1897412604894789692">then spotted</a> that Code Interpreter has been quietly enabled for other models too, including the excellent o3-mini reasoning model. This means you can have o3-mini reason about code, write that code, test it, iterate on it and keep going until it gets something that works.</p>
-<p><img alt="Screenshot showing ChatGPT 03-mini-high - my prompt: Use your Python tool to show me the versions of Python and SQLite. Reasoned about Python and SQLite versions for a couple of seconds Below is the Python code used to print both the Python and SQLite versions: Python Code import sys import sqlite3 print(&quot;Python version:&quot; print (&quot;SQLite version:&quot; Result Python version: 3.11.8 main, Mar 12 2024, 11:41:52) GCC 12.2.01° SQLite version: 3.40.1" src="https://static.simonwillison.net/static/2025/o3-mini-code-interpreter.jpg" /></p>
-<p>Code Interpreter remains my favorite implementation of the "coding agent" pattern, despite recieving very few upgrades in the two years after its initial release. Plugging much stronger models into it than the previous GPT-4o default makes it even more useful.</p>
-<p>Nothing about this in the <a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes">ChatGPT release notes</a> yet, but I've tested it in the ChatGPT iOS app and mobile web app and it definitely works there.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/riley-goodside">riley-goodside</a>, <a href="https://simonwillison.net/tags/code-interpreter">code-interpreter</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Career Update: Google DeepMind -> Anthropic]]></title>
-        <id>https://simonwillison.net/2025/Mar/5/google-deepmind-anthropic/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/5/google-deepmind-anthropic/#atom-everything"/>
-        <updated>2025-03-05T22:24:02.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://nicholas.carlini.com/writing/2025/career-update.html">Career Update: Google DeepMind -&gt; Anthropic</a></strong></p>
-Nicholas Carlini (<a href="https://simonwillison.net/tags/nicholas-carlini/">previously</a>) on joining Anthropic, driven partly by his frustration at friction he encountered publishing his research at Google DeepMind after their merge with Google Brain. His area of expertise is adversarial machine learning.</p>
-<blockquote>
-<p>The recent advances in machine learning and language modeling are going to be transformative <span style="font-size: 0.75em; line-height: 0; position: relative; vertical-align: baseline; top: -0.5em;">[<a href="https://nicholas.carlini.com/writing/2025/career-update.html#footnote4">d</a>]</span> But in order to realize this potential future in a way that doesn't put everyone's safety and security at risk, we're going to need to make a <em>lot</em> of progress---and soon. We need to make so much progress that no one organization will be able to figure everything out by themselves; we need to work together, we need to talk about what we're doing, and we need to start doing this now.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/machine-learning">machine-learning</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/nicholas-carlini">nicholas-carlini</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Delegated alert dismissal for code scanning and secret scanning now available in public preview]]></title>
-        <id>https://github.blog/changelog/2025-03-05-delegated-alert-dismissal-for-code-scanning-and-secret-scanning-now-available-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-03-05-delegated-alert-dismissal-for-code-scanning-and-secret-scanning-now-available-in-public-preview"/>
-        <updated>2025-03-05T21:13:49.000Z</updated>
-        <summary type="html"><![CDATA[Delegated alert dismissal for code scanning and secret scanning now available in public preview
-The post Delegated alert dismissal for code scanning and secret scanning now available in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[QwQ-32B: Embracing the Power of Reinforcement Learning]]></title>
-        <id>https://simonwillison.net/2025/Mar/5/qwq-32b/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/5/qwq-32b/#atom-everything"/>
-        <updated>2025-03-05T21:10:28.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://qwenlm.github.io/blog/qwq-32b/">QwQ-32B: Embracing the Power of Reinforcement Learning</a></strong></p>
-New Apache 2 licensed reasoning model from Qwen:</p>
-<blockquote>
-<p>We are excited to introduce QwQ-32B, a model with 32 billion parameters that achieves performance comparable to DeepSeek-R1, which boasts 671 billion parameters (with 37 billion activated). This remarkable outcome underscores the effectiveness of RL when applied to robust foundation models pretrained on extensive world knowledge.</p>
-</blockquote>
-<p>I've not run this myself yet but I had a lot of fun <a href="https://simonwillison.net/2024/Nov/27/qwq/">trying out</a> their previous QwQ reasoning model last November.</p>
-<p>LM Studo just <a href="https://huggingface.co/lmstudio-community/QwQ-32B-GGUF/tree/main">released GGUFs</a> ranging in size from 17.2 to 34.8 GB. MLX have compatible weights published in <a href="https://huggingface.co/mlx-community/QwQ-32B-3bit">3bit</a>, <a href="https://huggingface.co/mlx-community/QwQ-32B-4bit">4bit</a>, <a href="https://huggingface.co/mlx-community/QwQ-32B-6bit">6bit</a> and <a href="https://huggingface.co/mlx-community/QwQ-32B-8bit">8bit</a>. Ollama <a href="https://ollama.com/library/qwq">has the new qwq</a> too - it looks like they've renamed the previous November release <a href="https://ollama.com/library/qwq:32b-preview-q8_0">qwq:32b-preview</a>.
-
-    <p><small></small>Via <a href="https://twitter.com/alibaba_qwen/status/1897361654763151544">@alibaba_qwen</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/inference-scaling">inference-scaling</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[AutoGen and Semantic Kernel, Part 2]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4336</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-and-autogen-part-2/"/>
-        <updated>2025-03-05T17:55:58.000Z</updated>
-        <summary type="html"><![CDATA[Following on from our blog post a couple months ago: Microsoft’s Agentic AI Frameworks: AutoGen and Semantic Kernel, Microsoft’s agentic AI story is evolving at a steady pace. Both Azure AI Foundry’s Semantic Kernel and AI Frontier’s AutoGen are designed to empower developers to build advanced multi-agent systems. The AI Frontier’s team is charging ahead […]
-The post AutoGen and Semantic Kernel, Part 2 appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Shawn Henry, Friederike Niedtner, Sophia Lagerkrans-Pandey</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Integrating Model Context Protocol Tools with Semantic Kernel: A Step-by-Step Guide]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4347</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/integrating-model-context-protocol-tools-with-semantic-kernel-a-step-by-step-guide/"/>
-        <updated>2025-03-05T15:29:56.000Z</updated>
-        <summary type="html"><![CDATA[This post describes how to use Model Context Protocol tools with Semantic Kernel. Model Context Protocol (MCP) is an open protocol that standardizes how applications provide context to LLMs. MCP standardizes the connection between AI models and various data sources and tools. The Model Context Protocol is significant because it enhances the way AI models […]
-The post Integrating Model Context Protocol Tools with Semantic Kernel: A Step-by-Step Guide appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Mark Wallace</name>
         </author>
     </entry>
     <entry>
