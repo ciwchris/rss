@@ -2,10 +2,23 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-04T21:09:02.641Z</updated>
+    <updated>2025-04-05T14:08:11.255Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Matt Webb]]></title>
+        <id>https://simonwillison.net/2025/Apr/5/matt-webb/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/5/matt-webb/#atom-everything"/>
+        <updated>2025-04-05T04:56:31.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://manuelmoreale.com/pb-matt-webb"><p>Blogging is small-p political again, today. It’s come back round. It’s a statement to put your words in a place where they are not subject to someone else’s algorithm telling you what success looks like; when you blog, your words are not a vote for the values of someone else’s platform.</p></blockquote>
+<p class="cite">&mdash; <a href="https://manuelmoreale.com/pb-matt-webb">Matt Webb</a>, Interview for People and Blogs</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/matt-webb">matt-webb</a>, <a href="https://simonwillison.net/tags/blogging">blogging</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Sam Altman]]></title>
         <id>https://simonwillison.net/2025/Apr/4/sam-altman/#atom-everything</id>
@@ -3900,184 +3913,6 @@ The post Integration of AWS Bedrock Agents in Semantic Kernel appeared first on 
 The post DeepSeek-V3 is now generally available in GitHub Models appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Mistral OCR]]></title>
-        <id>https://simonwillison.net/2025/Mar/7/mistral-ocr/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/7/mistral-ocr/#atom-everything"/>
-        <updated>2025-03-07T01:39:26.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/fr/news/mistral-ocr">Mistral OCR</a></strong></p>
-New closed-source specialist OCR model by Mistral - you can feed it images or a PDF and it produces Markdown with optional embedded images.</p>
-<p>It's available <a href="https://docs.mistral.ai/api/#tag/ocr">via their API</a>, or it's "available to self-host on a selective basis" for people with stringent privacy requirements who are willing to talk to their sales team.</p>
-<p>I decided to try out their API, so I copied and pasted example code <a href="https://colab.research.google.com/drive/11NdqWVwC_TtJyKT6cmuap4l9SryAeeVt?usp=sharing">from their notebook</a> into my <a href="https://simonwillison.net/2024/Dec/19/one-shot-python-tools/">custom Claude project</a> and <a href="https://claude.ai/share/153d8eb8-82dd-4f8c-a3d0-6c23b4dc21a2">told it</a>:</p>
-<blockquote>
-<p><code>Turn this into a CLI app, depends on mistralai - it should take a file path and an optional API key defauling to env vironment called MISTRAL_API_KEY</code></p>
-</blockquote>
-<p>After <a href="https://claude.ai/share/b746cab4-293b-4e04-b662-858bb164ab78">some further</a> iteration / vibe coding I got to something that worked, which I then tidied up and shared as <a href="https://github.com/simonw/tools/blob/main/python/mistral_ocr.py">mistral_ocr.py</a>.</p>
-<p>You can try it out like this:</p>
-<pre><code>export MISTRAL_API_KEY='...'
-uv run http://tools.simonwillison.net/python/mistral_ocr.py \
-  mixtral.pdf --html --inline-images &gt; mixtral.html
-</code></pre>
-<p>I fed in <a href="https://arxiv.org/abs/2401.04088">the Mixtral paper</a> as a PDF. The API returns Markdown, but my <code>--html</code> option renders that Markdown as HTML and the <code>--inline-images</code> option takes any images and inlines them as base64 URIs (inspired <a href="https://simonwillison.net/2025/Mar/6/monolith/">by monolith</a>). The result is <a href="https://static.simonwillison.net/static/2025/mixtral.html">mixtral.html</a>, a 972KB HTML file with images and text bundled together.</p>
-<p>This did a pretty great job!</p>
-<p><img alt="Screenshot of part of the document, it has a heading, some text, an image and the start of a table. The table contains some unrendered MathML syntax." src="https://static.simonwillison.net/static/2025/mixtral-as-html.jpg" /></p>
-<p>My script renders Markdown tables but I haven't figured out how to render inline Markdown MathML yet. I ran the command a second time and requested Markdown output (the default) like this:</p>
-<pre><code>uv run http://tools.simonwillison.net/python/mistral_ocr.py \
-  mixtral.pdf &gt; mixtral.md
-</code></pre>
-<p>Here's <a href="https://gist.github.com/simonw/023d1cf403c1cd9f41801c85510aef21">that Markdown rendered as a Gist</a> - there are a few MathML glitches so clearly the Mistral OCR MathML dialect and the GitHub Formatted Markdown dialect don't quite line up.</p>
-<p>My tool can also output raw JSON as an alternative to Markdown or HTML - full details <a href="https://tools.simonwillison.net/python/#mistral_ocrpy">in the documentation</a>.</p>
-<p>The Mistral API is priced at roughly 1000 pages per dollar, with a 50% discount for batch usage.</p>
-<p>The big question with LLM-based OCR is always how well it copes with accidental instructions in the text (can you safely OCR a document full of prompting examples?) and how well it handles text it can't write.</p>
-<p>Mistral's Sophia Yang says it <a href="https://x.com/sophiamyang/status/1897719199595720722">"should be robust"</a> against following instructions in the text, and invited people to try and find counter-examples.</p>
-<p>Alexander Doria noted that <a href="https://twitter.com/Dorialexander/status/1897702264543875535">Mistral OCR can hallucinate text</a> when faced with handwriting that it cannot understand.
-
-    <p><small></small>Via <a href="https://twitter.com/sophiamyang/status/1897713370029068381">@sophiamyang</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/pdf">pdf</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ocr">ocr</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Onboarding additional model providers with GitHub Copilot for Claude Sonnet models in public preview]]></title>
-        <id>https://github.blog/changelog/2025-03-06-onboarding-additional-model-providers-with-github-copilot-for-claude-sonnet-models-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-03-06-onboarding-additional-model-providers-with-github-copilot-for-claude-sonnet-models-in-public-preview"/>
-        <updated>2025-03-06T23:29:59.000Z</updated>
-        <summary type="html"><![CDATA[Onboarding additional model providers with GitHub Copilot for Claude Sonnet models in public preview
-The post Onboarding additional model providers with GitHub Copilot for Claude Sonnet models in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub Issues & Projects: API support for issues advanced search and more!]]></title>
-        <id>https://github.blog/changelog/2025-03-06-github-issues-projects-api-support-for-issues-advanced-search-and-more</id>
-        <link href="https://github.blog/changelog/2025-03-06-github-issues-projects-api-support-for-issues-advanced-search-and-more"/>
-        <updated>2025-03-06T23:23:46.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Issues & Projects: API support for issues advanced search and more!
-The post GitHub Issues & Projects: API support for issues advanced search and more! appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GPT-4o Copilot March flight is ready for takeoff]]></title>
-        <id>https://github.blog/changelog/2025-03-06-gpt-4o-copilot-march-flight-is-ready-for-takeoff</id>
-        <link href="https://github.blog/changelog/2025-03-06-gpt-4o-copilot-march-flight-is-ready-for-takeoff"/>
-        <updated>2025-03-06T22:22:36.000Z</updated>
-        <summary type="html"><![CDATA[GPT-4o Copilot March flight is ready for takeoff
-The post GPT-4o Copilot March flight is ready for takeoff appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Personal custom instructions for Copilot are now generally available on github.com]]></title>
-        <id>https://github.blog/changelog/2025-03-06-personal-custom-instructions-for-copilot-are-now-generally-available-on-github-com</id>
-        <link href="https://github.blog/changelog/2025-03-06-personal-custom-instructions-for-copilot-are-now-generally-available-on-github-com"/>
-        <updated>2025-03-06T22:02:12.000Z</updated>
-        <summary type="html"><![CDATA[Personal custom instructions for Copilot are now generally available on github.com
-The post Personal custom instructions for Copilot are now generally available on github.com appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub Copilot updates in Visual Studio Code February Release (v0.25), including improvements to agent mode and Next Exit Suggestions, general availability of custom instructions, and more!]]></title>
-        <id>https://github.blog/changelog/2025-03-06-github-copilot-updates-in-visual-studio-code-february-release-v0-25-including-improvements-to-agent-mode-and-next-exit-suggestions-ga-of-custom-instructions-and-more</id>
-        <link href="https://github.blog/changelog/2025-03-06-github-copilot-updates-in-visual-studio-code-february-release-v0-25-including-improvements-to-agent-mode-and-next-exit-suggestions-ga-of-custom-instructions-and-more"/>
-        <updated>2025-03-06T21:00:55.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Copilot updates in Visual Studio Code February Release (v0.25), including improvements to agent mode and Next Exit Suggestions, GA of custom instructions, and more!
-The post GitHub Copilot updates in Visual Studio Code February Release (v0.25), including improvements to agent mode and Next Exit Suggestions, general availability of custom instructions, and more! appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[March 6th, 2025 - Orion Embarks on Linux Journey & Kagi Doggo Art Celebration]]></title>
-        <id>https://kagifeedback.org/d/6479-march-6th-2025-orion-embarks-on-linux-journey-kagi-doggo-art-celebration/1</id>
-        <link href="https://kagifeedback.org/d/6479-march-6th-2025-orion-embarks-on-linux-journey-kagi-doggo-art-celebration/1"/>
-        <updated>2025-03-06T19:36:35.000Z</updated>
-        <summary type="html"><![CDATA[Orion's Next Chapter: Linux Development Officially Launched
-
-We're thrilled to announce that development of Orion Browser for Linux has officially started! Our team is working hard to bring the same speed, privacy, and innovation that Mac users love to the Linux platform.
-This is an ambitious project that we expect will take approximately one year to complete. Our target is to achieve feature parity with the current macOS version by March 2026.
-Want to stay updated on Orion for Linux?  
-Register here to receive news and early access opportunities throughout the development year.
-Celebrating Kagi's Community Creativity with Doggo Art
-This month, Kagi Search is showcasing incredible community-created renditions of our beloved Doggo mascot,
-
-
-Shoutout to the featured artists—Edin Pasovic, Fan…]]></summary>
-        <author>
-            <name>Activity in the release-notes tag</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Orion's Next Chapter: Linux Development Officially Launched]]></title>
-        <id>https://kagifeedback.org/d/6479-orions-next-chapter-linux-development-officially-launched/1</id>
-        <link href="https://kagifeedback.org/d/6479-orions-next-chapter-linux-development-officially-launched/1"/>
-        <updated>2025-03-06T19:36:35.000Z</updated>
-        <summary type="html"><![CDATA[We're thrilled to announce that development of Orion Browser for Linux has officially started! Our team is working hard to bring the same speed, privacy, and innovation that Mac users love to the Linux platform.
-This is an ambitious project that we expect will take approximately one year to complete. Our target is to achieve feature parity with the current macOS version by March 2026.
-Want to stay updated on Orion for Linux?  
-Register here to receive news and early access opportunities throughout the development year.]]></summary>
-        <author>
-            <name>Activity in the release-notes tag</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Copilot Chat users can now use the Vision input in VS Code and Visual Studio in public preview]]></title>
-        <id>https://github.blog/changelog/2025-03-06-copilot-chat-users-can-now-use-the-vision-input-in-vs-code-and-visual-studio-public-preview-2</id>
-        <link href="https://github.blog/changelog/2025-03-06-copilot-chat-users-can-now-use-the-vision-input-in-vs-code-and-visual-studio-public-preview"/>
-        <updated>2025-03-06T15:40:49.000Z</updated>
-        <summary type="html"><![CDATA[Copilot Chat users can now use the Vision input in VS Code and Visual Studio in public preview
-The post Copilot Chat users can now use the Vision input in VS Code and Visual Studio in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[monolith]]></title>
-        <id>https://simonwillison.net/2025/Mar/6/monolith/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/6/monolith/#atom-everything"/>
-        <updated>2025-03-06T15:37:48.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/Y2Z/monolith">monolith</a></strong></p>
-Neat CLI tool built in Rust that can create a single packaged HTML file of a web page plus all of its dependencies.</p>
-<pre><code>cargo install monolith # or brew install
-monolith https://simonwillison.net/ &gt; /tmp/simonwillison.html
-</code></pre>
-<p>That command produced <a href="https://static.simonwillison.net/static/2025/simonwillison.html">this 1.5MB single file result</a>. All of the linked images, CSS and JavaScript assets have had their contents inlined into base64 URIs in their <code>src=</code> and <code>href=</code> attributes.</p>
-<p>I was intrigued as to how it works, so I dumped the whole repository into Gemini 2.0 Pro and asked for an architectural summary:</p>
-<pre><code>cd /tmp
-git clone https://github.com/Y2Z/monolith
-cd monolith
-files-to-prompt . -c | llm -m gemini-2.0-pro-exp-02-05 \
-  -s 'architectural overview as markdown'
-</code></pre>
-<p>Here's <a href="https://gist.github.com/simonw/2c80749935ae3339d6f7175dc7cf325b">what I got</a>. Short version: it uses the <code>reqwest</code>, <code>html5ever</code>, <code>markup5ever_rcdom</code> and <code>cssparser</code> crates to fetch and parse HTML and CSS and extract, combine and rewrite the assets. It doesn't currently attempt to run any JavaScript.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=42933383#42935115">Comment on Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/scraping">scraping</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/rust">rust</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Effortlessly Integrate xAI’s Grok with Semantic Kernel]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4308</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/integrate-sk-with-xai-grok-easily/"/>
-        <updated>2025-03-06T15:31:25.000Z</updated>
-        <summary type="html"><![CDATA[For Semantic Kernel users, integrating xAI’s Grok API using the OpenAI connector is a breeze thanks to its compatibility with OpenAI’s API format. This tutorial focuses on setting up Grok in your Semantic Kernel projects with minimal fuss, using C# and Python examples. Why Grok? Grok, built by xAI, is a powerful AI model, offers […]
-The post Effortlessly Integrate xAI’s Grok with Semantic Kernel appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Roger Barreto</name>
         </author>
     </entry>
     <entry>
