@@ -25,6 +25,330 @@
 
   <ul>
     <li>
+      <time>2025-04-07</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting John Carmack
+              <span class="post-metadata">(1 min | 366 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/7/john-carmack/#atom-everything>My first games involved hand assembling machine code and turning graph paper characters into hex digits.  Software progress has made that work as irrelevant as chariot wheel maintenance. [...]
+AI tools will allow the best to reach even greater heights, while enabling smaller teams to accomplish more, and  bring in some completely new creator demographics.
+Yes, we will get to a world where you can get an interactive game (or novel, or movie) out of a prompt, but there will be far better exemplars of the medium still created by dedicated teams of passionate developers.
+The world will be vastly wealthier in terms of the content available at any given cost.
+Will there be more or less game developer jobs? That is an open question. It could go the way of farming, where labor saving technology allow a tiny fraction of the previous workforce to satisfy everyone, or it could be like social media, where creative entrepreneurship has flourished at many different scales. Regardless, “don’t use power tools because they take people’s jobs” is not a winning strategy.
+
+— John Carmack
+Tags: ai-ethics, game-design, ai, john-carmack</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Note on 7th April 2025
+              <span class="post-metadata">(1 min | 252 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/7/crawlers/#atom-everything>If you&#x27;re a startup running your own crawlers to gather data for whatever purpose, you should try really hard not to make the world a worse place by driving up costs for the sites you are scraping.
+There&#x27;s really no excuse for crawling Wikipedia (&quot;65% of our most expensive traffic comes from bots&quot;) when they offer a comprehensive collection of bulk download options.
+Do better!
+Tags: crawling, jeremy-keith, wikipedia, ai-ethics, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Tobias Lütke
+              <span class="post-metadata">(1 min | 339 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/7/tobias/#atom-everything>Using Al effectively is now a fundamental expectation of everyone at Shopify. It&#x27;s a tool of all trades today, and will only grow in importance. Frankly, I don&#x27;t think it&#x27;s feasible to opt out of learning the skill of applying Al in your craft; you are welcome to try, but I want to be honest I cannot see this working out today, and definitely not tomorrow. Stagnation is almost certain, and stagnation is slow-motion failure. If you&#x27;re not climbing, you&#x27;re sliding [...]
+We will add Al usage questions to our performance and peer review questionnaire. Learning to use Al well is an unobvious skill. My sense is that a lot of people give up after writing a prompt and not getting the ideal thing back immediately. Learning to prompt and load context is important, and getting peers to provide feedback on how this is going will be valuable.
+
+— Tobias Lütke, CEO of Shopify, self-leaked memo
+Tags: careers, ai, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Long context support in LLM 0.24 using fragments and template plugins
+              <span class="post-metadata">(6 min | 1853 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/7/long-context-llm/#atom-everything>LLM 0.24 is now available with new features to help take advantage of the increasingly long input context supported by modern LLMs.
+
+(LLM is my command-line tool and Python library for interacting with LLMs, supported by 20+ plugins adding support for both local and remote models from a bunch of different providers.)
+
+
+
+  
+Trying it out
+
+  
+Improving LLM&#x27;s support for long context models
+
+  
+Asking questions of LLM&#x27;s documentation
+
+  
+Publishing, sharing and reusing templates
+
+  
+Everything else in LLM 0.24
+
+
+
+
+Trying it out
+
+
+To install LLM with uv (there are several other options):
+
+
+uv tool install llm
+
+You&#x27;ll need to either provide an OpenAI API key or install a plugin to use local models or  models from other providers:
+
+
+llm keys set openai
+# Paste OpenAI API key here
+
+To upgrade LLM from a previous version:
+
+
+llm install -U llm
+
+The biggest new feature is fragments. You can now use -f filename or -f url to add one or more fragments to your prompt, which means you can do things like this:
+
+
+llm -f https://simonwillison.net/2025/Apr/5/llama-4-notes/ &#x27;bullet point summary&#x27;
+
+Here&#x27;s the output from that prompt, exported using llm logs -c --expand --usage. Token cost was 5,372 input, 374 output which works out as 0.103 cents (around 1/10th of a cent) using the default GPT-4o mini model.
+
+Plugins can implement custom fragment loaders with a prefix. The llm-fragments-github plugin adds a github: prefix that can be used to load every text file in a GitHub repository as a list of fragments:
+
+
+llm install llm-fragments-github
+llm -f github:simonw/s3-credentials &#x27;Suggest new features for this tool&#x27;
+
+Here&#x27;s the output. That took 49,856 input tokens for a total cost of 0.7843 cents - nearly a whole cent!
+
+Improving LLM&#x27;s support for long context models
+
+Long context is one of the most exciting trends in LLMs over the past eighteen months. Saturday&#x27;s Llama 4 Scout release gave us the first model with a full 10 million token context. Google&#x27;s Gemini family has several 1-2 million token models, and the baseline for recent models from both OpenAI and Anthropic is 100 or 200 thousand.
+
+Two years ago most models capped out at 8,000 tokens of input. Long context opens up many new interesting ways to apply this class of technology.
+
+I&#x27;ve been using long context models via my files-to-prompt tool to summarize large codebases, explain how they work and even to debug gnarly bugs. As demonstrated above, it&#x27;s surprisingly inexpensive to drop tens of thousands of tokens into  models like GPT-4o mini or most of the Google Gemini series, and the results are often very impressive.
+
+One of LLM&#x27;s most useful features is that it logs every prompt and response to a SQLite database. This is great for comparing the same prompt against different models and tracking experiments over time - my own database contained thousands of responses from hundreds of different models accumulated over the past couple of years.
+
+This is where long context prompts were starting to be a problem. Since LLM stores the full prompt and response in the database, asking five questions of the same source code could result in five duplicate copies of that text in the database!
+
+The new fragments feature targets this problem head on. Each fragment is stored once in a fragments table, then de-duplicated in the future using a SHA256 hash of its content.
+
+This saves on storage, and also enables features like llm logs -f X for seeing all logged responses that use a particular fragment.
+
+Fragments can be specified in several different ways:
+
+
+a path to a file
+
+a URL to data online
+
+an alias that&#x27;s been set against a previous fragment (see llm fragments set)
+
+a hash ID of the content of a fragment
+
+using prefix:argument to specify fragments from a plugin
+
+
+Asking questions of LLM&#x27;s documentation
+
+Wouldn&#x27;t it be neat if LLM could anser questions about its own documentation?
+
+The new llm-docs plugin (built with the new register_fragment_loaders() plugin hook) enables exactly that:
+
+
+llm install llm-docs
+llm -f docs: &quot;How do I embed a binary file?&quot;
+
+The output starts like this:
+
+
+To embed a binary file using the LLM command-line interface, you can use the llm embed command with the --binary option. Here’s how you can do it:
+
+
+Make sure you have the appropriate embedding model installed that supports binary input.
+
+Use the following command syntax:
+
+
+
+llm embed -m &lt;model_id&gt; --binary -i &lt;path_to_your_binary_file&gt;
+
+Replace &lt;model_id&gt; with the identifier for the embedding model you want to use (e.g., clip for the CLIP model) and &lt;path_to_your_binary_file&gt; with the path to your actual binary file.
+
+
+(74,570 input, 240 output &#x3D; 1.1329 cents with GPT-4o mini)
+
+Using -f docs: with just the prefix is the same as using -f docs:llm. The plugin fetches the documentation for your current version of LLM from my new simonw/docs-for-llms repo, which also provides packaged documentation files for my datasette, s3-credentials, shot-scraper and sqlite-utils projects.
+
+Datasette&#x27;s documentation has got pretty long, so you might need to run that through a Gemini model instead (using the llm-gemini plugin):
+
+
+llm -f docs:datasette -m gemini-2.0-flash \
+  &#x27;Build a render_cell plugin that detects and renders markdown&#x27;
+
+Here&#x27;s the output. 132,042 input, 1,129 output with Gemini 2.0 Flash &#x3D; 1.3656 cents.
+
+You can browse the combined documentation files this uses in docs-for-llm. They&#x27;re built using GitHub Actions.
+
+llms-txt is a project lead by Jeremy Howard that encourages projects to publish similar files to help LLMs ingest a succinct copy of their documentation.
+
+Publishing, sharing and reusing templates
+
+The new register_template_loaders() plugin hook allows plugins to register prefix:value custom template loaders, for use with the llm -t option.
+
+llm-templates-github and llm-templates-fabric are two new plugins that make use of that hook.
+
+llm-templates-github lets you share and use templates via a public GitHub repository. Here&#x27;s how to run my Pelican riding a bicycle benchmark against a specific model:
+
+
+llm install llm-templates-github
+llm -t gh:simonw/pelican-svg -m o3-mini
+
+This executes this pelican-svg.yaml template stored in my simonw/llm-templates repository, using a new repository naming convention.
+
+llm -t gh:simonw/pelican-svg will load that pelican-svg.yaml file from the simonw/llm-templates repo. You can also use llm -t gh:simonw/name-of-repo/name-of-template to load a template from a repository that doesn&#x27;t follow that convention.
+
+To share your own templates, create a repository on GitHub under your user account called llm-templates and start saving .yaml files to it.
+
+llm-templates-fabric provides a similar mechanism for loading templates from  Daniel Miessler&#x27;s extensive fabric collection:
+
+
+llm install llm-templates-fabric
+curl https://simonwillison.net/2025/Apr/6/only-miffy/ | \
+  llm -t f:extract_main_idea
+
+A conversation with Daniel was the inspiration for this new plugin hook.
+
+Everything else in LLM 0.24
+
+LLM 0.24 is a big release, spanning 51 commits. The release notes cover everything that&#x27;s new in full - here are a few of my highlights:
+
+
+
+The new llm-openai plugin provides support for o1-pro (which is not supported by the OpenAI mechanism used by LLM core). Future OpenAI features will migrate to this plugin instead of LLM core itself.
+
+
+
+The problem with OpenAI models being handled by LLM core is that I have to release a whole new version of LLM every time OpenAI releases a new model or feature. Migrating this stuff out to a plugin means I can release new version of that plugin independently of LLM itself - something I frequently do for llm-anthropic and llm-gemini and others.
+
+The new llm-openai plugin uses their Responses API, a new shape of API which I covered last month.
+
+
+
+
+llm -t $URL option can now take a URL to a YAML template. #856
+
+
+
+The new custom template loaders are fun, but being able to paste in a URL to a YAML file somewhere provides a simpler way to share templates.
+
+
+
+Templates can now store default model options. #845
+
+Attachments can now be stored in templates. #826
+
+
+
+The quickest way to create your own template is with the llm prompt ... --save name-of-template command. This now works with attachments, fragments and default model options, each of which is persisted in the template YAML file.
+
+
+
+New llm models options family of commands for setting default options for particular models. #829
+
+
+
+I built this when I learned that Qwen&#x27;s QwQ-32b model works best with temperature 0.7 and top p 0.95.
+
+
+
+
+llm prompt -d path-to-sqlite.db option can now be used to write logs to a custom SQLite database. #858
+
+
+
+This proved extremely useful for testing fragments - it meant I could run a prompt and save the full response to a separate SQLite database which I could then upload to S3 and share as a link to Datasette Lite.
+
+
+
+
+llm similar -p/--plain option providing more human-readable output than the default JSON. #853
+
+
+
+I&#x27;d like this to be the default output, but I&#x27;m holding off on changing that until LLM 1.0 since it&#x27;s a breaking change for people building automations against the JSON from llm similar.
+
+
+
+Set the LLM_RAISE_ERRORS&#x3D;1 environment variable to raise errors during prompts rather than suppressing them, which means you can run python -i -m llm &#x27;prompt&#x27; and then drop into a debugger on errors with import pdb; pdb.pm(). #817
+
+
+
+Really useful for debugging new model plugins.
+
+
+
+
+llm prompt -q gpt -q 4o option - pass -q searchterm one or more times to execute a prompt against the first model that matches all of those strings - useful for if you can&#x27;t remember the full model ID. #841
+
+
+
+Pretty obscure but I found myself needing this. Vendors love releasing models with names like gemini-2.5-pro-exp-03-25, now I can run llm -q gem -q 2.5 -q exp &#x27;say hi&#x27; to save me from looking up the model ID.
+
+
+
+
+OpenAI compatible models configured using extra-openai-models.yaml now support supports_schema: true, vision: true and audio: true options. Thanks @adaitche and @giuli007. #819, #843
+
+
+
+I don&#x27;t use this feature myself but it&#x27;s clearly popular, this isn&#x27;t the first time I&#x27;e had PRs with improvements from the wider community.
+Tags: plugins, projects, ai, annotated-release-notes, openai, generative-ai, llms, llm, gemini, long-context, files-to-prompt</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Changes to the repository object in push webhook
+              <span class="post-metadata">(7 min | 2091 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-07-changes-to-the-repository-object-in-push-webhook>Changes to the repository object in push webhook
+The post Changes to the repository object in push webhook appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-06</time>
 
       <section>
