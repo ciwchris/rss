@@ -2,10 +2,188 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-10T14:10:39.830Z</updated>
+    <updated>2025-04-10T21:09:58.578Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[LLM pricing calculator (updated)]]></title>
+        <id>https://simonwillison.net/2025/Apr/10/llm-pricing-calculator/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/10/llm-pricing-calculator/#atom-everything"/>
+        <updated>2025-04-10T19:56:56.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://tools.simonwillison.net/llm-prices">LLM pricing calculator (updated)</a></strong></p>
+I <a href="https://github.com/simonw/tools/commit/07c91d8b4fd31f4d460e6b0cd9c225af7e211112">updated</a> my LLM pricing calculator this morning (<a href="https://claude.ai/share/5e0eebde-6204-4496-aa1a-fcc519df44b2">Claude transcript</a>) to show the prices of various hosted models in a sorted table, defaulting to lowest price first.</p>
+<p><img alt="A pricing table titled &quot;Model prices (per million tokens)&quot; showing AI model costs. Lists models including Amazon Nova Micro ($0.035 input/$0.14 output), Gemini 1.5 Flash-8B ≤128k ($0.04/$0.15), Ministral 3B 24.10 ($0.04/$0.04), Amazon Nova Lite ($0.06/$0.24), Gemini 2.0 Flash Lite ($0.075/$0.30), Gemini 1.5 Flash ≤128k ($0.075/$0.30), Gemini 1.5 Flash-8B &gt;128k ($0.075/$0.30), Gemini 2.0 Flash ($0.10/$0.40), Mistral Small 3.1 ($0.10/$0.30), Ministral 8B 24.10 ($0.10/$0.10), Gemini 1.5 Flash &gt;128k ($0.15/$0.60), and GPT-4o Mini ($0.15/$0.60)." src="https://static.simonwillison.net/static/2025/llm-prices-sorted.jpg" /></p>
+<p><a href="https://simonwillison.net/2024/Dec/4/amazon-nova/">Amazon Nova</a> and <a href="https://simonwillison.net/tags/gemini/">Google Gemini</a> continue to dominate the lower end of the table. The most expensive models currently are still OpenAI's o1-Pro ($150/$600 and GPT-4.5 ($75/$150).
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/tools">tools</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm-docsmith]]></title>
+        <id>https://simonwillison.net/2025/Apr/10/llm-docsmith/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/10/llm-docsmith/#atom-everything"/>
+        <updated>2025-04-10T18:09:18.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://mathpn.com/posts/llm-docsmith/">llm-docsmith</a></strong></p>
+Matheus Pedroni released this neat plugin for LLM for adding docstrings to existing Python code. You can run it like this:</p>
+<pre><code>llm install llm-docsmith
+llm docsmith ./scripts/main.py -o
+</code></pre>
+<p>The <code>-o</code> option previews the changes that will be made - without <code>-o</code> it edits the files directly.</p>
+<p>It also accepts a <code>-m claude-3.7-sonnet</code> parameter for using an alternative model from the default (GPT-4o mini).</p>
+<p>The implementation uses the Python <a href="https://pypi.org/project/libcst/">libcst</a> "Concrete Syntax Tree" package to manipulate the code, which means there's no chance of it making edits to anything other than the docstrings.</p>
+<p>Here's <a href="https://github.com/mathpn/llm-docsmith/blob/v0.1/docsmith.py#L10-L30">the full system prompt</a> it uses.</p>
+<p>One neat trick is at the end of the system prompt it says:</p>
+<blockquote>
+<p><code>You will receive a JSON template. Fill the slots marked with &lt;SLOT&gt; with the appropriate description. Return as JSON.</code></p>
+</blockquote>
+<p>That template is actually provided JSON generated using these Pydantic classes:</p>
+<pre><span class="pl-k">class</span> <span class="pl-v">Argument</span>(<span class="pl-v">BaseModel</span>):
+    <span class="pl-s1">name</span>: <span class="pl-smi">str</span>
+    <span class="pl-s1">description</span>: <span class="pl-smi">str</span>
+    <span class="pl-s1">annotation</span>: <span class="pl-s1">str</span> <span class="pl-c1">|</span> <span class="pl-c1">None</span> <span class="pl-c1">=</span> <span class="pl-c1">None</span>
+    <span class="pl-s1">default</span>: <span class="pl-s1">str</span> <span class="pl-c1">|</span> <span class="pl-c1">None</span> <span class="pl-c1">=</span> <span class="pl-c1">None</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Return</span>(<span class="pl-v">BaseModel</span>):
+    <span class="pl-s1">description</span>: <span class="pl-smi">str</span>
+    <span class="pl-s1">annotation</span>: <span class="pl-s1">str</span> <span class="pl-c1">|</span> <span class="pl-c1">None</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Docstring</span>(<span class="pl-v">BaseModel</span>):
+    <span class="pl-s1">node_type</span>: <span class="pl-v">Literal</span>[<span class="pl-s">"class"</span>, <span class="pl-s">"function"</span>]
+    <span class="pl-s1">name</span>: <span class="pl-smi">str</span>
+    <span class="pl-s1">docstring</span>: <span class="pl-smi">str</span>
+    <span class="pl-s1">args</span>: <span class="pl-s1">list</span>[<span class="pl-smi">Argument</span>] <span class="pl-c1">|</span> <span class="pl-c1">None</span> <span class="pl-c1">=</span> <span class="pl-c1">None</span>
+    <span class="pl-s1">ret</span>: <span class="pl-v">Return</span> <span class="pl-c1">|</span> <span class="pl-c1">None</span> <span class="pl-c1">=</span> <span class="pl-c1">None</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Documentation</span>(<span class="pl-v">BaseModel</span>):
+    <span class="pl-s1">entries</span>: <span class="pl-s1">list</span>[<span class="pl-smi">Docstring</span>]</pre>
+
+<p>The code adds <code>&lt;SLOT&gt;</code> notes to that in various places, so the template included in the prompt ends up looking like this:</p>
+<pre>{
+  <span class="pl-ent">"entries"</span>: [
+    {
+      <span class="pl-ent">"node_type"</span>: <span class="pl-s"><span class="pl-pds">"</span>function<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>create_docstring_node<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"docstring"</span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;SLOT&gt;<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"args"</span>: [
+        {
+          <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>docstring_text<span class="pl-pds">"</span></span>,
+          <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;SLOT&gt;<span class="pl-pds">"</span></span>,
+          <span class="pl-ent">"annotation"</span>: <span class="pl-s"><span class="pl-pds">"</span>str<span class="pl-pds">"</span></span>,
+          <span class="pl-ent">"default"</span>: <span class="pl-c1">null</span>
+        },
+        {
+          <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>indent<span class="pl-pds">"</span></span>,
+          <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;SLOT&gt;<span class="pl-pds">"</span></span>,
+          <span class="pl-ent">"annotation"</span>: <span class="pl-s"><span class="pl-pds">"</span>str<span class="pl-pds">"</span></span>,
+          <span class="pl-ent">"default"</span>: <span class="pl-c1">null</span>
+        }
+      ],
+      <span class="pl-ent">"ret"</span>: {
+        <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;SLOT&gt;<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"annotation"</span>: <span class="pl-s"><span class="pl-pds">"</span>cst.BaseStatement<span class="pl-pds">"</span></span>
+      }
+    }
+  ]
+}</pre>
+
+    <p><small></small>Via <a href="https://twitter.com/pnmath/status/1909386592944292018">@pnmath</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/pydantic">pydantic</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Django: what’s new in 5.2]]></title>
+        <id>https://simonwillison.net/2025/Apr/10/django-whats-new-in-52/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/10/django-whats-new-in-52/#atom-everything"/>
+        <updated>2025-04-10T16:27:27.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://adamj.eu/tech/2025/04/07/django-whats-new-5.2/">Django: what’s new in 5.2</a></strong></p>
+Adam Johnson provides extremely detailed unofficial annotated release notes for the <a href="https://docs.djangoproject.com/en/5.2/releases/5.2/">latest Django</a>.</p>
+<p>I found his explanation and example of <a href="https://adamj.eu/tech/2025/04/07/django-whats-new-5.2/#form-boundfield-customization">Form BoundField customization</a> particularly useful - here's the new pattern for customizing the <code>class=</code> attribute on the label associated with a <code>CharField</code>:</p>
+<blockquote>
+<pre><span class="pl-k">from</span> <span class="pl-s1">django</span> <span class="pl-k">import</span> <span class="pl-s1">forms</span>
+
+<span class="pl-k">class</span> <span class="pl-v">WideLabelBoundField</span>(<span class="pl-s1">forms</span>.<span class="pl-c1">BoundField</span>):
+    <span class="pl-k">def</span> <span class="pl-en">label_tag</span>(<span class="pl-s1">self</span>, <span class="pl-s1">contents</span><span class="pl-c1">=</span><span class="pl-c1">None</span>, <span class="pl-s1">attrs</span><span class="pl-c1">=</span><span class="pl-c1">None</span>, <span class="pl-s1">label_suffix</span><span class="pl-c1">=</span><span class="pl-c1">None</span>):
+        <span class="pl-k">if</span> <span class="pl-s1">attrs</span> <span class="pl-c1">is</span> <span class="pl-c1">None</span>:
+            <span class="pl-s1">attrs</span> <span class="pl-c1">=</span> {}
+        <span class="pl-s1">attrs</span>[<span class="pl-s">"class"</span>] <span class="pl-c1">=</span> <span class="pl-s">"wide"</span>
+        <span class="pl-k">return</span> <span class="pl-en">super</span>().<span class="pl-c1">label_tag</span>(<span class="pl-s1">contents</span>, <span class="pl-s1">attrs</span>, <span class="pl-s1">label_suffix</span>)
+
+<span class="pl-k">class</span> <span class="pl-v">NebulaForm</span>(<span class="pl-s1">forms</span>.<span class="pl-c1">Form</span>):
+    <span class="pl-s1">name</span> <span class="pl-c1">=</span> <span class="pl-s1">forms</span>.<span class="pl-c1">CharField</span>(
+        <span class="pl-s1">max_length</span><span class="pl-c1">=</span><span class="pl-c1">100</span>,
+        <span class="pl-s1">label</span><span class="pl-c1">=</span><span class="pl-s">"Nebula Name"</span>,
+        <span class="pl-s1">bound_field_class</span><span class="pl-c1">=</span><span class="pl-v">WideLabelBoundField</span>,
+    )</pre>
+</blockquote>
+
+<p>I'd also missed the new <a href="https://adamj.eu/tech/2025/04/07/django-whats-new-5.2/#httpresponse-get-preferred-type">HttpResponse.get_preferred_type() method</a> for implementing HTTP content negotiation:</p>
+<pre><span class="pl-s1">content_type</span> <span class="pl-c1">=</span> <span class="pl-s1">request</span>.<span class="pl-c1">get_preferred_type</span>(
+    [<span class="pl-s">"text/html"</span>, <span class="pl-s">"application/json"</span>]
+)</pre>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/adam-johnson">adam-johnson</a>, <a href="https://simonwillison.net/tags/django">django</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm-fragments-go]]></title>
+        <id>https://simonwillison.net/2025/Apr/10/llm-fragments-go/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/10/llm-fragments-go/#atom-everything"/>
+        <updated>2025-04-10T15:19:33.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/FiloSottile/mostly-harmless/tree/main/llm-fragments-go">llm-fragments-go</a></strong></p>
+Filippo Valsorda released the first plugin by someone other than me that uses LLM's new <a href="https://llm.datasette.io/en/stable/plugins/plugin-hooks.html#register-fragment-loaders-register">register_fragment_loaders()</a> plugin hook I announced <a href="https://simonwillison.net/2025/Apr/7/long-context-llm/">the other day</a>.</p>
+<p>Install with <code>llm install llm-fragments-go</code> and then:</p>
+<blockquote>
+<p>You can feed the docs of a Go package into LLM using the <code>go:</code> <a href="https://llm.datasette.io/en/stable/fragments.html">fragment</a> with the package name, optionally followed by a version suffix.</p>
+<p><code>llm -f go:golang.org/x/mod/sumdb/note@v0.23.0 "Write a single file command that generates a key, prints the verifier key, signs an example message, and prints the signed note."</code></p>
+</blockquote>
+<p>The implementation is <a href="https://github.com/FiloSottile/mostly-harmless/blob/44fb3e6e0b56decd72e893409e8085d88ad43e3d/llm-fragments-go/llm_fragments_go.py">just 33 lines of Python</a> and works by running these commands in a temporary directory:</p>
+<pre><code>go mod init llm_fragments_go
+go get golang.org/x/mod/sumdb/note@v0.23.0
+go doc -all golang.org/x/mod/sumdb/note
+</code></pre>
+
+    <p><small></small>Via <a href="https://bsky.app/profile/filippo.abyssdomain.expert/post/3lmhhqccp2c2i">@filippo.abyssdomain.expert</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/go">go</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/filippo-valsorda">filippo-valsorda</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Actions: macOS 15 and Windows 2025 images are now generally available]]></title>
+        <id>https://github.blog/changelog/2025-04-10-github-actions-macos-15-and-windows-2025-images-are-now-generally-available</id>
+        <link href="https://github.blog/changelog/2025-04-10-github-actions-macos-15-and-windows-2025-images-are-now-generally-available"/>
+        <updated>2025-04-10T15:17:05.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Actions: macOS 15 and Windows 2025 images are now generally available
+The post GitHub Actions: macOS 15 and Windows 2025 images are now generally available appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Note on 10th April 2025]]></title>
+        <id>https://simonwillison.net/2025/Apr/10/bullets/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/10/bullets/#atom-everything"/>
+        <updated>2025-04-10T14:27:08.000Z</updated>
+        <summary type="html"><![CDATA[<p>These proposed API integrations where your LLM agent talks to someone else's LLM tool-using agent are the API version of that thing where someone uses ChatGPT to turn their bullets into an email and the recipient uses ChatGPT to summarize it back to bullet points.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/apis">apis</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Copilot Chat now supports pasting links]]></title>
         <id>https://github.blog/changelog/2025-04-09-copilot-chat-now-supports-pasting-links</id>

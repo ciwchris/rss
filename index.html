@@ -25,6 +25,186 @@
 
   <ul>
     <li>
+      <time>2025-04-10</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              LLM pricing calculator (updated)
+              <span class="post-metadata">(1 min | 251 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/llm-pricing-calculator/#atom-everything>LLM pricing calculator (updated)
+updated my LLM pricing calculator this morning (Claude transcript) to show the prices of various hosted models in a sorted table, defaulting to lowest price first.
+
+Amazon Nova and Google Gemini continue to dominate the lower end of the table. The most expensive models currently are still OpenAI&#x27;s o1-Pro ($150/$600 and GPT-4.5 ($75/$150).
+
+
+    
+Tags: claude, llm-pricing, ai, llms, vibe-coding, ai-assisted-programming, generative-ai, tools</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-docsmith
+              <span class="post-metadata">(1 min | 448 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/llm-docsmith/#atom-everything>llm-docsmith
+llm install llm-docsmith
+llm docsmith ./scripts/main.py -o
+
+The -o option previews the changes that will be made - without -o it edits the files directly.
+It also accepts a -m claude-3.7-sonnet parameter for using an alternative model from the default (GPT-4o mini).
+The implementation uses the Python libcst &quot;Concrete Syntax Tree&quot; package to manipulate the code, which means there&#x27;s no chance of it making edits to anything other than the docstrings.
+Here&#x27;s the full system prompt it uses.
+One neat trick is at the end of the system prompt it says:
+You will receive a JSON template. Fill the slots marked with &lt;SLOT&gt; with the appropriate description. Return as JSON.
+That template is actually provided JSON generated using these Pydantic classes:
+class Argument(BaseModel):
+    name: str
+    description: str
+    annotation: str | None &#x3D; None
+    default: str | None &#x3D; None
+
+class Return(BaseModel):
+    description: str
+    annotation: str | None
+
+class Docstring(BaseModel):
+    node_type: Literal[&quot;class&quot;, &quot;function&quot;]
+    name: str
+    docstring: str
+    args: list[Argument] | None &#x3D; None
+    ret: Return | None &#x3D; None
+
+class Documentation(BaseModel):
+    entries: list[Docstring]
+The code adds &lt;SLOT&gt; notes to that in various places, so the template included in the prompt ends up looking like this:
+{
+  &quot;entries&quot;: [
+    {
+      &quot;node_type&quot;: &quot;function&quot;,
+      &quot;name&quot;: &quot;create_docstring_node&quot;,
+      &quot;docstring&quot;: &quot;&lt;SLOT&gt;&quot;,
+      &quot;args&quot;: [
+        {
+          &quot;name&quot;: &quot;docstring_text&quot;,
+          &quot;description&quot;: &quot;&lt;SLOT&gt;&quot;,
+          &quot;annotation&quot;: &quot;str&quot;,
+          &quot;default&quot;: null
+        },
+        {
+          &quot;name&quot;: &quot;indent&quot;,
+          &quot;description&quot;: &quot;&lt;SLOT&gt;&quot;,
+          &quot;annotation&quot;: &quot;str&quot;,
+          &quot;default&quot;: null
+        }
+      ],
+      &quot;ret&quot;: {
+        &quot;description&quot;: &quot;&lt;SLOT&gt;&quot;,
+        &quot;annotation&quot;: &quot;cst.BaseStatement&quot;
+      }
+    }
+  ]
+}
+Via @pnmath
+Tags: prompt-engineering, llm, python, plugins, generative-ai, ai, pydantic</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Django: what’s new in 5.2
+              <span class="post-metadata">(1 min | 284 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/django-whats-new-in-52/#atom-everything>Django: what’s new in 5.2
+latest Django.
+I found his explanation and example of Form BoundField customization particularly useful - here&#x27;s the new pattern for customizing the class&#x3D; attribute on the label associated with a CharField:
+from django import forms
+
+class WideLabelBoundField(forms.BoundField):
+    def label_tag(self, contents&#x3D;None, attrs&#x3D;None, label_suffix&#x3D;None):
+        if attrs is None:
+            attrs &#x3D; {}
+        attrs[&quot;class&quot;] &#x3D; &quot;wide&quot;
+        return super().label_tag(contents, attrs, label_suffix)
+
+class NebulaForm(forms.Form):
+    name &#x3D; forms.CharField(
+        max_length&#x3D;100,
+        label&#x3D;&quot;Nebula Name&quot;,
+        bound_field_class&#x3D;WideLabelBoundField,
+    )
+I&#x27;d also missed the new HttpResponse.get_preferred_type() method for implementing HTTP content negotiation:
+content_type &#x3D; request.get_preferred_type(
+    [&quot;text/html&quot;, &quot;application/json&quot;]
+)
+Tags: adam-johnson, django, python</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-fragments-go
+              <span class="post-metadata">(1 min | 299 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/llm-fragments-go/#atom-everything>llm-fragments-go
+register_fragment_loaders() plugin hook I announced the other day.
+Install with llm install llm-fragments-go and then:
+You can feed the docs of a Go package into LLM using the go: fragment with the package name, optionally followed by a version suffix.
+llm -f go:golang.org/x/mod/sumdb/note@v0.23.0 &quot;Write a single file command that generates a key, prints the verifier key, signs an example message, and prints the signed note.&quot;
+The implementation is just 33 lines of Python and works by running these commands in a temporary directory:
+go mod init llm_fragments_go
+go get golang.org/x/mod/sumdb/note@v0.23.0
+go doc -all golang.org/x/mod/sumdb/note
+
+Via @filippo.abyssdomain.expert
+Tags: generative-ai, llm, plugins, go, ai, llms, filippo-valsorda</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Actions: macOS 15 and Windows 2025 images are now generally available
+              <span class="post-metadata">(7 min | 2186 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-10-github-actions-macos-15-and-windows-2025-images-are-now-generally-available>GitHub Actions: macOS 15 and Windows 2025 images are now generally available
+The post GitHub Actions: macOS 15 and Windows 2025 images are now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Note on 10th April 2025
+              <span class="post-metadata">(1 min | 231 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/bullets/#atom-everything>These proposed API integrations where your LLM agent talks to someone else&#x27;s LLM tool-using agent are the API version of that thing where someone uses ChatGPT to turn their bullets into an email and the recipient uses ChatGPT to summarize it back to bullet points.
+Tags: apis, llms, ai-agents, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-09</time>
 
       <section>
