@@ -2,10 +2,175 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-14T14:10:50.214Z</updated>
+    <updated>2025-04-14T21:09:51.039Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[GitHub Actions token integration now generally available in GitHub Models]]></title>
+        <id>https://github.blog/changelog/2025-04-14-github-actions-token-integration-now-generally-available-in-github-models</id>
+        <link href="https://github.blog/changelog/2025-04-14-github-actions-token-integration-now-generally-available-in-github-models"/>
+        <updated>2025-04-14T19:23:20.000Z</updated>
+        <summary type="html"><![CDATA[You can now use the built-in GITHUB_TOKEN from GitHub Actions to authenticate requests to GitHub Models. This simplifies your workflows by integrating AI capabilities directly into your actions, eliminating the…
+The post GitHub Actions token integration now generally available in GitHub Models appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GPT-4.1: Three new million token input models from OpenAI, including their cheapest model yet]]></title>
+        <id>https://simonwillison.net/2025/Apr/14/gpt-4-1/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/14/gpt-4-1/#atom-everything"/>
+        <updated>2025-04-14T18:12:12.000Z</updated>
+        <summary type="html"><![CDATA[<p>OpenAI <a href="https://openai.com/index/gpt-4-1/">introduced</a> three new models this morning: GPT-4.1, GPT-4.1 mini and GPT-4.1 nano. These are API-only models right now, not available through the ChatGPT interface (though you can try them out in OpenAI's <a href="https://platform.openai.com/playground">API playground</a>). All three models can handle 1,047,576 tokens of input and 32,768 tokens of output, and all three have a May 31, 2024 cut-off date (their previous models were mostly September 2023).</p>
+<p>The models score higher than GPT-4o <em>and</em> GPT-4.5 on coding benchmarks, and do very well on long context benchmarks as well. They also claim improvements in instruction following - following requested formats, obeying negative instructions, sorting output and obeying instructions to say "I don't know".</p>
+<p>I released a new version of my <a href="https://github.com/simonw/llm-openai-plugin">llm-openai</a> plugin supporting the new models. This is a new thing for the <a href="https://llm.datasette.io/">LLM</a> ecosystem: previously OpenAI models were only supported in core, which meant I had to ship a full LLM release to add support for them.</p>
+<p>You can run the new models like this:</p>
+<div class="highlight highlight-source-shell"><pre>llm install llm-openai-plugin -U
+llm -m openai/gpt-4.1 <span class="pl-s"><span class="pl-pds">"</span>Generate an SVG of a pelican riding a bicycle<span class="pl-pds">"</span></span></pre></div>
+<p>The other model IDs are <code>openai/gpt-4.1-mini</code> and <code>openai/gpt-4.1-nano</code>.</p>
+<p>Here's the <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle/">pelican riding a bicycle</a> I got from full sized GPT-4.1:</p>
+<p><img src="https://static.simonwillison.net/static/2025/gpt-4.1-pelican.jpg" alt="Not a terrible pelican on a bicycle. The frame is blue, though misshapen. The pelican's legs are detached from its body. It has a nice but square beak." style="max-width: 100%;" /></p>
+<p>I'm particularly excited by <a href="https://platform.openai.com/docs/models/gpt-4.1-nano">GPT-4.1 nano</a>, which handles image and text input up to a million tokens and is priced lower than any other previous OpenAI model: $0.10/million for input and $0.40/million for output, less than previous cheapest OpenAI model GPT-4o-mini ($0.15/$0.60). I've updated my <a href="https://tools.simonwillison.net/llm-prices">LLM pricing table</a> to include the new models.</p>
+<p>They're not the cheapest overall though: Gemini 2.0 Flash Lite and, Gemini 1.5 Flash 8B, Amazon Nova Lite and Nova Micro and Mistral's 3B, 8B and Small 3.1 hosted models remain less expensive.</p>
+<p><img src="https://static.simonwillison.net/static/2025/model-prices-april-14.jpg" alt="Screenshot of the table from that LLM pricing table link above. Amazon Nova Micro is cheapest at $0.035/million input tokens." style="max-width: 100%;" /></p>
+
+<p>As a demonstration of just how cheap GPT-4.1 nano is, consider this photograph I took of some pelicans:</p>
+
+<p><img src="https://static.simonwillison.net/static/2025/two-pelicans.jpg" alt="Description to follow" style="max-width: 100%" /></p>
+
+<p>I ran that through GPT-4.1 nano like this:</p>
+
+<pre>llm -m openai/gpt-4.1-nano describe \
+  -a https://static.simonwillison.net/static/2025/two-pelicans.jpg</pre>
+
+<p>And got back this response:</p>
+
+<blockquote><p>The image shows two pelicans flying against a clear blue sky. They are positioned in flight, with their wings extended, showcasing their large wingspan and feather patterns. The pelican on the right appears slightly higher and facing slightly to the left, while the pelican on the left is oriented more horizontally with its beak pointing forward. Both birds display a combination of brown, tan, and white plumage, characteristic of pelicans, with their long beaks prominently visible.</p></blockquote>
+
+<p>Running <code>llm logs -c --usage</code> revealed that this used 1,933 input tokens and 96 output tokens. Passing those through <a href="https://tools.simonwillison.net/llm-prices">the pricing calculator</a> returns a total cost of $0.000232, or 0.0232 cents.</p>
+
+<p>That means I could use GPT-4.1 nano to generate descriptions of 4,310 images like this one for just shy of a dollar.</p>
+
+<p>A few closing thoughts on these new models:</p>
+<ul>
+<li>
+<p>The 1 million input token context thing is a <em>really big deal</em>. The huge token context has been a major competitive advantage for the Google Gemini models for a full year at this point - it's reassuring to see other vendors start to catch up. I'd like to see the same from Anthropic - Claude was the first model to hit 200,000 but hasn't shipped more than that yet (aside from a 500,000 token model that was restricted to their big enterprise partners).</p>
+</li>
+<li><p>When I added <a href="https://simonwillison.net/2025/Apr/7/long-context-llm/">fragments support</a> to LLM last week the feature was mainly designed to help take advantage of longer context models. It's pleasing to see another one show up so shortly after that release.</p></li>
+<li>
+<p>OpenAI really emphasized code performance for this model. They called out the <a href="https://aider.chat/docs/leaderboards/">Aider benchmark</a> in their announcement post.</p>
+</li>
+<li>
+<p><a href="https://simonwillison.net/2025/Feb/27/introducing-gpt-45/#confidence">As expected</a>, GPT-4.5 turned out to be not long for this world:</p>
+<blockquote>
+<p>We will also begin deprecating GPT‑4.5 Preview in the API, as GPT‑4.1 offers improved or similar performance on many key capabilities at much lower cost and latency. GPT‑4.5 Preview will be turned off in three months, on July 14, 2025, to allow time for developers to transition</p>
+</blockquote>
+</li>
+<li>
+<p>In <a href="https://www.youtube.com/watch?v=kA-P9ood-cE">the livestream announcement</a> Michelle Pokrass <a href="https://www.youtube.com/live/kA-P9ood-cE?t=641s">let slip</a> that the codename for the model was Quasar - that's the name of the stealth model that's <a href="https://openrouter.ai/announcements/stealth-model-quasar-alpha">been previewing on OpenRouter</a> for the past two weeks. That has <a href="https://twitter.com/openrouterai/status/1911833662464864452">now been confirmed</a> by OpenRouter.</p>
+</li>
+<li>
+<p>OpenAI shared a <a href="https://cookbook.openai.com/examples/gpt4-1_prompting_guide">GPT 4.1 Prompting Guide</a>, which includes this tip about long context prompting:</p>
+<blockquote>
+<p>Especially in long context usage, placement of instructions and context can impact performance. If you have long context in your prompt, ideally place your instructions at both the beginning and end of the provided context, as we found this to perform better than only above or below. If you’d prefer to only have your instructions once, then above the provided context works better than below.</p>
+</blockquote>
+<p>Adding instructions before the content is incompatible with <a href="https://platform.openai.com/docs/guides/prompt-caching">prompt caching</a> - I always keep user instructions at the end since doing so means multiple prompts can benefit from OpenAI's prefix cache.</p>
+<p>They also recommend XML-style delimiters over JSON for long context, suggesting this format (complete with the XML-invalid unquoted attribute) that's similar to the format <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags">recommended by Anthropic</a> for Claude:</p>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">doc</span> <span class="pl-e">id</span>=1 <span class="pl-e">title</span>=<span class="pl-s"><span class="pl-pds">"</span>The Fox<span class="pl-pds">"</span></span>&gt;The quick brown fox jumps over the lazy dog&lt;/<span class="pl-ent">doc</span>&gt;</pre></div>
+<p>There's an extensive section at the end <a href="https://cookbook.openai.com/examples/gpt4-1_prompting_guide#appendix-generating-and-applying-file-diffs">describing their recommended approach to applying file diffs</a>: "we open-source here one recommended diff format, on which the model has been extensively trained".</p>
+</li>
+<li><p>One thing notably absent from the GPT-4.1 announcement is any mention of audio support. The "o" in GPT-4o stood for "omni", because it was a multi-modal model with image and audio input and output. The 4.1 models appear to be text and image input and text output only.</p></li>
+</ul>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/long-context">long-context</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Secret scanning expands default pattern and push protection support]]></title>
+        <id>https://github.blog/changelog/2025-04-14-secret-scanning-expands-default-pattern-and-push-protection-support</id>
+        <link href="https://github.blog/changelog/2025-04-14-secret-scanning-expands-default-pattern-and-push-protection-support"/>
+        <updated>2025-04-14T17:46:31.000Z</updated>
+        <summary type="html"><![CDATA[GitHub regularly updates the default pattern set for secret scanning with new patterns and upgrades of existing patterns, ensuring your repositories have comprehensive detection for different secret types. The following…
+The post Secret scanning expands default pattern and push protection support appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot extension for GitHub Models now requires updated permissions]]></title>
+        <id>https://github.blog/changelog/2025-04-14-copilot-extension-for-github-models-now-requires-updated-permissions</id>
+        <link href="https://github.blog/changelog/2025-04-14-copilot-extension-for-github-models-now-requires-updated-permissions"/>
+        <updated>2025-04-14T17:34:07.000Z</updated>
+        <summary type="html"><![CDATA[The Copilot extension for GitHub Models now requires the models:read permission in order to access GitHub Models APIs. Users will need to reauthorize the extension by accepting the new permission…
+The post Copilot extension for GitHub Models now requires updated permissions appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Note on 14th April 2025]]></title>
+        <id>https://simonwillison.net/2025/Apr/14/believe/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/14/believe/#atom-everything"/>
+        <updated>2025-04-14T16:30:29.000Z</updated>
+        <summary type="html"><![CDATA[<p>Believing AI vendors who promise you that they won't train on your data is a <em>huge</em> competitive advantage these days.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Windows arm64 hosted runners now available in public preview]]></title>
+        <id>https://github.blog/changelog/2025-04-14-windows-arm64-hosted-runners-now-available-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-04-14-windows-arm64-hosted-runners-now-available-in-public-preview"/>
+        <updated>2025-04-14T16:15:32.000Z</updated>
+        <summary type="html"><![CDATA[Now in public preview, Windows arm64 hosted runners are available for free in public repositories. This runner comes with a Windows 11 Desktop image, fully equipped with all the tooling…
+The post Windows arm64 hosted runners now available in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[OpenAI GPT-4.1 now available in public preview for GitHub Copilot and GitHub Models]]></title>
+        <id>https://github.blog/changelog/2025-04-14-openai-gpt-4-1-now-available-in-public-preview-for-github-copilot-and-github-models</id>
+        <link href="https://github.blog/changelog/2025-04-14-openai-gpt-4-1-now-available-in-public-preview-for-github-copilot-and-github-models"/>
+        <updated>2025-04-14T15:51:38.000Z</updated>
+        <summary type="html"><![CDATA[OpenAI’s latest model, GPT-4.1, is now available in GitHub Copilot and GitHub Models, bringing OpenAI’s newest model to your coding workflow. This model outperforms GPT-4o across the board, with major…
+The post OpenAI GPT-4.1 now available in public preview for GitHub Copilot and GitHub Models appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The Llama 4 herd is now generally available in GitHub Models]]></title>
+        <id>https://github.blog/changelog/2025-04-10-the-llama-4-herd-is-now-generally-available-in-github-models</id>
+        <link href="https://github.blog/changelog/2025-04-14-the-llama-4-herd-is-now-generally-available-in-github-models"/>
+        <updated>2025-04-14T15:15:54.000Z</updated>
+        <summary type="html"><![CDATA[The Llama 4 herd is now generally available in GitHub Models
+The post The Llama 4 herd is now generally available in GitHub Models appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SQLite File Format Viewer]]></title>
+        <id>https://simonwillison.net/2025/Apr/14/sqlite-file-format-viewer/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/14/sqlite-file-format-viewer/#atom-everything"/>
+        <updated>2025-04-14T14:35:07.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://sqlite-internal.pages.dev/">SQLite File Format Viewer</a></strong></p>
+Neat browser-based visual interface for exploring the structure of a SQLite database file, built by Visal In using React and a custom parser <a href="https://github.com/invisal/sqlite-internal/tree/main/src/parser">implemented in TypeScript</a>.
+
+    <p><small></small>Via <a href="https://twitter.com/invisal89/status/1911692246182928753">@invisal89</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/typescript">typescript</a>, <a href="https://simonwillison.net/tags/react">react</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Using LLMs as the first line of support in Open Source]]></title>
         <id>https://simonwillison.net/2025/Apr/14/llms-as-the-first-line-of-support/#atom-everything</id>
@@ -2494,6 +2659,16 @@ files-to-prompt . | llm -m claude-3.7-sonnet \
         </author>
     </entry>
     <entry>
+        <title type="html"><![CDATA[gemma3]]></title>
+        <id>https://ollama.com/library/gemma3</id>
+        <link href="https://ollama.com/library/gemma3"/>
+        <updated>2025-03-25T00:12:00.000Z</updated>
+        <summary type="html"><![CDATA[The current, most capable model that runs on a single GPU.]]></summary>
+        <author>
+            <name>Ollama models</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Semantic Kernel Agent Framework RC2]]></title>
         <id>https://devblogs.microsoft.com/semantic-kernel/?p=4559</id>
         <link href="https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-agent-framework-rc2/"/>
@@ -3485,36 +3660,6 @@ My TIL about <a href="https://til.simonwillison.net/css/dialog-full-height">Styl
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/css">css</a>, <a href="https://simonwillison.net/tags/web-standards">web-standards</a>, <a href="https://simonwillison.net/tags/html">html</a>, <a href="https://simonwillison.net/tags/chrome">chrome</a>, <a href="https://simonwillison.net/tags/firefox">firefox</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[mlx-community/OLMo-2-0325-32B-Instruct-4bit]]></title>
-        <id>https://simonwillison.net/2025/Mar/16/olmo2/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/16/olmo2/#atom-everything"/>
-        <updated>2025-03-16T03:30:41.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://huggingface.co/mlx-community/OLMo-2-0325-32B-Instruct-4bit">mlx-community/OLMo-2-0325-32B-Instruct-4bit</a></strong></p>
-OLMo 2 32B <a href="https://simonwillison.net/2025/Mar/13/ai2/">claims to be</a> "the first fully-open model (all data, code, weights, and details are freely available) to outperform GPT3.5-Turbo and GPT-4o mini". Thanks to the MLX project here's a recipe that worked for me to run it on my Mac, via my <a href="https://github.com/simonw/llm-mlx">llm-mlx</a> plugin.</p>
-<p>To install the model:</p>
-<pre><code>llm install llm-mlx
-llm mlx download-model mlx-community/OLMo-2-0325-32B-Instruct-4bit
-</code></pre>
-<p>That downloads 17GB to <code>~/.cache/huggingface/hub/models--mlx-community--OLMo-2-0325-32B-Instruct-4bit</code>.</p>
-<p>To start an interactive chat with OLMo 2:</p>
-<pre><code>llm chat -m mlx-community/OLMo-2-0325-32B-Instruct-4bit
-</code></pre>
-<p>Or to run a prompt:</p>
-<pre><code>llm -m mlx-community/OLMo-2-0325-32B-Instruct-4bit 'Generate an SVG of a pelican riding a bicycle' -o unlimited 1
-</code></pre>
-<p>The <code>-o unlimited 1</code> removes the cap on the number of output tokens - the default for <code>llm-mlx</code> is 1024 which isn't enough to attempt to draw a pelican.</p>
-<p>The <a href="https://gist.github.com/simonw/53f00731d494439d4aeca6bdd55368ca">pelican it drew</a> is refreshingly abstract:</p>
-<p><img alt="Blue and black wiggly lines looking more like a circuit diagram than a pelican riding a bicycle" src="https://static.simonwillison.net/static/2025/olmo2-pelican.jpg" />
-
-    <p><small></small>Via <a href="https://twitter.com/awnihannun/status/1900408729268609309">@awnihannun</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a>, <a href="https://simonwillison.net/tags/ai2">ai2</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

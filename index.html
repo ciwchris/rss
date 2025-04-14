@@ -31,6 +31,226 @@
       <article>
           <details>
             <summary>
+              GitHub Actions token integration now generally available in GitHub Models
+              <span class="post-metadata">(7 min | 2200 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-14-github-actions-token-integration-now-generally-available-in-github-models>You can now use the built-in GITHUB_TOKEN from GitHub Actions to authenticate requests to GitHub Models. This simplifies your workflows by integrating AI capabilities directly into your actions, eliminating the…
+The post GitHub Actions token integration now generally available in GitHub Models appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GPT-4.1: Three new million token input models from OpenAI, including their cheapest model yet
+              <span class="post-metadata">(4 min | 1181 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/14/gpt-4-1/#atom-everything>OpenAI introduced three new models this morning: GPT-4.1, GPT-4.1 mini and GPT-4.1 nano. These are API-only models right now, not available through the ChatGPT interface (though you can try them out in OpenAI&#x27;s API playground). All three models can handle 1,047,576 tokens of input and 32,768 tokens of output, and all three have a May 31, 2024 cut-off date (their previous models were mostly September 2023).
+
+The models score higher than GPT-4o and GPT-4.5 on coding benchmarks, and do very well on long context benchmarks as well. They also claim improvements in instruction following - following requested formats, obeying negative instructions, sorting output and obeying instructions to say &quot;I don&#x27;t know&quot;.
+
+I released a new version of my llm-openai plugin supporting the new models. This is a new thing for the LLM ecosystem: previously OpenAI models were only supported in core, which meant I had to ship a full LLM release to add support for them.
+
+You can run the new models like this:
+
+
+llm install llm-openai-plugin -U
+llm -m openai/gpt-4.1 &quot;Generate an SVG of a pelican riding a bicycle&quot;
+
+The other model IDs are openai/gpt-4.1-mini and openai/gpt-4.1-nano.
+
+Here&#x27;s the pelican riding a bicycle I got from full sized GPT-4.1:
+
+
+
+I&#x27;m particularly excited by GPT-4.1 nano, which handles image and text input up to a million tokens and is priced lower than any other previous OpenAI model: $0.10/million for input and $0.40/million for output, less than previous cheapest OpenAI model GPT-4o-mini ($0.15/$0.60). I&#x27;ve updated my LLM pricing table to include the new models.
+
+They&#x27;re not the cheapest overall though: Gemini 2.0 Flash Lite and, Gemini 1.5 Flash 8B, Amazon Nova Lite and Nova Micro and Mistral&#x27;s 3B, 8B and Small 3.1 hosted models remain less expensive.
+
+
+
+
+As a demonstration of just how cheap GPT-4.1 nano is, consider this photograph I took of some pelicans:
+
+
+
+
+
+I ran that through GPT-4.1 nano like this:
+
+
+llm -m openai/gpt-4.1-nano describe \
+  -a https://static.simonwillison.net/static/2025/two-pelicans.jpg
+
+
+And got back this response:
+
+
+
+The image shows two pelicans flying against a clear blue sky. They are positioned in flight, with their wings extended, showcasing their large wingspan and feather patterns. The pelican on the right appears slightly higher and facing slightly to the left, while the pelican on the left is oriented more horizontally with its beak pointing forward. Both birds display a combination of brown, tan, and white plumage, characteristic of pelicans, with their long beaks prominently visible.
+
+
+Running llm logs -c --usage revealed that this used 1,933 input tokens and 96 output tokens. Passing those through the pricing calculator returns a total cost of $0.000232, or 0.0232 cents.
+
+
+That means I could use GPT-4.1 nano to generate descriptions of 4,310 images like this one for just shy of a dollar.
+
+
+A few closing thoughts on these new models:
+
+
+
+The 1 million input token context thing is a really big deal. The huge token context has been a major competitive advantage for the Google Gemini models for a full year at this point - it&#x27;s reassuring to see other vendors start to catch up. I&#x27;d like to see the same from Anthropic - Claude was the first model to hit 200,000 but hasn&#x27;t shipped more than that yet (aside from a 500,000 token model that was restricted to their big enterprise partners).
+
+
+
+When I added fragments support to LLM last week the feature was mainly designed to help take advantage of longer context models. It&#x27;s pleasing to see another one show up so shortly after that release.
+
+
+OpenAI really emphasized code performance for this model. They called out the Aider benchmark in their announcement post.
+
+
+
+As expected, GPT-4.5 turned out to be not long for this world:
+
+
+We will also begin deprecating GPT‑4.5 Preview in the API, as GPT‑4.1 offers improved or similar performance on many key capabilities at much lower cost and latency. GPT‑4.5 Preview will be turned off in three months, on July 14, 2025, to allow time for developers to transition
+
+
+
+
+In the livestream announcement Michelle Pokrass let slip that the codename for the model was Quasar - that&#x27;s the name of the stealth model that&#x27;s been previewing on OpenRouter for the past two weeks. That has now been confirmed by OpenRouter.
+
+
+
+OpenAI shared a GPT 4.1 Prompting Guide, which includes this tip about long context prompting:
+
+
+Especially in long context usage, placement of instructions and context can impact performance. If you have long context in your prompt, ideally place your instructions at both the beginning and end of the provided context, as we found this to perform better than only above or below. If you’d prefer to only have your instructions once, then above the provided context works better than below.
+
+
+Adding instructions before the content is incompatible with prompt caching - I always keep user instructions at the end since doing so means multiple prompts can benefit from OpenAI&#x27;s prefix cache.
+
+They also recommend XML-style delimiters over JSON for long context, suggesting this format (complete with the XML-invalid unquoted attribute) that&#x27;s similar to the format recommended by Anthropic for Claude:
+
+
+&lt;doc id&#x3D;1 title&#x3D;&quot;The Fox&quot;&gt;The quick brown fox jumps over the lazy dog&lt;/doc&gt;
+
+There&#x27;s an extensive section at the end describing their recommended approach to applying file diffs: &quot;we open-source here one recommended diff format, on which the model has been extensively trained&quot;.
+
+
+
+One thing notably absent from the GPT-4.1 announcement is any mention of audio support. The &quot;o&quot; in GPT-4o stood for &quot;omni&quot;, because it was a multi-modal model with image and audio input and output. The 4.1 models appear to be text and image input and text output only.
+
+
+    
+        
+Tags: ai, openai, generative-ai, llms, llm, vision-llms, llm-pricing, pelican-riding-a-bicycle, long-context, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Secret scanning expands default pattern and push protection support
+              <span class="post-metadata">(8 min | 2402 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-14-secret-scanning-expands-default-pattern-and-push-protection-support>GitHub regularly updates the default pattern set for secret scanning with new patterns and upgrades of existing patterns, ensuring your repositories have comprehensive detection for different secret types. The following…
+The post Secret scanning expands default pattern and push protection support appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot extension for GitHub Models now requires updated permissions
+              <span class="post-metadata">(8 min | 2413 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-14-copilot-extension-for-github-models-now-requires-updated-permissions>The Copilot extension for GitHub Models now requires the models:read permission in order to access GitHub Models APIs. Users will need to reauthorize the extension by accepting the new permission…
+The post Copilot extension for GitHub Models now requires updated permissions appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Note on 14th April 2025
+              <span class="post-metadata">(1 min | 213 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/14/believe/#atom-everything>Believing AI vendors who promise you that they won&#x27;t train on your data is a huge competitive advantage these days.
+Tags: llms, generative-ai, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Windows arm64 hosted runners now available in public preview
+              <span class="post-metadata">(8 min | 2448 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-14-windows-arm64-hosted-runners-now-available-in-public-preview>Now in public preview, Windows arm64 hosted runners are available for free in public repositories. This runner comes with a Windows 11 Desktop image, fully equipped with all the tooling…
+The post Windows arm64 hosted runners now available in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              OpenAI GPT-4.1 now available in public preview for GitHub Copilot and GitHub Models
+              <span class="post-metadata">(8 min | 2295 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-14-openai-gpt-4-1-now-available-in-public-preview-for-github-copilot-and-github-models>OpenAI’s latest model, GPT-4.1, is now available in GitHub Copilot and GitHub Models, bringing OpenAI’s newest model to your coding workflow. This model outperforms GPT-4o across the board, with major…
+The post OpenAI GPT-4.1 now available in public preview for GitHub Copilot and GitHub Models appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              The Llama 4 herd is now generally available in GitHub Models
+              <span class="post-metadata">(7 min | 2160 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-14-the-llama-4-herd-is-now-generally-available-in-github-models>The Llama 4 herd is now generally available in GitHub Models
+The post The Llama 4 herd is now generally available in GitHub Models appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              SQLite File Format Viewer
+              <span class="post-metadata">(1 min | 223 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/14/sqlite-file-format-viewer/#atom-everything>SQLite File Format Viewer
+implemented in TypeScript.
+
+    
+Via @invisal89
+Tags: typescript, react, sqlite</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Using LLMs as the first line of support in Open Source
               <span class="post-metadata">(2 min | 475 words)</span> 
             </summary>
@@ -3008,6 +3228,18 @@ Tags: playwright, anthropic, claude, generative-ai, llm-tool-use, ai, llms</a>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
+      <article>
+          <details>
+            <summary>
+              gemma3
+              <span class="post-metadata">(11 min | 3332 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/gemma3>The current, most capable model that runs on a single GPU.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
 
       </section>
     </li>
@@ -4094,37 +4326,6 @@ And via uallo here are the same default HTML styles for other browsers:
 Chromium: third_party/blink/renderer/core/html/resources/html.css
 WebKit: Source/WebCore/css/html.css
 Tags: css, web-standards, html, chrome, firefox</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              mlx-community/OLMo-2-0325-32B-Instruct-4bit
-              <span class="post-metadata">(1 min | 319 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/16/olmo2/#atom-everything>mlx-community/OLMo-2-0325-32B-Instruct-4bit
-claims to be &quot;the first fully-open model (all data, code, weights, and details are freely available) to outperform GPT3.5-Turbo and GPT-4o mini&quot;. Thanks to the MLX project here&#x27;s a recipe that worked for me to run it on my Mac, via my llm-mlx plugin.
-To install the model:
-llm install llm-mlx
-llm mlx download-model mlx-community/OLMo-2-0325-32B-Instruct-4bit
-
-That downloads 17GB to ~/.cache/huggingface/hub/models--mlx-community--OLMo-2-0325-32B-Instruct-4bit.
-To start an interactive chat with OLMo 2:
-llm chat -m mlx-community/OLMo-2-0325-32B-Instruct-4bit
-
-Or to run a prompt:
-llm -m mlx-community/OLMo-2-0325-32B-Instruct-4bit &#x27;Generate an SVG of a pelican riding a bicycle&#x27; -o unlimited 1
-
-The -o unlimited 1 removes the cap on the number of output tokens - the default for llm-mlx is 1024 which isn&#x27;t enough to attempt to draw a pelican.
-The pelican it drew is refreshingly abstract:
-
-
-    
-Via @awnihannun
-Tags: llm, generative-ai, mlx, ai2, ai, llms, pelican-riding-a-bicycle</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
