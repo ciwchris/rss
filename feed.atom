@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-14T21:09:51.039Z</updated>
+    <updated>2025-04-15T14:10:55.944Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
@@ -3612,54 +3612,6 @@ llm -m mistral/mistral-small-2503 'describe' \
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Now you don’t even need code to be a programmer. But you do still need expertise]]></title>
-        <id>https://simonwillison.net/2025/Mar/16/john-naughton/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/16/john-naughton/#atom-everything"/>
-        <updated>2025-03-16T23:07:01.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.theguardian.com/technology/2025/mar/16/ai-software-coding-programmer-expertise-jobs-threat">Now you don’t even need code to be a programmer. But you do still need expertise</a></strong></p>
-My recent piece on <a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/">how I use LLMs to help me write code</a> got a positive mention in John Naughton's column about vibe-coding in the Guardian this weekend.</p>
-<p>My <a href="https://simonwillison.net/2025/Mar/8/delaying-personalized-siri/">hunch about Apple Intelligence Siri features being delayed</a> due to prompt injection also got a mention in <a href="https://podcasts.apple.com/us/podcast/apples-siri-ous-problem-how-starlink-took-over-the/id1528594034?i=1000699160930">the most recent episode</a> of the New York Times Hard Fork podcast.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/the-guardian">the-guardian</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Backstory on the default styles for the HTML dialog modal]]></title>
-        <id>https://simonwillison.net/2025/Mar/16/backstory/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/16/backstory/#atom-everything"/>
-        <updated>2025-03-16T16:36:36.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://news.ycombinator.com/item?id=43378225#43380129">Backstory on the default styles for the HTML dialog modal</a></strong></p>
-My TIL about <a href="https://til.simonwillison.net/css/dialog-full-height">Styling an HTML dialog modal to take the full height of the viewport</a> (here's the <a href="https://tools.simonwillison.net/side-panel-dialog">interactive demo</a>) showed up <a href="https://news.ycombinator.com/item?id=43378225">on Hacker News</a> this morning, and attracted this fascinating comment from Chromium engineer Ian Kilpatrick.</p>
-<blockquote>
-<p>There's quite a bit of history here, but the abbreviated version is that the dialog element was originally added as a replacement for window.alert(), and there were a libraries polyfilling dialog and being surprisingly widely used.</p>
-<p>The mechanism which dialog was originally positioned was relatively complex, and slightly hacky (magic values for the insets).</p>
-<p>Changing the behaviour basically meant that we had to add "overflow:auto", and some form of "max-height"/"max-width" to ensure that the content within the dialog was actually reachable.</p>
-<p>The better solution to this was to add "max-height:stretch", "max-width:stretch". You can see <a href="https://github.com/whatwg/html/pull/5936#discussion_r513642207">the discussion for this here</a>.</p>
-<p>The problem is that no browser had (and still has) shipped the "stretch" keyword. (Blink <a href="https://groups.google.com/a/chromium.org/g/blink-dev/c/SiZ2nDt3B9E/m/kP_rKOaDAgAJ?pli=1">likely will "soon"</a>)</p>
-<p>However this was pushed back against as this had to go in a specification - and nobody implemented it ("-webit-fill-available" would have been an acceptable substitute in Blink but other browsers didn't have this working the same yet).</p>
-<p>Hence the calc() variant. (Primarily because of "box-sizing:content-box" being the default, and pre-existing border/padding styles on dialog that we didn't want to touch). [...]</p>
-</blockquote>
-<p>I particularly enjoyed this insight into the challenges of evolving the standards that underlie the web, even for something this small:</p>
-<blockquote>
-<p>One thing to keep in mind is that any changes that changes web behaviour is under some time pressure. If you leave something too long, sites will start relying on the previous behaviour - so it would have been arguably worse not to have done anything.</p>
-</blockquote>
-<p>Also from the comments I learned that Firefox DevTools <em>can</em> show you user-agent styles, but that option is turned off by default - <a href="https://til.simonwillison.net/css/dialog-full-height#user-content-update-firefox-can-show-browser-styles">notes on that here</a>. Once I turned this option on I saw references to an <code>html.css</code> stylesheet, so I dug around and <a href="https://searchfox.org/mozilla-central/source/layout/style/res/html.css">found that in the Firefox source code</a>. Here's <a href="https://github.com/mozilla/gecko-dev/commits/HEAD/layout/style/res/html.css">the commit history</a> for that file on the official GitHub mirror, which provides a detailed history of how Firefox default HTML styles have evolved with the standards over time.</p>
-<p>And <a href="https://news.ycombinator.com/item?id=43378225#43380255">via uallo</a> here are the same default HTML styles for other browsers:</p>
-<ul>
-<li>Chromium: <a href="https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/html/resources/html.css">third_party/blink/renderer/core/html/resources/html.css</a></li>
-<li>WebKit: <a href="https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/html.css">Source/WebCore/css/html.css</a></li>
-</ul>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/css">css</a>, <a href="https://simonwillison.net/tags/web-standards">web-standards</a>, <a href="https://simonwillison.net/tags/html">html</a>, <a href="https://simonwillison.net/tags/chrome">chrome</a>, <a href="https://simonwillison.net/tags/firefox">firefox</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
