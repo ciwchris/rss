@@ -31,6 +31,19 @@
       <article>
           <details>
             <summary>
+              Customer Case Study: Announcing the Neon Serverless Postgres Connector for Microsoft Semantic Kernel
+              <span class="post-metadata">(25 min | 7417 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/customer-case-study-announcing-the-neon-serverless-postgres-connector-for-microsoft-semantic-kernel/>Announcing the Neon Serverless Postgres Connector for Microsoft Semantic Kernel We’re excited to introduce the Neon Serverless Postgres Connector for Microsoft Semantic Kernel, enabling developers to seamlessly integrate Neon’s serverless Postgres capabilities with AI-driven vector search and retrieval workflows. By leveraging the **pgvector** extension in Neon and the existing Postgres Vector Store connector, this integration […]
+The post Customer Case Study: Announcing the Neon Serverless Postgres Connector for Microsoft Semantic Kernel appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Hamel Husain
               <span class="post-metadata">(1 min | 346 words)</span> 
             </summary>
@@ -92,6 +105,19 @@ The post CodeQL 2.21.0 supports TypeScript 5.8 and expands language coverage app
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2025-04-14-sunset-notice-for-automatic-watching-of-repositories-and-teams>On May 18, 2025, we’re deprecating the automatic watching of repositories and teams. We’re making this change in order to: Reduce notification noise: You’ll receive fewer unexpected notifications, especially when…
 The post Sunset notice for automatic watching of repositories and teams appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              OpenAI GPT-4.1-mini and GPT-4.1-nano are now generally available in GitHub Models
+              <span class="post-metadata">(8 min | 2296 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-14-gpt-4-1-mini-and-gpt-4-1-nano-are-now-generally-available-in-github-models>Alongside the launch of GPT-4.1 in GitHub Models, we’re introducing GPT-4.1-mini and GPT-4.1-nano—lightweight variants of OpenAI’s latest model. Designed for high performance with lower cost and latency, these models are…
+The post OpenAI GPT-4.1-mini and GPT-4.1-nano are now generally available in GitHub Models appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
@@ -4243,114 +4269,6 @@ The post Instant previews, flexible editing, and working with issues in Copilot 
 The post Instant previews, flexible editing and working with issues in Copilot chat (Preview) appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-17</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              OpenTimes
-              <span class="post-metadata">(2 min | 675 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/17/opentimes/#atom-everything>OpenTimes
-Dan Snow:
-OpenTimes is a database of pre-computed, point-to-point travel times between United States Census geographies. It lets you download bulk travel time data for free and with no limits.
-Here&#x27;s what I get for travel times by car from El Granada, California:
-
-The technical details are fascinating:
-The entire OpenTimes backend is just static Parquet files on Cloudflare&#x27;s R2. There&#x27;s no RDBMS or running service, just files and a CDN. The whole thing costs about $10/month to host and costs nothing to serve. In my opinion, this is a great way to serve infrequently updated, large public datasets at low cost (as long as you partition the files correctly).
-Sure enough, R2 pricing charges &quot;based on the total volume of data stored&quot; - $0.015 / GB-month for standard storage, then $0.36 / million requests for &quot;Class B&quot; operations which include reads. They charge nothing for outbound bandwidth.
-All travel times were calculated by pre-building the inputs (OSM, OSRM networks) and then distributing the compute over hundreds of GitHub Actions jobs. This worked shockingly well for this specific workload (and was also completely free).
-Here&#x27;s a GitHub Actions run of the calculate-times.yaml workflow which uses a matrix to run 255 jobs!
-
-Relevant YAML:
-  matrix:
-    year: ${{ fromJSON(needs.setup-jobs.outputs.years) }}
-    state: ${{ fromJSON(needs.setup-jobs.outputs.states) }}
-
-Where those JSON files were created by the previous step, which reads in the year and state values from this params.yaml file.
-The query layer uses a single DuckDB database file with views that point to static Parquet files via HTTP. This lets you query a table with hundreds of billions of records after downloading just the ~5MB pointer file.
-This is a really creative use of DuckDB&#x27;s feature that lets you run queries against large data from a laptop using HTTP range queries to avoid downloading the whole thing.
-The README shows how to use that from R and Python - I got this working in the duckdb client (brew install duckdb):
-INSTALL httpfs;
-LOAD httpfs;
-ATTACH &#x27;https://data.opentimes.org/databases/0.0.1.duckdb&#x27; AS opentimes;
-
-SELECT origin_id, destination_id, duration_sec
-  FROM opentimes.public.times
-  WHERE version &#x3D; &#x27;0.0.1&#x27;
-      AND mode &#x3D; &#x27;car&#x27;
-      AND year &#x3D; &#x27;2024&#x27;
-      AND geography &#x3D; &#x27;tract&#x27;
-      AND state &#x3D; &#x27;17&#x27;
-      AND origin_id LIKE &#x27;17031%&#x27; limit 10;
-
-In answer to a question about adding public transit times Dan said:
-In the next year or so maybe. The biggest obstacles to adding public transit are:
-Collecting all the necessary scheduling data (e.g. GTFS feeds) for every transit system in the county. Not insurmountable since there are services that do this currently.
-Finding a routing engine that can compute nation-scale travel time matrices quickly. Currently, the two fastest open-source engines I&#x27;ve tried (OSRM and Valhalla) don&#x27;t support public transit for matrix calculations and the engines that do support public transit (R5, OpenTripPlanner, etc.) are too slow.
-GTFS is a popular CSV-based format for sharing transit schedules - here&#x27;s an official list of available feed directories.
-
-    
-Via Hacker News
-Tags: open-data, github-actions, openstreetmap, duckdb, gis, cloudflare, parquet</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              suitenumerique/docs
-              <span class="post-metadata">(1 min | 254 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/17/docs/#atom-everything>suitenumerique/docs
-It&#x27;s built using Django and React:
-Docs is built on top of Django Rest Framework, Next.js, BlockNote.js, HocusPocus and Yjs.
-Deployments currently require Kubernetes, PostgreSQL, memcached, an S3 bucket (or compatible) and an OIDC provider.
-
-
-    
-Tags: open-source, react, django, kubernetes, s3, postgresql</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Mistral Small 3.1
-              <span class="post-metadata">(2 min | 481 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/17/mistral-small-31/#atom-everything>Mistral Small 3.1
-came out in January and was a notable, genuinely excellent local model that used an Apache 2.0 license.
-Mistral Small 3.1 offers a significant improvement: it&#x27;s multi-modal (images) and has an increased 128,000 token context length, while still &quot;fitting within a single RTX 4090 or a 32GB RAM MacBook once quantized&quot; (according to their model card). Mistral&#x27;s own benchmarks show it outperforming Gemma 3 and GPT-4o Mini, but I haven&#x27;t seen confirmation from external benchmarks.
-Despite their mention of a 32GB MacBook I haven&#x27;t actually seen any quantized GGUF or MLX releases yet, which is a little surprising since they partnered with Ollama on launch day for their previous Mistral Small 3. I expect we&#x27;ll see various quantized models released by the community shortly.
-The model is available via their La Plateforme API, which means you can access it via my llm-mistral plugin.
-Here&#x27;s the model describing my photo of two pelicans in flight:
-llm install llm-mistral
-# Run this if you have previously installed the plugin:
-llm mistral refresh
-llm -m mistral/mistral-small-2503 &#x27;describe&#x27; \
-  -a https://static.simonwillison.net/static/2025/two-pelicans.jpg
-
-The image depicts two brown pelicans in flight against a clear blue sky. Pelicans are large water birds known for their long bills and large throat pouches, which they use for catching fish. The birds in the image have long, pointed wings and are soaring gracefully. Their bodies are streamlined, and their heads and necks are elongated. The pelicans appear to be in mid-flight, possibly gliding or searching for food. The clear blue sky in the background provides a stark contrast, highlighting the birds&#x27; silhouettes and making them stand out prominently.
-I added Mistral&#x27;s API prices to my tools.simonwillison.net/llm-prices pricing calculator by pasting screenshots of Mistral&#x27;s pricing tables into Claude.
-
-
-    
-Tags: vision-llms, mistral, llm, generative-ai, ai, llms, ai-assisted-programming</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
