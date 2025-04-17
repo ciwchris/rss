@@ -31,6 +31,146 @@
       <article>
           <details>
             <summary>
+              Start building with Gemini 2.5 Flash
+              <span class="post-metadata">(3 min | 1012 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/17/start-building-with-gemini-25-flash/#atom-everything>Start building with Gemini 2.5 Flash
+gemini-2.5-flash-preview-04-17. 
+Building upon the popular foundation of 2.0 Flash, this new version delivers a major upgrade in reasoning capabilities, while still prioritizing speed and cost. Gemini 2.5 Flash is our first fully hybrid reasoning model, giving developers the ability to turn thinking on or off. The model also allows developers to set thinking budgets to find the right tradeoff between quality, cost, and latency.
+Gemini AI Studio product lead Logan Kilpatrick says:
+This is an early version of 2.5 Flash, but it already shows huge gains over 2.0 Flash. 
+You can fully turn off thinking if needed and use this model as a drop in replacement for 2.0 Flash. 
+I added support to the new model in llm-gemini 0.18. Here&#x27;s how to try it out:
+llm install -U llm-gemini
+llm -m gemini-2.5-flash-preview-04-17 &#x27;Generate an SVG of a pelican riding a bicycle&#x27;
+
+Here&#x27;s that first pelican, using the default setting where Gemini Flash 2.5 makes its own decision in terms of how much &quot;thinking&quot; effort to apply:
+
+Here&#x27;s the transcript. This one used 11 input tokens and 4266 output tokens of which 2702 were &quot;thinking&quot; tokens. 
+I asked the model to &quot;describe&quot; that image and it could tell it was meant to be a pelican:
+A simple illustration on a white background shows a stylized pelican riding a bicycle. The pelican is predominantly grey with a black eye and a prominent pink beak pouch. It is positioned on a black line-drawn bicycle with two wheels, a frame, handlebars, and pedals.
+AI Studio indicates that the model is charged at $0.15/million tokens for input, $3.50/million for thinking output and $0.60/million for non-thinking output. I presume that means thinking tokens are charged separately. I calculate this prompt as costing 1.04 cents.
+Let&#x27;s try again with thinking disabled:
+llm -m gemini-2.5-flash-preview-04-17 &#x27;Generate an SVG of a pelican riding a bicycle&#x27; -o thinking_budget 0
+
+
+11 input, 1705 output of which 25 were &quot;thinking&quot;. Transcript here. 0.11 cents.
+Its self-description:
+A minimalist illustration shows a bright yellow bird riding a bicycle. The bird has a simple round body, small wings, a black eye, and an open orange beak. It sits atop a simple black bicycle frame with two large circular black wheels. The bicycle also has black handlebars and black and yellow pedals. The scene is set against a solid light blue background with a thick green stripe along the bottom, suggesting grass or ground.
+And finally, let&#x27;s ramp the thinking budget up to the maximum:
+llm -m gemini-2.5-flash-preview-04-17 &#x27;Generate an SVG of a pelican riding a bicycle&#x27; -o thinking_budget 24576
+
+
+I think it over-thought this one! Transcript - 5174 output tokens of which 3023 were thinking.  1.19 cents. Its own self-evaluation:
+A simple, cartoon-style drawing shows a bird-like figure riding a bicycle. The figure has a round gray head with a black eye and a large, flat orange beak with a yellow stripe on top. Its body is represented by a curved light gray shape extending from the head to a smaller gray shape representing the torso or rear. It has simple orange stick legs with round feet or connections at the pedals. The figure is bent forward over the handlebars in a cycling position. The bicycle is drawn with thick black outlines and has two large wheels, a frame, and pedals connected to the orange legs. The background is plain white, with a dark gray line at the bottom representing the ground.
+One thing I really appreciate about Gemini 2.5 Flash&#x27;s approach to SVGs is that it shows very good taste in CSS, comments and general SVG class structure. Here&#x27;s a truncated extract - I run a lot of these SVG tests against different models and this one has a coding style that I particularly enjoy. (Gemini 2.5 Pro does this too).
+&lt;svg width&#x3D;&quot;800&quot; height&#x3D;&quot;500&quot; viewBox&#x3D;&quot;0 0 800 500&quot; xmlns&#x3D;&quot;http://www.w3.org/2000/svg&quot;&gt;
+  &lt;style&gt;
+    .bike-frame { fill: none; stroke: #333; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+    .wheel-rim { fill: none; stroke: #333; stroke-width: 8; }
+    .wheel-hub { fill: #333; }
+    /* ... */
+    .pelican-body { fill: #d3d3d3; stroke: black; stroke-width: 3; }
+    .pelican-head { fill: #d3d3d3; stroke: black; stroke-width: 3; }
+    /* ... */
+  &lt;/style&gt;
+  &lt;!-- Ground Line --&gt;
+  &lt;line x1&#x3D;&quot;0&quot; y1&#x3D;&quot;480&quot; x2&#x3D;&quot;800&quot; y2&#x3D;&quot;480&quot; stroke&#x3D;&quot;#555&quot; stroke-width&#x3D;&quot;5&quot;/&gt;
+  &lt;!-- Bicycle --&gt;
+  &lt;g id&#x3D;&quot;bicycle&quot;&gt;
+    &lt;!-- Wheels --&gt;
+    &lt;circle class&#x3D;&quot;wheel-rim&quot; cx&#x3D;&quot;250&quot; cy&#x3D;&quot;400&quot; r&#x3D;&quot;70&quot;/&gt;
+    &lt;circle class&#x3D;&quot;wheel-hub&quot; cx&#x3D;&quot;250&quot; cy&#x3D;&quot;400&quot; r&#x3D;&quot;10&quot;/&gt;
+    &lt;circle class&#x3D;&quot;wheel-rim&quot; cx&#x3D;&quot;550&quot; cy&#x3D;&quot;400&quot; r&#x3D;&quot;70&quot;/&gt;
+    &lt;circle class&#x3D;&quot;wheel-hub&quot; cx&#x3D;&quot;550&quot; cy&#x3D;&quot;400&quot; r&#x3D;&quot;10&quot;/&gt;
+    &lt;!-- ... --&gt;
+  &lt;/g&gt;
+  &lt;!-- Pelican --&gt;
+  &lt;g id&#x3D;&quot;pelican&quot;&gt;
+    &lt;!-- Body --&gt;
+    &lt;path class&#x3D;&quot;pelican-body&quot; d&#x3D;&quot;M 440 330 C 480 280 520 280 500 350 C 480 380 420 380 440 330 Z&quot;/&gt;
+    &lt;!-- Neck --&gt;
+    &lt;path class&#x3D;&quot;pelican-neck&quot; d&#x3D;&quot;M 460 320 Q 380 200 300 270&quot;/&gt;
+    &lt;!-- Head --&gt;
+    &lt;circle class&#x3D;&quot;pelican-head&quot; cx&#x3D;&quot;300&quot; cy&#x3D;&quot;270&quot; r&#x3D;&quot;35&quot;/&gt;
+    &lt;!-- ... --&gt;
+Via @OfficialLoganK
+Tags: llm-release, gemini, llm, google, llm-reasoning, llm-pricing, llms, pelican-riding-a-bicycle, svg, logan-kilpatrick</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              MAI-DS-R1 is now generally available in GitHub Models
+              <span class="post-metadata">(7 min | 2105 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-17-mai-ds-r1-is-now-generally-available-in-github-models>MAI-DS-R1 is now available on GitHub Models. MAI-DS-R1 is an updated version of DeepSeek-R1, refined by Microsoft AI. It handles complex queries more effectively, works across multiple languages, and provides…
+The post MAI-DS-R1 is now generally available in GitHub Models appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Jon Haidt and Zach Rausch
+              <span class="post-metadata">(1 min | 308 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/17/jon-haidt-and-zach-rausch/#atom-everything>We (Jon and Zach) teamed up with the Harris Poll to confirm this finding and extend it. We conducted a nationally representative survey of 1,006 Gen Z young adults (ages 18-27). We asked respondents to tell us, for various platforms and products, if they wished that it “was never invented.” For Netflix, Youtube, and the internet itself, relatively few said yes to that question (always under 20%). We found much higher levels of regret for the dominant social media platforms: Instagram (34%), Facebook (37%), Snapchat (43%), and the most regretted platforms of all: TikTok (47%) and X/Twitter (50%).
+
+— Jon Haidt and Zach Rausch, TikTok Is Harming Children at an Industrial Scale
+Tags: social-media, twitter, tiktok</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Share Copilot Chat conversations in public preview
+              <span class="post-metadata">(7 min | 2092 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-17-share-copilot-chat-conversations-2>Sharing a Copilot Chat used to mean screenshots and copy-paste. Now it’s as easy as sending a link. Shared conversations are now available in public preview. Sharing Copilot Chats makes…
+The post Share Copilot Chat conversations in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Scheduled Codespaces maintenance on April 21 and 22
+              <span class="post-metadata">(9 min | 2666 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-17-scheduled-codespaces-maintenance-on-april-21-and-22>Codespaces will be undergoing global maintenance from 16:30 UTC on Monday, April 21 to 16:30 UTC on Tuesday, April 22. Maintenance will begin in our Europe, Asia, and Australia regions.…
+The post Scheduled Codespaces maintenance on April 21 and 22 appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Semantic Kernel adds Model Context Protocol (MCP) support for Python
+              <span class="post-metadata">(25 min | 7593 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-adds-model-context-protocol-mcp-support-for-python/>We are excited to announce that Semantic Kernel (SK) now has first-class support for the Model Context Protocol (MCP) — a standard created by Anthropic to enable models, tools, and agents to share context and capabilities seamlessly. With this release, SK can act as both an MCP host (client) and an MCP server, and you […]
+The post Semantic Kernel adds Model Context Protocol (MCP) support for Python appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Semantic Kernel Python Now Speaks Google’s A2A Protocol
               <span class="post-metadata">(21 min | 6234 words)</span> 
             </summary>
@@ -39,6 +179,19 @@
 The post Semantic Kernel Python Now Speaks Google’s A2A Protocol appeared first on Semantic Kernel.</a>
             </div>
             <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot commit message generation now in public preview on GitHub Desktop
+              <span class="post-metadata">(7 min | 1969 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-16-copilot-commit-message-generation-now-in-public-preview-on-github-desktop>Introducing AI-powered commit message generation with Copilot—available in the latest GitHub Desktop Beta. With a click of a new button in the commit message box, get your changes to upstream…
+The post Copilot commit message generation now in public preview on GitHub Desktop appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
       <article>
@@ -4313,40 +4466,6 @@ Tags: sandboxing, ai, generative-ai, llms, ai-assisted-programming, vibe-coding<
               <a target="_blank" href=https://ollama.com/library/exaone-deep>EXAONE Deep exhibits superior capabilities in various reasoning tasks including math and coding benchmarks, ranging from 2.4B to 32B parameters developed and released by LG AI Research.</a>
             </div>
             <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              My Thoughts on the Future of &quot;AI&quot;
-              <span class="post-metadata">(2 min | 507 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/19/my-thoughts-on-the-future-of-ai/#atom-everything>My Thoughts on the Future of &quot;AI&quot;
-He presents compelling, detailed arguments for both ends of the spectrum - his key message is that it&#x27;s best to maintain very wide error bars for what might happen next:
-I wouldn&#x27;t be surprised if, in three to five years, language models are capable of performing most (all?) cognitive economically-useful tasks beyond the level of human experts. And I also wouldn&#x27;t be surprised if, in five years, the best models we have are better than the ones we have today, but only in “normal” ways where costs continue to decrease considerably and capabilities continue to get better but there&#x27;s no fundamental paradigm shift that upends the world order. To deny the potential for either of these possibilities seems to me to be a mistake.
-If LLMs do hit a wall, it&#x27;s not at all clear what that wall might be:
-I still believe there is something fundamental that will get in the way of our ability to build LLMs that grow exponentially in capability. But I will freely admit to you now that I have no earthly idea what that limitation will be. I have no evidence that this line exists, other than to make some form of vague argument that when you try and scale something across many orders of magnitude, you&#x27;ll probably run into problems you didn&#x27;t see coming.
-There&#x27;s lots of great stuff in here. I particularly liked this explanation of how you get R1:
-You take DeepSeek v3, and ask it to solve a bunch of hard problems, and when it gets the answers right, you train it to do more of that and less of whatever it did when it got the answers wrong. The idea here is actually really simple, and it works surprisingly well.
-Tags: generative-ai, deepseek, nicholas-carlini, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting David L. Poole and Alan K. Mackworth
-              <span class="post-metadata">(1 min | 222 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/19/worms-and-dogs-and-countries/#atom-everything>An agent is something that acts in an environment; it does something. Agents include worms, dogs, thermostats, airplanes, robots, humans, companies, and countries.
-
-— David L. Poole and Alan K. Mackworth, Artificial Intelligence: Foundations of Computational Agents
-Tags: ai-agents, ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
