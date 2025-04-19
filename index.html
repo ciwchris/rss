@@ -31,6 +31,25 @@
       <article>
           <details>
             <summary>
+              Note on 18th April 2025
+              <span class="post-metadata">(1 min | 340 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/18/link-to-things/#atom-everything>It frustrates me when support sites for online services fail to link to the things they are talking about. Cloudflare&#x27;s Find zone and account IDs page for example provides a four step process for finding my account ID that starts at the root of their dashboard, including a screenshot of where I should click.
+
+In Cloudflare&#x27;s case it&#x27;s harder to link to the correct dashboard page because the URL differs for different users, but that shouldn&#x27;t be a show-stopper for getting this to work. Set up dash.cloudflare.com/redirects/find-account-id and link to that!
+... I just noticed they do have a mechanism like that which they use elsewhere. On the R2 authentication page they link to:
+https://dash.cloudflare.com/?to&#x3D;/:account/r2/api-tokens
+
+The &quot;find account ID&quot; flow presumably can&#x27;t do the same thing because there is no single page displaying that information - it&#x27;s shown in a sidebar on the page for each of your Cloudflare domains.
+Tags: urls, usability, cloudflare</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Andrew Ng
               <span class="post-metadata">(1 min | 290 words)</span> 
             </summary>
@@ -4332,165 +4351,6 @@ Tags: anthropic, claude, generative-ai, llm-tool-use, search, ai, llms</a>
 The post Enhance your productivity with Copilot Edits in JetBrains IDEs appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-20</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Notification of upcoming breaking changes in GitHub Actions
-              <span class="post-metadata">(8 min | 2288 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-20-notification-of-upcoming-breaking-changes-in-github-actions>Notification of upcoming breaking changes in GitHub Actions
-The post Notification of upcoming breaking changes in GitHub Actions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New audio models from OpenAI, but how much can we rely on them?
-              <span class="post-metadata">(3 min | 926 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/20/new-openai-audio-models/#atom-everything>OpenAI announced several new audio-related API features today, for both text-to-speech and speech-to-text. They&#x27;re very promising new models, but they appear to suffer from the ever-present risk of accidental (or malicious) instruction following.
-
-
-gpt-4o-mini-tts
-
-
-gpt-4o-mini-tts is a brand new text-to-speech model with &quot;better steerability&quot;. OpenAI released a delightful new playground interface for this at OpenAI.fm - you can pick from 11 base voices, apply instructions like &quot;High-energy, eccentric, and slightly unhinged&quot; and get it to read out a script (with optional extra stage directions in parenthesis). It can then provide the equivalent API code in Python, JavaScript or curl. You can share links to your experiments, here&#x27;s an example.
-
-
-
-
-Note how part of my script there looks like this:
-
-
-
-(Whisper this bit:)
-
-
-Footsteps echoed behind her, slow and deliberate. She turned, heart racing, but saw only shadows.
-
-
-While fun and convenient, the fact that you can insert stage directions in the script itself feels like an anti-pattern to me - it means you can&#x27;t safely use this for arbitrary text because there&#x27;s a risk that some of that text may accidentally be treated as further instructions to the model.
-
-
-In my own experiments I&#x27;ve already seen this happen: sometimes the model follows my &quot;Whisper this bit&quot; instruction correctly, other times it says the word &quot;Whisper&quot; out loud but doesn&#x27;t speak the words &quot;this bit&quot;. The results appear non-deterministic, and might also vary with different base voices.
-
-
-gpt-4o-mini-tts costs $0.60/million tokens, which OpenAI estimate as around 1.5 cents per minute.
-
-
-gpt-4o-transcribe and gpt-4o-mini-transcribe
-
-
-gpt-4o-transcribe and gpt-4o-mini-transcribe are two new speech-to-text models, serving a similar purpose to whisper but built on top of GPT-4o and setting a &quot;new state-of-the-art benchmark&quot;. These can be used via OpenAI&#x27;s v1/audio/transcriptions API, as alternative options to &#x60;whisper-1. The API is still restricted to a 25MB audio file (MP3, WAV or several other formats).
-
-Any time an LLM-based model is used for audio transcription (or OCR) I worry about accidental instruction following - is there a risk that content that looks like an instruction in the spoken or scanned text might not be included in the resulting transcript?
-
-In a comment on Hacker News OpenAI&#x27;s Jeff Harris said this, regarding how these new models differ from gpt-4o-audio-preview:
-
-
-It&#x27;s a slightly better model for TTS. With extra training focusing on reading the script exactly as written.
-
-e.g. the audio-preview model when given instruction to speak &quot;What is the capital of Italy&quot; would often speak &quot;Rome&quot;. This model should be much better in that regard
-
-
-&quot;much better in that regard&quot; sounds to me like there&#x27;s still a risk of this occurring, so for some sensitive applications it may make sense to stick with whisper or other traditional text-to-speech approaches.
-
-
-On Twitter Jeff added:
-
-
-
-yep fidelity to transcript is the big chunk of work to turn an audio model into TTS model. still possible, but should be quite rare
-
-
-gpt-4o-transcribe is an estimated 0.6 cents per minute, and gpt-4o-mini-transcribe is 0.3 cents per minute.
-
-
-Mixing data and instructions remains the cardinal sin of LLMs
-
-
-If these problems look familiar to you that&#x27;s because they are variants of the root cause behind prompt injection. LLM architectures encourage mixing instructions and data in the same stream of tokens, but that means there are always risks that tokens from data (which often comes from untrusted sources) may be misinterpreted as instructions to the model.
-
-
-How much of an impact this has on the utility of these new models remains to be seen. Maybe the new training is so robust that these issues won&#x27;t actually cause problems for real-world applications?
-
-
-I remain skeptical. I expect we&#x27;ll see demos of these flaws in action in relatively short order.
-Tags: audio, text-to-speech, ai, openai, prompt-injection, generative-ai, whisper, llms, multi-modal-output</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Claude can now search the web
-              <span class="post-metadata">(2 min | 573 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/20/claude-can-now-search-the-web/#atom-everything>Claude can now search the web
-This was sorely needed. ChatGPT, Gemini and Grok all had this ability already, and despite Anthropic&#x27;s excellent model quality it was one of the big remaining reasons to keep other models in daily rotation.
-For the moment this is purely a product feature - it&#x27;s available through their consumer applications but there&#x27;s no indication of whether or not it will be coming to the Anthropic API. OpenAI launched the latest version of web search in their API last week.
-Surprisingly there are no details on how it works under the hood. Is this a partnership with someone like Bing, or is it Anthropic&#x27;s own proprietary index populated by their own crawlers?
-I think it may be their own infrastructure, but I&#x27;ve been unable to confirm that.
-Their support site offers some inconclusive hints.
-Does Anthropic crawl data from the web, and how can site owners block the crawler? talks about their ClaudeBot crawler but the language indicates it&#x27;s used for training data, with no mention of a web search index.
-Blocking and Removing Content from Claude looks a little more relevant, and has a heading &quot;Blocking or removing websites from Claude web search&quot; which includes this eyebrow-raising tip:
-Removing content from your site is the best way to ensure that it won&#x27;t appear in Claude outputs when Claude searches the web.
-And then this bit, which does mention &quot;our partners&quot;:
-The noindex robots meta tag is a rule that tells our partners not to index your content so that they don’t send it to us in response to your web search query. Your content can still be linked to and visited through other web pages, or directly visited by users with a link, but the content will not appear in Claude outputs that use web search.
-Both of those documents were last updated &quot;over a week ago&quot;, so it&#x27;s not clear to me if they reflect the new state of the world given today&#x27;s feature launch or not.
-I got this delightful response trying out Claude search where it mistook my recent Squadron automata for a software project:
-
-
-
-    
-Tags: anthropic, claude, generative-ai, llm-tool-use, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Mistral Small 3.1 (25.03) is now generally available in GitHub Models
-              <span class="post-metadata">(8 min | 2544 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-20-mistral-small-3-1-25-03-is-now-generally-available-in-github-models>Mistral Small 3.1 (25.03) is now generally available in GitHub Models
-The post Mistral Small 3.1 (25.03) is now generally available in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Peter Bhat Harkins
-              <span class="post-metadata">(1 min | 357 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/20/peter-bhat-harkins/#atom-everything>I’ve disabled the pending geoblock of the UK because I now think the risks of the Online Safety Act to this site are low enough to change strategies to only geoblock if directly threatened by the regulator. [...]
-It is not possible for a hobby site to comply with the Online Safety Act. The OSA is written to censor huge commercial sites with professional legal teams, and even understanding one&#x27;s obligations under the regulations is an enormous project requiring expensive legal advice.
-The law is 250 pages and the mandatory &quot;guidance&quot; from Ofcom is more than 3,000 pages of dense, cross-referenced UK-flavoured legalese. To find all the guidance you&#x27;ll have to start here, click through to each of the 36 pages listed, and expand each page&#x27;s collapsible sections that might have links to other pages and documents. (Though I can&#x27;t be sure that leads to all their guidance, and note you&#x27;ll have to check back regularly for planned updates.)
-
-— Peter Bhat Harkins, site administrator, lobste.rs
-Tags: politics, uk, moderation</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
