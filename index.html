@@ -25,9 +25,224 @@
 
   <ul>
     <li>
+      <time>2025-04-20</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              llm-fragments-github 0.2
+              <span class="post-metadata">(2 min | 721 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/20/llm-fragments-github/#atom-everything>llm-fragments-github 0.2
+llm-fragments-github plugin to add a new fragment type called issue. It lets you pull the entire content of a GitHub issue thread into your prompt as a concatenated Markdown file. 
+(If you haven&#x27;t seen fragments before I introduced them in Long context support in LLM 0.24 using fragments and template plugins.)
+I used it just now to have Gemini 2.5 Pro provide feedback and attempt an implementation of a complex issue against my LLM project:
+llm install llm-fragments-github
+llm -f github:simonw/llm \
+  -f issue:simonw/llm/938 \
+  -m gemini-2.5-pro-exp-03-25 \
+  --system &#x27;muse on this issue, then propose a whole bunch of code to help implement it&#x27;
+Here I&#x27;m loading the FULL content of the simonw/llm repo using that -f github:simonw/llm fragment (documented here), then loading all of the comments from issue 938 where I discuss quite a complex potential refactoring. I ask Gemini 2.5 Pro to &quot;muse on this issue&quot; and come up with some code.
+This worked shockingly well. Here&#x27;s the full response, which highlighted a few things I hadn&#x27;t considered yet (such as the need to migrate old database records to the new tree hierarchy) and then spat out a whole bunch of code which looks like a solid start to the actual implementation work I need to do.
+I ran this against Google&#x27;s free Gemini 2.5 Preview, but if I&#x27;d used the paid model it would have cost me 202,680 input tokens and 10,460 output tokens for a total of 66.36 cents.
+As a fun extra, the new issue: feature itself was written almost entirely by OpenAI o3, again using fragments. I ran this:
+llm -m openai/o3 \
+  -f https://raw.githubusercontent.com/simonw/llm-hacker-news/refs/heads/main/llm_hacker_news.py \
+  -f https://raw.githubusercontent.com/simonw/tools/refs/heads/main/github-issue-to-markdown.html \
+  -s &#x27;Write a new fragments plugin in Python that registers issue:org/repo/123 which fetches that issue
+      number from the specified github repo and uses the same markdown logic as the HTML page to turn that into a fragment&#x27;
+Here I&#x27;m using the ability to pass a URL to -f and giving it the full source of my llm_hacker_news.py plugin (which shows how a fragment can load data from an API) plus the HTML source of my github-issue-to-markdown tool (which I wrote a few months ago with Claude). I effectively asked o3 to take that HTML/JavaScript tool and port it to Python to work with my fragments plugin mechanism.
+o3 provided almost the exact implementation I needed, and even implemented GITHUB_TOKEN environment variable without me thinking to ask for it. Total cost: 19.928 cents.
+On a final note of curiosity I tried running this prompt against Gemma 3 27B QAT running on my Mac via MLX and llm-mlx:
+llm install llm-mlx
+llm mlx download-model mlx-community/gemma-3-27b-it-qat-4bit
+
+llm -m mlx-community/gemma-3-27b-it-qat-4bit \
+  -f https://raw.githubusercontent.com/simonw/llm-hacker-news/refs/heads/main/llm_hacker_news.py \
+  -f https://raw.githubusercontent.com/simonw/tools/refs/heads/main/github-issue-to-markdown.html \
+  -s &#x27;Write a new fragments plugin in Python that registers issue:org/repo/123 which fetches that issue
+      number from the specified github repo and uses the same markdown logic as the HTML page to turn that into a fragment&#x27;
+That worked pretty well too. It turns out a 16GB local model file is powerful enough to write me an LLM plugin now!
+
+
+    
+Tags: gemini, llm, ai-assisted-programming, generative-ai, o3, ai, llms, plugins, github, mlx, gemma, long-context</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              On Jagged AGI: o3, Gemini 2.5, and everything after
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://www.oneusefulthing.org/p/on-jagged-agi-o3-gemini-25-and-everything>New models and new thresholds</a>
+            </div>
+            <!-- <p class="post-source">One Useful Thing</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-19</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Maybe Meta&#x27;s Llama claims to be open source because of the EU AI act
+              <span class="post-metadata">(4 min | 1058 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/19/llama-eu-ai-act/#atom-everything>I encountered a theory a while ago that one of the reasons Meta insist on using the term “open source” for their Llama models despite the Llama license not actually conforming to the terms of the Open Source Definition is that the EU’s AI act includes special rules for open source models without requiring OSI compliance.
+
+Since the EU AI act (12 July 2024) is available online I decided to take a look for myself.
+
+Here’s one giant HTML page containing the full text of the act in English. I checked the token count with ttok (which uses the OpenAI tokenizer, but it’s close enough to work as a good estimate for other models):
+
+
+curl &#x27;https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri&#x3D;OJ:L_202401689&#x27; | ttok
+
+241,722 tokens. That should fit nicely into Gemini 2.5 Flash (or GPT-4.1 or Gemini 2.5 Pro).
+
+My Gemini API key was playing up so I ran it via OpenRouter (and llm-openrouter) instead:
+
+
+llm -f &#x27;https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri&#x3D;OJ:L_202401689&#x27; \
+  -m openrouter/google/gemini-2.5-flash-preview:thinking \
+  -s &#x27;Summary of mentions of open source here, including what the document defines open source to mean&#x27;
+
+Here&#x27;s the full answer. Relevant extract:
+
+
+
+Recital (89) states that third parties making accessible &quot;tools, services, processes, or AI components other than general-purpose AI models&quot; under a free and open-source licence should not be mandated to comply with upstream provider responsibilities towards those who integrate them. It also encourages developers of such resources to implement documentation practices like model cards and data sheets to promote trustworthy AI.
+
+Recital (102) acknowledges that software and data, including models, released under a free and open-source licence can contribute to research and innovation and provide growth opportunities.
+
+
+
+I tracked down Recital 89 and Recital 102 to check. Sure enough, 89 says:
+
+
+Third parties making accessible to the public tools, services, processes, or AI components other than general-purpose AI models, should not be mandated to comply with requirements targeting the responsibilities along the AI value chain
+
+
+And in 102:
+
+
+General-purpose AI models released under free and open-source licences should be considered to ensure high levels of transparency and openness if their parameters, including the weights, the information on the model architecture, and the information on model usage are made publicly available. The licence should be considered to be free and open-source also when it allows users to run, copy, distribute, study, change and improve software and data, including models under the condition that the original provider of the model is credited, the identical or comparable terms of distribution are respected.
+
+
+Gemini 2.5 Flash also pointed me to Article 2(12), which reads:
+
+
+12. This Regulation does not apply to AI systems released under free and open-source licences, unless they are placed on the market or put into service as high-risk AI systems or as an AI system that falls under Article 5 or 50.
+
+
+I asked a follow-up question:
+
+
+llm -c &#x27;so it says specific licenses but does it clarify which specific licenses count?&#x27;
+
+And got back this response:
+
+
+No, the document does not list specific names of licenses that qualify as &quot;free and open-source&quot;.
+
+Instead of listing names (like GPL, MIT, Apache, etc.), the Regulation defines what kind of terms a license must grant for it to be considered &quot;free and open-source&quot; for the purposes of the Regulation.
+
+According to Recital (102), such a license must essentially allow software and data, including models, to be:
+
+
+Openly shared.
+
+Where users can freely access, use, modify and redistribute them or modified versions thereof.
+
+
+The Recital further clarifies that a license can still be considered free and open-source even if it includes standard conditions like requiring attribution (crediting the original provider) or respecting identical or comparable terms of distribution.
+
+
+I am very obviously not a lawyer, but based on the above I do find the theory credible that Meta are using &quot;open source&quot; in their marketing around Llama partly because the EU AI act has special exemptions for &quot;open source&quot; models that have nothing to do with the OSI definition of that term.
+
+Total cost to use Gemini 2.5 Flash for this? 5.1 cents for my first question and 4.3 cents for the follow-up. That second question was cheaper even though it built on the first because output tokens are more expensive than input tokens and the second answer was shorter than the first - using the &quot;thinking&quot; model output is charged at $3.50/million tokens, input is just $0.15/million.
+
+Using an LLM as a lawyer is obviously a terrible idea, but using one to crunch through a giant legal document and form a very rough layman&#x27;s understanding of what it says feels perfectly cromulent to me.
+
+
+Update: Steve O&#x27;Grady points out that Meta/Facebook have been abusing the term &quot;open source&quot; for a lot longer than the EU AI act has been around - they were pulling shenanigans with a custom license for React back in 2017.
+Tags: meta, ai-ethics, open-source, generative-ai, llama, ai, llms, openrouter, long-context, gemini, llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude Code: Best practices for agentic coding
+              <span class="post-metadata">(2 min | 516 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/19/claude-code-best-practices/#atom-everything>Claude Code: Best practices for agentic coding
+Claude Code CLI coding agent tool, which includes this fascinating tip:
+We recommend using the word &quot;think&quot; to trigger extended thinking mode, which gives Claude additional computation time to evaluate alternatives more thoroughly. These specific phrases are mapped directly to increasing levels of thinking budget in the system: &quot;think&quot; &lt; &quot;think hard&quot; &lt; &quot;think harder&quot; &lt; &quot;ultrathink.&quot; Each level allocates progressively more thinking budget for Claude to use.
+Apparently ultrathink is a magic word!
+I was curious if this was a feature of the Claude model itself or Claude Code in particular. Claude Code isn&#x27;t open source but you can view the obfuscated JavaScript for it, and make it a tiny bit less obfuscated by running it through Prettier. With Claude&#x27;s help I used this recipe:
+mkdir -p /tmp/claude-code-examine
+cd /tmp/claude-code-examine
+npm init -y
+npm install @anthropic-ai/claude-code
+cd node_modules/@anthropic-ai/claude-code
+npx prettier --write cli.js
+
+Then used ripgrep to search for &quot;ultrathink&quot;:
+rg ultrathink -C 30
+
+And found this chunk of code:
+let B &#x3D; W.message.content.toLowerCase();
+if (
+  B.includes(&quot;think harder&quot;) ||
+  B.includes(&quot;think intensely&quot;) ||
+  B.includes(&quot;think longer&quot;) ||
+  B.includes(&quot;think really hard&quot;) ||
+  B.includes(&quot;think super hard&quot;) ||
+  B.includes(&quot;think very hard&quot;) ||
+  B.includes(&quot;ultrathink&quot;)
+)
+  return (
+    l1(&quot;tengu_thinking&quot;, { tokenCount: 31999, messageId: Z, provider: G }),
+    31999
+  );
+if (
+  B.includes(&quot;think about it&quot;) ||
+  B.includes(&quot;think a lot&quot;) ||
+  B.includes(&quot;think deeply&quot;) ||
+  B.includes(&quot;think hard&quot;) ||
+  B.includes(&quot;think more&quot;) ||
+  B.includes(&quot;megathink&quot;)
+)
+  return (
+    l1(&quot;tengu_thinking&quot;, { tokenCount: 1e4, messageId: Z, provider: G }), 1e4
+  );
+if (B.includes(&quot;think&quot;))
+  return (
+    l1(&quot;tengu_thinking&quot;, { tokenCount: 4000, messageId: Z, provider: G }),
+    4000
+  );
+So yeah, it looks like &quot;ultrathink&quot; is a Claude Code feature - presumably that 31999 is a number that affects the token thinking budget, especially since &quot;megathink&quot; maps to 1e4 tokens (10,000) and just plain &quot;think&quot; maps to 4,000.
+
+    
+Via @HamelHusain
+Tags: anthropic, claude, ai-assisted-programming, llm-reasoning, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4240,161 +4455,6 @@ Tags: github-actions, git-scraping, ai, ollama, llms, ai-assisted-programming, g
               <a target="_blank" href=https://www.oneusefulthing.org/p/the-cybernetic-teammate>Having an AI on your team can increase performance, provide expertise, and improve your experience</a>
             </div>
             <!-- <p class="post-source">One Useful Thing</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-21</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Create, add, and remove sub-issues on GitHub Mobile
-              <span class="post-metadata">(7 min | 2178 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-21-create-add-and-remove-sub-issues-on-github-mobile>We’ve made it easier to break down and manage your work on the go! You can now create, add, and remove sub-issues seamlessly on GitHub Mobile, keeping everything organized and…
-The post Create, add, and remove sub-issues on GitHub Mobile appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The &quot;think&quot; tool: Enabling Claude to stop and think in complex tool use situations
-              <span class="post-metadata">(1 min | 423 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/21/the-think-tool/#atom-everything>The &quot;think&quot; tool: Enabling Claude to stop and think in complex tool use situations
-{
-  &quot;name&quot;: &quot;think&quot;,
-  &quot;description&quot;: &quot;Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.&quot;,
-  &quot;input_schema&quot;: {
-    &quot;type&quot;: &quot;object&quot;,
-    &quot;properties&quot;: {
-      &quot;thought&quot;: {
-        &quot;type&quot;: &quot;string&quot;,
-        &quot;description&quot;: &quot;A thought to think about.&quot;
-      }
-    },
-    &quot;required&quot;: [&quot;thought&quot;]
-  }
-}
-
-
-This tool does nothing at all.
-LLM tools (like web_search) usually involve some kind of implementation - the model requests a tool execution, then an external harness goes away and executes the specified tool and feeds the result back into the conversation.
-The &quot;think&quot; tool is a no-op - there is no implementation, it just allows the model to use its existing training in terms of when-to-use-a-tool to stop and dump some additional thoughts into the context.
-This works completely independently of the new &quot;thinking&quot; mechanism introduced in Claude 3.7 Sonnet.
-Anthropic&#x27;s benchmarks show impressive improvements from enabling this tool. I fully anticipate that models from other providers would benefit from the same trick.
-
-    
-Via @alexalbert__
-Tags: prompt-engineering, anthropic, claude, generative-ai, ai, llms, llm-tool-use</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              April 17, 2025 - Kagi Assistant rolls out to all Kagi users
-              <span class="post-metadata">(13 min | 3842 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://kagifeedback.org/d/6642-april-17-2025-kagi-assistant-rolls-out-to-all-kagi-users/1>Announcements
-Kagi Assistant is now open to all plans
-We&#x27;re happy to announce that Kagi Assistant is now available to everyone, across all subscription plans!
- 
-
-Check our announcement blog here.
-
-To use Assistant, head to kagi.com/assistant.
-⚠️ Note: We are enabling the Assistant for all plans in phases, based on regions starting with USA today. The full rollout is scheduled to be completed by Sunday, 23:59 UTC.
-With this release, we are beginning to enforce our fair use policy to ensure a sustainable, high-quality service for everyone as we expand access. Basically our policy states that you can use AI models based on your plan&#x27;s value. For example, a $25 monthly plan allows up to $25 worth of raw token cost across all models (there is a 20% built-in margin that we reserve for providing …</a>
-            </div>
-            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              March 21st, 2025 - Leveling up the Kagi Assistant experience, meet Kagi in Tokyo, and more...
-              <span class="post-metadata">(10 min | 2976 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://kagifeedback.org/d/6640-march-21st-2025-leveling-up-the-kagi-assistant-experience-meet-kagi-in-tokyo-and-more/1>Next chapter in the Kagi Assistant experience
-
-With this release, we&#x27;re introducing a new sidebar, designed to streamline your workflow and keep everything you need within reach. This is just the beginning - the new sidebar lays the foundation for even more powerful features to come.
-We&#x27;re also rolling out Claude 3.7 Sonnet with extended thinking to tackle even more complex challenges. 
-
-
-As always, we’d love to hear your thoughts - join the conversation on Discord or share your feedback through our forum at https://kagifeedback.org
-Kagi, lost in translation, in Tokyo!
-
-From April 21 to 25, a dedicated team from Kagi including CEO, Vlad, will travel to Tokyo 🇯🇵 to meet with companies interested in our advanced translation solutions. If you are based in Japan and your company is intereste…</a>
-            </div>
-            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Anthropic Trust Center: Brave Search added as a subprocessor
-              <span class="post-metadata">(1 min | 383 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/21/anthropic-use-brave/#atom-everything>Anthropic Trust Center: Brave Search added as a subprocessor
-trying to figure out if Anthropic has rolled their own search index for Claude&#x27;s new web search feature or if they were working with a partner. Here&#x27;s confirmation that they are using Brave Search:
-Anthropic&#x27;s subprocessor list. As of March 19, 2025, we have made the following changes:
-Subprocessors added:
-Brave Search (more info)
-That &quot;more info&quot; links to the help page for their new web search feature.
-I confirmed this myself by prompting Claude to &quot;Search for pelican facts&quot; - it ran a search for &quot;Interesting pelican facts&quot; and the ten results it showed as citations were an exact match for that search on Brave.
-And further evidence: if you poke at it a bit Claude will reveal the definition of its web_search function which looks like this - note the BraveSearchParams property:
-{
-  &quot;description&quot;: &quot;Search the web&quot;,
-  &quot;name&quot;: &quot;web_search&quot;,
-  &quot;parameters&quot;: {
-    &quot;additionalProperties&quot;: false,
-    &quot;properties&quot;: {
-      &quot;query&quot;: {
-        &quot;description&quot;: &quot;Search query&quot;,
-        &quot;title&quot;: &quot;Query&quot;,
-        &quot;type&quot;: &quot;string&quot;
-      }
-    },
-    &quot;required&quot;: [
-      &quot;query&quot;
-    ],
-    &quot;title&quot;: &quot;BraveSearchParams&quot;,
-    &quot;type&quot;: &quot;object&quot;
-  }
-}
-
-
-    
-Via @zugaldia.bsky.social
-Tags: anthropic, claude, generative-ai, llm-tool-use, search, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enhance your productivity with Copilot Edits in JetBrains IDEs
-              <span class="post-metadata">(7 min | 2234 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-20-enhance-your-productivity-with-copilot-edits-in-jetbrains-ides>Enhance your productivity with Copilot Edits in JetBrains IDEs
-The post Enhance your productivity with Copilot Edits in JetBrains IDEs appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 

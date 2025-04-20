@@ -2,10 +2,186 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-19T21:08:32.559Z</updated>
+    <updated>2025-04-20T14:08:43.891Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[llm-fragments-github 0.2]]></title>
+        <id>https://simonwillison.net/2025/Apr/20/llm-fragments-github/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/20/llm-fragments-github/#atom-everything"/>
+        <updated>2025-04-20T14:01:09.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/llm-fragments-github/releases/tag/0.2">llm-fragments-github 0.2</a></strong></p>
+I upgraded my <code>llm-fragments-github</code> plugin to add a new fragment type called <code>issue</code>. It lets you pull the entire content of a GitHub issue thread into your prompt as a concatenated Markdown file. </p>
+<p>(If you haven't seen fragments before I introduced them in <a href="https://simonwillison.net/2025/Apr/7/long-context-llm/">Long context support in LLM 0.24 using fragments and template plugins</a>.)</p>
+<p>I used it just now to have Gemini 2.5 Pro provide feedback and attempt an implementation of a complex issue against my <a href="https://github.com/simonw/llm">LLM</a> project:</p>
+<pre>llm install llm-fragments-github
+llm -f github:simonw/llm \
+  -f issue:simonw/llm/938 \
+  -m gemini-2.5-pro-exp-03-25 \
+  --system <span class="pl-s"><span class="pl-pds">'</span>muse on this issue, then propose a whole bunch of code to help implement it<span class="pl-pds">'</span></span></pre>
+
+<p>Here I'm loading the FULL content of the <code>simonw/llm</code> repo using that <code>-f github:simonw/llm</code> fragment (<a href="https://github.com/simonw/llm-fragments-github?tab=readme-ov-file#usage">documented here</a>), then loading all of the comments from <a href="https://github.com/simonw/llm/issues/938">issue 938</a> where I discuss quite a complex potential refactoring. I ask Gemini 2.5 Pro to "muse on this issue" and come up with some code.</p>
+<p>This worked <em>shockingly</em> well. Here's <a href="https://gist.github.com/simonw/a5f0c1e8184f4ddc8b71b30890fe690c#response">the full response</a>, which highlighted a few things I hadn't considered yet (such as the need to migrate old database records to the new tree hierarchy) and then spat out a whole bunch of code which looks like a solid start to the actual implementation work I need to do.</p>
+<p>I ran this against Google's free Gemini 2.5 Preview, but if I'd used the paid model it would have cost me 202,680 input tokens and 10,460 output tokens for a total of 66.36 cents.</p>
+<p>As a fun extra, the new <code>issue:</code> feature itself was written almost entirely by OpenAI o3, again using fragments. I ran this:</p>
+<pre>llm -m openai/o3 \
+  -f https://raw.githubusercontent.com/simonw/llm-hacker-news/refs/heads/main/llm_hacker_news.py \
+  -f https://raw.githubusercontent.com/simonw/tools/refs/heads/main/github-issue-to-markdown.html \
+  -s <span class="pl-s"><span class="pl-pds">'</span>Write a new fragments plugin in Python that registers issue:org/repo/123 which fetches that issue</span>
+<span class="pl-s">      number from the specified github repo and uses the same markdown logic as the HTML page to turn that into a fragment<span class="pl-pds">'</span></span></pre>
+
+<p>Here I'm using the ability to pass a URL to <code>-f</code> and giving it the full source of my <a href="https://github.com/simonw/llm-hacker-news/blob/main/llm_hacker_news.py">llm_hacker_news.py</a> plugin (which shows how a fragment can load data from an API) plus the <a href="https://github.com/simonw/tools/blob/main/github-issue-to-markdown.html">HTML source</a> of my <a href="https://tools.simonwillison.net/github-issue-to-markdown">github-issue-to-markdown</a> tool (which I wrote a few months ago <a href="https://gist.github.com/simonw/cd1afb97e595b40fdeedebb48be7f4f1">with Claude</a>). I effectively asked o3 to take that HTML/JavaScript tool and port it to Python to work with my fragments plugin mechanism.</p>
+<p>o3 provided <a href="https://gist.github.com/simonw/249e16edffe6350f7265012bee9e3305#response">almost the exact implementation I needed</a>, and even implemented <code>GITHUB_TOKEN</code> environment variable without me thinking to ask for it. Total cost: 19.928 cents.</p>
+<p>On a final note of curiosity I tried running this prompt against <a href="https://simonwillison.net/2025/Apr/19/gemma-3-qat-models/">Gemma 3 27B QAT</a> running on my Mac via MLX and <a href="https://github.com/simonw/llm-mlx">llm-mlx</a>:</p>
+<pre>llm install llm-mlx
+llm mlx download-model mlx-community/gemma-3-27b-it-qat-4bit
+
+llm -m mlx-community/gemma-3-27b-it-qat-4bit \
+  -f https://raw.githubusercontent.com/simonw/llm-hacker-news/refs/heads/main/llm_hacker_news.py \
+  -f https://raw.githubusercontent.com/simonw/tools/refs/heads/main/github-issue-to-markdown.html \
+  -s <span class="pl-s"><span class="pl-pds">'</span>Write a new fragments plugin in Python that registers issue:org/repo/123 which fetches that issue</span>
+<span class="pl-s">      number from the specified github repo and uses the same markdown logic as the HTML page to turn that into a fragment<span class="pl-pds">'</span></span></pre>
+
+<p>That worked <a href="https://gist.github.com/simonw/feccff6ce3254556b848c27333f52543#response">pretty well too</a>. It turns out a 16GB local model file is powerful enough to write me an LLM plugin now!
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/o3">o3</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a>, <a href="https://simonwillison.net/tags/gemma">gemma</a>, <a href="https://simonwillison.net/tags/long-context">long-context</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[On Jagged AGI: o3, Gemini 2.5, and everything after]]></title>
+        <id>https://www.oneusefulthing.org/p/on-jagged-agi-o3-gemini-25-and-everything</id>
+        <link href="https://www.oneusefulthing.org/p/on-jagged-agi-o3-gemini-25-and-everything"/>
+        <updated>2025-04-20T11:17:54.000Z</updated>
+        <summary type="html"><![CDATA[New models and new thresholds]]></summary>
+        <author>
+            <name>Ethan Mollick</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Maybe Meta's Llama claims to be open source because of the EU AI act]]></title>
+        <id>https://simonwillison.net/2025/Apr/19/llama-eu-ai-act/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/19/llama-eu-ai-act/#atom-everything"/>
+        <updated>2025-04-19T23:58:18.000Z</updated>
+        <summary type="html"><![CDATA[<p>I encountered a theory a while ago that one of the reasons Meta insist on using the term “open source” for their Llama models despite the Llama license <a href="https://opensource.org/blog/metas-llama-license-is-still-not-open-source">not actually conforming</a> to the terms of the <a href="https://opensource.org/osd">Open Source Definition</a> is that the EU’s AI act includes special rules for open source models without requiring OSI compliance.</p>
+<p>Since the EU AI act (12 July 2024) is <a href="https://artificialintelligenceact.eu/the-act/">available online</a> I decided to take a look for myself.</p>
+<p>Here’s <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689">one giant HTML page</a> containing the full text of the act in English. I checked the token count with <a href="https://github.com/simonw/ttok">ttok</a> (which uses the OpenAI tokenizer, but it’s close enough to work as a good estimate for other models):</p>
+<div class="highlight highlight-source-shell"><pre>curl <span class="pl-s"><span class="pl-pds">'</span>https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689<span class="pl-pds">'</span></span> <span class="pl-k">|</span> ttok</pre></div>
+<p>241,722 tokens. That should fit nicely into <a href="https://simonwillison.net/2025/Apr/17/start-building-with-gemini-25-flash/">Gemini 2.5 Flash</a> (or GPT-4.1 or Gemini 2.5 Pro).</p>
+<p>My Gemini API key was playing up so I ran it via <a href="https://openrouter.ai/">OpenRouter</a> (and <a href="https://github.com/simonw/llm-openrouter">llm-openrouter</a>) instead:</p>
+<div class="highlight highlight-source-shell"><pre>llm -f <span class="pl-s"><span class="pl-pds">'</span>https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689<span class="pl-pds">'</span></span> \
+  -m openrouter/google/gemini-2.5-flash-preview:thinking \
+  -s <span class="pl-s"><span class="pl-pds">'</span>Summary of mentions of open source here, including what the document defines open source to mean<span class="pl-pds">'</span></span></pre></div>
+<p>Here's <a href="https://gist.github.com/simonw/f2e341a2e8ea9ca75c6426fa85bc2dfc">the full answer</a>. Relevant extract:</p>
+<blockquote>
+<ul>
+<li>Recital (89) states that third parties making accessible "tools, services, processes, or AI components other than general-purpose AI models" under a <strong>free and open-source licence</strong> should not be mandated to comply with upstream provider responsibilities towards those who integrate them. It also encourages developers of such resources to implement documentation practices like model cards and data sheets to promote trustworthy AI.</li>
+<li>Recital (102) acknowledges that software and data, including models, released under a <strong>free and open-source licence</strong> can contribute to research and innovation and provide growth opportunities.</li>
+</ul>
+</blockquote>
+<p>I tracked down <a href="https://artificialintelligenceact.eu/recital/89/">Recital 89</a> and <a href="https://artificialintelligenceact.eu/recital/102/">Recital 102</a> to check. Sure enough, 89 says:</p>
+<blockquote>
+<p>Third parties making accessible to the public tools, services, processes, or AI components other than general-purpose AI models, should not be mandated to comply with requirements targeting the responsibilities along the AI value chain</p>
+</blockquote>
+<p>And in 102:</p>
+<blockquote>
+<p>General-purpose AI models released under free and open-source licences should be considered to ensure high levels of transparency and openness if their parameters, including the weights, the information on the model architecture, and the information on model usage are made publicly available. The licence should be considered to be free and open-source also when it allows users to run, copy, distribute, study, change and improve software and data, including models under the condition that the original provider of the model is credited, the identical or comparable terms of distribution are respected.</p>
+</blockquote>
+<p>Gemini 2.5 Flash also pointed me to <a href="https://artificialintelligenceact.eu/article/2/">Article 2(12)</a>, which reads:</p>
+<blockquote>
+<p>12. This Regulation does not apply to AI systems released under free and open-source licences, unless they are placed on the market or put into service as high-risk AI systems or as an AI system that falls under <a href="https://artificialintelligenceact.eu/article/5">Article 5</a> or <a href="https://artificialintelligenceact.eu/article/50/">50</a>.</p>
+</blockquote>
+<p>I asked a follow-up question:</p>
+<div class="highlight highlight-source-shell"><pre>llm -c <span class="pl-s"><span class="pl-pds">'</span>so it says specific licenses but does it clarify which specific licenses count?<span class="pl-pds">'</span></span></pre></div>
+<p>And got <a href="https://gist.github.com/simonw/f2e341a2e8ea9ca75c6426fa85bc2dfc#response-1">back this response</a>:</p>
+<blockquote>
+<p>No, the document <strong>does not list specific names of licenses</strong> that qualify as "free and open-source".</p>
+<p>Instead of listing names (like GPL, MIT, Apache, etc.), the Regulation defines what kind of terms a license must grant for it to be considered "free and open-source" for the purposes of the Regulation.</p>
+<p>According to Recital (102), such a license must essentially allow software and data, including models, to be:</p>
+<ul>
+<li><strong>Openly shared.</strong></li>
+<li>Where users can <strong>freely access, use, modify and redistribute</strong> them or modified versions thereof.</li>
+</ul>
+<p>The Recital further clarifies that a license can still be considered free and open-source even if it includes standard conditions like requiring <strong>attribution (crediting the original provider)</strong> or respecting <strong>identical or comparable terms of distribution</strong>.</p>
+</blockquote>
+<p>I am very obviously not a lawyer, but based on the above I do find the theory credible that Meta are using "open source" in their marketing around Llama partly because the EU AI act has special exemptions for "open source" models that have nothing to do with the OSI definition of that term.</p>
+<p>Total cost to use Gemini 2.5 Flash for this? 5.1 cents for my first question and 4.3 cents for the follow-up. That second question was cheaper even though it built on the first because output tokens are more expensive than input tokens and the second answer was shorter than the first - using the "thinking" model output is charged at $3.50/million tokens, input is just $0.15/million.</p>
+<p>Using an LLM as a lawyer is obviously a terrible idea, but using one to crunch through a giant legal document and form a very rough layman's understanding of what it says feels perfectly cromulent to me.</p>
+
+<p><strong>Update:</strong> Steve O'Grady <a href="https://bsky.app/profile/sogrady.org/post/3ln7ipdbaek2s">points out</a> that Meta/Facebook have been abusing the term "open source" for a lot longer than the EU AI act has been around - they were pulling shenanigans with a custom license for React <a href="https://redmonk.com/sogrady/2017/09/26/facebooks-bsd-patents/">back in 2017</a>.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/meta">meta</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llama">llama</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/openrouter">openrouter</a>, <a href="https://simonwillison.net/tags/long-context">long-context</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm">llm</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude Code: Best practices for agentic coding]]></title>
+        <id>https://simonwillison.net/2025/Apr/19/claude-code-best-practices/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/19/claude-code-best-practices/#atom-everything"/>
+        <updated>2025-04-19T22:17:38.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.anthropic.com/engineering/claude-code-best-practices">Claude Code: Best practices for agentic coding</a></strong></p>
+Extensive new documentation from Anthropic on how to get the best results out of their <a href="https://github.com/anthropics/claude-code">Claude Code</a> CLI coding agent tool, which includes this fascinating tip:</p>
+<blockquote>
+<p>We recommend using the word "think" to trigger extended thinking mode, which gives Claude additional computation time to evaluate alternatives more thoroughly. These specific phrases are mapped directly to increasing levels of thinking budget in the system: "think" &lt; "think hard" &lt; "think harder" &lt; "ultrathink." Each level allocates progressively more thinking budget for Claude to use.</p>
+</blockquote>
+<p>Apparently <strong>ultrathink</strong> is a magic word!</p>
+<p>I was curious if this was a feature of the Claude model itself or Claude Code in particular. Claude Code isn't open source but you can view the obfuscated JavaScript for it, and make it a tiny bit less obfuscated by running it through <a href="https://prettier.io/">Prettier</a>. With <a href="https://claude.ai/share/77c398ec-6a8b-4390-91d3-6e9f0403916e">Claude's help</a> I used this recipe:</p>
+<pre><code>mkdir -p /tmp/claude-code-examine
+cd /tmp/claude-code-examine
+npm init -y
+npm install @anthropic-ai/claude-code
+cd node_modules/@anthropic-ai/claude-code
+npx prettier --write cli.js
+</code></pre>
+<p>Then used <a href="https://github.com/BurntSushi/ripgrep">ripgrep</a> to search for "ultrathink":</p>
+<pre><code>rg ultrathink -C 30
+</code></pre>
+<p>And found this chunk of code:</p>
+<pre><span class="pl-k">let</span> <span class="pl-v">B</span> <span class="pl-c1">=</span> <span class="pl-v">W</span><span class="pl-kos">.</span><span class="pl-c1">message</span><span class="pl-kos">.</span><span class="pl-c1">content</span><span class="pl-kos">.</span><span class="pl-en">toLowerCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">if</span> <span class="pl-kos">(</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think harder"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think intensely"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think longer"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think really hard"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think super hard"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think very hard"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"ultrathink"</span><span class="pl-kos">)</span>
+<span class="pl-kos">)</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-en">l1</span><span class="pl-kos">(</span><span class="pl-s">"tengu_thinking"</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> <span class="pl-c1">tokenCount</span>: <span class="pl-c1">31999</span><span class="pl-kos">,</span> <span class="pl-c1">messageId</span>: <span class="pl-v">Z</span><span class="pl-kos">,</span> <span class="pl-c1">provider</span>: <span class="pl-v">G</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-c1">31999</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">if</span> <span class="pl-kos">(</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think about it"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think a lot"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think deeply"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think hard"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think more"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span>
+  <span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"megathink"</span><span class="pl-kos">)</span>
+<span class="pl-kos">)</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-en">l1</span><span class="pl-kos">(</span><span class="pl-s">"tengu_thinking"</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> <span class="pl-c1">tokenCount</span>: <span class="pl-c1">1e4</span><span class="pl-kos">,</span> <span class="pl-c1">messageId</span>: <span class="pl-v">Z</span><span class="pl-kos">,</span> <span class="pl-c1">provider</span>: <span class="pl-v">G</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-c1">1e4</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-v">B</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"think"</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-en">l1</span><span class="pl-kos">(</span><span class="pl-s">"tengu_thinking"</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> <span class="pl-c1">tokenCount</span>: <span class="pl-c1">4000</span><span class="pl-kos">,</span> <span class="pl-c1">messageId</span>: <span class="pl-v">Z</span><span class="pl-kos">,</span> <span class="pl-c1">provider</span>: <span class="pl-v">G</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-c1">4000</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span></pre>
+
+<p>So yeah, it looks like "ultrathink" is a Claude Code feature - presumably that 31999 is a number that affects the token <a href="https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#implementing-extended-thinking">thinking budget</a>, especially since "megathink" maps to 1e4 tokens (10,000) and just plain "think" maps to 4,000.
+
+    <p><small></small>Via <a href="https://twitter.com/HamelHusain/status/1913702157108592719">@HamelHusain</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Gemma 3 QAT Models]]></title>
         <id>https://simonwillison.net/2025/Apr/19/gemma-3-qat-models/#atom-everything</id>
@@ -3612,147 +3788,6 @@ I setup a GitHub Actions + GitHub Pages Atom feed of scraped recent models data 
         <summary type="html"><![CDATA[Having an AI on your team can increase performance, provide expertise, and improve your experience]]></summary>
         <author>
             <name>Ethan Mollick</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Create, add, and remove sub-issues on GitHub Mobile]]></title>
-        <id>https://github.blog/changelog/2025-03-21-create-add-and-remove-sub-issues-on-github-mobile</id>
-        <link href="https://github.blog/changelog/2025-03-21-create-add-and-remove-sub-issues-on-github-mobile"/>
-        <updated>2025-03-21T20:09:04.000Z</updated>
-        <summary type="html"><![CDATA[We’ve made it easier to break down and manage your work on the go! You can now create, add, and remove sub-issues seamlessly on GitHub Mobile, keeping everything organized and…
-The post Create, add, and remove sub-issues on GitHub Mobile appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[The "think" tool: Enabling Claude to stop and think in complex tool use situations]]></title>
-        <id>https://simonwillison.net/2025/Mar/21/the-think-tool/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/21/the-think-tool/#atom-everything"/>
-        <updated>2025-03-21T19:17:59.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.anthropic.com/engineering/claude-think-tool">The &quot;think&quot; tool: Enabling Claude to stop and think in complex tool use situations</a></strong></p>
-Fascinating new prompt engineering trick from Anthropic. They use their standard tool calling mechanism to define a tool called "think" that looks something like this:</p>
-<div class="highlight highlight-source-json"><pre>{
-  <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>think<span class="pl-pds">"</span></span>,
-  <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.<span class="pl-pds">"</span></span>,
-  <span class="pl-ent">"input_schema"</span>: {
-    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
-    <span class="pl-ent">"properties"</span>: {
-      <span class="pl-ent">"thought"</span>: {
-        <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>A thought to think about.<span class="pl-pds">"</span></span>
-      }
-    },
-    <span class="pl-ent">"required"</span>: [<span class="pl-s"><span class="pl-pds">"</span>thought<span class="pl-pds">"</span></span>]
-  }
-}</pre></div>
-
-<p>This tool <em>does nothing at all</em>.</p>
-<p>LLM tools (like <a href="https://simonwillison.net/2025/Mar/21/anthropic-use-brave/">web_search</a>) usually involve some kind of implementation - the model requests a tool execution, then an external harness goes away and executes the specified tool and feeds the result back into the conversation.</p>
-<p>The "think" tool is a no-op - there is no implementation, it just allows the model to use its existing training in terms of when-to-use-a-tool to stop and dump some additional thoughts into the context.</p>
-<p>This works completely independently of the new "thinking" mechanism introduced <a href="https://simonwillison.net/2025/Feb/25/llm-anthropic-014/#extended-thinking-mode">in Claude 3.7 Sonnet</a>.</p>
-<p>Anthropic's benchmarks show impressive improvements from enabling this tool. I fully anticipate that models from other providers would benefit from the same trick.
-
-    <p><small></small>Via <a href="https://x.com/alexalbert__/status/1903130655564922911">@alexalbert__</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[April 17, 2025 - Kagi Assistant rolls out to all Kagi users]]></title>
-        <id>https://kagifeedback.org/d/6642-april-17-2025-kagi-assistant-rolls-out-to-all-kagi-users/1</id>
-        <link href="https://kagifeedback.org/d/6642-april-17-2025-kagi-assistant-rolls-out-to-all-kagi-users/1"/>
-        <updated>2025-03-21T18:15:13.000Z</updated>
-        <summary type="html"><![CDATA[Announcements
-Kagi Assistant is now open to all plans
-We're happy to announce that Kagi Assistant is now available to everyone, across all subscription plans!
- 
-
-Check our announcement blog here.
-
-To use Assistant, head to kagi.com/assistant.
-⚠️ Note: We are enabling the Assistant for all plans in phases, based on regions starting with USA today. The full rollout is scheduled to be completed by Sunday, 23:59 UTC.
-With this release, we are beginning to enforce our fair use policy to ensure a sustainable, high-quality service for everyone as we expand access. Basically our policy states that you can use AI models based on your plan's value. For example, a $25 monthly plan allows up to $25 worth of raw token cost across all models (there is a 20% built-in margin that we reserve for providing …]]></summary>
-        <author>
-            <name>Activity in the release-notes tag</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[March 21st, 2025 - Leveling up the Kagi Assistant experience, meet Kagi in Tokyo, and more...]]></title>
-        <id>https://kagifeedback.org/d/6640-march-21st-2025-leveling-up-the-kagi-assistant-experience-meet-kagi-in-tokyo-and-more/1</id>
-        <link href="https://kagifeedback.org/d/6640-march-21st-2025-leveling-up-the-kagi-assistant-experience-meet-kagi-in-tokyo-and-more/1"/>
-        <updated>2025-03-21T18:13:53.000Z</updated>
-        <summary type="html"><![CDATA[Next chapter in the Kagi Assistant experience
-
-With this release, we're introducing a new sidebar, designed to streamline your workflow and keep everything you need within reach. This is just the beginning - the new sidebar lays the foundation for even more powerful features to come.
-We're also rolling out Claude 3.7 Sonnet with extended thinking to tackle even more complex challenges. 
-
-
-As always, we’d love to hear your thoughts - join the conversation on Discord or share your feedback through our forum at https://kagifeedback.org
-Kagi, lost in translation, in Tokyo!
-
-From April 21 to 25, a dedicated team from Kagi including CEO, Vlad, will travel to Tokyo 🇯🇵 to meet with companies interested in our advanced translation solutions. If you are based in Japan and your company is intereste…]]></summary>
-        <author>
-            <name>Activity in the release-notes tag</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Anthropic Trust Center: Brave Search added as a subprocessor]]></title>
-        <id>https://simonwillison.net/2025/Mar/21/anthropic-use-brave/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/21/anthropic-use-brave/#atom-everything"/>
-        <updated>2025-03-21T15:07:39.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://app.vanta.com/anthropic/trust/iz673w96495gyjer8h78n/updates">Anthropic Trust Center: Brave Search added as a subprocessor</a></strong></p>
-Yesterday I was <a href="https://simonwillison.net/2025/Mar/20/claude-can-now-search-the-web/">trying to figure out</a> if Anthropic has rolled their own search index for Claude's new web search feature or if they were working with a partner. Here's confirmation that they are using <a href="https://search.brave.com/">Brave Search</a>:</p>
-<blockquote>
-<p>Anthropic's subprocessor list. As of March 19, 2025, we have made the following changes:</p>
-<p>Subprocessors added:</p>
-<ul>
-<li>Brave Search (<a href="https://support.anthropic.com/en/articles/10684626-enabling-and-using-web-search">more info</a>)</li>
-</ul>
-</blockquote>
-<p>That "more info" links to the help page for their new web search feature.</p>
-<p>I confirmed this myself by prompting Claude to "<a href="https://claude.ai/share/e2beb581-b6ad-49b4-9d64-11e4691b8941">Search for pelican facts</a>" - it ran a search for "Interesting pelican facts" and the ten results it showed as citations were an exact match for <a href="https://search.brave.com/search?q=interesting+pelican+facts">that search on Brave</a>.</p>
-<p>And further evidence: if you <a href="https://claude.ai/share/45348349-8cc7-4447-8d79-eae6f218eb53">poke at it a bit</a> Claude will reveal the definition of its <code>web_search</code> function which looks like this - note the <code>BraveSearchParams</code> property:</p>
-<div class="highlight highlight-source-json"><pre>{
-  <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>Search the web<span class="pl-pds">"</span></span>,
-  <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>web_search<span class="pl-pds">"</span></span>,
-  <span class="pl-ent">"parameters"</span>: {
-    <span class="pl-ent">"additionalProperties"</span>: <span class="pl-c1">false</span>,
-    <span class="pl-ent">"properties"</span>: {
-      <span class="pl-ent">"query"</span>: {
-        <span class="pl-ent">"description"</span>: <span class="pl-s"><span class="pl-pds">"</span>Search query<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>Query<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
-      }
-    },
-    <span class="pl-ent">"required"</span>: [
-      <span class="pl-s"><span class="pl-pds">"</span>query<span class="pl-pds">"</span></span>
-    ],
-    <span class="pl-ent">"title"</span>: <span class="pl-s"><span class="pl-pds">"</span>BraveSearchParams<span class="pl-pds">"</span></span>,
-    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
-  }
-}</pre></div>
-
-    <p><small></small>Via <a href="https://bsky.app/profile/zugaldia.bsky.social/post/3lkvgzvarvs2s">@zugaldia.bsky.social</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/search">search</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Enhance your productivity with Copilot Edits in JetBrains IDEs]]></title>
-        <id>https://github.blog/changelog/2025-03-20-enhance-your-productivity-with-copilot-edits-in-jetbrains-ides</id>
-        <link href="https://github.blog/changelog/2025-03-20-enhance-your-productivity-with-copilot-edits-in-jetbrains-ides"/>
-        <updated>2025-03-21T13:06:51.000Z</updated>
-        <summary type="html"><![CDATA[Enhance your productivity with Copilot Edits in JetBrains IDEs
-The post Enhance your productivity with Copilot Edits in JetBrains IDEs appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
     <entry>
