@@ -2,10 +2,77 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-21T14:10:50.651Z</updated>
+    <updated>2025-04-21T21:10:38.237Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[OpenAI o3 and o4-mini System Card]]></title>
+        <id>https://simonwillison.net/2025/Apr/21/openai-o3-and-o4-mini-system-card/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/21/openai-o3-and-o4-mini-system-card/#atom-everything"/>
+        <updated>2025-04-21T19:13:54.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://openai.com/index/o3-o4-mini-system-card/">OpenAI o3 and o4-mini System Card</a></strong></p>
+I'm surprised to see a combined System Card for o3 and o4-mini in the same document - I'd expect to see these covered separately.</p>
+<p>The opening paragraph calls out the most interesting new ability of these models (see also <a href="https://simonwillison.net/2025/Apr/21/ai-assisted-search/#o3-and-o4-mini-are-really-good-at-search">my notes here</a>). Tool usage isn't new, but using tools in the chain of thought appears to result in some very significant improvements:</p>
+<blockquote>
+<p>The models use tools in their chains of thought to augment their capabilities; for example, cropping or transforming images, searching the web, or using Python to analyze data during their thought process.</p>
+</blockquote>
+<p>Section 3.3 on hallucinations has been gaining a lot of attention. Emphasis mine:</p>
+<blockquote>
+<p>We tested OpenAI o3 and o4-mini against PersonQA, an evaluation that aims to elicit hallucinations. PersonQA is a dataset of questions and publicly available facts that measures the model's accuracy on attempted answers.</p>
+<p>We consider two metrics: accuracy (did the model answer the question correctly) and hallucination rate (checking how often the model hallucinated).</p>
+<p>The o4-mini model underperforms o1 and o3 on our PersonQA evaluation. This is expected, as smaller models have less world knowledge and tend to hallucinate more. <strong>However, we also observed some performance differences comparing o1 and o3. Specifically, o3 tends to make more claims overall, leading to more accurate claims as well as more inaccurate/hallucinated claims.</strong> More research is needed to understand the cause of this result.</p>
+<table style="margin: 0 auto">
+  <caption style="text-align: center">Table 4: PersonQA evaluation</caption>
+  <tr>
+    <th>Metric</th>
+    <th>o3</th>
+    <th>o4-mini</th>
+    <th>o1</th>
+  </tr>
+  <tr>
+    <td>accuracy (higher is better)</td>
+    <td>0.59</td>
+    <td>0.36</td>
+    <td>0.47</td>
+  </tr>
+  <tr>
+    <td>hallucination rate (lower is better)</td>
+    <td>0.33</td>
+    <td>0.48</td>
+    <td>0.16</td>
+  </tr>
+</table>
+</blockquote>
+
+<p>The benchmark score on OpenAI's internal PersonQA benchmark (as far as I can tell no further details of that evaluation have been shared) going from 0.16 for o1 to 0.33 for o3 is interesting, but I don't know if it it's interesting enough to produce dozens of headlines along the lines of "OpenAI's o3 and o4-mini hallucinate way higher than previous models".</p>
+<p>The paper also talks at some length about "sandbagging". I’d previously encountered sandbagging <a href="https://simonwillison.net/2023/Apr/5/sycophancy-sandbagging/">defined as meaning</a> “where models are more likely to endorse common misconceptions when their user appears to be less educated”. The o3/o4-mini system card uses a different definition: “the model concealing its full capabilities in order to better achieve some goal” - and links to the recent Anthropic paper <a href="https://alignment.anthropic.com/2025/automated-researchers-sandbag/">Automated Researchers Can Subtly Sandbag</a>.</p>
+<p>As far as I can tell this definition relates to the American English use of “sandbagging” <a href="https://www.merriam-webster.com/dictionary/sandbag">to mean</a> “to hide the truth about oneself so as to gain an advantage over another” - as practiced by poker or pool sharks.</p>
+<p>(Wouldn't it be nice if we could have <em>just one</em> piece of AI terminology that didn't attract multiple competing definitions?)</p>
+<p>o3 and o4-mini both showed some limited capability to sandbag - to attempt to hide their true capabilities in safety testing scenarios that weren't fully described. This relates to the idea of "scheming", which I wrote about with respect to the GPT-4o model card <a href="https://simonwillison.net/2024/Aug/8/gpt-4o-system-card/#scheming">last year</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/o3">o3</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Decentralizing Schemes]]></title>
+        <id>https://simonwillison.net/2025/Apr/21/decentralizing-schemes/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/21/decentralizing-schemes/#atom-everything"/>
+        <updated>2025-04-21T18:48:18.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.tbray.org/ongoing/When/202x/2025/04/16/Decentralized-Schemes">Decentralizing Schemes</a></strong></p>
+Tim Bray discusses the challenges faced by decentralized Mastodon in that shared URLs to posts don't take into account people accessing Mastodon via their own instances, which breaks replies/likes/shares etc unless you further copy and paste URLs around yourself.</p>
+<p>Tim proposes that the answer is URIs: a registered <code>fedi://mastodon.cloud/@timbray/109508984818551909</code> scheme could allow Fediverse-aware software to step in and handle those URIs, similar to how <code>mailto:</code> works.</p>
+<p>Bluesky have <a href="https://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml">registered</a> <code>at:</code> already, and there's also a <code>web+ap:</code> prefix registered with the intent of covering ActivityPub, the protocol used by Mastodon.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/social-media">social-media</a>, <a href="https://simonwillison.net/tags/tim-bray">tim-bray</a>, <a href="https://simonwillison.net/tags/bluesky">bluesky</a>, <a href="https://simonwillison.net/tags/urls">urls</a>, <a href="https://simonwillison.net/tags/mastodon">mastodon</a>, <a href="https://simonwillison.net/tags/decentralisation">decentralisation</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[AI assisted search-based research actually works now]]></title>
         <id>https://simonwillison.net/2025/Apr/21/ai-assisted-search/#atom-everything</id>
@@ -305,6 +372,28 @@ Interesting release from Google, as a follow-up <a href="https://simonwillison.n
     <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/gemma">gemma</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot for Xcode adds @workspace and support for Claude 3.7 Sonnet and GPT-4.5]]></title>
+        <id>https://github.blog/changelog/2025-04-18-github-copilot-for-xcode-adds-workspace-and-support-for-claude-3-7-sonnet-and-gpt-4-5</id>
+        <link href="https://github.blog/changelog/2025-04-18-github-copilot-for-xcode-adds-workspace-and-support-for-claude-3-7-sonnet-and-gpt-4-5"/>
+        <updated>2025-04-19T12:03:32.000Z</updated>
+        <summary type="html"><![CDATA[The GitHub Copilot for Xcode extension now allows you to ask questions about your entire codebase using the @workspace context. Additionally, we have added support for new models, including Claude…
+The post GitHub Copilot for Xcode adds @workspace and support for Claude 3.7 Sonnet and GPT-4.5 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Manage secret scanning alert dismissal requests with the REST API]]></title>
+        <id>https://github.blog/changelog/2025-04-18-manage-secret-scanning-alert-dismissal-requests-with-the-rest-api</id>
+        <link href="https://github.blog/changelog/2025-04-18-manage-secret-scanning-alert-dismissal-requests-with-the-rest-api"/>
+        <updated>2025-04-19T00:55:44.000Z</updated>
+        <summary type="html"><![CDATA[With delegated alert dismissal for secret scaning alerts, you can require a review process before alerts are dismissed. This helps you better manage your security risk as well as meet…
+The post Manage secret scanning alert dismissal requests with the REST API appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
         </author>
     </entry>
     <entry>
