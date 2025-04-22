@@ -31,6 +31,177 @@
       <article>
           <details>
             <summary>
+              Quoting Ellie Huxtable
+              <span class="post-metadata">(1 min | 238 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/ellie-huxtable/#atom-everything>I was against using AI for programming for a LONG time. It never felt effective.
+But with the latest models + tools, it finally feels like a real performance boost
+If you’re still holding out, do yourself a favor: spend a few focused hours actually using it
+
+— Ellie Huxtable
+Tags: ai-assisted-programming, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              ClickHouse gets lazier (and faster): Introducing lazy materialization
+              <span class="post-metadata">(1 min | 406 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/clickhouse-lazy-materializati/#atom-everything>ClickHouse gets lazier (and faster): Introducing lazy materialization
+As I understand it, the new &quot;lazy materialization&quot; feature means that if you run a query like this:
+select id, big_col1, big_col2
+from big_table order by rand() limit 5
+
+Those big_col1 and big_col2 columns won&#x27;t be read from disk for every record, just for the five that are returned. This can dramatically improve the performance of queries against huge tables - for one example query ClickHouse report a drop from &quot;219 seconds to just 139 milliseconds—with 40× less data read and 300× lower memory usage.&quot;
+I&#x27;m linking to this mainly because the article itself is such a detailed discussion of columnar data patterns in general. It caused me to update my intuition for how queries against large tables can work on modern hardware. This query for example:
+SELECT helpful_votes
+FROM amazon.amazon_reviews
+ORDER BY helpful_votes DESC
+LIMIT 3;
+
+Can run in 70ms against a 150 million row, 70GB table - because in a columnar database you only need to read that helpful_votes integer column which adds up to just 600MB of data, and sorting 150 million integers on a decent machine takes no time at all.
+
+    
+Via Hacker News
+Tags: sql, clickhouse, databases</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Abusing DuckDB-WASM by making SQL draw 3D graphics (Sort Of)
+              <span class="post-metadata">(1 min | 363 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/duckdb-wasm-doom/#atom-everything>Abusing DuckDB-WASM by making SQL draw 3D graphics (Sort Of)
+live demo, and the code on GitHub.
+The SQL is so much fun. Here’s a snippet that implements ray tracing as part of a SQL view:
+CREATE OR REPLACE VIEW render_3d_frame AS
+WITH RECURSIVE
+    -- ...
+    rays AS (
+        SELECT 
+            c.col, 
+            (p.dir - s.fov/2.0 + s.fov * (c.col*1.0 / (s.view_w - 1))) AS angle 
+        FROM cols c, s, p
+    ),
+    raytrace(col, step_count, fx, fy, angle) AS (
+        SELECT 
+            r.col, 
+            1, 
+            p.x + COS(r.angle)*s.step, 
+            p.y + SIN(r.angle)*s.step, 
+            r.angle 
+        FROM rays r, p, s 
+        UNION ALL 
+        SELECT 
+            rt.col, 
+            rt.step_count + 1, 
+            rt.fx + COS(rt.angle)*s.step, 
+            rt.fy + SIN(rt.angle)*s.step, 
+            rt.angle 
+        FROM raytrace rt, s 
+        WHERE rt.step_count &lt; s.max_steps 
+          AND NOT EXISTS (
+              SELECT 1 
+              FROM map m 
+              WHERE m.x &#x3D; CAST(rt.fx AS INT) 
+                AND m.y &#x3D; CAST(rt.fy AS INT) 
+                AND m.tile &#x3D; &#x27;#&#x27;
+          )
+    ),
+    -- ...
+Via Hacker News
+Tags: sql, webassembly, duckdb</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependabot now lets you schedule update frequencies with cron expressions
+              <span class="post-metadata">(7 min | 2219 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-22-dependabot-now-lets-you-schedule-update-frequencies-with-cron-expressions>Dependabot users can now schedule custom update frequencies by using cron expressions in schedule.interval in the Dependabot configuration file. This enhances the predefined intervals (daily, weekly, and monthly) and provides…
+The post Dependabot now lets you schedule update frequencies with cron expressions appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Improvements to Changelog experience
+              <span class="post-metadata">(9 min | 2675 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-22-improvements-to-changelog-experience>What is changing? We are excited to share that we have shipped a new UI for users who read through our changelogs on the GitHub blog webpage! This is meant…
+The post Improvements to Changelog experience appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A5
+              <span class="post-metadata">(1 min | 408 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/a5/#atom-everything>A5
+It is the pentagonal equivalent of other DGGSs, like S2 or H3, but with higher accuracy and lower distortion.
+Effectively it&#x27;s a way of dividing the entire world into pentagons where each one covers the same physical area (to within a 2% threshold) - like Uber&#x27;s H3 but a bit weirder and more fun. An A5 reference implementation written in TypeScript is available on GitHub.
+This interactive demo helps show how it works:
+
+Why pentagons? Here&#x27;s what the A5 docs say:
+A5 is unique in that it uses a pentagonal tiling of a dodecahedron. [...] The benefit of choosing a dodecahedron is that it is the platonic solid with the lowest vertex curvature, and by this measure it is the most spherical of all the platonic solids. This is key for minimizing cell distortion as the process of projecting a platonic solid onto a sphere involves warping the cell geometry to force the vertex curvature to approach zero. Thus, the lower the original vertex curvature, the less distortion will be introduced by the projection.
+I had to look up platonic solids on Wikipedia. There are only five: Tetrahedron, Cube, Octahedron, Dodecahedron and Icosahedron and they can be made using squares, triangles or (in the case of the Dodecahedron) pentagons, making the pentagon the most circle-like option.
+
+    
+Via Tom MacWright
+Tags: geospatial</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Reminder for changes to npm replication feeds APIs
+              <span class="post-metadata">(9 min | 2692 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-22-reminder-for-changes-to-npm-replication-feeds-apis>This is a follow-up to our previous announcement about npm replication APIs. The new replication feed APIs are now live. While the legacy feeds will remain available—with limitations and scheduled…
+The post Reminder for changes to npm replication feeds APIs appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Mobile monthly: April’s general availability and more
+              <span class="post-metadata">(11 min | 3308 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-21-mobile-monthly-aprils-general-availability-and-more>During March and April, GitHub Mobile introduced several updates, including bug fixes, accessibility improvements, and a range of new features to make coding and collaboration on the go more seamless.…
+The post Mobile monthly: April’s general availability and more appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Working Through the Fear of Being Seen
               <span class="post-metadata">(1 min | 286 words)</span> 
             </summary>
@@ -113,6 +284,19 @@ Bluesky have registered at: already, and there&#x27;s also a web+ap: prefix regi
 Tags: social-media, tim-bray, bluesky, urls, mastodon, decentralisation</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Guest Blog: Build an AI App That Can Browse the Internet Using Microsoft’s Playwright MCP Server &amp; Semantic Kernel — in Just 4 Steps
+              <span class="post-metadata">(24 min | 7312 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/guest-blog-build-an-ai-app-that-can-browse-the-internet-using-microsofts-playwright-mcp-server-semantic-kernel-in-just-4-steps/>Today we’re excited to feature a returning guest author, Akshay Kokane to share his recent Medium article on Building an AI App That Can Browse the Internet Using Microsoft’s Playwright MCP Server &amp; Semantic Kernel. We’ll turn it over to him to dive in! MCP! It’s the new buzzword in the AI world. So, I thought […]
+The post Guest Blog: Build an AI App That Can Browse the Internet Using Microsoft’s Playwright MCP Server &amp; Semantic Kernel — in Just 4 Steps appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
           </details>
       </article>
       <article>
