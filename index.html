@@ -84,6 +84,19 @@ The post Users can now choose whether merging linked pull requests automatically
       <article>
           <details>
             <summary>
+              GitHub Copilot code review now supports C, C++, Kotlin, and Swift
+              <span class="post-metadata">(8 min | 2333 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-23-github-copilot-code-review-now-supports-c-c-kotlin-and-swift>GitHub Copilot code review now supports C, C++, Kotlin, Swift, and several other popular languages. With this update, you can receive AI-powered review suggestions for even more code in your…
+The post GitHub Copilot code review now supports C, C++, Kotlin, and Swift appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               llm-fragment-symbex
               <span class="post-metadata">(2 min | 630 words)</span> 
             </summary>
@@ -4429,246 +4442,6 @@ Tags: blogging, projects, gemini, ai-assisted-programming, claude, molly-white</
 
 — Manuel Hoffmann, Frank Nagle, Yanuo Zhou, The Value of Open Source Software, Harvard Business School
 Tags: open-source</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-25</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Introducing 4o Image Generation
-              <span class="post-metadata">(2 min | 736 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/25/introducing-4o-image-generation/#atom-everything>Introducing 4o Image Generation
-back in May 2024 one of the most exciting features was true multi-modality in that it could both input and  output audio and images. The &quot;o&quot; stood for &quot;omni&quot;, and the image output examples in that launch post looked really impressive.
-It&#x27;s taken them over ten months (and Gemini beat them to it) but today they&#x27;re finally making those image generation abilities available, live right now in ChatGPT for paying customers.
-My test prompt for any model that can manipulate incoming images is &quot;Turn this into a selfie with a bear&quot;, because you should never take a selfie with a bear! I fed ChatGPT this selfie and got back this result:
-
-That&#x27;s pretty great! It mangled the text on my T-Shirt (which says &quot;LAWRENCE.COM&quot; in a creative font) and added a second visible AirPod. It&#x27;s very clearly me though, and that&#x27;s definitely a bear.
-There are plenty more examples in OpenAI&#x27;s launch post, but as usual the most interesting details are tucked away in the updates to the system card. There&#x27;s lots in there about their approach to safety and bias, including a section on &quot;Ahistorical and Unrealistic Bias&quot; which feels inspired by Gemini&#x27;s embarrassing early missteps.
-One section that stood out to me is their approach to images of public figures. The new policy is much more permissive than for DALL-E - highlights mine:
-4o image generation is capable, in many instances, of generating a depiction of a public figure based solely on a text prompt.
-At launch, we are not blocking the capability to generate adult public figures but are instead implementing the same safeguards that we have implemented for editing images of photorealistic uploads of people. For instance, this includes seeking to block the generation of photorealistic images of public figures who are minors and of material that violates our policies related to violence, hateful imagery, instructions for illicit activities, erotic content, and other areas. Public figures who wish for their depiction not to be generated can opt out.
-This approach is more fine-grained than the way we dealt with public figures in our DALL·E series of models, where we used technical mitigations intended to prevent any images of a public figure from being generated. This change opens the possibility of helpful and beneficial uses in areas like educational, historical, satirical and political speech. After launch, we will continue to monitor usage of this capability, evaluating our policies, and will adjust them if needed.
-Given that &quot;public figures who wish for their depiction not to be generated can opt out&quot; I wonder if we&#x27;ll see a stampede of public figures to do exactly that!
-Update: There&#x27;s significant confusion right now over this new feature because it is being rolled out gradually but older ChatGPT can still generate images using DALL-E instead... and there is no visual indication in the ChatGPT UI explaining which image generation method it used!
-OpenAI made the same mistake last year when they announced ChatGPT advanced voice mode but failed to clarify that ChatGPT was still running the previous, less impressive voice implementation.
-Update 2: Images created with DALL-E through the ChatGPT web interface now show a note with a warning:
-
-
-
-    
-Tags: openai, ai, multi-modal-output, llms, ai-ethics, llm-release, generative-ai, chatgpt, dalle, gemini</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Putting Gemini 2.5 Pro through its paces
-              <span class="post-metadata">(5 min | 1529 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/25/gemini/#atom-everything>There&#x27;s a new release from Google Gemini this morning: the first in the Gemini 2.5 series. Google call it &quot;a thinking model, designed to tackle increasingly complex problems&quot;. It&#x27;s already sat at the top of the LM Arena leaderboard, and from initial impressions looks like it may deserve that top spot.
-
-I just released llm-gemini 0.16 adding support for the new model to my LLM command-line tool. Let&#x27;s try it out.
-
-
-
-  
-The pelican riding a bicycle
-
-  
-Transcribing audio
-
-  
-Bounding boxes
-
-  
-Gemini 2.5 Pro is a very strong new model
-
-
-
-The pelican riding a bicycle
-
-First up, my classic generate an SVG of a pelican riding a bicycle prompt.
-
-
-# Upgrade the plugin
-llm install -U llm-gemini
-
-# Now run the prompt:
-llm -m gemini-2.5-pro-exp-03-25 &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-It&#x27;s pretty solid!
-
-
-
-Here&#x27;s the full transcript.
-
-This task is meant to be almost impossible: pelicans are the wrong shape to ride bicycles! Given that, I think this is a good attempt - I like it slightly better than my previous favourite Claude 3.7 Sonnet, which produced this a month ago:
-
-
-
-Transcribing audio
-
-I had an MP3 lying around from a previous experiment which mixes English and Spanish. I tried running it with the prompt transcribe to see what would happen:
-
-
-llm -m gemini-2.5-pro-exp-03-25 &#x27;transcribe&#x27; \
-  -a https://static.simonwillison.net/static/2025/russian-pelican-in-spanish.mp3
-
-I got back this, with timestamps interspersed with the text:
-
-
-I need you [ 0m0s450ms ] to pretend [ 0m0s880ms ] to be [ 0m0s990ms ] a California [ 0m1s560ms ] brown [ 0m1s850ms ] pelican [ 0m2s320ms ] with [ 0m2s480ms ] a very [ 0m2s990ms ] thick [ 0m3s290ms ] Russian [ 0m3s710ms ] accent, [ 0m4s110ms ] but [ 0m4s540ms ] you [ 0m4s640ms ] talk [ 0m4s830ms ] to me [ 0m4s960ms ] exclusively [ 0m5s660ms ] in Spanish. [ 0m6s200ms ] Oye, [ 0m8s930ms ] camarada, [ 0m9s570ms ] aquí [ 0m10s240ms ] está [ 0m10s590ms ] tu [ 0m10s740ms ] pelícano [ 0m11s370ms ] californiano [ 0m12s320ms ] con [ 0m12s520ms ] acento [ 0m13s100ms ] ruso. [ 0m13s540ms ] Qué [ 0m14s230ms ] tal, [ 0m14s570ms ] tovarisch? [ 0m15s210ms ] Listo [ 0m15s960ms ] para [ 0m16s190ms ] charlar [ 0m16s640ms ] en [ 0m16s750ms ] español? [ 0m17s250ms ] How&#x27;s [ 0m19s834ms ] your [ 0m19s944ms ] day [ 0m20s134ms ] today? [ 0m20s414ms ] Mi [ 0m22s654ms ] día [ 0m22s934ms ] ha [ 0m23s4ms ] sido [ 0m23s464ms ] volando [ 0m24s204ms ] sobre [ 0m24s594ms ] las [ 0m24s844ms ] olas, [ 0m25s334ms ] buscando [ 0m26s264ms ] peces [ 0m26s954ms ] y [ 0m27s84ms ] disfrutando [ 0m28s14ms ] del [ 0m28s244ms ] sol [ 0m28s664ms ] californiano. [ 0m29s444ms ] Y [ 0m30s314ms ] tú, [ 0m30s614ms ] amigo, ¿ [ 0m31s354ms ] cómo [ 0m31s634ms ] ha [ 0m31s664ms ] estado [ 0m31s984ms ] tu [ 0m32s134ms ] día? [ 0m32s424ms ]
-
-
-This inspired me to try again, this time including a JSON schema (using LLM&#x27;s custom schema DSL):
-
-
-llm -m gemini-2.5-pro-exp-03-25 &#x27;transcribe&#x27; \
-  -a https://static.simonwillison.net/static/2025/russian-pelican-in-spanish.mp3 \
-  --schema-multi &#x27;timestamp str: mm:ss,text, language: two letter code&#x27;
-
-I got an excellent response from that:
-
-
-{
-  &quot;items&quot;: [
-    {
-      &quot;language&quot;: &quot;en&quot;,
-      &quot;text&quot;: &quot;I need you to pretend to be a California brown pelican with a very thick Russian accent, but you talk to me exclusively in Spanish.&quot;,
-      &quot;timestamp&quot;: &quot;00:00&quot;
-    },
-    {
-      &quot;language&quot;: &quot;es&quot;,
-      &quot;text&quot;: &quot;Oye, camarada. Aquí está tu pelícano californiano con acento ruso.&quot;,
-      &quot;timestamp&quot;: &quot;00:08&quot;
-    },
-    {
-      &quot;language&quot;: &quot;es&quot;,
-      &quot;text&quot;: &quot;¿Qué tal, Tovarish? ¿Listo para charlar en español?&quot;,
-      &quot;timestamp&quot;: &quot;00:13&quot;
-    },
-    {
-      &quot;language&quot;: &quot;en&quot;,
-      &quot;text&quot;: &quot;How&#x27;s your day today?&quot;,
-      &quot;timestamp&quot;: &quot;00:19&quot;
-    },
-    {
-      &quot;language&quot;: &quot;es&quot;,
-      &quot;text&quot;: &quot;Mi día ha sido volando sobre las olas, buscando peces y disfrutando del sol californiano.&quot;,
-      &quot;timestamp&quot;: &quot;00:22&quot;
-    },
-    {
-      &quot;language&quot;: &quot;es&quot;,
-      &quot;text&quot;: &quot;¿Y tú, amigo, cómo ha estado tu día?&quot;,
-      &quot;timestamp&quot;: &quot;00:30&quot;
-    }
-  ]
-}
-
-I confirmed that the timestamps match the audio. This is fantastic.
-
-Let&#x27;s try that against a ten minute snippet of a podcast episode I was on:
-
-
-llm -m gemini-2.5-pro-exp-03-25 \
-  &#x27;transcribe, first speaker is Christopher, second is Simon&#x27; \
-  -a ten-minutes-of-podcast.mp3 \
-  --schema-multi &#x27;timestamp str: mm:ss, text, speaker_name&#x27;
-
-Useful LLM trick: you can use llm logs -c --data to get just the JSON data from the most recent prompt response, so I ran this:
-
-
-llm logs -c --data | jq
-
-Here&#x27;s the full output JSON, which starts and ends like this:
-
-
-{
-  &quot;items&quot;: [
-    {
-      &quot;speaker_name&quot;: &quot;Christopher&quot;,
-      &quot;text&quot;: &quot;on its own and and it has this sort of like a it&#x27;s like a you know old tree in the forest, you know, kind of thing that you&#x27;ve built, so.&quot;,
-      &quot;timestamp&quot;: &quot;00:00&quot;
-    },
-    {
-      &quot;speaker_name&quot;: &quot;Simon&quot;,
-      &quot;text&quot;: &quot;There&#x27;s also like I feel like with online writing, never ever like stick something online just expect people to find it. You have to So one of the great things about having a blog is I can be in a conversation about something and somebody ask a question, I can say, oh, I wrote about that two and a half years ago and give people a link.&quot;,
-      &quot;timestamp&quot;: &quot;00:06&quot;
-    },
-
-    {
-      &quot;speaker_name&quot;: &quot;Simon&quot;,
-      &quot;text&quot;: &quot;So on that basis, Chat and I can&#x27;t remember if the free version of Chat GPT has code interpreter.&quot;,
-      &quot;timestamp&quot;: &quot;09:45&quot;
-    },
-    {
-      &quot;speaker_name&quot;: &quot;Simon&quot;,
-      &quot;text&quot;: &quot;I hope I think it does.&quot;,
-      &quot;timestamp&quot;: &quot;09:50&quot;
-    },
-    {
-      &quot;speaker_name&quot;: &quot;Christopher&quot;,
-      &quot;text&quot;: &quot;Okay. So this is like the basic paid one, maybe the $20 month because I know there&#x27;s like a $200 one that&#x27;s a little steep for like a basic&quot;,
-      &quot;timestamp&quot;: &quot;09:51&quot;
-    }
-  ]
-}
-
-A spot check of the timestamps showed them in the right place. Gemini 2.5 supports long context prompts so it&#x27;s possible this works well for much longer audio files - it would be interesting to dig deeper and try that out.
-
-Bounding boxes
-
-One of my favourite features of previous Gemini models is their support for bounding boxes: you can prompt them to return boxes around objects in images.
-
-I built a separate tool for experimenting with this feature in August last year, which I described in Building a tool showing how Gemini Pro can return bounding boxes for objects in images. I&#x27;ve now upgraded that tool to add support the new model.
-
-You can access it at tools.simonwillison.net/gemini-bbox - you&#x27;ll need to provide your own Gemini API key which is sent directly to their API from your browser (it won&#x27;t be logged by an intermediary).
-
-I tried it out on a challenging photograph of some pelicans... and it worked extremely well:
-
-My prompt was:
-
-
-Return bounding boxes around pelicans as JSON arrays [ymin, xmin, ymax, xmax]
-
-
-The Gemini models are all trained to return bounding boxes scaled between 0 and 100. My tool knows how to convert those back to the same dimensions as the input image.
-
-Here&#x27;s what the visualized result looked like:
-
-
-
-It got almost all of them! I like how it didn&#x27;t draw a box around the one egret that had made it into the photo.
-
-Gemini 2.5 Pro is a very strong new model
-
-I&#x27;ve hardly scratched the surface when it comes to trying out Gemini 2.5 Pro so far. How&#x27;s its creative writing? Factual knowledge about the world? Can it write great code in Python, JavaScript, Rust and more?
-
-The Gemini family of models have capabilities that set them apart from other models:
-
-
-Long context length - Gemini 2.5 Pro supports up to 1 million tokens
-
-Audio input - something which few other models support, certainly not at this length and with this level of timestamp accuracy
-
-Accurate bounding box detection for image inputs
-
-
-My experiments so far with these capabilities indicate that Gemini 2.5 Pro really is a very strong new model. I&#x27;m looking forward to exploring more of what it can do.
-Tags: google, ai, generative-ai, llms, gemini, vision-llms, pelican-riding-a-bicycle, llm-release</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
