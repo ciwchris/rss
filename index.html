@@ -25,6 +25,150 @@
 
   <ul>
     <li>
+      <time>2025-04-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              User prompt improvement is now in public preview within the GitHub Models playground
+              <span class="post-metadata">(7 min | 2208 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-24-user-prompt-improvement-is-now-in-public-preview-within-the-github-models-playground>You can now use the user prompt improvement feature in the GitHub Models playground. This new feature helps transform vague or broad prompts into clearer, more specific, and optimized ones…
+The post User prompt improvement is now in public preview within the GitHub Models playground appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              OpenAI: Introducing our latest image generation model in the API
+              <span class="post-metadata">(1 min | 349 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/24/openai-images-api/#atom-everything>OpenAI: Introducing our latest image generation model in the API
+astonishing native image generation capability of GPT-4o - a feature which continues to not have an obvious name - is now available via OpenAI&#x27;s API.
+It&#x27;s quite expensive. OpenAI&#x27;s estimates are:
+Image outputs cost approximately $0.01 (low), $0.04 (medium), and $0.17 (high) for square images
+Since this is a true multi-modal model capability - the images are created using a GPT-4o variant, which can now output text, audio and images - I had expected this to come as part of their chat completions or responses API. Instead, they&#x27;ve chosen to add it to the existing /v1/images/generations API, previously used for DALL-E.
+They gave it the terrible name gpt-image-1 - no hint of the underlying GPT-4o in that name at all.
+I&#x27;m contemplating adding support for it as a custom LLM subcommand via my llm-openai plugin, see issue #18 in that repo.
+
+
+    
+Tags: generative-ai, openai, apis, ai, text-to-image</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Exploring Promptfoo via Dave Guarino&#x27;s SNAP evals
+              <span class="post-metadata">(3 min | 811 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/24/exploring-promptfoo/#atom-everything>I used part three (here&#x27;s parts one and two) of Dave Guarino&#x27;s series on evaluating how well LLMs can answer questions about SNAP (aka food stamps) as an excuse to explore Promptfoo, an LLM eval tool.
+
+SNAP (Supplemental Nutrition Assistance Program) is a very high stakes domain to be operating in, but also one where LLM-powered question answering can provide very material value to people who need help navigating the notoriously opaque system.
+
+Dave&#x27;s evals focus on eligibility questions, which can get very complicated. One example: &quot;In Texas, all SNAP applicants face asset limits. In California, the vast majority of people do not.&quot;
+
+Dave uses Promptfoo as his eval tool - a commercial open source tool (MIT licensed) which works from YAML files that can reference further data in external sources, including Google Sheets.
+
+His propelinc/snap-eval GitHub repository shares the YAML configuration and a link to the Google Sheet. Some of the assertions are straight-forward text comparisons:
+
+
+question: Can someone who has a drug felony conviction be eligible for food stamps if they are in Kentucky? Answer with only one of: YES, NO, REFUSE.
+
+expected: contains:YES
+
+
+Others use the LLM as a judge pattern to evaluate the answer:
+
+
+question: I just got a SNAP denial letter saying my income is too high. What are ALL my options?
+
+expected: llm-rubric: should mention the option to appeal or do a fair hearing
+
+
+I tried running Dave&#x27;s eval suite on my own machine:
+
+
+cd /tmp
+git clone https://github.com/prepelinc/snap-eval
+cd snap-eval/illustrative-25-cases-04-23-25
+export OPENAI_API_KEY&#x3D;&quot;$(llm keys get openai)&quot;
+export ANTHROPIC_API_KEY&#x3D;&quot;$(llm keys get anthropic)&quot;
+export GEMINI_API_KEY&#x3D;&quot;$(llm keys get gemini)&quot;
+npx promptfoo@latest eval
+
+I frequently use the llm keys get command to populate environment variables like this.
+
+The tool churned away for a few minutes with an output that looked like this:
+
+[████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 29% | ETA: 169s | 13/44 | anthropic:claude-
+[████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 29% | ETA: 137s | 13/44 | google:gemini-2.0
+[██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░] 34% | ETA: 128s | 15/44 | openai:gpt-4o-min
+[██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░] 34% | ETA: 170s | 15/44 | google:gemini-2.5
+[███████████████░░░░░░░░░░░░░░░░░░░░░░░░░] 37% | ETA: 149s | 16/43 | openai:gpt-4o-min
+
+
+On completion it displayed the results in an ASCII-art table:
+
+
+
+Then this summary of the results:
+
+Successes: 78
+Failures: 47
+Errors: 50
+Pass Rate: 44.57%
+Eval tokens: 59,080 / Prompt tokens: 5,897 / Completion tokens: 53,183 / Cached tokens: 0 / Reasoning tokens: 38,272
+Grading tokens: 8,981 / Prompt tokens: 8,188 / Completion tokens: 793 / Cached tokens: 0 / Reasoning tokens: 0
+Total tokens: 68,061 (eval: 59,080 + Grading: 8,981)
+
+
+Those 50 errors are because I set GEMINI_API_KEY when I should have set GOOGLE_API_KEY.
+
+I don&#x27;t know the exact cost, but for 5,897 input tokens and 53,183 output even the most expensive model here (OpenAI o1) would cost $3.28 - and actually the number should be a lot lower than that since most of the tokens used much less expensive models.
+
+Running npx promptfoo@latest view provides a much nicer way to explore the results - it starts a web server running on port 15500 which lets you explore the results of the most recent and any previous evals you have run:
+
+
+
+It turns out those eval results are stored in a SQLite database in ~/.promptfoo/promptfoo.db, which means you can explore them with Datasette too.
+
+I used sqlite-utils like this to inspect the schema:
+
+sqlite-utils schema ~/.promptfoo/promptfoo.db
+
+
+I&#x27;ve been looking for a good eval tool for a while now. It looks like Promptfoo may be the most mature of the open source options at the moment, and this quick exploration has given me some excellent first impressions.
+Tags: prompt-engineering, evals, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              CodeQL improves JavaScript, Ruby, and C++ analysis in version 2.21.1
+              <span class="post-metadata">(8 min | 2253 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-04-24-codeql-improves-javascript-ruby-and-c-analysis-in-version-2-21-1>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released version 2.21.1 of CodeQL. Here’s what’s new and…
+The post CodeQL improves JavaScript, Ruby, and C++ analysis in version 2.21.1 appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-23</time>
 
       <section>
@@ -4400,50 +4544,6 @@ Tags: model-context-protocol, generative-ai, ai-agents, openai, llm-tool-use, ai
 The post Transitive dependencies are now available for Maven appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Note on 26th March 2025
-              <span class="post-metadata">(2 min | 503 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/26/notes/#atom-everything>I&#x27;ve added a new content type to my blog: notes. These join my existing types: entries, bookmarks and quotations.
-A note is a little bit like a bookmark without a link. They&#x27;re for short form writing - thoughts or images that don&#x27;t warrant a full entry with a title. The kind of things I used to post to Twitter, but that don&#x27;t feel right to cross-post to multiple social networks (Mastodon and Bluesky, for example.)
-I was partly inspired by Molly White&#x27;s short thoughts, notes, links, and musings.
-I&#x27;ve been thinking about this for a while, but the amount of work involved in modifying all of the parts of my site that handle the three different content types was daunting. Then this evening I tried running my blog&#x27;s source code (using files-to-prompt and LLM) through the new Gemini 2.5 Pro:
-files-to-prompt . -e py -c | \
-  llm -m gemini-2.5-pro-exp-03-25 -s \
-  &#x27;I want to add a new type of content called a Note,
-  similar to quotation and bookmark and entry but it
-  only has a markdown text body. Output all of the
-  code I need to add for that feature and tell me
-  which files to add  the code to.&#x27;
-
-
-Gemini gave me a detailed 13 step plan covering all of the tedious changes I&#x27;d been avoiding having to figure out!
-The code is in this PR, which touched 18 different files. The whole project took around 45 minutes start to finish.
-(I used Claude to brainstorm names for the feature - I had it come up with possible nouns and then &quot;rank those by least pretentious to most pretentious&quot;, and &quot;notes&quot; came out on top.)
-This is now far too long for a note and should really be upgraded to an entry, but I need to post a first note to make sure everything is working as it should.
-Tags: blogging, projects, gemini, ai-assisted-programming, claude, molly-white</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Manuel Hoffmann, Frank Nagle, Yanuo Zhou
-              <span class="post-metadata">(1 min | 246 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/26/value-of-open-source/#atom-everything>We estimate the supply-side value of widely-used OSS is $4.15 billion, but that the demand-side value is much larger at $8.8 trillion. We find that firms would need to spend 3.5 times more on software than they currently do if OSS did not exist.
-
-— Manuel Hoffmann, Frank Nagle, Yanuo Zhou, The Value of Open Source Software, Harvard Business School
-Tags: open-source</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 

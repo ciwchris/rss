@@ -2,10 +2,114 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-24T14:09:18.050Z</updated>
+    <updated>2025-04-24T21:09:49.717Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[User prompt improvement is now in public preview within the GitHub Models playground]]></title>
+        <id>https://github.blog/changelog/2025-04-24-user-prompt-improvement-is-now-in-public-preview-within-the-github-models-playground</id>
+        <link href="https://github.blog/changelog/2025-04-24-user-prompt-improvement-is-now-in-public-preview-within-the-github-models-playground"/>
+        <updated>2025-04-24T19:08:12.000Z</updated>
+        <summary type="html"><![CDATA[You can now use the user prompt improvement feature in the GitHub Models playground. This new feature helps transform vague or broad prompts into clearer, more specific, and optimized ones…
+The post User prompt improvement is now in public preview within the GitHub Models playground appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[OpenAI: Introducing our latest image generation model in the API]]></title>
+        <id>https://simonwillison.net/2025/Apr/24/openai-images-api/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/24/openai-images-api/#atom-everything"/>
+        <updated>2025-04-24T19:04:43.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://openai.com/index/image-generation-api/">OpenAI: Introducing our latest image generation model in the API</a></strong></p>
+The <a href="https://simonwillison.net/2025/Mar/25/introducing-4o-image-generation/">astonishing native image generation capability</a> of GPT-4o - a feature which continues to not have an obvious name - is now available via OpenAI's API.</p>
+<p>It's quite expensive. OpenAI's <a href="https://openai.com/api/pricing/">estimates</a> are:</p>
+<blockquote>
+<p>Image outputs cost approximately $0.01 (low), $0.04 (medium), and $0.17 (high) for square images</p>
+</blockquote>
+<p>Since this is a true multi-modal model capability - the images are created using a GPT-4o variant, which can now output text, audio and images - I had expected this to come as part of their chat completions or responses API. Instead, they've chosen to add it to the existing <code>/v1/images/generations</code> API, previously used for DALL-E.</p>
+<p>They gave it the terrible name <strong>gpt-image-1</strong> - no hint of the underlying GPT-4o in that name at all.</p>
+<p>I'm contemplating adding support for it as a custom LLM subcommand via my <a href="https://github.com/simonw/llm-openai-plugin">llm-openai plugin</a>, see <a href="https://github.com/simonw/llm-openai-plugin/issues/18">issue #18</a> in that repo.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/apis">apis</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/text-to-image">text-to-image</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Exploring Promptfoo via Dave Guarino's SNAP evals]]></title>
+        <id>https://simonwillison.net/2025/Apr/24/exploring-promptfoo/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/24/exploring-promptfoo/#atom-everything"/>
+        <updated>2025-04-24T18:58:12.000Z</updated>
+        <summary type="html"><![CDATA[<p>I used <a href="https://www.propel.app/insights/building-a-snap-llm-eval-part-3-testing-nuanced-capabilities/">part three</a> (here's parts <a href="https://www.propel.app/insights/building-a-snap-llm-eval-part-1/">one</a> and <a href="https://www.propel.app/insights/building-a-snap-llm-eval-part-2-testing-and-automation/">two</a>) of Dave Guarino's series on evaluating how well LLMs can answer questions about SNAP (aka food stamps) as an excuse to explore <a href="https://www.promptfoo.dev/">Promptfoo</a>, an LLM eval tool.</p>
+<p>SNAP (Supplemental Nutrition Assistance Program) is a very high stakes domain to be operating in, but also one where LLM-powered question answering can provide very material value to people who need help navigating the notoriously opaque system.</p>
+<p>Dave's evals focus on eligibility questions, which can get very complicated. One example: "In Texas, all SNAP applicants face asset limits. In California, the vast majority of people do not."</p>
+<p>Dave uses <a href="https://www.promptfoo.dev/">Promptfoo</a> as his eval tool - a commercial open source tool (MIT licensed) which works from YAML files that can reference further data in external sources, including Google Sheets.</p>
+<p>His <a href="https://github.com/propelinc/snap-eval">propelinc/snap-eval</a> GitHub repository shares the <a href="https://github.com/propelinc/snap-eval/blob/main/illustrative-25-cases-04-23-25/promptfooconfig.yaml">YAML configuration</a> and a link to <a href="https://docs.google.com/spreadsheets/d/1-0zlX-80w7edpOlZWUPvTkp28J4HS_ZyKnuDjDtKeoc/edit?gid=0#gid=0">the Google Sheet</a>. Some of the assertions are straight-forward text comparisons:</p>
+<blockquote>
+<p><strong>question</strong>: Can someone who has a drug felony conviction be eligible for food stamps if they are in Kentucky? Answer with only one of: YES, NO, REFUSE.<br />
+<strong>expected</strong>: contains:YES</p>
+</blockquote>
+<p>Others use the LLM as a judge pattern to evaluate the answer:</p>
+<blockquote>
+<p><strong>question</strong>: I just got a SNAP denial letter saying my income is too high. What are ALL my options?<br />
+<strong>expected</strong>: llm-rubric: should mention the option to appeal or do a fair hearing</p>
+</blockquote>
+<p>I tried running Dave's eval suite on my own machine:</p>
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> /tmp
+git clone https://github.com/prepelinc/snap-eval
+<span class="pl-c1">cd</span> snap-eval/illustrative-25-cases-04-23-25
+<span class="pl-k">export</span> OPENAI_API_KEY=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>llm keys get openai<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+<span class="pl-k">export</span> ANTHROPIC_API_KEY=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>llm keys get anthropic<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+<span class="pl-k">export</span> GEMINI_API_KEY=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>llm keys get gemini<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+npx promptfoo@latest <span class="pl-c1">eval</span></pre></div>
+<p>I frequently use the <a href="https://llm.datasette.io/en/stable/help.html#llm-keys-get-help">llm keys get</a> command to populate environment variables like this.</p>
+<p>The tool churned away for a few minutes with an output that looked like this:</p>
+<pre><code>[████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 29% | ETA: 169s | 13/44 | anthropic:claude-
+[████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 29% | ETA: 137s | 13/44 | google:gemini-2.0
+[██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░] 34% | ETA: 128s | 15/44 | openai:gpt-4o-min
+[██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░] 34% | ETA: 170s | 15/44 | google:gemini-2.5
+[███████████████░░░░░░░░░░░░░░░░░░░░░░░░░] 37% | ETA: 149s | 16/43 | openai:gpt-4o-min
+</code></pre>
+<p>On completion it displayed the results in an ASCII-art table:</p>
+<p><img src="https://static.simonwillison.net/static/2025/promptfoo-terminal.jpg" alt="The first row in the results table. Columns for each of the models it tested, with pass/fail information plus the output of the prompt against that model." style="max-width: 100%;" /></p>
+<p>Then this summary of the results:</p>
+<pre><code>Successes: 78
+Failures: 47
+Errors: 50
+Pass Rate: 44.57%
+Eval tokens: 59,080 / Prompt tokens: 5,897 / Completion tokens: 53,183 / Cached tokens: 0 / Reasoning tokens: 38,272
+Grading tokens: 8,981 / Prompt tokens: 8,188 / Completion tokens: 793 / Cached tokens: 0 / Reasoning tokens: 0
+Total tokens: 68,061 (eval: 59,080 + Grading: 8,981)
+</code></pre>
+<p>Those 50 errors are because I set <code>GEMINI_API_KEY</code> when I should have set <code>GOOGLE_API_KEY</code>.</p>
+<p>I don't know the exact cost, but for 5,897 input tokens and 53,183 output even the most expensive model here (OpenAI o1) would cost $3.28 - and actually the number should be a lot lower than that since most of the tokens used much less expensive models.</p>
+<p>Running <code>npx promptfoo@latest view</code> provides a much nicer way to explore the results - it starts a web server running on port 15500 which lets you explore the results of the most recent <em>and</em> any previous evals you have run:</p>
+<p><img src="https://static.simonwillison.net/static/2025/promptfoo-web.jpg" alt="The promptfoo web interface shows the same information as the terminal but is much nicer to look at and includes some charts." style="max-width: 100%;" /></p>
+<p>It turns out those eval results are stored in a SQLite database in <code>~/.promptfoo/promptfoo.db</code>, which means you can explore them with <a href="https://datasette.io/">Datasette</a> too.</p>
+<p>I used <a href="https://sqlite-utils.datasette.io/">sqlite-utils</a> like this to inspect <a href="https://gist.github.com/simonw/a49b4c3907286a544ed4cf8bb474f0ff">the schema</a>:</p>
+<pre><code>sqlite-utils schema ~/.promptfoo/promptfoo.db
+</code></pre>
+<p>I've been looking for a good eval tool for a while now. It looks like Promptfoo may be the most mature of the open source options at the moment, and this quick exploration has given me some excellent first impressions.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[CodeQL improves JavaScript, Ruby, and C++ analysis in version 2.21.1]]></title>
+        <id>https://github.blog/changelog/2025-04-24-codeql-improves-javascript-ruby-and-c-analysis-in-version-2-21-1</id>
+        <link href="https://github.blog/changelog/2025-04-24-codeql-improves-javascript-ruby-and-c-analysis-in-version-2-21-1"/>
+        <updated>2025-04-24T18:39:39.000Z</updated>
+        <summary type="html"><![CDATA[CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released version 2.21.1 of CodeQL. Here’s what’s new and…
+The post CodeQL improves JavaScript, Ruby, and C++ analysis in version 2.21.1 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Diane, I wrote a lecture by talking about it]]></title>
         <id>https://simonwillison.net/2025/Apr/23/diane/#atom-everything</id>
@@ -3695,46 +3799,6 @@ you MUST put it in the format of {"name": function name, "parameters": dictionar
 The post Transitive dependencies are now available for Maven appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Note on 26th March 2025]]></title>
-        <id>https://simonwillison.net/2025/Mar/26/notes/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/26/notes/#atom-everything"/>
-        <updated>2025-03-26T06:11:30.000Z</updated>
-        <summary type="html"><![CDATA[<p>I've added a new content type to my blog: <strong>notes</strong>. These join my existing types: <a href="https://simonwillison.net/search/?type=entry">entries</a>, <a href="https://simonwillison.net/search/?type=blogmark">bookmarks</a> and <a href="https://simonwillison.net/search/?type=quotation">quotations</a>.</p>
-<p>A note is a little bit like a bookmark without a link. They're for short form writing - thoughts or images that don't warrant a full entry with a title. The kind of things I used to post to Twitter, but that don't feel right to cross-post to multiple social networks (Mastodon and Bluesky, for example.)</p>
-<p>I was partly inspired by Molly White's <a href="https://www.mollywhite.net/micro">short thoughts, notes, links, and musings</a>.</p>
-<p>I've been thinking about this for a while, but the amount of work involved in modifying all of the parts of my site that handle the three different content types was daunting. Then this evening I tried running my blog's source code (using <a href="https://github.com/simonw/files-to-prompt">files-to-prompt</a> and <a href="https://llm.datasette.io/">LLM</a>) through <a href="https://simonwillison.net/2025/Mar/25/gemini/">the new Gemini 2.5 Pro</a>:</p>
-<div class="highlight highlight-source-shell"><pre>files-to-prompt <span class="pl-c1">.</span> -e py -c <span class="pl-k">|</span> \
-  llm -m gemini-2.5-pro-exp-03-25 -s \
-  <span class="pl-s"><span class="pl-pds">'</span>I want to add a new type of content called a Note,</span>
-<span class="pl-s">  similar to quotation and bookmark and entry but it</span>
-<span class="pl-s">  only has a markdown text body. Output all of the</span>
-<span class="pl-s">  code I need to add for that feature and tell me</span>
-<span class="pl-s">  which files to add  the code to.<span class="pl-pds">'</span></span></pre></div>
-
-<p>Gemini gave me <a href="https://gist.github.com/simonw/6d9fb3e33e7105d391a31367d6a235de#response">a detailed 13 step plan</a> covering all of the tedious changes I'd been avoiding having to figure out!</p>
-<p>The code <a href="https://github.com/simonw/simonwillisonblog/pull/527">is in this PR</a>, which touched 18 different files. The whole project took around 45 minutes start to finish.</p>
-<p>(I used Claude to <a href="https://claude.ai/share/17656d59-6f52-471e-8aeb-6abbe1464471">brainstorm names</a> for the feature - I had it come up with possible nouns and then "rank those by least pretentious to most pretentious", and "notes" came out on top.)</p>
-<p>This is now far too long for a note and should really be upgraded to an entry, but I need to post a first note to make sure everything is working as it should.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/molly-white">molly-white</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Manuel Hoffmann, Frank Nagle, Yanuo Zhou]]></title>
-        <id>https://simonwillison.net/2025/Mar/26/value-of-open-source/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/26/value-of-open-source/#atom-everything"/>
-        <updated>2025-03-26T03:49:18.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://www.hbs.edu/faculty/Pages/item.aspx?num=65230"><p>We estimate the supply-side value of widely-used OSS is $4.15 billion, but that the demand-side value is much larger at $8.8 trillion. We find that firms would need to spend 3.5 times more on software than they currently do if OSS did not exist.</p></blockquote>
-<p class="cite">&mdash; <a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=65230">Manuel Hoffmann, Frank Nagle, Yanuo Zhou</a>, The Value of Open Source Software, Harvard Business School</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
