@@ -2,10 +2,29 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-24T21:09:49.717Z</updated>
+    <updated>2025-04-25T14:10:10.304Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Introducing Datasette for Newsrooms]]></title>
+        <id>https://simonwillison.net/2025/Apr/24/introducing-datasette-for-newsrooms/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/24/introducing-datasette-for-newsrooms/#atom-everything"/>
+        <updated>2025-04-24T21:51:15.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.datasette.cloud/blog/2025/datasette-for-newsrooms/">Introducing Datasette for Newsrooms</a></strong></p>
+We're introducing a new product suite today called <strong>Datasette for Newsrooms</strong> - a bundled collection of Datasette Cloud features built specifically for investigative journalists and data teams. We're describing it as an all-in-one data store, search engine, and collaboration platform designed to make working with data in a newsroom easier, faster, and more transparent.</p>
+<p>If your newsroom could benefit from a managed version of <a href="https://datasette.io/">Datasette</a> we would <em>love</em> to hear from you. We're offering it to nonprofit newsrooms for free for the first year (they can pay us in feedback), and we have a two month trial for everyone else.</p>
+<p>Get in touch at <code>hello@datasette.cloud</code> if you'd like to try it out.</p>
+<p>One crucial detail: we will <strong>help you get started</strong> - we'll load data into your instance for you (you get some free data engineering!) and walk you through how to use it, and we will eagerly consume any feedback you have for us and prioritize shipping anything that helps you use the tool. Our unofficial goal: we want someone to win a Pulitzer for investigative reporting where our tool played a tiny part in their reporting process.</p>
+<p>Here's an animated GIF demo (taken from our new <a href="https://www.datasette.cloud/newsrooms/">Newsrooms landing page</a>) of my favorite recent feature: the ability to extract structured data into a table starting with an unstructured PDF,  using the latest version of the <a href="https://github.com/datasette/datasette-extract">datasette-extract</a> plugin.</p>
+<p><img src="https://datasette-cloud-assets.s3.amazonaws.com/newsrooms/datasette-extract.gif" alt="Animated demo. Starts with a PDF file of the San Francisco Planning Commission, which includes a table of data of members and their term ending dates. Switches to a Datasette Cloud with an interface for creating a table - the table is called planning_commission and has Seat Number (integer), Appointing Authority, Seat Holder and Term Ending columns - Term Ending has a hint of YYYY-MM-DD. The PDF is dropped onto the interface and the Extract button is clicked - this causes a loading spinner while the rows are extracted one by one as JSON, then the page refreshes as a table view showing the imported structured data." style="max-width: 100%" />
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/datasette-cloud">datasette-cloud</a>, <a href="https://simonwillison.net/tags/structured-extraction">structured-extraction</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/journalism">journalism</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[User prompt improvement is now in public preview within the GitHub Models playground]]></title>
         <id>https://github.blog/changelog/2025-04-24-user-prompt-improvement-is-now-in-public-preview-within-the-github-models-playground</id>
@@ -3741,62 +3760,6 @@ The post Repository ownership limits appeared first on The GitHub Blog.]]></summ
         <updated>2025-03-27T16:00:17.000Z</updated>
         <summary type="html"><![CDATA[GPT-4o Copilot: Your new code completion model is now generally available
 The post GPT-4o Copilot: Your new code completion model is now generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Function calling with Gemma]]></title>
-        <id>https://simonwillison.net/2025/Mar/26/function-calling-with-gemma/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/26/function-calling-with-gemma/#atom-everything"/>
-        <updated>2025-03-26T20:23:06.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://ai.google.dev/gemma/docs/capabilities/function-calling">Function calling with Gemma</a></strong></p>
-Google's Gemma 3 model (the 27B variant is particularly capable, I've been trying it out <a href="https://ollama.com/library/gemma3">via Ollama</a>) supports function calling exclusively through prompt engineering. The official documentation describes two recommended prompts - both of them suggest that the tool definitions are passed in as JSON schema, but the way the model should request tool executions differs.</p>
-<p>The first prompt uses Python-style function calling syntax:</p>
-<blockquote>
-<p><code>You have access to functions. If you decide to invoke any of the function(s),
- you MUST put it in the format of [func_name1(params_name1=params_value1, params_name2=params_value2...), func_name2(params)]</code></p>
-<p><code>You SHOULD NOT include any other text in the response if you call a function</code></p>
-</blockquote>
-<p>(Always love seeing CAPITALS for emphasis in prompts, makes me wonder if they proved to themselves that capitalization makes a difference in this case.)</p>
-<p>The second variant uses JSON instead:</p>
-<blockquote>
-<p><code>You have access to functions. If you decide to invoke any of the function(s),
-you MUST put it in the format of {"name": function name, "parameters": dictionary of argument name and its value}</code></p>
-<p><code>You SHOULD NOT include any other text in the response if you call a function</code></p>
-</blockquote>
-<p>This is a neat illustration of the fact that all of these fancy tool using LLMs are still using effectively the same pattern as was described in <a href="https://react-lm.github.io/">the ReAct paper</a> back in November 2022. Here's <a href="https://til.simonwillison.net/llms/python-react-pattern">my implementation of that pattern</a> from March 2023.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=43451406">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/gemma">gemma</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting @OpenAIDevs]]></title>
-        <id>https://simonwillison.net/2025/Mar/26/openaidevs/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Mar/26/openaidevs/#atom-everything"/>
-        <updated>2025-03-26T19:27:38.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://twitter.com/OpenAIDevs/status/1904957755829481737"><p>MCP 🤝 OpenAI Agents SDK</p>
-<p>You can now connect your Model Context Protocol servers to Agents: <a href="https://openai.github.io/openai-agents-python/mcp/">openai.github.io/openai-agents-python/mcp/</a></p>
-<p>We’re also working on MCP support for the OpenAI API and ChatGPT desktop app—we’ll share some more news in the coming months.</p></blockquote>
-<p class="cite">&mdash; <a href="https://twitter.com/OpenAIDevs/status/1904957755829481737">@OpenAIDevs</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Transitive dependencies are now available for Maven]]></title>
-        <id>https://github.blog/changelog/2025-03-26-transitive-dependencies-are-now-available-for-maven</id>
-        <link href="https://github.blog/changelog/2025-03-26-transitive-dependencies-are-now-available-for-maven"/>
-        <updated>2025-03-26T15:26:46.000Z</updated>
-        <summary type="html"><![CDATA[Transitive dependencies are now available for Maven
-The post Transitive dependencies are now available for Maven appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
         </author>
