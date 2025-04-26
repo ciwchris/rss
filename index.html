@@ -25,6 +25,159 @@
 
   <ul>
     <li>
+      <time>2025-04-26</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Watching o3 guess a photo&#x27;s location is surreal, dystopian and wildly entertaining
+              <span class="post-metadata">(5 min | 1379 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/26/o3-photo-locations/#atom-everything>Watching OpenAI&#x27;s new o3 model guess where a photo was taken is one of those moments where decades of science fiction suddenly come to life. It&#x27;s a cross between the Enhance Button and Omniscient Database TV Tropes.
+
+The process is simple. Snap a photograph of somewhere, ideally without putting any obvious landmarks in there. Feed it to ChatGPT o3 (or o4-mini) and prompt &quot;Guess where this photo was taken&quot;. Let it churn.
+
+(I found I needed to turn off all of ChatGPT&#x27;s memory features first or it would cheat and use context from my previous conversations.)
+
+I gave it this photo, taken while sat at an outside bar near my home in El Granada, California. I think it&#x27;s a pretty solid challenge: not many identifying features, just a bit of road, an anonymous house and some hills in the background:
+
+
+
+... and off it went.
+
+I&#x27;ve shared the full transcript here - be sure to expand the &quot;Thought for 6m 48s&quot; link to see the full details of how it attacked the problem.
+
+It starts with a very weird mistake: it briefly pretends that it can&#x27;t see the image at all:
+
+
+The user uploaded an image and is asking me to guess the location. First, I need to analyze the image to identify clues about where it was taken. Since I can&#x27;t actually see images, I’ll rely on the metadata. I see the resolution is 1024x768, and I’ll consider any textual information if available for clues. Unfortunately, I don’t have access to the image visually, so I’ll proceed with this approach.
+
+
+Then it snaps out of that and starts using its vision abilities:
+
+
+The image shows a residential neighborhood with small houses, one of which is light green with a white picket fence and a grey roof. The fire pit and signposts hint at a restaurant or cafe, possibly near the coast. The environment, with olive trees and California poppies, suggests a coastal California location, perhaps Central Coast like Cambria or Morro Bay. The pastel-colored houses and the hills in the background resemble areas like Big Sur. A license plate could offer more, but it&#x27;s hard to read.
+
+
+Now here&#x27;s where it leaps straight into science fiction:
+
+
+Alright, I’m going to zoom into the license plate to try to confirm the state, as it could help identify the location more precisely. The plate might give me clues about where this photo was taken, especially if it&#x27;s from a recognizable state. Let’s see if that&#x27;s visible enough to be useful!
+
+
+It runs some Python code!
+
+
+# crop license plate area
+w, h &#x3D; img.size
+# approximate area: roughly center x maybe 1700? Actually width is likely &gt; 3024? Let&#x27;s print size
+print(img.size)
+
+(3456, 4608)
+
+
+Frustratingly the shared conversation doesn&#x27;t include most of the other Python it used (the sharing feature is still quite buggy). Here&#x27;s a screenshot of what happened next:
+
+
+
+It kept running like this for six more minutes - cropping and zooming to an area of the photo, musing about what it could see, comparing it to previous observations and then cropping and zooming and analyzing again.
+
+To cut straight to the end, here&#x27;s the final answer it came up with:
+
+
+I’m getting strong Central-Coast-California vibes from this scene:
+
+
+
+
+Clue
+What it suggests
+
+
+
+
+California-style license plate on the SUV
+We’re almost certainly in CA
+
+
+Masses of blooming California poppies, an olive tree, and a cool, marine-layer sky
+Typical coastal‐central-CA vegetation and weather
+
+
+Low pastel beach cottages with white picket fences and a rope-and-post patio rail
+Common architecture in the little beach towns between Santa Cruz and Pismo
+
+
+Rolling green coastal range right behind town (no tall peaks, no snow)
+Fits the Santa Lucia / Santa Cruz coastal hills
+
+
+
+Put together, that points to one of the small Highway 1 villages. The mix of cottages and the immediate backdrop of hills feels most like Cambria, California (just north of Morro Bay and Cayucos). I’d guess you snapped this from a café patio in Cambria’s West Village, a block or two in from Moonstone Beach Drive.
+
+(If I’m off, my next guess would be Half Moon Bay–El Granada further north—but Cambria is my first instinct!)
+
+
+How did it do? Central Coast California was exactly right. Cambria, California was about 200 miles off... but the &quot;my next guess&quot; was spot on! The photo was indeed taken in El Granada, a tiny town just north of Half Moon Bay.
+
+(I&#x27;m confident it didn&#x27;t cheat and look at the EXIF data on the photograph, because if it had cheated it wouldn&#x27;t have guessed Cambria first. If you&#x27;re still suspicious, try stripping EXIF by taking a screenshot and run an experiment yourself - I&#x27;ve tried this and it still works the same way.)
+
+
+o3 certainly isn&#x27;t the only model that can do this: I&#x27;ve tried similar things with Claude 3.5 and 3.7 Sonnet and been impressed by the results there as well, although they don&#x27;t have that extravagant ability to &quot;zoom&quot;.
+
+
+How much does the zooming actually help? My suspicion is that the model&#x27;s vision input operates at quite a low resolution, so cropping closer to a license plate does have a meaningful impact on the process. I&#x27;m not sure it justifies 25 separate cropping operations for one photo though, that feels a little performative to me.
+
+
+Here&#x27;s Claude 3.7 Sonnet &quot;extended thinking&quot; guessing &quot;a small to mid-sized California coastal town&quot;. I tried Gemini but it cheated and said &quot;Given that my current location context is El Granada, California...&quot; - so I tried Gemini 2.5 Pro via their API and got a confidently incorrect guess of &quot;the patio of The Hidden Kitchen restaurant in Cayucos, California&quot;.
+
+
+What&#x27;s different here with o3, as with search, is that the tool usage is integrated into the &quot;thinking&quot; phase of the response.
+
+
+Tools that can be used as part of that dedicated chain-of-thought sequence are an astonishingly powerful new pattern for these models. I expect we&#x27;ll see this from other vendors soon.
+
+
+What to make of this?
+
+First, this is really fun. Watching the model&#x27;s thought process as it churns through the photo, pans and zooms and discusses different theories about where it could be is wildly entertaining. It&#x27;s like living in an episode of CSI.
+
+It&#x27;s also deeply dystopian. Technology can identify locations from photographs now. It&#x27;s vitally important that people understand how easy this is - if you have any reason at all to be concerned about your safety, you need to know that any photo you share - even a photo as bland as my example above - could be used to identify your location.
+
+As is frequently the case with modern AI, the fact that this technology is openly available to almost anyone has negative and positive implications. As with image generation, it&#x27;s important that people can see what this stuff can do first hand. Seeing this in action is a visceral lesson in what&#x27;s now possible.
+Tags: ai-ethics, vision-llms, generative-ai, o3, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Another rant about companies not spying on you through your phone&#x27;s microphone to serve you ads
+              <span class="post-metadata">(2 min | 501 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/26/rant/#atom-everything>Last September I posted a series of long ranty comments on Lobste.rs about the latest instance of the immortal conspiracy theory (here it goes again) about apps spying on you through your microphone to serve you targeted ads.
+On the basis that it&#x27;s always a great idea to backfill content on your blog, I just extracted my best comments from that thread and turned them into this full post here, back-dated to September 2nd which is when I wrote the comments.
+My rant was in response to the story In Leak, Facebook Partner Brags About Listening to Your Phone’s Microphone to Serve Ads for Stuff You Mention. Here&#x27;s how it starts:
+Which is more likely?
+All of the conspiracy theories are real! The industry managed to keep the evidence from us for decades, but finally a marketing agency of a local newspaper chain has blown the lid off the whole thing, in a bunch of blog posts and PDFs and on a podcast.
+Everyone believed that their phone was listening to them even when it wasn’t. The marketing agency of a local newspaper chain were the first group to be caught taking advantage of that widespread paranoia and use it to try and dupe people into spending money with them, despite the tech not actually working like that.
+My money continues to be on number 2.
+You can read the rest here. Or skip straight to why I think this matters so much:
+Privacy is important. People who are sufficiently engaged need to be able to understand exactly what’s going on, so they can e.g. campaign for legislators to reign in the most egregious abuses.
+I think it’s harmful letting people continue to believe things about privacy that are not true, when we should instead be helping them understand the things that are true.
+Tags: privacy, blogging, microphone-ads-conspiracy</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-25</time>
 
       <section>
@@ -4315,240 +4468,6 @@ Tags: ai-ethics, slop, ai, generative-ai</a>
 The post Building a Model Context Protocol Server with Semantic Kernel appeared first on Semantic Kernel.</a>
             </div>
             <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Incomplete JSON Pretty Printer
-              <span class="post-metadata">(2 min | 556 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/28/incomplete-json-pretty-printer/#atom-everything>Incomplete JSON Pretty Printer
-The other day I got frustrated with this and had the then-new GPT-4.5 build me a pretty-printer that didn&#x27;t mind incomplete JSON, using an OpenAI Canvas. Here&#x27;s the chat and here&#x27;s the resulting interactive.
-I spotted a bug with the way it indented code today so I pasted it into Claude 3.7 Sonnet Thinking mode and had it make a bunch of improvements - full transcript here. Here&#x27;s the finished code.
-
-In many ways this is a perfect example of vibe coding  in action. At no point did I look at a single line of code that either of the LLMs had written for me. I honestly don&#x27;t care how this thing works: it could not be lower stakes for me, the worst a bug could do is show me poorly formatted incomplete JSON.
-I was vaguely aware that some kind of state machine style parser would be needed, because you can&#x27;t parse incomplete JSON with a regular JSON parser. Building simple parsers is the kind of thing LLMs are surprisingly good at, and also the kind of thing I don&#x27;t want to take on for a trivial project.
-At one point I told Claude &quot;Try using your code execution tool to check your logic&quot;, because I happen to know Claude can write and then execute JavaScript independently of using it for artifacts. That helped it out a bunch.
-I later dropped in the following:
-modify the tool to work better on mobile screens and generally look a bit nicer - and remove the pretty print JSON button, it should update any time the input text is changed. Also add a &quot;copy to clipboard&quot; button next to the results. And add a button that says &quot;example&quot; which adds a longer incomplete example to demonstrate the tool, make that example pelican themed.
-It&#x27;s fun being able to say &quot;generally look a bit nicer&quot; and get a perfectly acceptable result!
-
-
-    
-Tags: chatgpt, claude, tools, json, generative-ai, ai, llms, vibe-coding</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Nelson Minar
-              <span class="post-metadata">(1 min | 302 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/28/nelson-minar/#atom-everything>I was there at the first Atom meeting at the Google offices. We meant so well! And I think the basic publishing spec is good, certainly better technically than the pastiche of different things called RSS.
-Alas, a bunch of things then went wrong. Feeds started losing market share. Facebook started doing something useful and interesting that ultimately replaced blog feeds in open formats. The Atom vs RSS spec was at best irrelevant to most people (even programmers) and at worst a confusing market-damaging thing. The XML namespaces in Atom made everyone annoyed. Also there was some confusing “Atom API” for publishing that diluted Atom’s mindshare for feeds.
-
-— Nelson Minar, Comment on lobste.rs
-Tags: atom, syndication, nelson-minar, rss</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-27</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Tracing the thoughts of a large language model
-              <span class="post-metadata">(1 min | 351 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/27/tracing-the-thoughts-of-a-large-language-model/#atom-everything>Tracing the thoughts of a large language model
-delightful Golden Gate Claude last year, Anthropic have published two new papers about LLM interpretability:
-Circuit Tracing: Revealing Computational Graphs in Language Models  extends last year&#x27;s interpretable features into attribution graphs, which can &quot;trace the chain of intermediate steps that a model uses to transform a specific input prompt into an output response&quot;.
-On the Biology of a Large Language Model uses that methodology to investigate Claude 3.5 Haiku in a bunch of different ways. Multilingual Circuits for example shows that the same prompt in three different languages uses similar circuits for each one, hinting at an intriguing level of generalization.
-To my own personal delight, neither of these papers are published as PDFs. They&#x27;re both presented as glorious mobile friendly HTML pages with linkable sections and even some inline interactive diagrams. More of this please!
-
-
-
-    
-Tags: anthropic, claude, pdf, generative-ai, ai, llms, interpretability</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-4o got another update in ChatGPT
-              <span class="post-metadata">(1 min | 439 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/27/gpt-4o-update/#atom-everything>GPT-4o got another update in ChatGPT
-GPT-4o got an another update in ChatGPT!
-What&#x27;s different?
-Better at following detailed instructions, especially prompts containing multiple requests
-Improved capability to tackle complex technical and coding problems
-Improved intuition and creativity
-Fewer emojis 🙃
-This sounds like a significant upgrade to GPT-4o, albeit one where the release notes are limited to a single tweet.
-ChatGPT-4o-latest (2025-0-26) just hit second place on the LM Arena leaderboard, behind only Gemini 2.5, so this really is an update worth knowing about.
-The @OpenAIDevelopers account confirmed that this is also now available in their API:
-chatgpt-4o-latest is now updated in the API, but stay tuned—we plan to bring these improvements to a dated model in the API in the coming weeks.
-I wrote about chatgpt-4o-latest last month - it&#x27;s a model alias in the OpenAI API which provides access to the model used for ChatGPT, available since August 2024. It&#x27;s priced at $5/million input and $15/million output - a step up from regular GPT-4o&#x27;s $2.50/$10.
-I&#x27;m glad they&#x27;re going to make these changes available as a dated model release - the chatgpt-4o-latest alias is risky to build software against due to its tendency to change without warning.
-A more appropriate place for this announcement would be the OpenAI Platform Changelog, but that&#x27;s not had an update since the release of their new audio models on March 20th.
-
-
-    
-Tags: llm-release, generative-ai, openai, chatgpt, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Thoughts on setting policy for new AI capabilities
-              <span class="post-metadata">(1 min | 379 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/27/ai-policy/#atom-everything>Thoughts on setting policy for new AI capabilities
-noted some of those the other day.
-Joanne summarizes these changes like so:
-tl;dr we’re shifting from blanket refusals in sensitive areas to a more precise approach focused on preventing real-world harm. The goal is to embrace humility: recognizing how much we don&#x27;t know, and positioning ourselves to adapt as we learn.
-This point in particular resonated with me:
-Trusting user creativity over our own assumptions. AI lab employees should not be the arbiters of what people should and shouldn’t be allowed to create.
-A couple of years ago when OpenAI were the only AI lab with models that were worth spending time with it really did feel that San Francisco cultural values (which I relate to myself) were being pushed on the entire world. That cultural hegemony has been broken now by the increasing pool of global organizations that can produce models, but it&#x27;s still reassuring to see the leading AI lab relaxing its approach here.
-
-
-    
-Tags: ai-ethics, openai, ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Nomic Embed Code: A State-of-the-Art Code Retriever
-              <span class="post-metadata">(2 min | 611 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/27/nomic-embed-code/#atom-everything>Nomic Embed Code: A State-of-the-Art Code Retriever
-The nomic-embed-code model is pretty large - 26.35GB - but the announcement also mentioned a much smaller model (released 5 months ago) called CodeRankEmbed which is just 521.60MB.
-I missed that when it first came out, so I decided to give it a try using my llm-sentence-transformers plugin for LLM. That turned out to need einops too.
-llm install llm-sentence-transformers
-llm install einops
-llm sentence-transformers register nomic-ai/CodeRankEmbed --trust-remote-code
-
-Now I can run the model like this:
-llm embed -m sentence-transformers/nomic-ai/CodeRankEmbed -c &#x27;hello&#x27;
-
-This outputs an array of 768 numbers, starting [1.4794224500656128, -0.474479079246521, ....
-Where this gets fun is combining it with my Symbex tool to create and then search embeddings for functions in a codebase.
-I created an index for my LLM codebase like this:
-cd llm
-symbex &#x27;*&#x27; &#x27;*.*&#x27; --nl &gt; code.txt
-
-This creates a newline-separated JSON file of all of the functions (from &#x27;*&#x27;) and methods (from &#x27;*.*&#x27;) in the current directory - you can see that here.
-Then I fed that into the llm embed-multi command like this:
-llm embed-multi \
-  -d code.db \
-  -m sentence-transformers/nomic-ai/CodeRankEmbed \
-  code code.txt \
-  --format nl \
-  --store \
-  --batch-size 10
-
-I found the --batch-size was needed to prevent it from crashing with an error. 
-The above command creates a collection called code in a SQLite database called code.db.
-Having run this command I can search for functions that match a specific search term like this:
-llm similar code -d code.db \
-  -c &#x27;Represent this query for searching relevant code: install a plugin&#x27; | jq
-
-That &quot;Represent this query for searching relevant code: &quot; prefix is required by the model. I pipe it through jq to make it a little more readable, which gives me these results.
-This jq recipe makes for a better output:
-llm similar code -d code.db \
-  -c &#x27;Represent this query for searching relevant code: install a plugin&#x27; | \
-  jq -r &#x27;.id + &quot;\n\n&quot; + .content + &quot;\n--------\n&quot;&#x27;
-
-The output from that starts like so:
-llm/cli.py:1776
-
-@cli.command(name&#x3D;&quot;plugins&quot;)
-@click.option(&quot;--all&quot;, help&#x3D;&quot;Include built-in default plugins&quot;, is_flag&#x3D;True)
-def plugins_list(all):
-    &quot;List installed plugins&quot;
-    click.echo(json.dumps(get_plugins(all), indent&#x3D;2))
---------
-
-llm/cli.py:1791
-
-@cli.command()
-@click.argument(&quot;packages&quot;, nargs&#x3D;-1, required&#x3D;False)
-@click.option(
-    &quot;-U&quot;, &quot;--upgrade&quot;, is_flag&#x3D;True, help&#x3D;&quot;Upgrade packages to latest version&quot;
-)
-...
-def install(packages, upgrade, editable, force_reinstall, no_cache_dir):
-    &quot;&quot;&quot;Install packages from PyPI into the same environment as LLM&quot;&quot;&quot;
-
-Getting this output was quite inconvenient, so I&#x27;ve opened an issue.
-
-
-    
-Tags: nomic, llm, ai, embeddings, jq</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deprecation of cvss field in security advisories API
-              <span class="post-metadata">(7 min | 2100 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-27-deprecation-of-cvss-field-in-security-advisories-api>Deprecation of cvss field in security advisories API
-The post Deprecation of cvss field in security advisories API appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Repository ownership limits
-              <span class="post-metadata">(8 min | 2298 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-27-repository-ownership-limits>Repository ownership limits
-The post Repository ownership limits appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-4o Copilot: Your new code completion model is now generally available
-              <span class="post-metadata">(8 min | 2411 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-03-27-gpt-4o-copilot-your-new-code-completion-model-is-now-generally-available>GPT-4o Copilot: Your new code completion model is now generally available
-The post GPT-4o Copilot: Your new code completion model is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">GitHub Changelog</p> -->
           </details>
       </article>
 
