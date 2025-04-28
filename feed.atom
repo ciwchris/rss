@@ -2,10 +2,46 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-04-27T21:08:33.123Z</updated>
+    <updated>2025-04-28T14:11:39.925Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Sam Altman]]></title>
+        <id>https://simonwillison.net/2025/Apr/28/sam-altman/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/28/sam-altman/#atom-everything"/>
+        <updated>2025-04-28T03:24:31.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://twitter.com/sama/status/1916625892123742290"><p>the last couple of GPT-4o updates have made the personality too sycophant-y and annoying (even though there are some very good parts of it), and we are working on fixes asap, some today and some this week.</p></blockquote>
+<p class="cite">&mdash; <a href="https://twitter.com/sama/status/1916625892123742290">Sam Altman</a></p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/sam-altman">sam-altman</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[New dashboard: alt text for all my images]]></title>
+        <id>https://simonwillison.net/2025/Apr/28/dashboard-alt-text/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Apr/28/dashboard-alt-text/#atom-everything"/>
+        <updated>2025-04-28T01:22:27.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://simonwillison.net/dashboard/alt-text/">New dashboard: alt text for all my images</a></strong></p>
+I got curious today about how I'd been using alt text for images on my blog, and realized that since I have <a href="https://django-sql-dashboard.datasette.io/">Django SQL Dashboard</a> running on this site and PostgreSQL is capable of <a href="https://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags/1732454#1732454">parsing HTML with regular expressions</a> I could probably find out using a SQL query.</p>
+<p>I pasted <a href="https://simonwillison.net/dashboard/schema/">my PostgreSQL schema</a> into Claude and gave it a pretty long prompt:</p>
+<blockquote>
+<p>Give this PostgreSQL schema I want a query that returns all of my images and their alt text. Images are sometimes stored as HTML image tags and other times stored in markdown.</p>
+<p><code>blog_quotation.quotation</code>, <code>blog_note.body</code> both contain markdown. <code>blog_blogmark.commentary</code> has markdown if <code>use_markdown</code> is true or HTML otherwise. <code>blog_entry.body</code> is always HTML</p>
+<p>Write me a SQL query to extract all of my images and their alt tags using regular expressions. In HTML documents it should look for either <code>&lt;img .* src="..." .* alt="..."</code> or <code>&lt;img alt="..." .* src="..."</code> (images may be self-closing XHTML style in some places). In Markdown they will always be <code>![alt text](url)</code></p>
+<p>I want the resulting table to have three columns: URL, alt_text, src - the URL column needs to be constructed as e.g. <code>/2025/Feb/2/slug</code> for a record where created is on 2nd feb 2025 and the <code>slug</code> column contains <code>slug</code></p>
+<p>Use CTEs and unions where appropriate</p>
+</blockquote>
+<p>It almost got it right on the first go, and with <a href="https://claude.ai/share/e3b996d3-b480-436d-aa40-9caa7609474f">a couple of follow-up prompts</a> I had the query I wanted. I also added the option to <a href="https://simonwillison.net/dashboard/alt-text/?search=pelican">search</a> my alt text / image URLs, which has already helped me hunt down and fix a few old images on expired domain names. Here's a copy of <a href="https://gist.github.com/simonw/5b44a662354e124e33cc1d4704cdb91a">the finished 100 line SQL query</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/django-sql-dashboard">django-sql-dashboard</a>, <a href="https://simonwillison.net/tags/sql">sql</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/alt-text">alt-text</a>, <a href="https://simonwillison.net/tags/accessibility">accessibility</a>, <a href="https://simonwillison.net/tags/postgresql">postgresql</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Unauthorized Experiment on CMV Involving AI-generated Comments]]></title>
         <id>https://simonwillison.net/2025/Apr/26/unauthorized-experiment-on-cmv/#atom-everything</id>
