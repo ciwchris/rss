@@ -25,9 +25,226 @@
 
   <ul>
     <li>
+      <time>2025-04-29</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Mikhail Parakhin
+              <span class="post-metadata">(1 min | 239 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/mikhail-parakhin/#atom-everything>When we were first shipping Memory, the initial thought was: “Let’s let users see and edit their profiles”. Quickly learned that people are ridiculously sensitive: “Has narcissistic tendencies” - “No I do not!”, had to hide it.
+
+— Mikhail Parakhin, talking about Bing
+Tags: ai-ethics, llms, ai, generative-ai, bing</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts
+              <span class="post-metadata">(1 min | 427 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/a-comparison-of-chatgptgpt-4os-previous-and-current-system-promp/#atom-everything>A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts
+way too sycophantic and disingenuously praise anything the user said. OpenAI&#x27;s Aidan McLaughlin:
+last night we rolled out our first fix to remedy 4o&#x27;s glazing/sycophancy
+we originally launched with a system message that had unintended behavior effects but found an antidote
+I asked if anyone had managed to snag the before and after system prompts (using one of the various prompt leak attacks) and it turned out legendary jailbreaker @elder_plinius had. I pasted them into a Gist to get this diff.
+The system prompt that caused the sycophancy included this:
+Over the course of the conversation, you adapt to the user’s tone and preference. Try to match the user’s vibe, tone, and generally how they are speaking. You want the conversation to feel natural. You engage in authentic conversation by responding to the information provided and showing genuine curiosity.
+&quot;Try to match the user’s vibe&quot; - more proof that somehow everything in AI always comes down to vibes!
+The replacement prompt now uses this:
+Engage warmly yet honestly with the user. Be direct; avoid ungrounded or sycophantic flattery. Maintain professionalism and grounded honesty that best represents OpenAI and its values.
+I wish OpenAI would emulate Anthropic and publish their system prompts so tricks like this weren&#x27;t necessary.
+
+
+    
+Tags: prompt-engineering, prompt-injection, generative-ai, openai, chatgpt, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Qwen 3 offers a case study in how to effectively release a model
+              <span class="post-metadata">(5 min | 1467 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/qwen-3/#atom-everything>Alibaba&#x27;s Qwen team released the hotly anticipated Qwen 3 model family today. The Qwen models are already some of the best open weight models - Apache 2.0 licensed and with a variety of different capabilities (including vision and audio input/output).
+
+Qwen 3 is text input/output only for the moment and comes in an exciting range of different shapes and sizes: 32B, 14B, 8B, 4B, 1.7B, and 0.6B models. The 4B and up models all have 131,072 token context windows (extended from 32k using YaRN) - 0.6B, and 1.7B are 32,768.
+
+This covers the full spectrum of sizes that I generally care about: 0.6B and 1.7B should run fine on an iPhone, and 32B will fit on my 64GB Mac with room to spare for other applications.
+
+Qwen also released two Mixture of Experts models - Qwen3-30B-A3B and Qwen3-235B-A22B. The A stands for &quot;active parameters&quot; - Qwen3-30B-A3B is a 30 billion parameter model that keeps 3 billion active at once, which speeds up inference (I previously said it reduces the memory needed to run the models, but that&#x27;s incorrect).
+
+All eight of these models are released under the Apache 2.0 license.
+
+Qwen describe these as &quot;hybrid thinking&quot; models - every one of them is capable of the &quot;reason step by step&quot; trick before they deliver their final answer. In my experiments so far this presents itself as a &lt;think&gt;...&lt;/think&gt; block at the start of the response.
+
+That thinking mode can be turned on and off by including special /think and /no_think tokens in the prompt. It&#x27;s on by default.
+
+
+Trying out Qwen 3 via Ollama
+
+A really well coordinated release
+
+The continuing trend of better models that run on the same hardware
+
+
+
+Trying out Qwen 3 via Ollama
+
+Let&#x27;s see that in action. I started out with Qwen 32B from Ollama - a 20GB download:
+
+
+ollama pull qwen3:32b
+
+Then I ran a prompt against it using LLM and the llm-ollama plugin:
+
+
+llm -m qwen3:32b &#x27;Generate an SVG of a pelican riding a bicycle&#x27;
+
+Here&#x27;s the truncated output I got back (you can see the full response in this Gist).
+
+
+&lt;think&gt;
+
+Okay, the user wants an SVG of a pelican riding a bicycle. Let me start by breaking down the components needed. First, I need to create the pelican. Pelicans have a distinctive beak and pouch, so I&#x27;ll need to draw that. Maybe start with an ellipse for the body, then add the beak as a triangle. The wings could be curved shapes on either side.
+
+Next, the bicycle. I&#x27;ll need two wheels, a frame, handlebars, and pedals. The wheels can be circles with some lines for spokes. The frame connects the wheels, with a seat and handlebars at the front. The pedals are small circles with lines for the crank.
+
+[...]
+
+I think that&#x27;s a plan. Now, translate this into SVG code step by step, making sure coordinates and shapes are correctly placed.
+
+&lt;/think&gt;
+
+Here&#x27;s an SVG of a pelican riding a bicycle, created using simple shapes and paths:
+
+
+&lt;svg viewBox&#x3D;&quot;0 0 200 200&quot; xmlns&#x3D;&quot;http://www.w3.org/2000/svg&quot;&gt;
+  &lt;!-- Bicycle Frame --&gt;
+  &lt;line x1&#x3D;&quot;40&quot; y1&#x3D;&quot;100&quot; x2&#x3D;&quot;120&quot; y2&#x3D;&quot;100&quot; stroke&#x3D;&quot;black&quot; stroke-width&#x3D;&quot;4&quot;/&gt;
+  &lt;line x1&#x3D;&quot;120&quot; y1&#x3D;&quot;100&quot; x2&#x3D;&quot;140&quot; y2&#x3D;&quot;80&quot; stroke&#x3D;&quot;black&quot; stroke-width&#x3D;&quot;4&quot;/&gt;
+  [...]
+  &lt;!-- Bicycle Handlebars --&gt;
+  &lt;rect x&#x3D;&quot;30&quot; y&#x3D;&quot;80&quot; width&#x3D;&quot;20&quot; height&#x3D;&quot;5&quot; fill&#x3D;&quot;#8B4513&quot;/&gt;
+&lt;/svg&gt;
+
+This SVG features:
+
+
+A basic bicycle frame with two wheels, spokes, and a seat
+
+A blue pelican with:
+
+A rounded body and head
+
+A distinctive yellow beak and orange pouch
+
+Two wings extending from the body
+
+Webbed feet wrapped around the bicycle frame
+
+
+
+Simple handlebars at the front of the bicycle
+
+
+The pelican is positioned sitting on the bicycle seat with wings slightly spread for balance. You can copy this code into an HTML file or SVG editor to view the illustration. The colors use traditional bicycle brown (#8B4513) and a classic blue for the pelican (#4169E1) with gold accents for the beak (#FFD700).
+
+
+As is often the case with &quot;reasoning&quot; models, reading the reasoning chain is more interesting than the finished result. Here&#x27;s what the SVG looks like when you render it:
+
+
+
+Not the best pelican on a bicycle, but I&#x27;ve seen worse!
+
+A really well coordinated release
+
+The thing that stands out most to me about the Qwen 3 release is how well coordinated it was across the LLM ecosystem.
+
+Qwen worked directly with almost all of the popular LLM serving frameworks to ensure that support for the new models was available on day one.
+
+The Qwen 3 README mentions the following projects:
+
+
+The Transformers Python library
+
+
+ModelScope (effectively the Chinese equivalent of Hugging Face for model distribution)
+
+
+llama.cpp, which added support for the Qwen 3 architecture three weeks ago in version b5092.
+
+
+Ollama, with qwen3 out on release day
+
+LMStudio
+
+
+mlx-lm for Apple Silicon - the first commit for Qwen 3 support in MLX showed up in a PR over a month ago.
+
+The SGLang serving framework
+
+The popular vLLM engine
+
+
+MindIE, which I haven&#x27;t heard of before but looks to be a serving framework for Huawei&#x27;s Ascend chips (competitive with NVIDIA&#x27;s GPUs)
+
+
+This is an extraordinary level of coordination for a model release! I haven&#x27;t seen any other model providers make this level of effort - the usual pattern is to dump a bunch of models on Hugging Face for a single architecture (usually NVIDIA) and then wait for the community to catch up with quantizations and conversions for everything else.
+
+It&#x27;s also great to see smaller models that can run on consumer hardware on day one. I think one of the reasons the Llama 4 release a few weeks ago was a little muted is that very few people had access to hardware that was capable of running the models.
+
+The one thing that&#x27;s missing here is hosted API partnerships - something Meta did a good job of with Llama 4, which was available (albeit with some bugs) on Groq, Fireworks and Together on the day of release.
+
+The continuing trend of better models that run on the same hardware
+
+I don&#x27;t have a great feeling for the general &quot;vibes&quot; of Qwen 3 yet - it&#x27;s only been available for a few hours and I&#x27;ve not really run it through its paces yet. The general buzz so far seems pretty positive and the initial benchmarks are promising, but these things always take a little while to shake out.
+
+Assuming those benchmarks hold up, I think this is a very strong model. My favourite detail from the release announcement is this (highlight mine):
+
+
+Due to advancements in model architecture, increase in training data, and more effective training methods, the overall performance of Qwen3 dense base models matches that of Qwen2.5 base models with more parameters. For instance, Qwen3-1.7B/4B/8B/14B/32B-Base performs as well as Qwen2.5-3B/7B/14B/32B/72B-Base, respectively. Notably, in areas like STEM, coding, and reasoning, Qwen3 dense base models even outperform larger Qwen2.5 models.
+
+
+I&#x27;m always keen to see this trend continue: better models that can run on the same hardware as their predecessors.
+
+We&#x27;ve seen the same trend with other models - Llama 3.3 70B claimed to deliver &quot;similar performance to Llama 3.1 405B&quot;, and Mistral Small 3 24B said that it was &quot;on par with Llama 3.3 70B instruct, while being more than 3x faster on the same hardware.&quot;
+
+At some point this trend will have to stop, but for the moment it&#x27;s exciting to continue to see new optimizations emerge that allow us to run even better smaller models.
+Tags: llm, mlx, ai, qwen, llms, ollama, llm-release, generative-ai, llm-reasoning, pelican-riding-a-bicycle</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-04-28</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              qwen3
+              <span class="post-metadata">(9 min | 2752 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwen3>Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4620,40 +4837,6 @@ Tags: prompt-engineering, llms, python, generative-ai, llm-tool-use, ai, microso
 The post Closing down Enterprise Cloud Importer (ECI) effective March 31, 2025 appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-03-30</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Ned Batchelder
-              <span class="post-metadata">(1 min | 261 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Mar/30/ned-batchelder/#atom-everything>My advice about using AI is simple: use AI as an assistant, not an expert, and use it judiciously. Some people will object, “but AI can be wrong!” Yes, and so can the internet in general, but no one now recommends avoiding online resources because they can be wrong. They recommend taking it all with a grain of salt and being careful. That’s what you should do with AI help as well.
-
-— Ned Batchelder, Horseless intelligence
-Tags: ai, ned-batchelder</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              No elephants: Breakthroughs in image generation
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/no-elephants-breakthroughs-in-image>When Language Models Learn to See and Create</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
           </details>
       </article>
 
