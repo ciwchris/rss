@@ -25,6 +25,80 @@
 
   <ul>
     <li>
+      <time>2025-05-02</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Claude feature drop
+              <span class="post-metadata">(1 min | 334 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/2/claude-search/#atom-everything>It&#x27;s not in their release notes yet but Anthropic pushed some big new features today. Alex Albert:
+We&#x27;ve improved web search and rolled it out worldwide to all paid plans. Web search now combines light Research functionality, allowing Claude to automatically adjust search depth based on your question.
+Anthropic announced Claude Research a few weeks ago as a product that can combine web search with search against your private Google Workspace - I&#x27;m not clear on how much of that product we get in this &quot;light Research&quot; functionality.
+I&#x27;m most excited about this detail:
+You can also drop a web link in any chat and Claude will fetch the content for you.
+In my experiments so far the user-agent it uses is Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +Claude-User@anthropic.com). It also robots.txt.
+Tags: alex-albert, anthropic, claude, llm-tool-use, deep-research, ai, llms, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Expanding on what we missed with sycophancy
+              <span class="post-metadata">(3 min | 1023 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/2/what-we-missed-with-sycophancy/#atom-everything>Expanding on what we missed with sycophancy
+initial post about their recent ChatGPT sycophancy rollback as being &quot;relatively thin&quot; so I&#x27;m delighted that they have followed it with a much more in-depth explanation of what went wrong. This is worth spending time with - it includes a detailed description of how they create and test model updates.
+This feels reminiscent to me of a good outage postmortem, except here the incident in question was an AI personality bug!
+The custom GPT-4o model used by ChatGPT has had five major updates since it was first launched. OpenAI start by providing some clear insights into how the model updates work:
+To post-train models, we take a pre-trained base model, do supervised fine-tuning on a broad set of ideal responses written by humans or existing models, and then run reinforcement learning with reward signals from a variety of sources.
+During reinforcement learning, we present the language model with a prompt and ask it to write responses. We then rate its response according to the reward signals, and update the language model to make it more likely to produce higher-rated responses and less likely to produce lower-rated responses.
+Here&#x27;s yet more evidence that the entire AI industry runs on &quot;vibes&quot;:
+In addition to formal evaluations, internal experts spend significant time interacting with each new model before launch. We informally call these “vibe checks”—a kind of human sanity check to catch issues that automated evals or A/B tests might miss. 
+So what went wrong? Highlights mine:
+In the April 25th model update, we had candidate improvements to better incorporate user feedback, memory, and fresher data, among others. Our early assessment is that each of these changes, which had looked beneficial individually, may have played a part in tipping the scales on sycophancy when combined. For example, the update introduced an additional reward signal based on user feedback—thumbs-up and thumbs-down data from ChatGPT. This signal is often useful; a thumbs-down usually means something went wrong.
+But we believe in aggregate, these changes weakened the influence of our primary reward signal, which had been holding sycophancy in check. User feedback in particular can sometimes favor more agreeable responses, likely amplifying the shift we saw.
+I&#x27;m surprised that this appears to be first time the thumbs up and thumbs down data has been used to influence the model - they&#x27;ve been collecting that data for a couple of years now.
+I&#x27;ve been very suspicious of the new &quot;memory&quot; feature, where ChatGPT can use context of previous conversations to influence the next response. It looks like that may be part of this too, though not definitively the cause of the sycophancy bug:
+We have also seen that in some cases, user memory contributes to exacerbating the effects of sycophancy, although we don’t have evidence that it broadly increases it.
+The biggest miss here appears to be that they let their automated evals and A/B tests overrule those vibe checks!
+One of the key problems with this launch was that our offline evaluations—especially those testing behavior—generally looked good. Similarly, the A/B tests seemed to indicate that the small number of users who tried the model liked it. [...] Nevertheless, some expert testers had indicated that the model behavior “felt” slightly off.
+The system prompt change I wrote about the other day was a temporary fix while they were rolling out the new model:
+We took immediate action by pushing updates to the system prompt late Sunday night to mitigate much of the negative impact quickly, and initiated a full rollback to the previous GPT‑4o version on Monday
+They list a set of sensible new precautions they are introducing to avoid behavioral bugs like this making it to production in the future. Most significantly, it looks we are finally going to get release notes!
+We also made communication errors. Because we expected this to be a fairly subtle update, we didn&#x27;t proactively announce it. Also, our release notes didn’t have enough information about the changes we&#x27;d made. Going forward, we’ll proactively communicate about the updates we’re making to the models in ChatGPT, whether “subtle” or not.
+And model behavioral problems will now be treated as seriously as other safety issues.
+We need to treat model behavior issues as launch-blocking like we do other safety risks. [...] We now understand that personality and other behavioral issues should be launch blocking, and we’re modifying our processes to reflect that.
+This final note acknowledges how much more responsibility these systems need to take on two years into our weird consumer-facing LLM revolution:
+One of the biggest lessons is fully recognizing how people have started to use ChatGPT for deeply personal advice—something we didn’t see as much even a year ago. At the time, this wasn’t a primary focus, but as AI and society have co-evolved, it’s become clear that we need to treat this use case with great care.
+Tags: ai-personality, openai, ai, llms, ai-ethics, generative-ai, chatgpt, postmortem</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Track progress on code scanning alerts with the new development section
+              <span class="post-metadata">(8 min | 2429 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-02-track-progress-on-code-scanning-alerts-with-the-new-development-section>We’ve created a new section in the code scanning alerts page called Development that tracks critical information for alerts such as affected branches, fixes, and associated pull requests. This helps…
+The post Track progress on code scanning alerts with the new development section appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-01</time>
 
       <section>
@@ -5031,43 +5105,6 @@ Vincent also recorded a 12 minute video walking through the implementation and s
 
     
 Tags: llm, python, generative-ai, ai, llms, vincent-d-warmerdam</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Minimal CSS-only blurry image placeholders
-              <span class="post-metadata">(2 min | 454 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/3/minimal-css-only-blurry-image-placeholders/#atom-everything>Minimal CSS-only blurry image placeholders
-&lt;img src&#x3D;&quot;…&quot; style&#x3D;&quot;--lqip:192900&quot;&gt;
-That 192900 number encodes everything needed to construct the placeholder - it manages to embed a single base color and six brightness components (in a 3x2 grid) in 20 bits, then encodes those as an integer in the roughly 2 million available values between -999,999 and 999,999 - beyond which range Lean found some browsers would start to lose precision.
-The implementation for decoding that value becomes a bunch of clever bit-fiddling CSS expressions to expand it into further CSS variables:
-[style*&#x3D;&quot;--lqip:&quot;] {
-  --lqip-ca: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 18))), 4);
-  --lqip-cb: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 16))), 4);
-  /* more like that */
-}
-Which are expanded to even more variables with code like this:
---lqip-ca-clr: hsl(0 0% calc(var(--lqip-ca) / 3 * 100%));
---lqip-cb-clr: hsl(0 0% calc(var(--lqip-cb) / 3 * 100%));
-And finally rendered using a CSS gradient definition that starts like this:
-[style*&#x3D;&quot;--lqip:&quot;] {
-  background-image:
-    radial-gradient(50% 75% at 16.67% 25%, var(--lqip-ca-clr), transparent),
-    radial-gradient(50% 75% at 50% 25%, var(--lqip-cb-clr), transparent),
-    /* ... */
-    linear-gradient(0deg, var(--lqip-base-clr), var(--lqip-base-clr));
-}
-The article includes several interactive explainers (most of which are also powered by pure CSS) illustrating how it all works.
-Their Node.js script for converting images to these magic integers uses Sharp to resize the image to 3x2 and then use the Oklab perceptually uniform color space (new to me, that was created by Björn Ottosson in 2020) to derive the six resulting values.
-
-    
-Via Hacker News
-Tags: css, css-custom-properties</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
