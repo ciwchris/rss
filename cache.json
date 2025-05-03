@@ -664,26 +664,6 @@
           "wordCount": 2105,
           "title": "Dependency graph supports all purl-identified package ecosystems",
           "imageUrl": "https://github.com/user-attachments/assets/79c92ef4-8988-488f-a5e3-581441fccede"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-04-03-github-enterprise-server-and-esxi-8-0-support",
-          "author": "Allison",
-          "description": "GitHub Enterprise Server and ESXi 8.0 support\nThe post GitHub Enterprise Server and ESXi 8.0 support appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-04-03-github-enterprise-server-and-esxi-8-0-support",
-          "publishedOn": "2025-04-03T19:33:21.000Z",
-          "wordCount": 2117,
-          "title": "GitHub Enterprise Server and ESXi 8.0 support",
-          "imageUrl": "https://github.blog/wp-content/uploads/2024/08/d34e9c19123898a8a886147f37a1d167130d1c15be6d399a9c4b30ee6f2a7395-1200x630-1.png?fit=1200%2C630"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-04-03-pull-request-merge-experience-march-31-update",
-          "author": "Allison",
-          "description": "Pull request merge experience - March 31 update\nThe post Pull request merge experience – April 3 update appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-04-03-pull-request-merge-experience-march-31-update",
-          "publishedOn": "2025-04-03T17:55:43.000Z",
-          "wordCount": 2191,
-          "title": "Pull request merge experience – April 3 update",
-          "imageUrl": "https://github.com/user-attachments/assets/6f8bf27d-0ee3-414f-81d5-626b6a83b1b4"
         }
       ]
     },
@@ -996,16 +976,6 @@
           "wordCount": 7486,
           "title": "Guest Blog: Semantic Kernel and Copilot Studio Usage Series – Part 1",
           "imageUrl": "https://devblogs.microsoft.com/semantic-kernel/wp-content/uploads/sites/78/2024/03/Guest-Blog_-Building-Your-Custom-Copilot-with-Semantic-Kernel-1.png"
-        },
-        {
-          "id": "https://devblogs.microsoft.com/semantic-kernel/?p=4601",
-          "author": "Roger Barreto",
-          "description": "OpenAI’s gpt-4o-audio-preview is a powerful multimodal model that enables audio input and output capabilities, allowing developers to create more natural and accessible AI interactions. This model supports both speech-to-text and text-to-speech functionalities in a single API call through the Chat Completions API, making it suitable for building voice-enabled applications where turn-based interactions are appropriate. In this […]\nThe post Using OpenAI’s Audio-Preview Model with Semantic Kernel appeared first on Semantic Kernel.",
-          "link": "https://devblogs.microsoft.com/semantic-kernel/using-openais-audio-preview-model-with-semantic-kernel/",
-          "publishedOn": "2025-04-03T16:31:56.000Z",
-          "wordCount": 6811,
-          "title": "Using OpenAI’s Audio-Preview Model with Semantic Kernel",
-          "imageUrl": "https://devblogs.microsoft.com/semantic-kernel/wp-content/uploads/sites/78/2025/04/ghibli-audio-preview.jpg"
         }
       ]
     },
@@ -1053,6 +1023,16 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2025/May/2/qwen3-8b/#atom-everything",
+          "author": null,
+          "description": "<p>Having tried a few of the <a href=\"https://simonwillison.net/2025/Apr/29/qwen-3/\">Qwen 3 models</a> now my favorite is a bit of a surprise to me: I'm really enjoying <a href=\"https://huggingface.co/Qwen/Qwen3-8B\">Qwen3-8B</a>.</p>\n<p>I've been running prompts through the MLX 4bit quantized version, <a href=\"https://huggingface.co/mlx-community/Qwen3-8B-4bit\">mlx-community/Qwen3-8B-4bit</a>. I'm using <a href=\"https://github.com/simonw/llm-mlx\">llm-mlx</a> like this:</p>\n<pre><code>llm install llm-mlx\nllm mlx download-model mlx-community/Qwen3-8B-4bit\n</code></pre>\n<p>This pulls 4.3GB of data and saves it to <code>~/.cache/huggingface/hub/models--mlx-community--Qwen3-8B-4bit</code>.</p>\n<p>I assigned it a default alias:</p>\n<pre><code>llm aliases set q3 mlx-community/Qwen3-8B-4bit\n</code></pre>\n<p>And now I can run prompts:</p>\n<pre><code>llm -m q3 'brainstorm questions I can ask my friend who I think is secretly from Atlantis that will not tip her off to my suspicions'\n</code></pre>\n<p>Qwen3 is a \"reasoning\" model, so it starts each prompt with a <code>&lt;think&gt;</code> block containing its chain of thought. Reading these is always <em>really fun</em>. Here's the full response I got for <a href=\"https://gist.github.com/simonw/52a883eb4709de66c6bfe9bb3b0f3ee0\">the above question</a>.</p>\n<p>I'm finding Qwen3-8B to be surprisingly capable for useful things too. It can <a href=\"https://gist.github.com/simonw/ab414f01a28e050b8419b4152a4016d1\">summarize short articles</a>. It can <a href=\"https://gist.github.com/simonw/db129dddb76e5ba8f97794a794ae626d#response-1\">write simple SQL queries</a> given a question and a schema. It can <a href=\"https://gist.github.com/simonw/54f040ae2f2ca3b83cdc1b2e691936ab\">figure out what a simple web app does</a> by reading the HTML and JavaScript. It can <a href=\"https://gist.github.com/simonw/ac4082df0dcde87d5845586804fb80c9\">write Python code</a> to meet a paragraph long spec - for that one it \"reasoned\" for an unreasonably long time but it did eventually get to a useful answer.</p>\n<p>All this while consuming between 4 and 5GB of memory, depending on the length of the prompt.</p>\n<p>I think it's pretty extraordinary that a few GBs of floating point numbers can usefully achieve these various tasks, especially using so little memory that it's not an imposition on the rest of the things I want to run on my laptop at the same time.</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/models\">models</a>, <a href=\"https://simonwillison.net/tags/qwen\">qwen</a>, <a href=\"https://simonwillison.net/tags/mlx\">mlx</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/llm-reasoning\">llm-reasoning</a></p>",
+          "link": "https://simonwillison.net/2025/May/2/qwen3-8b/#atom-everything",
+          "publishedOn": "2025-05-02T23:41:52.000Z",
+          "wordCount": 472,
+          "title": "Qwen3-8B",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2025/May/2/claude-search/#atom-everything",
           "author": null,
@@ -2051,26 +2031,6 @@
           "publishedOn": "2025-04-04T15:05:39.000Z",
           "wordCount": 533,
           "title": "A Sneaky Phish Just Grabbed my Mailchimp Mailing List",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Apr/3/first-look-at-the-modern-attr/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://ishadeed.com/article/modern-attr/\">First look at the modern attr()</a></strong></p>\nChrome 133 (released February 25th 2025) was the first browser to <a href=\"https://developer.chrome.com/release-notes/133?hl=en#css_advanced_attr_function\">ship support</a> for the advanced CSS <code>attr()</code> function (<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/attr\">MDN</a>), which lets <code>attr()</code> be used to compose values using types other than strings.</p>\n<p>Ahmad Shadeed explores potential applications of this in detail, trying it out for CSS grid columns, progress bars, background images, animation delays and more.</p>\n<p>I like this example that uses the <code>rows=\"5\"</code> attribute on a <code>&lt;textarea&gt;</code> to calculate its <code>max-height</code> - here wrapped in a feature detection block:</p>\n<pre><span class=\"pl-k\">@supports</span> (<span class=\"pl-c1\">x</span><span class=\"pl-kos\">:</span> <span class=\"pl-en\">attr</span>(x <span class=\"pl-en\">type</span>(<span class=\"pl-c1\">*</span>))) {\n  <span class=\"pl-ent\">textarea</span> {\n    <span class=\"pl-c1\">min-height</span><span class=\"pl-kos\">:</span> <span class=\"pl-en\">calc</span>(\n      <span class=\"pl-en\">attr</span>(rows <span class=\"pl-en\">type</span>(&lt;number<span class=\"pl-c1\">&gt;</span>)) <span class=\"pl-c1\">*</span> <span class=\"pl-c1\">50<span class=\"pl-smi\">px</span></span>\n    );\n  }\n}</pre>\n\n<p>That <code>type(&lt;number&gt;)</code> is the new syntax.</p>\n<p>Many of Ahmad's examples can be achieved today across all browsers using a slightly more verbose CSS custom property syntax.</p>\n<p>Here are the tracking issues for CSS values support in <code>attr()</code> for <a href=\"https://bugzilla.mozilla.org/show_bug.cgi?id=435426\">Firefox</a> (opened 17 years ago) and <a href=\"https://bugs.webkit.org/show_bug.cgi?id=26609\">WebKit</a> (16 years ago).\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/css\">css</a>, <a href=\"https://simonwillison.net/tags/css-custom-properties\">css-custom-properties</a>, <a href=\"https://simonwillison.net/tags/chrome\">chrome</a>, <a href=\"https://simonwillison.net/tags/web-standards\">web-standards</a>, <a href=\"https://simonwillison.net/tags/ahmad-shadeed\">ahmad-shadeed</a></p>",
-          "link": "https://simonwillison.net/2025/Apr/3/first-look-at-the-modern-attr/#atom-everything",
-          "publishedOn": "2025-04-03T15:53:52.000Z",
-          "wordCount": 342,
-          "title": "First look at the modern attr()",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Apr/3/smartfunc/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://github.com/koaning/smartfunc\">smartfunc</a></strong></p>\nVincent D. Warmerdam built this ingenious wrapper around my <a href=\"https://llm.datasette.io/en/stable/python-api.html\">LLM Python library</a> which lets you build LLM wrapper functions using a decorator and a docstring:</p>\n<pre><span class=\"pl-k\">from</span> <span class=\"pl-s1\">smartfunc</span> <span class=\"pl-k\">import</span> <span class=\"pl-s1\">backend</span>\n\n<span class=\"pl-en\">@<span class=\"pl-en\">backend</span>(<span class=\"pl-s\">\"gpt-4o\"</span>)</span>\n<span class=\"pl-k\">def</span> <span class=\"pl-en\">generate_summary</span>(<span class=\"pl-s1\">text</span>: <span class=\"pl-smi\">str</span>):\n    <span class=\"pl-s\">\"\"\"Generate a summary of the following text: {{ text }}\"\"\"</span>\n    <span class=\"pl-k\">pass</span>\n\n<span class=\"pl-s1\">summary</span> <span class=\"pl-c1\">=</span> <span class=\"pl-en\">generate_summary</span>(<span class=\"pl-s1\">long_text</span>)</pre>\n\n<p>It works with <a href=\"https://llm.datasette.io/en/stable/plugins/directory.html\">LLM plugins</a> so the same pattern should work against Gemini, Claude and hundreds of others, including local models.</p>\n<p>It integrates with more recent LLM features too, including <a href=\"https://llm.datasette.io/en/stable/python-api.html#python-api-async\">async support</a> and <a href=\"https://simonwillison.net/2025/Feb/28/llm-schemas/\">schemas</a>, by introspecting the function signature:</p>\n<pre><span class=\"pl-k\">class</span> <span class=\"pl-v\">Summary</span>(<span class=\"pl-v\">BaseModel</span>):\n    <span class=\"pl-s1\">summary</span>: <span class=\"pl-smi\">str</span>\n    <span class=\"pl-s1\">pros</span>: <span class=\"pl-s1\">list</span>[<span class=\"pl-smi\">str</span>]\n    <span class=\"pl-s1\">cons</span>: <span class=\"pl-s1\">list</span>[<span class=\"pl-smi\">str</span>]\n\n<span class=\"pl-en\">@<span class=\"pl-en\">async_backend</span>(<span class=\"pl-s\">\"gpt-4o-mini\"</span>)</span>\n<span class=\"pl-k\">async</span> <span class=\"pl-k\">def</span> <span class=\"pl-en\">generate_poke_desc</span>(<span class=\"pl-s1\">text</span>: <span class=\"pl-smi\">str</span>) <span class=\"pl-c1\">-&gt;</span> <span class=\"pl-smi\">Summary</span>:\n    <span class=\"pl-s\">\"Describe the following pokemon: {{ text }}\"</span>\n    <span class=\"pl-k\">pass</span>\n\n<span class=\"pl-s1\">pokemon</span> <span class=\"pl-c1\">=</span> <span class=\"pl-k\">await</span> <span class=\"pl-en\">generate_poke_desc</span>(<span class=\"pl-s\">\"pikachu\"</span>)</pre>\n\n<p>Vincent also recorded <a href=\"https://www.youtube.com/watch?v=j9jh46R0ryY\">a 12 minute video</a> walking through the implementation and showing how it uses <a href=\"https://docs.pydantic.dev/\">Pydantic</a>, Python's <a href=\"https://docs.python.org/3/library/inspect.html\">inspect</a> module and <a href=\"https://docs.python.org/3/library/typing.html#typing.get_type_hints\">typing.get_type_hints()</a> function.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/python\">python</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/vincent-d-warmerdam\">vincent-d-warmerdam</a></p>",
-          "link": "https://simonwillison.net/2025/Apr/3/smartfunc/#atom-everything",
-          "publishedOn": "2025-04-03T14:57:27.000Z",
-          "wordCount": 325,
-          "title": "smartfunc",
           "imageUrl": null
         }
       ]
