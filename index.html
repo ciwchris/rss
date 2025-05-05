@@ -25,6 +25,317 @@
 
   <ul>
     <li>
+      <time>2025-05-05</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Request for more articles on prompting techniques
+              <span class="post-metadata">(1 min | 290 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/5/prompting/#atom-everything>I&#x27;m disappointed at how little good writing there is out there about effective prompting.
+Here&#x27;s an example: what&#x27;s the best prompt to use to summarize an article?
+That feels like such an obvious thing, and yet I haven&#x27;t even seen that being well explored!
+It&#x27;s actually a surprisingly deep topic. I like using tricks like &quot;directly quote the sentences that best illustrate the overall themes&quot; and &quot;identify the most surprising ideas&quot;, but I&#x27;d love to see a thorough breakdown of all the tricks I haven&#x27;t seen yet.
+Tags: prompt-engineering, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Max Woolf
+              <span class="post-metadata">(1 min | 307 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/5/max-woolf/#atom-everything>Two things can be true simultaneously: (a) LLM provider cost economics are too negative to return positive ROI to investors, and (b) LLMs are useful for solving problems that are meaningful and high impact, albeit not to the AGI hype that would justify point (a). This particular combination creates a frustrating gray area that requires a nuance that an ideologically split social media can no longer support gracefully. [...]
+OpenAI collapsing would not cause the end of LLMs, because LLMs are useful today and there will always be a nonzero market demand for them: it’s a bell that can’t be unrung.
+
+— Max Woolf
+Tags: max-woolf, generative-ai, openai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Feed a video to a vision LLM as a sequence of JPEG frames on the CLI (also LLM 0.25)
+              <span class="post-metadata">(6 min | 1750 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/5/llm-video-frames/#atom-everything>The new llm-video-frames plugin can turn a video file into a sequence of JPEG frames and feed them directly into a long context vision LLM such as GPT-4.1, even when that LLM doesn&#x27;t directly support video input. It depends on a plugin feature I added to LLM 0.25, which I released last night.
+
+Here&#x27;s how to try it out:
+
+
+brew install ffmpeg # or apt-get or your package manager of choice
+uv tool install llm # or pipx install llm or pip install llm
+llm install llm-video-frames
+llm keys set openai
+# Paste your OpenAI API key here
+
+llm -f video-frames:video.mp4 \
+  &#x27;describe the key scenes in this video&#x27; \
+  -m gpt-4.1-mini
+
+The video-frames:filepath.mp4 syntax is provided by the new plugin. It takes that video, converts it to a JPEG for every second of the video and then turns those into attachments that can be passed to the LLM.
+
+Here&#x27;s a demo, against this video of Cleo:
+
+
+
+    
+        
+    
+
+
+
+llm -f video-frames:cleo.mp4 &#x27;describe key moments&#x27; -m gpt-4.1-mini
+
+And the output from the model (transcript here):
+
+
+The sequence of images captures the key moments of a dog being offered and then enjoying a small treat:
+
+
+In the first image, a hand is holding a small cupcake with purple frosting close to a black dog&#x27;s face. The dog looks eager and is focused intently on the treat.
+
+The second image shows the dog beginning to take a bite of the cupcake from the person&#x27;s fingers. The dog&#x27;s mouth is open, gently nibbling on the treat.
+
+In the third image, the dog has finished or is almost done with the treat and looks content, with a slight smile and a relaxed posture. The treat is no longer in the person&#x27;s hand, indicating that the dog has consumed it.
+
+
+This progression highlights the dog&#x27;s anticipation, enjoyment, and satisfaction with the treat.
+
+
+Total cost: 7,072 input tokens, 156 output tokens - for GPT-4.1 mini that&#x27;s 0.3078 cents (less than a third of a cent).
+
+In this case the plugin converted the video into three images: frame_00001.jpg, frame_00002.jpg and frame_00003.jpg.
+
+The plugin accepts additional arguments. You can increase the frames-per-second using ?fps&#x3D;2 - for example:
+
+
+llm -f &#x27;video-frames:video.mp4?fps&#x3D;2&#x27; &#x27;summarize this video&#x27;
+
+Or you can add ?timestamps&#x3D;1 to cause ffmpeg to overlay a timestamp in the bottom right corner of each frame. This gives the model a chance to return timestamps in its output.
+
+Let&#x27;s try that with the Cleo video:
+
+
+llm -f &#x27;video-frames:cleo.mp4?timestamps&#x3D;1&amp;fps&#x3D;5&#x27; \
+  &#x27;key moments, include timestamps&#x27; -m gpt-4.1-mini
+
+Here&#x27;s the output (transcript here):
+
+
+Here are the key moments from the video &quot;cleo.mp4&quot; with timestamps:
+
+
+00:00:00.000 - A dog on leash looks at a small cupcake with purple frosting being held by a person.
+
+00:00:00.800 - The dog closely sniffs the cupcake.
+
+00:00:01.400 - The person puts a small amount of the cupcake frosting on their finger.
+
+00:00:01.600 - The dog starts licking the frosting from the person&#x27;s finger.
+
+00:00:02.600 - The dog continues licking enthusiastically.
+
+
+Let me know if you need more details or a description of any specific part.
+
+
+That one sent 14 images to the API, at a total cost of 32,968 input, 141 output &#x3D; 1.3413 cents.
+
+It sent 5.9MB of image data to OpenAI&#x27;s API, encoded as base64 in the JSON API call.
+
+The GPT-4.1 model family accepts up to 1,047,576 tokens. Aside from a 20MB size limit per image I haven&#x27;t seen any documentation of limits on the number of images. You can fit a whole lot of JPEG frames in a million tokens!
+
+Here&#x27;s what one of those frames looks like with the timestamp overlaid in the corner:
+
+
+
+How I built the plugin with o4-mini
+
+This is a great example of how rapid prototyping with an LLM can help demonstrate the value of a feature.
+
+I was considering whether it would make sense for fragment plugins to return images in issue 972 when I had the idea to use ffmpeg to split a video into frames.
+
+I know from past experience that a good model can write an entire plugin for LLM if you feed it the right example, so I started with this (reformatted here for readability):
+
+
+llm -m o4-mini -f github:simonw/llm-hacker-news -s &#x27;write a new plugin called llm_video_frames.py which takes video:path-to-video.mp4 and creates a temporary directory which it then populates with one frame per second of that video using ffmpeg - then it returns a list of [llm.Attachment(path&#x3D;&quot;path-to-frame1.jpg&quot;), ...] - it should also support passing video:video.mp4?fps&#x3D;2 to increase to two frames per second, and if you pass ?timestamps&#x3D;1 or &amp;timestamps&#x3D;1 then it should add a text timestamp to the bottom right conner of each image with the mm:ss timestamp of that frame (or hh:mm:ss if more than one hour in) and the filename of the video without the path as well.&#x27; -o reasoning_effort high
+
+Here&#x27;s the transcript.
+
+The new attachment mechanism went from vague idea to &quot;I should build that&quot; as a direct result of having an LLM-built proof-of-concept that demonstrated the feasibility of the new feature.
+
+The code it produced was about 90% of the code I shipped in the finished plugin. Total cost 5,018 input, 2,208 output &#x3D; 1.5235 cents.
+
+Annotated release notes for everything else in LLM 0.25
+
+Here are the annotated release notes for everything else:
+
+
+
+New plugin feature: register_fragment_loaders(register) plugins can now return a mixture of fragments and attachments. The llm-video-frames plugin is the first to take advantage of this mechanism. #972
+
+
+
+As decsribed above. The inspiration for this feature came from the llm-arxiv plugin by agustif.
+
+
+
+New OpenAI models: gpt-4.1, gpt-4.1-mini, gpt-41-nano, o3, o4-mini. #945, #965, #976.
+
+
+
+My original plan was to leave these models exclusively to the new llm-openai plugin, since that allows me to add support for new models without a full LLM release. I&#x27;m going to punt on that until I&#x27;m ready to entirely remove the OpenAI models from LLM core.
+
+
+
+New environment variables: LLM_MODEL and LLM_EMBEDDING_MODEL for setting the model to use without needing to specify -m model_id every time. #932
+
+
+
+A convenience feature for if you want to set the default model for a terminal session with LLM without using the global default model&quot; mechanism.
+
+
+
+New command: llm fragments loaders, to list all currently available fragment loader prefixes provided by plugins. #941
+
+
+
+Mainly for consistence with the existing llm templates loaders command. Here&#x27;s the output when I run llm fragments loaders on my machine:
+
+docs:
+  Fetch the latest documentation for the specified package from
+  https://github.com/simonw/docs-for-llms
+
+  Use &#x27;-f docs:&#x27; for the documentation of your current version of LLM.
+
+docs-preview:
+  Similar to docs: but fetches the latest docs including alpha/beta releases.
+
+symbex:
+  Walk the given directory, parse every .py file, and for every
+  top-level function or class-method produce its signature and
+  docstring plus an import line.
+
+github:
+  Load files from a GitHub repository as fragments
+
+  Argument is a GitHub repository URL or username/repository
+
+issue:
+  Fetch GitHub issue/pull and comments as Markdown
+
+  Argument is either &quot;owner/repo/NUMBER&quot; or URL to an issue
+
+pr:
+  Fetch GitHub pull request with comments and diff as Markdown
+
+  Argument is either &quot;owner/repo/NUMBER&quot; or URL to a pull request
+
+hn:
+  Given a Hacker News article ID returns the full nested conversation.
+
+  For example: -f hn:43875136
+
+video-frames:
+  Fragment loader &quot;video-frames:&lt;path&gt;?fps&#x3D;N&amp;timestamps&#x3D;1&quot;
+  - extracts frames at &#x60;fps&#x60; per second (default 1)
+  - if &#x60;timestamps&#x3D;1&#x60;, overlays &quot;filename hh:mm:ss&quot; at bottom-right
+
+
+That&#x27;s from llm-docs, llm-fragments-symbex, llm-fragments-github, llm-hacker-news and llm-video-frames.
+
+
+
+
+llm fragments command now shows fragments ordered by the date they were first used. #973
+
+
+
+This makes it easier to quickly debug a new fragment plugin - you can run llm fragments and glance at the bottom few entries.
+
+I&#x27;ve also been using the new llm-echo debugging plugin for this - it adds a new fake model called &quot;echo&quot; which simply outputs whatever the prompt, system prompt, fragments and attachments are that were passed to the model:
+
+
+llm -f docs:sqlite-utils -m echo &#x27;Show me the context&#x27;
+
+Output here.
+
+
+
+
+llm chat now includes a !edit command for editing a prompt using your default terminal text editor. Thanks, Benedikt Willi. #969
+
+
+
+This is a really nice enhancement to llm chat, making it much more convenient to edit longe prompts.
+
+And the rest:
+
+
+
+Allow -t and --system to be used at the same time. #916
+
+Fixed a bug where accessing a model via its alias would fail to respect any default options set for that model. #968
+
+Improved documentation for extra-openai-models.yaml. Thanks, Rahim Nathwani and Dan Guido. #950, #957
+
+
+llm -c/--continue now works correctly with the -d/--database option. llm chat now accepts that -d/--database option. Thanks, Sukhbinder Singh. #933
+
+
+
+    
+        
+Tags: vision-llms, llm, plugins, ai, llms, generative-ai, projects, ffmpeg, ai-assisted-programming</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependency graph deduplication is now generally available
+              <span class="post-metadata">(8 min | 2474 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-05-dependency-graph-deduplication-is-now-generally-available>Dependency graph now deduplicates manifest files ingested from different sources
+The post Dependency graph deduplication is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Arvind Narayanan
+              <span class="post-metadata">(1 min | 338 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/5/arvind-narayanan/#atom-everything>[On using generative AI for work despite the risk of errors:]
+AI is helpful despite being error-prone if it is faster to verify the output than it is to do the work yourself. For example, if you&#x27;re using it to find a product that matches a given set of specifications, verification may be a lot faster than search.
+There are many uses where errors don&#x27;t matter, like using it to enhance creativity by suggesting or critiquing ideas.
+At a meta level, if you use AI without a plan and simply turn to AI tools when you feel like it, then you&#x27;re unlikely to be able to think through risks and mitigations. It is better to identify concrete ways to integrate AI into your workflows, with known benefits and risks, that you can employ repeatedly.
+
+— Arvind Narayanan
+Tags: llms, ai, arvind-narayanan, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-04</time>
 
       <section>
