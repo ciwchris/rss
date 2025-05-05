@@ -974,6 +974,16 @@
       "siteUrl": "http://simonwillison.net/",
       "articles": [
         {
+          "id": "https://simonwillison.net/2025/May/4/llm-sampling/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://rentry.co/samplers\">Dummy&#x27;s Guide to Modern LLM Sampling</a></strong></p>\nThis is an extremely useful, detailed set of explanations by <a href=\"https://x.com/AlpinDale\">@AlpinDale</a> covering the various different sampling strategies used by modern LLMs. LLMs return a set of next-token probabilities for every token in their corpus - a layer above the LLM can then use sampling strategies to decide which one to use.</p>\n<p>I finally feel like I understand the difference between <a href=\"https://rentry.co/samplers#top-k\">Top-K</a> and <a href=\"https://rentry.co/samplers#top-p\">Top-P</a>! Top-K is when you narrow down to e.g. the 20 most likely candidates for next token and then pick one of those. Top-P instead \"the smallest set of words whose combined probability exceeds threshold P\" - so if you set it to 0.5 you'll filter out tokens in the lower half of the probability distribution.</p>\n<p>There are a bunch more sampling strategies in here that I'd never heard of before - Top-A, Top-N-Sigma, Epsilon-Cutoff and more.</p>\n<p>Reading the descriptions here of <a href=\"https://rentry.co/samplers#repetition-penalty\">Repetition Penalty</a> and <a href=\"https://rentry.co/samplers#dry-dont-repeat-yourself\">Don't Repeat Yourself</a> made me realize that I need to be a little careful with those for some of my own uses of LLMs.</p>\n<p>I frequently feed larger volumes of text (or code) into an LLM and ask it to output subsets of that text as direct quotes, to answer questions like \"which bit of this code handles authentication tokens\" or \"show me direct quotes that illustrate the main themes in this conversation\".</p>\n<p>Careless use of frequency penalty strategies might go against what I'm trying to achieve with those prompts.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=43887637\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/prompt-engineering\">prompt-engineering</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/tokenization\">tokenization</a></p>",
+          "link": "https://simonwillison.net/2025/May/4/llm-sampling/#atom-everything",
+          "publishedOn": "2025-05-04T21:13:02.000Z",
+          "wordCount": 442,
+          "title": "Dummy's Guide to Modern LLM Sampling",
+          "imageUrl": null
+        },
+        {
           "id": "https://simonwillison.net/2025/May/4/breakwater/#atom-everything",
           "author": null,
           "description": "<p>Our local BBQ spot here in El Granada - <a href=\"https://www.breakwaterbbq.com/\">Breakwater Barbecue</a> - had a soft opening this weekend in their <a href=\"https://maps.app.goo.gl/f9JSpUWaFH8Hevj3A\">new location</a>.</p>\n<p>Here's the new building. They're still working on replacing the sign from the previous restaurant occupant:</p>\n<p><img alt=\"Exterior photo of a restaurant with a faded sign reading &quot;MONSTER CHEF Fine Japanese Restaurant&quot; the building is cream-colored with red tile roofs and large windows. It has a little bit of a railway station vibe to it if you squint at it just the right way.\" src=\"https://static.simonwillison.net/static/2025/breakwater-today.jpg\" /></p>\n<p>It's actually our old railway station! From 1905 to 1920 the <a href=\"https://en.wikipedia.org/wiki/Ocean_Shore_Railroad\">Ocean Shore Railroad</a> ran steam trains from San Francisco down through Half Moon Bay most of the way to Santa Cruz, though they never quite connected the two cities.</p>\n<p>The restaurant has some photos on the wall of the old railroad. Here's what that same building looked like &gt;100 years ago.</p>\n<p><img alt=\"Historical black and white photograph showing a train station with a steam train on the left and a Spanish-style station building with arched entrances on the right. It's clearly the same building, though the modern one has had a bunch of extra extensions added to it and doesn't look nearly as much like a train station.\" src=\"https://static.simonwillison.net/static/2025/breakwater-train.jpg\" /></p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/half-moon-bay\">half-moon-bay</a>, <a href=\"https://simonwillison.net/tags/photos\">photos</a>, <a href=\"https://simonwillison.net/tags/history\">history</a></p>",
@@ -1942,26 +1952,6 @@
           "wordCount": 369,
           "title": "Note on 6th April 2025",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Apr/5/llama-4-notes/#atom-everything",
-          "author": null,
-          "description": "<p>Dropping a model release as significant as Llama 4 on a weekend is plain unfair!</p>\n<p>So far the best place to learn about the new model family is <a href=\"https://ai.meta.com/blog/llama-4-multimodal-intelligence/\">this post on the Meta AI blog</a>.</p>\n<p>Llama 4 Maverick is now sat in second place on <a href=\"https://lmarena.ai/?leaderboard\">the LM Arena leaderboard</a>, just behind Gemini 2.5 Pro.</p>\n<p>You can try them out using the chat interface from OpenRouter (or through the OpenRouter API) for <a href=\"https://openrouter.ai/meta-llama/llama-4-scout\">Llama 4 Scout</a> and <a href=\"https://openrouter.ai/meta-llama/llama-4-maverick\">Llama 4 Maverick</a>. They're proxying through to <a href=\"https://console.groq.com/docs/models\">Groq</a>, <a href=\"https://fireworks.ai/models\">Fireworks</a> and <a href=\"https://docs.together.ai/docs/serverless-models\">Together</a>.</p>\n<p>I haven't tried this myself yet (I'm out at a protest without my laptop) but the <a href=\"https://llm.datasette.io/\">LLM</a> plugin <a href=\"https://github.com/simonw/llm-openrouter\">llm-openrouter</a> should be a good bet for trying out the new models in a terminal.</p>\n<p>Scout claims a 10 million input token length but the available providers currently seem to limit to 128,000 (Groq and Fireworks) or 328,000 (Together) - I wonder who will win the race to get that full sized 10 million token window running?</p>\n<p>Maverick claims 1 million and Fireworks offers 1.05M while Together offers 524,000. Groq isn't offering Maverick yet.</p>\n<p>Jeremy Howard <a href=\"https://twitter.com/jeremyphoward/status/1908607345393098878\">says</a>:</p>\n<blockquote>\n<p>The models are both giant MoEs that can't be run on consumer GPUs, even with quant. [...]</p>\n<p>Perhaps Llama 4 will be a good fit for running on a Mac. Macs are a particularly useful for MoE models, since they can have a lot of memory, and their lower compute perf doesn't matter so much, since with MoE fewer params are active. [...]</p>\n<p>4bit quant of the smallest 109B model is far too big to fit on a 4090 -- or even a pair of them!</p>\n</blockquote>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/meta\">meta</a>, <a href=\"https://simonwillison.net/tags/groq\">groq</a>, <a href=\"https://simonwillison.net/tags/llama\">llama</a>, <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a></p>",
-          "link": "https://simonwillison.net/2025/Apr/5/llama-4-notes/#atom-everything",
-          "publishedOn": "2025-04-05T20:28:47.000Z",
-          "wordCount": 461,
-          "title": "Note on 5th April 2025",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Apr/5/llama-4/#atom-everything",
-          "author": null,
-          "description": "<blockquote cite=\"https://twitter.com/ahmad_al_dahle/status/1908595680828154198\"><p>The Llama series have been re-designed to use state of the art mixture-of-experts (MoE) architecture and natively trained with multimodality. We’re dropping Llama 4 Scout &amp; Llama 4 Maverick, and previewing Llama 4 Behemoth.</p>\n<p>📌 <strong>Llama 4 Scout</strong> is highest performing small model with 17B activated parameters with 16 experts. It’s crazy fast, natively multimodal, and very smart. It achieves an industry leading <strong>10M+ token context window</strong> and can also run on <strong>a single GPU</strong>!</p>\n<p>📌 <strong>Llama 4 Maverick</strong> is the best multimodal model in its class, beating GPT-4o and Gemini 2.0 Flash across a broad range of widely reported benchmarks, while achieving comparable results to the new DeepSeek v3 on reasoning and coding – at less than half the active parameters. It offers a best-in-class performance to cost ratio with an experimental chat version scoring ELO of 1417 on LMArena. It can also run on a <strong>single host</strong>!</p>\n<p>📌 <strong>Previewing Llama 4 Behemoth</strong>, our most powerful model yet and among the world’s smartest LLMs. Llama 4 Behemoth outperforms GPT4.5, Claude Sonnet 3.7, and Gemini 2.0 Pro on several STEM benchmarks. Llama 4 Behemoth is still training, and we’re excited to share more details about it even while it’s still in flight.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://twitter.com/ahmad_al_dahle/status/1908595680828154198\">Ahmed Al-Dahle</a>, VP and Head of GenAI at Meta</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/meta\">meta</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llama\">llama</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
-          "link": "https://simonwillison.net/2025/Apr/5/llama-4/#atom-everything",
-          "publishedOn": "2025-04-05T19:44:13.000Z",
-          "wordCount": 404,
-          "title": "Quoting Ahmed Al-Dahle",
-          "imageUrl": null
         }
       ]
     },
@@ -2058,16 +2048,6 @@
           "publishedOn": "2025-04-07T16:59:00.000Z",
           "wordCount": 2580,
           "title": "mistral-small3.1",
-          "imageUrl": "https://ollama.com/public/og.png"
-        },
-        {
-          "id": "https://ollama.com/library/mistral-small",
-          "author": null,
-          "description": "Mistral Small 3 sets a new benchmark in the “small” Large Language Models category below 70B.",
-          "link": "https://ollama.com/library/mistral-small",
-          "publishedOn": "2025-04-06T01:25:00.000Z",
-          "wordCount": 2828,
-          "title": "mistral-small",
           "imageUrl": "https://ollama.com/public/og.png"
         }
       ]
