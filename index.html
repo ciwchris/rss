@@ -25,9 +25,105 @@
 
   <ul>
     <li>
+      <time>2025-05-07</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              llm-prices.com
+              <span class="post-metadata">(2 min | 514 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/7/llm-prices/#atom-everything>llm-prices.com
+October last year. I finally decided to split it out to its own domain name (previously it was hosted at tools.simonwillison.net/llm-prices), running on Cloudflare Pages.
+
+The site runs out of my simonw/llm-prices GitHub repository. I ported the history of the old llm-prices.html file using a vibe-coded bash script that I forgot to save anywhere.
+I rarely use AI-generated imagery in my own projects, but for this one I found an excellent reason to use GPT-4o image outputs... to generate the favicon! I dropped a screenshot of the site into ChatGPT (o4-mini-high in this case) and asked for the following:
+design a bunch of options for favicons for this site in a single image, white background
+
+I liked the top right one, so I cropped it into Pixelmator and made a 32x32 version. Here&#x27;s what it looks like in my browser:
+
+I added a new feature just now: the state of the calculator is now reflected in the #fragment-hash URL of the page, which means you can link to your previous calculations.
+I implemented that feature using the new gemini-2.5-pro-preview-05-06, since that model boasts improved front-end coding abilities. It did a pretty great job - here&#x27;s how I prompted it:
+llm -m gemini-2.5-pro-preview-05-06 -f https://www.llm-prices.com/ -s &#x27;modify this code so that the state of the page is reflected in the fragmenth hash URL - I want to capture the values filling out the form fields and also the current sort order of the table. These should be respected when the page first loads too. Update them using replaceHistory, no need to enable the back button.&#x27;
+
+Here&#x27;s the transcript and the commit updating the tool, plus an example link showing the new feature in action (and calculating the cost for that Gemini 2.5 Pro prompt at 8.4934 cents.)
+
+
+    
+Tags: vibe-coding, projects, llm-pricing, favicons, llms, cloudflare, text-to-image, ai, generative-ai, gemini, ai-assisted-programming</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              astral-sh/ty
+              <span class="post-metadata">(1 min | 390 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/7/ty/#atom-everything>astral-sh/ty
+quietly but in-the-open for a while now. Here&#x27;s the first alpha public release - albeit not yet announced - as ty on PyPI (nice donated two-letter name!)
+You can try it out via uvx like this - run the command in a folder full of Python code and see what comes back:
+uvx ty check
+
+I got zero errors for my recent, simple condense-json library and a ton of errors for my more mature sqlite-utils library - output here.
+It really is fast:
+cd /tmp
+git clone https://github.com/simonw/sqlite-utils
+cd sqlite-utils
+time uvx ty check
+
+Reports it running in around a tenth of a second (0.109 total wall time) using multiple CPU cores:
+uvx ty check  0.18s user 0.07s system 228% cpu 0.109 total
+
+Running time uvx mypy . in the same folder (both after first ensuring the underlying tools had been cached) took around 7x longer:
+uvx mypy .  0.46s user 0.09s system 74% cpu 0.740 total
+
+This isn&#x27;t a fair comparison yet as ty still isn&#x27;t feature complete in comparison to mypy.
+
+    
+Via Hacker News
+Tags: uv, astral, rust, python, pypi, mypy</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot Code Review now supports all languages in public preview
+              <span class="post-metadata">(6 min | 1828 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-07-copilot-code-review-now-supports-all-languages-in-public-preview>Copilot Code Review now supports all programming languages in public preview. This has been one of the most common requests from users. Previously limited to select languages, Copilot now provides…
+The post Copilot Code Review now supports all languages in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-06</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              The Dependabot metrics page in private preview helps GHAS Code Security users prioritize their vulnerabilities
+              <span class="post-metadata">(9 min | 2646 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-06-the-dependabot-metrics-page-in-private-preview-helps-ghas-code-security-users-prioritize-their-vulnerabilities>We’ve introduced a new Dependabot metrics section in the Security tab, available at the organization level. This update helps application security managers cut through the noise and focus on what…
+The post The Dependabot metrics page in private preview helps GHAS Code Security users prioritize their vulnerabilities appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4967,6 +5063,18 @@ The post Reload responses with other Copilot models on github.com appeared first
       <article>
           <details>
             <summary>
+              cogito
+              <span class="post-metadata">(9 min | 2654 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/cogito>Cogito v1 Preview is a family of hybrid reasoning models by Deep Cogito that outperform the best available open models of the same size, including counterparts from LLaMA, DeepSeek, and Qwen across most standard benchmarks.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Stop syncing everything
               <span class="post-metadata">(2 min | 521 words)</span> 
             </summary>
@@ -5012,21 +5120,6 @@ The post Python Vector Store Connectors update: Faiss, Azure SQL Server and Pine
 The post Security campaigns are now generally available to help address security debt at scale appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Jack Clark
-              <span class="post-metadata">(1 min | 304 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/8/jack-clark/#atom-everything>Imagine if Ford published a paper saying it was thinking about long term issues of the automobiles it made and one of those issues included “misalignment “Car as an adversary”“ and when you asked Ford for clarification the company said “yes, we believe as we make our cars faster and more capable, they may sometimes take actions harmful to human well being” and you say “oh, wow, thanks Ford, but… what do you mean precisely?” and Ford says “well, we cannot rule out the possibility that the car might decide to just start running over crowds of people” and then Ford looks at you and says “this is a long-term research challenge”.
-
-— Jack Clark, DeepMind gazes into the AGI future
-Tags: ai-ethics, jack-clark, ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
