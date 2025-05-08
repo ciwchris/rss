@@ -25,9 +25,171 @@
 
   <ul>
     <li>
+      <time>2025-05-08</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Ashley Willis
+              <span class="post-metadata">(1 min | 312 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/8/ashley-willis/#atom-everything>But I’ve also had my own quiet concerns about what [vibe coding] means for early-career developers. So much of how I learned came from chasing bugs in broken tutorials and seeing how all the pieces connected, or didn’t. There was value in that. And maybe I’ve been a little protective of it.
+A mentor challenged that. He pointed out that debugging AI generated code is a lot like onboarding into a legacy codebase, making sense of decisions you didn’t make, finding where things break, and learning to trust (or rewrite) what’s already there. That’s the kind of work a lot of developers end up doing anyway.
+
+— Ashley Willis, What Even Is Vibe Coding?
+Tags: vibe-coding, ai-assisted-programming, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-gemini 0.19.1
+              <span class="post-metadata">(1 min | 388 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/8/llm-gemini-0191/#atom-everything>llm-gemini 0.19.1
+llm-gemini plugin, which was recording the number of output tokens (needed to calculate the price of a response) incorrectly for the Gemini &quot;thinking&quot; models. Those models turn out to return candidatesTokenCount and thoughtsTokenCount as two separate values which need to be added together to get the total billed output token count. Full details in this issue.
+I spotted this potential bug in this response log this morning, and my concerns were confirmed when Paul Gauthier wrote about a similar fix in Aider in Gemini 2.5 Pro Preview 03-25 benchmark cost, where he noted that the $6.32 cost recorded to benchmark Gemini 2.5 Pro Preview 03-25 was incorrect. Since that model is no longer available (despite the date-based model alias persisting) Paul is not able to accurately calculate the new cost, but it&#x27;s likely a lot more since the Gemini 2.5 Pro Preview 05-06 benchmark cost $37.
+I&#x27;ve gone through my gemini tag and attempted to update my previous posts with new calculations - this mostly involved increases in the order of 12.336 cents to 16.316 cents (as seen here).
+
+
+    
+Tags: paul-gauthier, gemini, llm, aider, generative-ai, llm-pricing, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-07</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Introducing web search on the Anthropic API
+              <span class="post-metadata">(1 min | 348 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/7/anthropic-api-search/#atom-everything>Introducing web search on the Anthropic API
+web search (presumably still powered by Brave) is now also available through their API, in the shape of a new web search tool called web_search_20250305.
+You can specify a maximum number of uses per prompt and you can also pass a list of disallowed or allowed domains, plus hints as to the user&#x27;s current location.
+Search results are returned in a format that looks similar to the Anthropic Citations API.
+It&#x27;s charged at $10 per 1,000 searches, which is a little more expensive than what the Brave Search API charges ($3 or $5 or $9 per thousand depending on how you&#x27;re using them).
+I couldn&#x27;t find any details of additional rules surrounding storage or display of search results, which surprised me because both Google Gemini and OpenAI have these for their own API search results.
+
+    
+Via Hacker News
+Tags: anthropic, generative-ai, llm-tool-use, search, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Create and edit images with Gemini 2.0 in preview
+              <span class="post-metadata">(2 min | 574 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/7/gemini-images-preview/#atom-everything>Create and edit images with Gemini 2.0 in preview
+According to the API documentation you need to use the new gemini-2.0-flash-preview-image-generation model ID and specify {&quot;responseModalities&quot;:[&quot;TEXT&quot;,&quot;IMAGE&quot;]} as part of your request.
+Here&#x27;s an example that calls the API using curl (and fetches a Gemini key from the llm keys get store):
+curl -s -X POST \
+  &quot;https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key&#x3D;$(llm keys get gemini)&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;contents&quot;: [{
+      &quot;parts&quot;: [
+        {&quot;text&quot;: &quot;Photo of a raccoon in a trash can with a paw-written sign that says I love trash&quot;}
+      ]
+    }],
+    &quot;generationConfig&quot;:{&quot;responseModalities&quot;:[&quot;TEXT&quot;,&quot;IMAGE&quot;]}
+  }&#x27; &gt; /tmp/raccoon.json
+Here&#x27;s the response. I got Gemini 2.5 Pro to vibe-code me a new debug tool for visualizing that JSON. If you visit that tool and click the &quot;Load an example&quot; link you&#x27;ll see the result of the raccoon image visualized:
+
+The other prompt I tried was this one:
+Provide a vegetarian recipe for butter chicken but with chickpeas not chicken and include many inline illustrations along the way
+The result of that one was a 41MB JSON file(!) containing 28 images - which presumably cost over a dollar since images are 3.9 cents each.
+Some of the illustrations it chose for that one were somewhat unexpected:
+
+If you want to see that one you can click the &quot;Load a really big example&quot; link in the debug tool, then wait for your browser to fetch and render the full 41MB JSON file.
+The most interesting feature of Gemini (as with GPT-4o images) is the ability to accept images as inputs. I tried that out with this pelican photo like this:
+cat &gt; /tmp/request.json &lt;&lt; EOF
+{
+  &quot;contents&quot;: [{
+    &quot;parts&quot;:[
+      {&quot;text&quot;: &quot;Modify this photo to add an inappropriate hat&quot;},
+      {
+        &quot;inline_data&quot;: {
+          &quot;mime_type&quot;:&quot;image/jpeg&quot;,
+          &quot;data&quot;: &quot;$(base64 -i pelican.jpg)&quot;
+        }
+      }
+    ]
+  }],
+  &quot;generationConfig&quot;: {&quot;responseModalities&quot;: [&quot;TEXT&quot;, &quot;IMAGE&quot;]}
+}
+EOF
+
+# Execute the curl command with the JSON file
+curl -X POST \
+  &#x27;https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key&#x3D;&#x27;$(llm keys get gemini) \
+  -H &#x27;Content-Type: application/json&#x27; \
+  -d @/tmp/request.json \
+  &gt; /tmp/out.json
+And now the pelican is wearing a hat:
+
+
+    
+Via Hacker News
+Tags: vision-llms, text-to-image, gemini, generative-ai, ai, llms, vibe-coding, tools</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enforcement of Copilot premium request limits moved to June 4, 2025
+              <span class="post-metadata">(8 min | 2410 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-07-enforcement-of-copilot-premium-request-limits-moved-to-june-4-2025>We’re delaying the enforcement of Copilot premium request limits to June 4th, 2025. Our goal is to make it easy for you to see how many premium requests you’re using…
+The post Enforcement of Copilot premium request limits moved to June 4, 2025 appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Medium is the new large
+              <span class="post-metadata">(1 min | 433 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/7/medium-is-the-new-large/#atom-everything>Medium is the new large
+For comparison, GPT-4o is $2.50/$10 and Claude 3.7 Sonnet is $3/$15.
+More interesting than the price is the deployment model. Mistral Medium may not be open weights but it is very much available for self-hosting:
+Mistral Medium 3 can also be deployed on any cloud, including self-hosted environments of four GPUs and above.
+Mistral&#x27;s other announcement today is Le Chat Enterprise. This is a suite of tools that can integrate with your company&#x27;s internal data and provide &quot;agents&quot; (these look similar to Claude Projects or OpenAI GPTs), again with the option to self-host.
+Is there a new open weights model coming soon? This note tucked away at the bottom of the Mistral Medium 3 announcement seems to hint at that:
+With the launches of Mistral Small in March and Mistral Medium today, it&#x27;s no secret that we&#x27;re working on something &#x27;large&#x27; over the next few weeks. With even our medium-sized model being resoundingly better than flagship open source models such as Llama 4 Maverick, we&#x27;re excited to &#x27;open&#x27; up what&#x27;s to come :)
+I released llm-mistral 0.12 adding support for the new model.
+
+
+    
+Tags: llm-release, mistral, generative-ai, ai, llms, llm-pricing, llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4944,182 +5106,6 @@ I really want this stuff to work safely and securely, but the lack of progress o
 Tags: security, ai, prompt-injection, generative-ai, llms, exfiltration-attacks, llm-tool-use, ai-agents, model-context-protocol</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-04-08</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Political Email Extraction Leaderboard
-              <span class="post-metadata">(1 min | 422 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/8/political-email-extraction-leaderboard/#atom-everything>Political Email Extraction Leaderboard
-He explains the leaderboard in this blog post. The goal is to have an LLM correctly identify the the committee name from the disclaimer text included in the email.
-Here&#x27;s the code he uses to run prompts using Ollama. It uses this system prompt:
-Produce a JSON object with the following keys: &#x27;committee&#x27;, which is the name of the committee in the disclaimer that begins with Paid for by but does not include &#x27;Paid for by&#x27;, the committee address or the treasurer name. If no committee is present, the value of &#x27;committee&#x27; should be None. Also add a key called &#x27;sender&#x27;, which is the name of the person, if any, mentioned as the author of the email. If there is no person named, the value is None. Do not include any other text, no yapping.
-Gemini 2.5 Pro tops the leaderboard at the moment with 95.40%, but the new Mistral Small 3.1 manages 5th place with 85.70%, pretty good for a local model!
-
-I said we need our own evals in my talk at the NICAR Data Journalism conference last month, without realizing Derek has been running one since January.
-
-    
-Via @dwillis.bsky.social
-Tags: gemini, evals, ai, ollama, llms, mistral, derek-willis, generative-ai, data-journalism, prompt-engineering</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              deepcoder
-              <span class="post-metadata">(8 min | 2350 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/deepcoder>DeepCoder is a fully open-Source 14B coder model at O3-mini level, with a 1.5B version also available.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Mistral Small 3.1 on Ollama
-              <span class="post-metadata">(1 min | 349 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/8/mistral-small-31-on-ollama/#atom-everything>Mistral Small 3.1 on Ollama
-previously) is now available through Ollama, providing an easy way to run this multi-modal (vision) model on a Mac (and other platforms, though I haven&#x27;t tried those myself).
-I had to upgrade Ollama to the most recent version to get it to work - prior to that I got a Error: unable to load model message. Upgrades can be accessed through the Ollama macOS system tray icon.
-I fetched the 15GB model by running:
-ollama pull mistral-small3.1
-
-Then used llm-ollama to run prompts through it, including one to describe this image:
-llm install llm-ollama
-llm -m mistral-small3.1 &#x27;describe this image&#x27; -a https://static.simonwillison.net/static/2025/Mpaboundrycdfw-1.png
-
-Here&#x27;s the output. It&#x27;s good, though not quite as impressive as the description I got from the slightly larger Qwen2.5-VL-32B.
-I also tried it on a scanned (private) PDF of hand-written text with very good results, though it did misread one of the hand-written numbers.
-
-
-    
-Tags: vision-llms, mistral, llm, ollama, generative-ai, ai, llms, local-llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Writing C for curl
-              <span class="post-metadata">(1 min | 351 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/8/writing-c-for-curl/#atom-everything>Writing C for curl
-curl - a library that deals with the most hostile of environments, parsing content from the open internet - as 180,000 lines of C89 code.
-He enforces a strict 80 character line width for readability, zero compiler warnings, avoids &quot;bad&quot; functions like gets, sprintf, strcat, strtok and localtime (CI fails if it spots them, I found that script here) and curl has their own custom dynamic buffer and parsing functions.
-They take particular care around error handling:
-In curl we always check for errors and we bail out without leaking any memory if (when!) they happen.
-I like their commitment to API/ABI robustness:
-Every function and interface that is publicly accessible must never be changed in a way that risks breaking the API or ABI. For this reason and to make it easy to spot the functions that need this extra precautions, we have a strict rule: public functions are prefixed with “curl_” and no other functions use that prefix.
-Via lobste.rs
-Tags: c, daniel-stenberg, curl</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              DeepSeek-V3-0324 is now generally available in GitHub Models
-              <span class="post-metadata">(8 min | 2373 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-08-deepseek-v3-0324-is-now-generally-available-in-github-models>DeepSeek-V3-0324 is now generally available in GitHub Models
-The post DeepSeek-V3-0324 is now generally available in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Reload responses with other Copilot models on github.com
-              <span class="post-metadata">(8 min | 2303 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-08-reload-responses-with-other-copilot-models-on-github-com>Reload responses with other Copilot models on github.com
-The post Reload responses with other Copilot models on github.com appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              cogito
-              <span class="post-metadata">(9 min | 2654 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/cogito>Cogito v1 Preview is a family of hybrid reasoning models by Deep Cogito that outperform the best available open models of the same size, including counterparts from LLaMA, DeepSeek, and Qwen across most standard benchmarks.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Stop syncing everything
-              <span class="post-metadata">(2 min | 521 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/8/stop-syncing-everything/#atom-everything>Stop syncing everything
-Graft, a fascinating new open source Rust data synchronization engine he&#x27;s been working on for the past year.
-Carl&#x27;s recent talk at the Vancouver Systems meetup explains Graft in detail, including this slide which helped everything click into place for me:
-
-Graft manages a volume, which is a collection of pages (currently at a fixed 4KB size). A full history of that volume is maintained using snapshots. Clients can read and write from particular snapshot versions for particular pages, and are constantly updated on which of those pages have changed (while not needing to synchronize the actual changed data until they need it).
-This is a great fit for B-tree databases like SQLite.
-The Graft project includes a SQLite VFS extension that implements multi-leader read-write replication on top of a Graft volume. You can see a demo of that running at 36m15s in the video, or consult the libgraft extension documentation and try it yourself.
-The section at the end on What can you build with Graft? has some very useful illustrative examples:
-Offline-first apps: Note-taking, task management, or CRUD apps that operate partially offline. Graft takes care of syncing, allowing the application to forget the network even exists. When combined with a conflict handler, Graft can also enable multiplayer on top of arbitrary data.
-Cross-platform data: Eliminate vendor lock-in and allow your users to seamlessly access their data across mobile platforms, devices, and the web. Graft is architected to be embedded anywhere
-Stateless read replicas: Due to Graft&#x27;s unique approach to replication, a database replica can be spun up with no local state, retrieve the latest snapshot metadata, and immediately start running queries. No need to download all the data and replay the log.
-Replicate anything: Graft is just focused on consistent page replication. It doesn&#x27;t care about what&#x27;s inside those pages. So go crazy! Use Graft to sync AI models, Parquet or Lance files, Geospatial tilesets, or just photos of your cats. The sky&#x27;s the limit with Graft.
-Tags: replication, rust, sqlite, open-source</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Python Vector Store Connectors update: Faiss, Azure SQL Server and Pinecone
-              <span class="post-metadata">(23 min | 6929 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/python-vector-store-connectors-update-faiss-azure-sql-server-and-pinecone/>Announcing New Vector Stores: Faiss, SQL Server, and Pinecone We are thrilled to announce the availability of three new Vector Stores and Vector Store Record Collections: Faiss, SQL Server, and Pinecone. These new connectors will enable you to store and retrieve vector data efficiently, making it easier to work with your own data and data […]
-The post Python Vector Store Connectors update: Faiss, Azure SQL Server and Pinecone appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Security campaigns are now generally available to help address security debt at scale
-              <span class="post-metadata">(8 min | 2365 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-07-security-campaigns-are-now-generally-available-to-help-address-security-debt-at-scale>Security campaigns are now generally available to help address security debt at scale
-The post Security campaigns are now generally available to help address security debt at scale appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 

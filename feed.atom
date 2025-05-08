@@ -2,10 +2,161 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-05-07T21:09:57.095Z</updated>
+    <updated>2025-05-08T14:10:08.535Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Ashley Willis]]></title>
+        <id>https://simonwillison.net/2025/May/8/ashley-willis/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/8/ashley-willis/#atom-everything"/>
+        <updated>2025-05-08T12:10:56.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://ashley.dev/posts/what-even-is-vibe-coding/"><p>But I’ve also had my own quiet concerns about what [vibe coding] means for early-career developers. So much of how I learned came from chasing bugs in broken tutorials and seeing how all the pieces connected, or didn’t. There was value in that. And maybe I’ve been a little protective of it.</p>
+<p>A mentor challenged that. He pointed out that debugging AI generated code is a lot like onboarding into a legacy codebase, making sense of decisions you didn’t make, finding where things break, and learning to trust (or rewrite) what’s already there. That’s the kind of work a lot of developers end up doing anyway.</p></blockquote>
+<p class="cite">&mdash; <a href="https://ashley.dev/posts/what-even-is-vibe-coding/">Ashley Willis</a>, What Even Is Vibe Coding?</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm-gemini 0.19.1]]></title>
+        <id>https://simonwillison.net/2025/May/8/llm-gemini-0191/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/8/llm-gemini-0191/#atom-everything"/>
+        <updated>2025-05-08T05:49:12.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/llm-gemini/releases/tag/0.19.1">llm-gemini 0.19.1</a></strong></p>
+Bugfix release for my <a href="https://github.com/simonw/llm-gemini">llm-gemini</a> plugin, which was recording the number of output tokens (needed to calculate the price of a response) incorrectly for the Gemini "thinking" models. Those models turn out to return <code>candidatesTokenCount</code> and <code>thoughtsTokenCount</code> as two separate values which need to be added together to get the total billed output token count. Full details in <a href="https://github.com/simonw/llm-gemini/issues/75">this issue</a>.</p>
+<p>I spotted this potential bug in <a href="https://gist.github.com/simonw/87a59e7f5c12274d65e2ac053b0eacdb#token-usage">this response log</a> this morning, and my concerns were confirmed when Paul Gauthier wrote about a similar fix in Aider in <a href="https://aider.chat/2025/05/07/gemini-cost.html">Gemini 2.5 Pro Preview 03-25 benchmark cost</a>, where he noted that the $6.32 cost recorded to benchmark Gemini 2.5 Pro Preview 03-25 was incorrect. Since that model is no longer available (despite <a href="https://simonwillison.net/2025/May/6/gemini-25-pro-preview/">the date-based model alias persisting</a>) Paul is not able to accurately calculate the new cost, but it's likely a lot more since the Gemini 2.5 Pro Preview 05-06 benchmark cost $37.</p>
+<p>I've gone through my <a href="">gemini tag</a> and attempted to update my previous posts with new calculations - this mostly involved increases in the order of 12.336 cents to 16.316 cents (<a href="https://simonwillison.net/2025/May/6/gemini-25-pro-preview/">as seen here</a>).
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/paul-gauthier">paul-gauthier</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/aider">aider</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing web search on the Anthropic API]]></title>
+        <id>https://simonwillison.net/2025/May/7/anthropic-api-search/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/7/anthropic-api-search/#atom-everything"/>
+        <updated>2025-05-07T23:25:57.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.anthropic.com/news/web-search-api">Introducing web search on the Anthropic API</a></strong></p>
+Anthropic's <a href="https://simonwillison.net/2025/Mar/20/claude-can-now-search-the-web/">web search</a> (presumably still <a href="https://simonwillison.net/2025/Mar/21/anthropic-use-brave/">powered by Brave</a>) is now also available through their API, in the shape of a new <a href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use/web-search-tool">web search tool</a> called <code>web_search_20250305</code>.</p>
+<p>You can specify a maximum number of uses per prompt and you can also pass a list of disallowed or allowed domains, plus hints as to the user's current location.</p>
+<p>Search results are returned in a format that looks similar to the <a href="https://simonwillison.net/2025/Jan/24/anthropics-new-citations-api/">Anthropic Citations API</a>.</p>
+<p>It's charged at $10 per 1,000 searches, which is a little more expensive than what the <a href="https://brave.com/search/api/">Brave Search API</a> charges ($3 or $5 or $9 per thousand depending on how you're using them).</p>
+<p>I couldn't find any details of additional rules surrounding storage or display of search results, which surprised me because both <a href="https://ai.google.dev/gemini-api/docs/grounding/search-suggestions#requirements">Google Gemini</a> and <a href="https://platform.openai.com/docs/guides/tools-web-search?api-mode=chat#output-and-citations">OpenAI</a> have these for their own API search results.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=43920188">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/search">search</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Create and edit images with Gemini 2.0 in preview]]></title>
+        <id>https://simonwillison.net/2025/May/7/gemini-images-preview/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/7/gemini-images-preview/#atom-everything"/>
+        <updated>2025-05-07T22:49:41.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://developers.googleblog.com/en/generate-images-gemini-2-0-flash-preview/">Create and edit images with Gemini 2.0 in preview</a></strong></p>
+Gemini 2.0 Flash has had image generation capabilities for a while now, and they're now available via the paid Gemini API - at 3.9 cents per generated image.</p>
+<p>According to <a href="https://ai.google.dev/gemini-api/docs/image-generation">the API documentation</a> you need to use the new <code>gemini-2.0-flash-preview-image-generation</code> model ID and specify <code>{"responseModalities":["TEXT","IMAGE"]}</code> as part of your request.</p>
+<p>Here's an example that calls the API using <code>curl</code> (and fetches a Gemini key from the <code>llm keys get</code> store):</p>
+<pre>curl -s -X POST \
+  <span class="pl-s"><span class="pl-pds">"</span>https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=<span class="pl-s"><span class="pl-pds">$(</span>llm keys get gemini<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span> \
+  -H <span class="pl-s"><span class="pl-pds">"</span>Content-Type: application/json<span class="pl-pds">"</span></span> \
+  -d <span class="pl-s"><span class="pl-pds">'</span>{</span>
+<span class="pl-s">    "contents": [{</span>
+<span class="pl-s">      "parts": [</span>
+<span class="pl-s">        {"text": "Photo of a raccoon in a trash can with a paw-written sign that says I love trash"}</span>
+<span class="pl-s">      ]</span>
+<span class="pl-s">    }],</span>
+<span class="pl-s">    "generationConfig":{"responseModalities":["TEXT","IMAGE"]}</span>
+<span class="pl-s">  }<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> /tmp/raccoon.json</pre>
+<p>Here's <a href="https://gist.github.com/simonw/d96f4adb9cd0933e17fb5771b43d681a">the response</a>. I got Gemini 2.5 Pro <a href="https://gist.github.com/simonw/6363ace77bbac08c6ad05857b3bd9ad2">to vibe-code me</a> a new <a href="https://tools.simonwillison.net/gemini-image-json">debug tool</a> for visualizing that JSON. If you visit that tool and click the "Load an example" link you'll see the result of the raccoon image visualized:</p>
+<p><img alt="Render JSON from Gemini Image Generation tool. Paste Gemini JSON here: a bunch of JSON with a base64 encoded PNG. Then buttons to Load an example, or a really big (40MB) example or Render JSON. The Rendered Content shows a photograph of a raccoon in an open top bin holding a sign that says I heart trash." src="https://static.simonwillison.net/static/2025/gemini-image-tool.jpg" /></p>
+<p>The other prompt I tried was this one:</p>
+<blockquote>
+<p>Provide a vegetarian recipe for butter chicken but with chickpeas not chicken and include many inline illustrations along the way</p>
+</blockquote>
+<p>The result of that one was a <a href="https://gist.github.com/simonw/55894032b2c60b35f320b6a166ded493">41MB JSON file</a>(!) containing 28 images - which presumably cost over a dollar since images are 3.9 cents each.</p>
+<p>Some of the illustrations it chose for that one were somewhat unexpected:</p>
+<p><img alt="Text reads: &quot;* ½ teaspoon Kashmiri chili powder (or paprika for milder flavor)&quot; followed by a group photo of people in formal attire with black suits and light blue ties standing in rows outdoors, then &quot;* ½ cup heavy cream (or coconut cream for vegan option)&quot; followed by a close-up image of dried cumin seeds or similar brown spice." src="https://static.simonwillison.net/static/2025/weird-illustrations.jpg" /></p>
+<p>If you want to see that one you can click the "Load a really big example" link in <a href="https://tools.simonwillison.net/gemini-image-json">the debug tool</a>, then wait for your browser to fetch and render the full 41MB JSON file.</p>
+<p>The most interesting feature of Gemini (as with GPT-4o images) is the ability to accept images as inputs. I tried that out with <a href="https://static.simonwillison.net/static/2025/pelican-no-hat.jpg">this pelican photo</a> like this:</p>
+<pre>cat <span class="pl-k">&gt;</span> /tmp/request.json <span class="pl-s"><span class="pl-k">&lt;&lt;</span> <span class="pl-k">EOF</span></span>
+<span class="pl-s">{</span>
+<span class="pl-s">  "contents": [{</span>
+<span class="pl-s">    "parts":[</span>
+<span class="pl-s">      {"text": "Modify this photo to add an inappropriate hat"},</span>
+<span class="pl-s">      {</span>
+<span class="pl-s">        "inline_data": {</span>
+<span class="pl-s">          "mime_type":"image/jpeg",</span>
+<span class="pl-s">          "data": "<span class="pl-s"><span class="pl-pds">$(</span>base64 -i pelican.jpg<span class="pl-pds">)</span></span>"</span>
+<span class="pl-s">        }</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">    ]</span>
+<span class="pl-s">  }],</span>
+<span class="pl-s">  "generationConfig": {"responseModalities": ["TEXT", "IMAGE"]}</span>
+<span class="pl-s">}</span>
+<span class="pl-s"><span class="pl-k">EOF</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> Execute the curl command with the JSON file</span>
+curl -X POST \
+  <span class="pl-s"><span class="pl-pds">'</span>https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>llm keys get gemini<span class="pl-pds">)</span></span> \
+  -H <span class="pl-s"><span class="pl-pds">'</span>Content-Type: application/json<span class="pl-pds">'</span></span> \
+  -d @/tmp/request.json \
+  <span class="pl-k">&gt;</span> /tmp/out.json</pre>
+
+<p>And now the pelican is wearing a hat:</p>
+<p><img alt="A pelican with its wings outstretched wearing an inappropriate pink bowler hat. The hat looks a little bit pasted on. " src="https://static.simonwillison.net/static/2025/pelican-hat.jpg" />
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=43917461">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/text-to-image">text-to-image</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/tools">tools</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Enforcement of Copilot premium request limits moved to June 4, 2025]]></title>
+        <id>https://github.blog/changelog/2025-05-07-enforcement-of-copilot-premium-request-limits-moved-to-june-4-2025</id>
+        <link href="https://github.blog/changelog/2025-05-07-enforcement-of-copilot-premium-request-limits-moved-to-june-4-2025"/>
+        <updated>2025-05-07T22:08:41.000Z</updated>
+        <summary type="html"><![CDATA[We’re delaying the enforcement of Copilot premium request limits to June 4th, 2025. Our goal is to make it easy for you to see how many premium requests you’re using…
+The post Enforcement of Copilot premium request limits moved to June 4, 2025 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Medium is the new large]]></title>
+        <id>https://simonwillison.net/2025/May/7/medium-is-the-new-large/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/7/medium-is-the-new-large/#atom-everything"/>
+        <updated>2025-05-07T21:14:08.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/news/mistral-medium-3">Medium is the new large</a></strong></p>
+New model release from Mistral - this time closed source/proprietary. Mistral Medium claims strong benchmark scores similar to GPT-4o and Claude 3.7 Sonnet, but is priced at $0.40/million input and $2/million output - about the same price as GPT 4.1 Mini. <a href="https://www.llm-prices.com/">For comparison</a>, GPT-4o is $2.50/$10 and Claude 3.7 Sonnet is $3/$15.</p>
+<p>More interesting than the price is the deployment model. Mistral Medium may not be open weights but it is very much available for self-hosting:</p>
+<blockquote>
+<p>Mistral Medium 3 can also be deployed on any cloud, including self-hosted environments of four GPUs and above.</p>
+</blockquote>
+<p>Mistral's other announcement today is <a href="https://mistral.ai/news/le-chat-enterprise">Le Chat Enterprise</a>. This is a suite of tools that can integrate with your company's internal data and provide "agents" (these look similar to Claude Projects or OpenAI GPTs), again with the option to self-host.</p>
+<p>Is there a new open weights model coming soon? This note tucked away at the bottom of the Mistral Medium 3 announcement seems to hint at that:</p>
+<blockquote>
+<p>With the launches of <a href="https://mistral.ai/news/mistral-small-3-1">Mistral Small</a> in March and Mistral Medium today, it's no secret that we're working on something 'large' over the next few weeks. With even our medium-sized model being resoundingly better than flagship open source models such as Llama 4 Maverick, we're excited to 'open' up what's to come :)</p>
+</blockquote>
+<p>I released <a href="https://github.com/simonw/llm-mistral/releases/tag/0.12">llm-mistral 0.12</a> adding support for the new model.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/llm">llm</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[llm-prices.com]]></title>
         <id>https://simonwillison.net/2025/May/7/llm-prices/#atom-everything</id>
@@ -4086,169 +4237,6 @@ mere implementation detail of this system, and does not really matter to them.
         <p>Tags: <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-injection">prompt-injection</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/exfiltration-attacks">exfiltration-attacks</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Political Email Extraction Leaderboard]]></title>
-        <id>https://simonwillison.net/2025/Apr/8/political-email-extraction-leaderboard/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/8/political-email-extraction-leaderboard/#atom-everything"/>
-        <updated>2025-04-08T23:22:41.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://thescoop.org/LLM-Extraction-Challenge/">Political Email Extraction Leaderboard</a></strong></p>
-Derek Willis collects "political fundraising emails from just about every committee" - 3,000-12,000 a month - and has created an LLM benchmark from 1,000 of them that he collected last November.</p>
-<p>He explains the leaderboard <a href="https://thescoop.org/archives/2025/01/27/llm-extraction-challenge-fundraising-emails/index.html">in this blog post</a>. The goal is to have an LLM correctly identify the the committee name from the disclaimer text included in the email.</p>
-<p>Here's <a href="https://github.com/dwillis/LLM-Extraction-Challenge/blob/main/fundraising-emails/email_ollama.py">the code</a> he uses to run prompts using Ollama. It uses this system prompt:</p>
-<blockquote>
-<p><code>Produce a JSON object with the following keys: 'committee', which is the name of the committee in the disclaimer that begins with Paid for by but does not include 'Paid for by', the committee address or the treasurer name. If no committee is present, the value of 'committee' should be None. Also add a key called 'sender', which is the name of the person, if any, mentioned as the author of the email. If there is no person named, the value is None. Do not include any other text, no yapping.</code></p>
-</blockquote>
-<p>Gemini 2.5 Pro tops the leaderboard at the moment with 95.40%, but the new Mistral Small 3.1 manages 5th place with 85.70%, pretty good for a local model!</p>
-<p><img alt="Table comparing AI model performance with columns for Model (JSON Filename), Total Records, Committee Matches, and Match Percentage. Shows 7 models with 1000 records each: gemini_25_november_2024_prompt2.json (95.40%), qwen25_november_2024_prompt2.json (92.90%), gemini20_flash_november_2024_prompt2.json (92.40%), claude37_sonnet_november_2024_prompt2.json (90.70%), mistral_small_31_november_2024_prompt2.json (85.70%), gemma2_27b_november_2024_prompt2.json (84.40%), and gemma2_november_2024_prompt2.json (83.90%)." src="https://static.simonwillison.net/static/2025/derek-leaderboard.jpg" /></p>
-<p>I said <a href="https://simonwillison.net/2025/Mar/8/nicar-llms/#llms.020.jpeg">we need our own evals</a> in my talk at the NICAR Data Journalism conference last month, without realizing Derek has been running one since January.
-
-    <p><small></small>Via <a href="https://bsky.app/profile/dwillis.bsky.social/post/3lmdjmfyeac25">@dwillis.bsky.social</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/derek-willis">derek-willis</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[deepcoder]]></title>
-        <id>https://ollama.com/library/deepcoder</id>
-        <link href="https://ollama.com/library/deepcoder"/>
-        <updated>2025-04-08T22:53:00.000Z</updated>
-        <summary type="html"><![CDATA[DeepCoder is a fully open-Source 14B coder model at O3-mini level, with a 1.5B version also available.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Mistral Small 3.1 on Ollama]]></title>
-        <id>https://simonwillison.net/2025/Apr/8/mistral-small-31-on-ollama/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/8/mistral-small-31-on-ollama/#atom-everything"/>
-        <updated>2025-04-08T22:07:50.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://ollama.com/library/mistral-small3.1">Mistral Small 3.1 on Ollama</a></strong></p>
-Mistral Small 3.1 (<a href="https://simonwillison.net/2025/Mar/17/mistral-small-31/">previously</a>) is now available through <a href="https://ollama.com/">Ollama</a>, providing an easy way to run this multi-modal (vision) model on a Mac (and other platforms, though I haven't tried those myself).</p>
-<p>I had to upgrade Ollama to the most recent version to get it to work - prior to that I got a <code>Error: unable to load model</code> message. Upgrades can be accessed through the Ollama macOS system tray icon.</p>
-<p>I fetched the 15GB model by running:</p>
-<pre><code>ollama pull mistral-small3.1
-</code></pre>
-<p>Then used <a href="https://github.com/taketwo/llm-ollama">llm-ollama</a> to run prompts through it, including one to describe <a href="https://static.simonwillison.net/static/2025/Mpaboundrycdfw-1.png">this image</a>:</p>
-<pre><code>llm install llm-ollama
-llm -m mistral-small3.1 'describe this image' -a https://static.simonwillison.net/static/2025/Mpaboundrycdfw-1.png
-</code></pre>
-<p>Here's <a href="https://gist.github.com/simonw/89005e8aa2daef82c53c2c2c62207f6a#response">the output</a>. It's good, though not quite as impressive as the description <a href="https://simonwillison.net/2025/Mar/24/qwen25-vl-32b/">I got from the slightly larger Qwen2.5-VL-32B</a>.</p>
-<p>I also tried it on a scanned (private) PDF of hand-written text with very good results, though it did misread one of the hand-written numbers.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/ollama">ollama</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Writing C for curl]]></title>
-        <id>https://simonwillison.net/2025/Apr/8/writing-c-for-curl/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/8/writing-c-for-curl/#atom-everything"/>
-        <updated>2025-04-08T21:43:35.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://daniel.haxx.se/blog/2025/04/07/writing-c-for-curl/">Writing C for curl</a></strong></p>
-Daniel Stenberg maintains <code>curl</code> - a library that deals with the most hostile of environments, parsing content from the open internet - as 180,000 lines of C89 code.</p>
-<p>He enforces a strict 80 character line width for readability, zero compiler warnings, avoids "bad" functions like <code>gets</code>, <code>sprintf</code>, <code>strcat</code>, <code>strtok</code> and <code>localtime</code> (CI fails if it spots them, I found <a href="https://github.com/curl/curl/blob/304b01b8cf86ae95e5d79378879d2ddfb77fc5d1/scripts/checksrc.pl#L50-L74">that script here</a>) and curl has their own custom dynamic buffer and parsing functions.</p>
-<p>They take particular care around error handling:</p>
-<blockquote>
-<p>In curl we always check for errors and we bail out <em>without leaking any memory</em> if (when!) they happen.</p>
-</blockquote>
-<p>I like their commitment to API/ABI robustness:</p>
-<blockquote>
-<p>Every function and interface that is publicly accessible must never be changed in a way that risks breaking the API or ABI. For this reason and to make it easy to spot the functions that need this extra precautions, we have a strict rule: public functions are prefixed with “curl_” and no other functions use that prefix.</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://lobste.rs/s/jooshq/writing_c_for_curl">lobste.rs</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/c">c</a>, <a href="https://simonwillison.net/tags/daniel-stenberg">daniel-stenberg</a>, <a href="https://simonwillison.net/tags/curl">curl</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[DeepSeek-V3-0324 is now generally available in GitHub Models]]></title>
-        <id>https://github.blog/changelog/2025-04-08-deepseek-v3-0324-is-now-generally-available-in-github-models</id>
-        <link href="https://github.blog/changelog/2025-04-08-deepseek-v3-0324-is-now-generally-available-in-github-models"/>
-        <updated>2025-04-08T18:56:19.000Z</updated>
-        <summary type="html"><![CDATA[DeepSeek-V3-0324 is now generally available in GitHub Models
-The post DeepSeek-V3-0324 is now generally available in GitHub Models appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Reload responses with other Copilot models on github.com]]></title>
-        <id>https://github.blog/changelog/2025-04-08-reload-responses-with-other-copilot-models-on-github-com</id>
-        <link href="https://github.blog/changelog/2025-04-08-reload-responses-with-other-copilot-models-on-github-com"/>
-        <updated>2025-04-08T18:34:26.000Z</updated>
-        <summary type="html"><![CDATA[Reload responses with other Copilot models on github.com
-The post Reload responses with other Copilot models on github.com appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[cogito]]></title>
-        <id>https://ollama.com/library/cogito</id>
-        <link href="https://ollama.com/library/cogito"/>
-        <updated>2025-04-08T17:38:00.000Z</updated>
-        <summary type="html"><![CDATA[Cogito v1 Preview is a family of hybrid reasoning models by Deep Cogito that outperform the best available open models of the same size, including counterparts from LLaMA, DeepSeek, and Qwen across most standard benchmarks.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Stop syncing everything]]></title>
-        <id>https://simonwillison.net/2025/Apr/8/stop-syncing-everything/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/8/stop-syncing-everything/#atom-everything"/>
-        <updated>2025-04-08T17:20:49.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://sqlsync.dev/posts/stop-syncing-everything/">Stop syncing everything</a></strong></p>
-In which Carl Sverre announces <a href="https://github.com/orbitinghail/graft">Graft</a>, a fascinating new open source Rust data synchronization engine he's been working on for the past year.</p>
-<p>Carl's <a href="https://www.youtube.com/watch?v=eRsD8uSAi0s">recent talk at the Vancouver Systems meetup</a> explains Graft in detail, including this slide which helped everything click into place for me:</p>
-<p><img alt="Diagram explaining Graft data organization: Left side text reads &quot;Graft organizes data into Volumes. Volumes are sparse ordered sets of Pages.&quot; Right side shows a grid of colored squares (purple, green, blue) representing data organization. Bottom text states &quot;E.g. A SQLite database with three tables&quot;" src="https://static.simonwillison.net/static/2025/graft-slide.jpg" /></p>
-<p>Graft manages a volume, which is a collection of pages (currently at a fixed 4KB size). A full history of that volume is maintained using snapshots. Clients can read and write from particular snapshot versions for particular pages, and are constantly updated on which of those pages have changed (while not needing to synchronize the actual changed data until they need it).</p>
-<p>This is a great fit for B-tree databases like SQLite.</p>
-<p>The Graft project includes a SQLite VFS extension that implements multi-leader read-write replication on top of a Graft volume. You can see a demo of that running at <a href="https://www.youtube.com/watch?v=eRsD8uSAi0s&amp;t=36m15s">36m15s</a> in the video, or consult the <a href="https://github.com/orbitinghail/graft/blob/main/docs/sqlite.md">libgraft extension documentation</a> and try it yourself.</p>
-<p>The section at the end on <a href="https://sqlsync.dev/posts/stop-syncing-everything/#what-can-you-build-with-graft">What can you build with Graft?</a> has some very useful illustrative examples:</p>
-<blockquote>
-<p><strong>Offline-first apps</strong>: Note-taking, task management, or CRUD apps that operate partially offline. Graft takes care of syncing, allowing the application to forget the network even exists. When combined with a conflict handler, Graft can also enable multiplayer on top of arbitrary data.</p>
-<p><strong>Cross-platform data</strong>: Eliminate vendor lock-in and allow your users to seamlessly access their data across mobile platforms, devices, and the web. Graft is architected to be embedded anywhere</p>
-<p><strong>Stateless read replicas</strong>: Due to Graft's unique approach to replication, a database replica can be spun up with no local state, retrieve the latest snapshot metadata, and immediately start running queries. No need to download all the data and replay the log.</p>
-<p><strong>Replicate anything</strong>: Graft is just focused on consistent page replication. It doesn't care about what's inside those pages. So go crazy! Use Graft to sync AI models, <a href="https://en.wikipedia.org/wiki/Apache_Parquet">Parquet</a> or <a href="https://github.com/lancedb/lance">Lance</a> files, <a href="https://docs.mapbox.com/help/glossary/mbtiles/">Geospatial tilesets</a>, or just photos of your <a href="https://www.google.com/search?udm=2&amp;q=cats">cats</a>. The sky's the limit with Graft.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/replication">replication</a>, <a href="https://simonwillison.net/tags/rust">rust</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Python Vector Store Connectors update: Faiss, Azure SQL Server and Pinecone]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4550</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/python-vector-store-connectors-update-faiss-azure-sql-server-and-pinecone/"/>
-        <updated>2025-04-08T14:47:05.000Z</updated>
-        <summary type="html"><![CDATA[Announcing New Vector Stores: Faiss, SQL Server, and Pinecone We are thrilled to announce the availability of three new Vector Stores and Vector Store Record Collections: Faiss, SQL Server, and Pinecone. These new connectors will enable you to store and retrieve vector data efficiently, making it easier to work with your own data and data […]
-The post Python Vector Store Connectors update: Faiss, Azure SQL Server and Pinecone appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Eduard van Valkenburg</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Security campaigns are now generally available to help address security debt at scale]]></title>
-        <id>https://github.blog/changelog/2025-04-07-security-campaigns-are-now-generally-available-to-help-address-security-debt-at-scale</id>
-        <link href="https://github.blog/changelog/2025-04-07-security-campaigns-are-now-generally-available-to-help-address-security-debt-at-scale"/>
-        <updated>2025-04-08T10:04:38.000Z</updated>
-        <summary type="html"><![CDATA[Security campaigns are now generally available to help address security debt at scale
-The post Security campaigns are now generally available to help address security debt at scale appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
     <entry>
