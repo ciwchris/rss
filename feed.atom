@@ -2,10 +2,34 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-05-09T14:10:24.507Z</updated>
+    <updated>2025-05-09T21:09:17.293Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[llm -f issue:... -m echo --no-log]]></title>
+        <id>https://simonwillison.net/2025/May/9/private-issues/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/9/private-issues/#atom-everything"/>
+        <updated>2025-05-09T18:55:24.000Z</updated>
+        <summary type="html"><![CDATA[<p>I had some notes in a GitHub issue thread in a private repository that I wanted to export as Markdown. I realized that I could get them using a combination of several recent projects.</p>
+<p>Here's what I ran:</p>
+<pre><code>export GITHUB_TOKEN="$(llm keys get github)"                                             
+llm -f issue:https://github.com/simonw/todos/issues/170 \
+  -m echo --no-log | jq .prompt -r &gt; notes.md
+</code></pre>
+<p>I have a GitHub personal access token stored in my LLM keys, for use with Anthony Shaw's <a href="https://github.com/tonybaloney/llm-github-models">llm-github-models</a> plugin.</p>
+<p>My own <a href="https://github.com/simonw/llm-fragments-github">llm-fragments-github</a> plugin expects an optional <code>GITHUB_TOKEN</code> environment variable, so I set that first - here's <a href="https://github.com/simonw/llm-fragments-github/issues/11">an issue</a> to have it use the <code>github</code> key instead.</p>
+<p>With that set, the <code>issue:</code> fragment loader can take a URL to a private GitHub issue thread and load it via the API using the token, then concatenate the comments together as Markdown. Here's <a href="https://github.com/simonw/llm-fragments-github/blob/87555488805ffc973b5fb45aa51eac83be2c839f/llm_fragments_github.py#L92-L126">the code for that</a>.</p>
+<p>Fragments are meant to be used as input to LLMs. I built a <a href="https://github.com/simonw/llm-echo">llm-echo</a> plugin recently which adds a fake LLM called "echo" which simply echos its input back out again.</p>
+<p>Adding <code>--no-log</code> prevents that junk data from being stored in my <a href="https://llm.datasette.io/en/stable/logging.html">LLM log database</a>.</p>
+<p>The output is JSON with a <code>"prompt"</code> key for the original prompt. I use <code>jq .prompt</code> to extract that out, then <code>-r</code> to get it as raw text (not a <code>"JSON string"</code>).</p>
+<p>... and I write the result to <code>notes.md</code>.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/jq">jq</a>, <a href="https://simonwillison.net/tags/github">github</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[sqlite-utils 4.0a0]]></title>
         <id>https://simonwillison.net/2025/May/9/sqlite-utils-40a0/#atom-everything</id>

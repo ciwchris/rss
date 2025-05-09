@@ -31,6 +31,31 @@
       <article>
           <details>
             <summary>
+              llm -f issue:... -m echo --no-log
+              <span class="post-metadata">(1 min | 426 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/9/private-issues/#atom-everything>I had some notes in a GitHub issue thread in a private repository that I wanted to export as Markdown. I realized that I could get them using a combination of several recent projects.
+Here&#x27;s what I ran:
+export GITHUB_TOKEN&#x3D;&quot;$(llm keys get github)&quot;                                             
+llm -f issue:https://github.com/simonw/todos/issues/170 \
+  -m echo --no-log | jq .prompt -r &gt; notes.md
+
+I have a GitHub personal access token stored in my LLM keys, for use with Anthony Shaw&#x27;s llm-github-models plugin.
+My own llm-fragments-github plugin expects an optional GITHUB_TOKEN environment variable, so I set that first - here&#x27;s an issue to have it use the github key instead.
+With that set, the issue: fragment loader can take a URL to a private GitHub issue thread and load it via the API using the token, then concatenate the comments together as Markdown. Here&#x27;s the code for that.
+Fragments are meant to be used as input to LLMs. I built a llm-echo plugin recently which adds a fake LLM called &quot;echo&quot; which simply echos its input back out again.
+Adding --no-log prevents that junk data from being stored in my LLM log database.
+The output is JSON with a &quot;prompt&quot; key for the original prompt. I use jq .prompt to extract that out, then -r to get it as raw text (not a &quot;JSON string&quot;).
+... and I write the result to notes.md.
+Tags: llm, projects, plugins, jq, github</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               sqlite-utils 4.0a0
               <span class="post-metadata">(1 min | 329 words)</span> 
             </summary>
