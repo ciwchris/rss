@@ -25,6 +25,150 @@
 
   <ul>
     <li>
+      <time>2025-05-10</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Trying out llama.cpp&#x27;s new vision support
+              <span class="post-metadata">(3 min | 947 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/10/llama-cpp-vision/#atom-everything>This llama.cpp server vision support via libmtmd pull request - via Hacker News - was merged earlier today. The PR finally adds full support for vision models to the excellent llama.cpp project. It&#x27;s documented on this page, but the more detailed technical details are covered here. Here are my notes on getting it working on a Mac.
+
+llama.cpp models are usually distributed as .gguf files. This project introduces a new variant of those called mmproj, for multimodal projector. libmtmd is the new library for handling these.
+
+You can try it out by compiling llama.cpp from source, but I found another option that works: you can download pre-compiled binaries from the GitHub releases.
+
+On macOS there&#x27;s an extra step to jump through to get these working, which I&#x27;ll describe below.
+
+I downloaded the llama-b5332-bin-macos-arm64.zip file from this GitHub release and unzipped it, which created a build/bin directory.
+
+That directory contains a bunch of binary executables and a whole lot of .dylib files. macOS wouldn&#x27;t let me execute these files because they were quarantined. Running this command fixed that for the llama-mtmd-cli and llama-server executables and the .dylib files they needed:
+
+sudo xattr -rd com.apple.quarantine llama-server llama-mtmd-cli *.dylib
+
+
+Now I can run an interactive terminal LLM session using this command:
+
+./llama-mtmd-cli -hf unsloth/gemma-3-4b-it-GGUF:Q4_K_XL
+
+The first time this runs it fetches four files from unsloth/gemma-3-4b-it-GGUF - a quantized copy of Google DeepMind&#x27;s Gemma 3 4B - and stores them in ~/Library/Caches/llama.cpp:
+
+2.4G unsloth_gemma-3-4b-it-GGUF_gemma-3-4b-it-UD-Q4_K_XL.gguf
+217B unsloth_gemma-3-4b-it-GGUF_gemma-3-4b-it-UD-Q4_K_XL.gguf.json
+812M unsloth_gemma-3-4b-it-GGUF_mmproj-F16.gguf
+203B unsloth_gemma-3-4b-it-GGUF_mmproj-F16.gguf.json
+
+
+Once they&#x27;ve downloaded an interactive session starts. You can chat directly with the model or use the /image path-to-image.jpg command to load an image into the context.
+
+I loaded in a pelican photo and prompted &quot;describe it&quot; and got back this:
+
+
+It’s a striking photograph of a brown pelican standing in shallow water on a sandy beach. Here&#x27;s a breakdown of what I see:
+
+
+
+Subject: The main focus is a large brown pelican. It’s standing with its wings fully extended, creating a dramatic pose.
+
+
+
+Pose: The pelican is in a slightly awkward, almost comical stance, with its legs planted firmly in the wet sand and its wings spread wide. It looks like it might be preparing to take off or is simply enjoying the water.
+
+
+
+Color &amp; Texture: The pelican is a rich, dark brown with lighter markings on its wings and head. The sand is a muted beige color, and the water reflects the sunlight, creating a shimmering effect. You can see the texture of the
+sand and the ripples in the water.
+
+
+
+Lighting: The lighting appears to be bright and sunny, casting shadows and highlighting the details of the pelican&#x27;s feathers.
+
+
+
+Background: The background is blurred, suggesting a shallow depth of field, which keeps the focus on the pelican. It appears to be a beach scene.
+
+
+
+Overall Impression: The image has a dynamic feel due to the pelican’s pose and the movement implied by the water. It’s a well-composed shot that captures a moment of wildlife in its natural habitat.
+
+
+
+Do you want me to zoom in on a particular detail, or perhaps tell you more about pelicans?
+
+
+Not bad for a 3.2GB model running on my laptop!
+
+
+
+Running llama-server
+
+Even more fun is the llama-server command. This starts a localhost web server running on port 8080 to serve the model, with both a web UI and an OpenAI-compatible API endpoint.
+
+The command to run it is the same:
+
+./llama-server -hf unsloth/gemma-3-4b-it-GGUF:Q4_K_XL
+
+Now visit http://localhost:8080 in your browser to start interacting with the model:
+
+
+
+It miscounted the pelicans in the group photo, but again, this is a tiny 3.2GB model.
+
+With the server running on port 8080 you can also access the OpenAI-compatible API endpoint. Here&#x27;s how to do that using curl:
+
+
+curl -X POST http://localhost:8080/v1/chat/completions \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Describe a pelicans ideal corporate retreat&quot;}
+    ]
+  }&#x27; | jq
+
+I built a new plugin for LLM just now called llm-llama-server to make interacting with this API more convenient. You can use that like this:
+
+
+llm install llm-llama-server
+llm -m llama-server &#x27;invent a theme park ride for a pelican&#x27;
+
+Or for vision models use llama-server-vision:
+
+
+llm -m llama-server-vision &#x27;describe this image&#x27; -a /path/to/image.jpg
+
+The LLM plugin uses the streaming API, so responses will stream back to you as they are being generated.
+
+
+Tags: vision-llms, llm, llama-cpp, ai, local-llms, llms, gemma, generative-ai, projects</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              TIL: SQLite triggers
+              <span class="post-metadata">(1 min | 267 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/10/til-sqlite-triggers/#atom-everything>TIL: SQLite triggers
+sqlite-chronicle, and I decided I needed a single reference to exactly which triggers are executed for which SQLite actions and what data is available within those triggers.
+I wrote this triggers.py script to output as much information about triggers as possible, then wired it into a TIL article using Cog. The Cog-powered source code for the TIL article can be seen here.
+
+
+    
+Tags: sqlite, til, python, sql</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-09</time>
 
       <section>
@@ -4809,215 +4953,6 @@ Do not rely on default browser styles for conveying a heading hierarchy. Explici
 Always define your own font-size and margin for &lt;h1&gt; elements.
 Via Hacker News
 Tags: css, html, firefox, mozilla, browsers, safari, chrome, web-standards</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-04-10</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Removing hardcoded secrets detection from CodeQL
-              <span class="post-metadata">(8 min | 2298 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-10-removing-hardcoded-secrets-detection-from-codeql>Removing hardcoded secrets detection from CodeQL
-The post Removing hardcoded secrets detection from CodeQL appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Drew Breunig
-              <span class="post-metadata">(1 min | 279 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/drew-breunig/#atom-everything>The first generation of AI-powered products (often called “AI Wrapper” apps, because they “just” are wrapped around an LLM API) were quickly brought to market by small teams of engineers, picking off the low-hanging problems. But today, I’m seeing teams of domain experts wading into the field, hiring a programmer or two to handle the implementation, while the experts themselves provide the prompts, data labeling, and evaluations.
-For these companies, the coding is commodified but the domain expertise is the differentiator.
-
-— Drew Breunig, The Dynamic Between Domain Experts &amp; Developers Has Shifted
-Tags: drew-breunig, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              LLM pricing calculator (updated)
-              <span class="post-metadata">(1 min | 251 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/llm-pricing-calculator/#atom-everything>LLM pricing calculator (updated)
-updated my LLM pricing calculator this morning (Claude transcript) to show the prices of various hosted models in a sorted table, defaulting to lowest price first.
-
-Amazon Nova and Google Gemini continue to dominate the lower end of the table. The most expensive models currently are still OpenAI&#x27;s o1-Pro ($150/$600 and GPT-4.5 ($75/$150).
-
-
-    
-Tags: claude, llm-pricing, ai, llms, vibe-coding, ai-assisted-programming, generative-ai, tools</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-docsmith
-              <span class="post-metadata">(1 min | 448 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/llm-docsmith/#atom-everything>llm-docsmith
-llm install llm-docsmith
-llm docsmith ./scripts/main.py -o
-
-The -o option previews the changes that will be made - without -o it edits the files directly.
-It also accepts a -m claude-3.7-sonnet parameter for using an alternative model from the default (GPT-4o mini).
-The implementation uses the Python libcst &quot;Concrete Syntax Tree&quot; package to manipulate the code, which means there&#x27;s no chance of it making edits to anything other than the docstrings.
-Here&#x27;s the full system prompt it uses.
-One neat trick is at the end of the system prompt it says:
-You will receive a JSON template. Fill the slots marked with &lt;SLOT&gt; with the appropriate description. Return as JSON.
-That template is actually provided JSON generated using these Pydantic classes:
-class Argument(BaseModel):
-    name: str
-    description: str
-    annotation: str | None &#x3D; None
-    default: str | None &#x3D; None
-
-class Return(BaseModel):
-    description: str
-    annotation: str | None
-
-class Docstring(BaseModel):
-    node_type: Literal[&quot;class&quot;, &quot;function&quot;]
-    name: str
-    docstring: str
-    args: list[Argument] | None &#x3D; None
-    ret: Return | None &#x3D; None
-
-class Documentation(BaseModel):
-    entries: list[Docstring]
-The code adds &lt;SLOT&gt; notes to that in various places, so the template included in the prompt ends up looking like this:
-{
-  &quot;entries&quot;: [
-    {
-      &quot;node_type&quot;: &quot;function&quot;,
-      &quot;name&quot;: &quot;create_docstring_node&quot;,
-      &quot;docstring&quot;: &quot;&lt;SLOT&gt;&quot;,
-      &quot;args&quot;: [
-        {
-          &quot;name&quot;: &quot;docstring_text&quot;,
-          &quot;description&quot;: &quot;&lt;SLOT&gt;&quot;,
-          &quot;annotation&quot;: &quot;str&quot;,
-          &quot;default&quot;: null
-        },
-        {
-          &quot;name&quot;: &quot;indent&quot;,
-          &quot;description&quot;: &quot;&lt;SLOT&gt;&quot;,
-          &quot;annotation&quot;: &quot;str&quot;,
-          &quot;default&quot;: null
-        }
-      ],
-      &quot;ret&quot;: {
-        &quot;description&quot;: &quot;&lt;SLOT&gt;&quot;,
-        &quot;annotation&quot;: &quot;cst.BaseStatement&quot;
-      }
-    }
-  ]
-}
-Via @pnmath
-Tags: prompt-engineering, llm, python, plugins, generative-ai, ai, pydantic</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Django: what’s new in 5.2
-              <span class="post-metadata">(1 min | 284 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/django-whats-new-in-52/#atom-everything>Django: what’s new in 5.2
-latest Django.
-I found his explanation and example of Form BoundField customization particularly useful - here&#x27;s the new pattern for customizing the class&#x3D; attribute on the label associated with a CharField:
-from django import forms
-
-class WideLabelBoundField(forms.BoundField):
-    def label_tag(self, contents&#x3D;None, attrs&#x3D;None, label_suffix&#x3D;None):
-        if attrs is None:
-            attrs &#x3D; {}
-        attrs[&quot;class&quot;] &#x3D; &quot;wide&quot;
-        return super().label_tag(contents, attrs, label_suffix)
-
-class NebulaForm(forms.Form):
-    name &#x3D; forms.CharField(
-        max_length&#x3D;100,
-        label&#x3D;&quot;Nebula Name&quot;,
-        bound_field_class&#x3D;WideLabelBoundField,
-    )
-I&#x27;d also missed the new HttpResponse.get_preferred_type() method for implementing HTTP content negotiation:
-content_type &#x3D; request.get_preferred_type(
-    [&quot;text/html&quot;, &quot;application/json&quot;]
-)
-Tags: adam-johnson, django, python</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-fragments-go
-              <span class="post-metadata">(1 min | 299 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/llm-fragments-go/#atom-everything>llm-fragments-go
-register_fragment_loaders() plugin hook I announced the other day.
-Install with llm install llm-fragments-go and then:
-You can feed the docs of a Go package into LLM using the go: fragment with the package name, optionally followed by a version suffix.
-llm -f go:golang.org/x/mod/sumdb/note@v0.23.0 &quot;Write a single file command that generates a key, prints the verifier key, signs an example message, and prints the signed note.&quot;
-The implementation is just 33 lines of Python and works by running these commands in a temporary directory:
-go mod init llm_fragments_go
-go get golang.org/x/mod/sumdb/note@v0.23.0
-go doc -all golang.org/x/mod/sumdb/note
-
-Via @filippo.abyssdomain.expert
-Tags: generative-ai, llm, plugins, go, ai, llms, filippo-valsorda</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Actions: macOS 15 and Windows 2025 images are now generally available
-              <span class="post-metadata">(7 min | 2186 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-10-github-actions-macos-15-and-windows-2025-images-are-now-generally-available>GitHub Actions: macOS 15 and Windows 2025 images are now generally available
-The post GitHub Actions: macOS 15 and Windows 2025 images are now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Note on 10th April 2025
-              <span class="post-metadata">(1 min | 231 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/10/bullets/#atom-everything>These proposed API integrations where your LLM agent talks to someone else&#x27;s LLM tool-using agent are the API version of that thing where someone uses ChatGPT to turn their bullets into an email and the recipient uses ChatGPT to summarize it back to bullet points.
-Tags: apis, llms, ai-agents, ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
