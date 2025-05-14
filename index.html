@@ -25,9 +25,116 @@
 
   <ul>
     <li>
+      <time>2025-05-14</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting James Cowling
+              <span class="post-metadata">(1 min | 305 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/14/james-cowling/#atom-everything>I designed Dropbox&#x27;s storage system and modeled its durability. Durability numbers (11 9&#x27;s etc) are meaningless because competent providers don&#x27;t lose data because of disk failures, they lose data because of bugs and operator error. [...]
+The best thing you can do for your own durability is to choose a competent provider and then ensure you don&#x27;t accidentally delete or corrupt own data on it:
+Ideally never mutate an object in S3, add a new version instead.
+Never live-delete any data. Mark it for deletion and then use a lifecycle policy to clean it up after a week.
+This way you have time to react to a bug in your own stack.
+
+— James Cowling
+Tags: s3, ops, software-architecture</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              LLM 0.26a0 adds support for tools!
+              <span class="post-metadata">(1 min | 440 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/14/llm-adds-support-for-tools/#atom-everything>LLM 0.26a0 adds support for tools!
+LLM project just grew a feature I&#x27;ve been working towards for nearly two years now: tool support!
+I&#x27;m presenting a workshop about Building software on top of Large Language Models at PyCon US tomorrow and this was the one feature I really needed to pull everything else together.
+Tools can be used from the command-line like this (inspired by sqlite-utils --functions):
+llm --functions &#x27;
+def multiply(x: int, y: int) -&gt; int:
+    &quot;&quot;&quot;Multiply two numbers.&quot;&quot;&quot;
+    return x * y
+&#x27; &#x27;what is 34234 * 213345&#x27; -m o4-mini
+You can add --tools-debug (shortcut: --td) to have it show exactly what tools are being executed and what came back. More documentation here.
+It&#x27;s also available in the Python library:
+import llm
+
+def multiply(x: int, y: int) -&gt; int:
+    &quot;&quot;&quot;Multiply two numbers.&quot;&quot;&quot;
+    return x * y
+
+model &#x3D; llm.get_model(&quot;gpt-4.1-mini&quot;)
+response &#x3D; model.chain(
+    &quot;What is 34234 * 213345?&quot;,
+    tools&#x3D;[multiply]
+)
+print(response.text())
+There&#x27;s also a new plugin hook so plugins can register tools that can then be referenced by name using llm --tool name_of_tool &quot;prompt&quot;.
+There&#x27;s still a bunch I want to do before including this in a stable release, most notably adding support for Python asyncio. It&#x27;s a pretty exciting start though!
+llm-anthropic 0.16a0 and llm-gemini 0.20a0 add tool support for Anthropic and Gemini models, depending on the new LLM alpha.
+
+
+    
+Tags: llm, generative-ai, projects, llm-tool-use, ai, llms, openai, gemini, anthropic</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-13</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Building, launching, and scaling ChatGPT Images
+              <span class="post-metadata">(2 min | 490 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/13/launching-chatgpt-images/#atom-everything>Building, launching, and scaling ChatGPT Images
+The feature kept on having new viral spikes, including one that added one million new users in a single hour. They signed up 100 million new users in the first week after the feature&#x27;s launch.
+When this vertical growth spike started, most of our engineering teams didn&#x27;t believe it. They assumed there must be something wrong with the metrics.
+Under the hood the infrastructure is mostly Python and FastAPI! I hope they&#x27;re sponsoring those projects (and Starlette, which is used by FastAPI under the hood.)
+They&#x27;re also using some C, and Temporal as a workflow engine. They addressed the early scaling challenge by adding an asynchronous queue to defer the load for their free users (resulting in longer generation times) at peak demand.
+There are plenty more details tucked away behind the firewall, including an exclusive I&#x27;ve not been able to find anywhere else: OpenAI&#x27;s core engineering principles.
+Ship relentlessly - move quickly and continuously improve, without waiting for perfect conditions
+Own the outcome - take full responsibility for products, end-to-end
+Follow through - finish what is started and ensure the work lands fully
+I tried getting o4-mini-high to track down a copy of those principles online and was delighted to see it either leak or hallucinate the URL to OpenAI&#x27;s internal engineering handbook!
+
+Gergely has a whole series of posts like this called Real World Engineering Challenges, including another one on ChatGPT a year ago.
+
+    
+Via @GergelyOrosz
+Tags: chatgpt, generative-ai, gergely-orosz, openai, scaling, ai, llms, python</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enterprise-level management for secret scanning alert dismissal requests is now available
+              <span class="post-metadata">(6 min | 1762 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-13-enterprise-level-management-for-secret-scanning-alert-dismissal-requests-is-now-available>Delegated alert dismissal, released in March 2025, allows you to require a review process before secret scanning alerts are dismissed. Secret Protection customers can now manage and review their dismissal…
+The post Enterprise-level management for secret scanning alert dismissal requests is now available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -380,6 +487,19 @@ Tags: sqlite, til, python, sql</a>
       <time>2025-05-09</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              SKU-level budgets now available for enhanced cost control
+              <span class="post-metadata">(6 min | 1848 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-09-sku-level-budgets-now-available-for-enhanced-cost-control>SKU-level budgets are now available for all metered GitHub products. Administrators and billing managers can now set budgets for specific SKUs within a product. This gives you greater flexibility and…
+The post SKU-level budgets now available for enhanced cost control appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4564,233 +4684,6 @@ The post Sunset notice for automatic watching of repositories and teams appeared
 The post OpenAI GPT-4.1-mini and GPT-4.1-nano are now generally available in GitHub Models appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-04-14</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              GitHub Actions token integration now generally available in GitHub Models
-              <span class="post-metadata">(7 min | 2200 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-14-github-actions-token-integration-now-generally-available-in-github-models>You can now use the built-in GITHUB_TOKEN from GitHub Actions to authenticate requests to GitHub Models. This simplifies your workflows by integrating AI capabilities directly into your actions, eliminating the…
-The post GitHub Actions token integration now generally available in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-4.1: Three new million token input models from OpenAI, including their cheapest model yet
-              <span class="post-metadata">(4 min | 1181 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/14/gpt-4-1/#atom-everything>OpenAI introduced three new models this morning: GPT-4.1, GPT-4.1 mini and GPT-4.1 nano. These are API-only models right now, not available through the ChatGPT interface (though you can try them out in OpenAI&#x27;s API playground). All three models can handle 1,047,576 tokens of input and 32,768 tokens of output, and all three have a May 31, 2024 cut-off date (their previous models were mostly September 2023).
-
-The models score higher than GPT-4o and GPT-4.5 on coding benchmarks, and do very well on long context benchmarks as well. They also claim improvements in instruction following - following requested formats, obeying negative instructions, sorting output and obeying instructions to say &quot;I don&#x27;t know&quot;.
-
-I released a new version of my llm-openai plugin supporting the new models. This is a new thing for the LLM ecosystem: previously OpenAI models were only supported in core, which meant I had to ship a full LLM release to add support for them.
-
-You can run the new models like this:
-
-
-llm install llm-openai-plugin -U
-llm -m openai/gpt-4.1 &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-The other model IDs are openai/gpt-4.1-mini and openai/gpt-4.1-nano.
-
-Here&#x27;s the pelican riding a bicycle I got from full sized GPT-4.1:
-
-
-
-I&#x27;m particularly excited by GPT-4.1 nano, which handles image and text input up to a million tokens and is priced lower than any other previous OpenAI model: $0.10/million for input and $0.40/million for output, less than previous cheapest OpenAI model GPT-4o-mini ($0.15/$0.60). I&#x27;ve updated my LLM pricing table to include the new models.
-
-They&#x27;re not the cheapest overall though: Gemini 2.0 Flash Lite and, Gemini 1.5 Flash 8B, Amazon Nova Lite and Nova Micro and Mistral&#x27;s 3B, 8B and Small 3.1 hosted models remain less expensive.
-
-
-
-
-As a demonstration of just how cheap GPT-4.1 nano is, consider this photograph I took of some pelicans:
-
-
-
-
-
-I ran that through GPT-4.1 nano like this:
-
-
-llm -m openai/gpt-4.1-nano describe \
-  -a https://static.simonwillison.net/static/2025/two-pelicans.jpg
-
-
-And got back this response:
-
-
-
-The image shows two pelicans flying against a clear blue sky. They are positioned in flight, with their wings extended, showcasing their large wingspan and feather patterns. The pelican on the right appears slightly higher and facing slightly to the left, while the pelican on the left is oriented more horizontally with its beak pointing forward. Both birds display a combination of brown, tan, and white plumage, characteristic of pelicans, with their long beaks prominently visible.
-
-
-Running llm logs -c --usage revealed that this used 1,933 input tokens and 96 output tokens. Passing those through the pricing calculator returns a total cost of $0.000232, or 0.0232 cents.
-
-
-That means I could use GPT-4.1 nano to generate descriptions of 4,310 images like this one for just shy of a dollar.
-
-
-A few closing thoughts on these new models:
-
-
-
-The 1 million input token context thing is a really big deal. The huge token context has been a major competitive advantage for the Google Gemini models for a full year at this point - it&#x27;s reassuring to see other vendors start to catch up. I&#x27;d like to see the same from Anthropic - Claude was the first model to hit 200,000 but hasn&#x27;t shipped more than that yet (aside from a 500,000 token model that was restricted to their big enterprise partners).
-
-
-
-When I added fragments support to LLM last week the feature was mainly designed to help take advantage of longer context models. It&#x27;s pleasing to see another one show up so shortly after that release.
-
-
-OpenAI really emphasized code performance for this model. They called out the Aider benchmark in their announcement post.
-
-
-
-As expected, GPT-4.5 turned out to be not long for this world:
-
-
-We will also begin deprecating GPT‑4.5 Preview in the API, as GPT‑4.1 offers improved or similar performance on many key capabilities at much lower cost and latency. GPT‑4.5 Preview will be turned off in three months, on July 14, 2025, to allow time for developers to transition
-
-
-
-
-In the livestream announcement Michelle Pokrass let slip that the codename for the model was Quasar - that&#x27;s the name of the stealth model that&#x27;s been previewing on OpenRouter for the past two weeks. That has now been confirmed by OpenRouter.
-
-
-
-OpenAI shared a GPT 4.1 Prompting Guide, which includes this tip about long context prompting:
-
-
-Especially in long context usage, placement of instructions and context can impact performance. If you have long context in your prompt, ideally place your instructions at both the beginning and end of the provided context, as we found this to perform better than only above or below. If you’d prefer to only have your instructions once, then above the provided context works better than below.
-
-
-Adding instructions before the content is incompatible with prompt caching - I always keep user instructions at the end since doing so means multiple prompts can benefit from OpenAI&#x27;s prefix cache.
-
-They also recommend XML-style delimiters over JSON for long context, suggesting this format (complete with the XML-invalid unquoted attribute) that&#x27;s similar to the format recommended by Anthropic for Claude:
-
-
-&lt;doc id&#x3D;1 title&#x3D;&quot;The Fox&quot;&gt;The quick brown fox jumps over the lazy dog&lt;/doc&gt;
-
-There&#x27;s an extensive section at the end describing their recommended approach to applying file diffs: &quot;we open-source here one recommended diff format, on which the model has been extensively trained&quot;.
-
-
-
-One thing notably absent from the GPT-4.1 announcement is any mention of audio support. The &quot;o&quot; in GPT-4o stood for &quot;omni&quot;, because it was a multi-modal model with image and audio input and output. The 4.1 models appear to be text and image input and text output only.
-
-
-    
-        
-Tags: ai, openai, generative-ai, llms, llm, vision-llms, llm-pricing, pelican-riding-a-bicycle, long-context, llm-release</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Secret scanning expands default pattern and push protection support
-              <span class="post-metadata">(8 min | 2402 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-14-secret-scanning-expands-default-pattern-and-push-protection-support>GitHub regularly updates the default pattern set for secret scanning with new patterns and upgrades of existing patterns, ensuring your repositories have comprehensive detection for different secret types. The following…
-The post Secret scanning expands default pattern and push protection support appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot extension for GitHub Models now requires updated permissions
-              <span class="post-metadata">(8 min | 2413 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-14-copilot-extension-for-github-models-now-requires-updated-permissions>The Copilot extension for GitHub Models now requires the models:read permission in order to access GitHub Models APIs. Users will need to reauthorize the extension by accepting the new permission…
-The post Copilot extension for GitHub Models now requires updated permissions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Note on 14th April 2025
-              <span class="post-metadata">(1 min | 213 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/14/believe/#atom-everything>Believing AI vendors who promise you that they won&#x27;t train on your data is a huge competitive advantage these days.
-Tags: llms, generative-ai, ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Windows arm64 hosted runners now available in public preview
-              <span class="post-metadata">(8 min | 2448 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-14-windows-arm64-hosted-runners-now-available-in-public-preview>Now in public preview, Windows arm64 hosted runners are available for free in public repositories. This runner comes with a Windows 11 Desktop image, fully equipped with all the tooling…
-The post Windows arm64 hosted runners now available in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI GPT-4.1 now available in public preview for GitHub Copilot and GitHub Models
-              <span class="post-metadata">(8 min | 2295 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-14-openai-gpt-4-1-now-available-in-public-preview-for-github-copilot-and-github-models>OpenAI’s latest model, GPT-4.1, is now available in GitHub Copilot and GitHub Models, bringing OpenAI’s newest model to your coding workflow. This model outperforms GPT-4o across the board, with major…
-The post OpenAI GPT-4.1 now available in public preview for GitHub Copilot and GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The Llama 4 herd is now generally available in GitHub Models
-              <span class="post-metadata">(7 min | 2160 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-14-the-llama-4-herd-is-now-generally-available-in-github-models>The Llama 4 herd is now generally available in GitHub Models
-The post The Llama 4 herd is now generally available in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              SQLite File Format Viewer
-              <span class="post-metadata">(1 min | 223 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/14/sqlite-file-format-viewer/#atom-everything>SQLite File Format Viewer
-implemented in TypeScript.
-
-    
-Via @invisal89
-Tags: typescript, react, sqlite</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
