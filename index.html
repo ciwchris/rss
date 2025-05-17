@@ -31,6 +31,27 @@
       <article>
           <details>
             <summary>
+              Datasette ecosystem poster for PyCon US
+              <span class="post-metadata">(1 min | 328 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/17/pycon-poster/#atom-everything>In addition to my workshop the other day I&#x27;m also participating in the poster session at PyCon US this year.
+This means that tomorrow (Sunday 18th May) I&#x27;ll be hanging out next to my poster from 10am to 1pm in Hall A talking to people about my various projects.
+I&#x27;ll confess: I didn&#x27;t pay close enough attention to the poster information, so when I first put my poster up it looked a little small:
+
+... so I headed to the nearest CVS and printed out some photos to better represent my interests and personality. I&#x27;m going for a &quot;teenage bedroom&quot; aesthetic here, I&#x27;m very happy with the result:
+
+Here&#x27;s the poster in the middle (also available as a PDF). It has columns for Datasette, sqlite-utils and LLM.
+
+If you&#x27;re at PyCon I&#x27;d love to talk to you about things I&#x27;m working on!
+Tags: pycon, llm, datasette, sqlite-utils, pelican-riding-a-bicycle, museums</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               django-simple-deploy
               <span class="post-metadata">(1 min | 277 words)</span> 
             </summary>
@@ -5047,111 +5068,6 @@ Here&#x27;s the finished code. It&#x27;s a total mess, but it&#x27;s also less t
 
 Segmenting my pelican photo via the Gemini API was absurdly inexpensive. Using Gemini 2.5 Pro the call cost 303 input tokens and 353 output tokens, for a total cost of 0.2144 cents (less than a quarter of a cent). I ran it again with the new Gemini 2.5 Flash and it used 303 input tokens and 270 output tokens, for a total cost of 0.099 cents (less than a tenth of a cent). I calculated these prices using my LLM pricing calculator tool.
 Tags: google, tools, ai, generative-ai, llms, ai-assisted-programming, gemini, vision-llms, llm-pricing, vibe-coding</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              MCP Run Python
-              <span class="post-metadata">(2 min | 618 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/18/mcp-run-python/#atom-everything>MCP Run Python
-two years ago: using a Deno process to run Pyodide in a WebAssembly sandbox.
-Here&#x27;s a bit of a wild trick: since Deno loads code on-demand from JSR, and uv run can install Python dependencies on demand via the --with option... here&#x27;s a one-liner you can paste into a macOS shell (provided you have Deno and uv installed already) which will run the example from their README - calculating the number of days between two dates in the most complex way imaginable:
-ANTHROPIC_API_KEY&#x3D;&quot;sk-ant-...&quot; \
-uv run --with pydantic-ai python -c &#x27;
-import asyncio
-from pydantic_ai import Agent
-from pydantic_ai.mcp import MCPServerStdio
-
-server &#x3D; MCPServerStdio(
-    &quot;deno&quot;,
-    args&#x3D;[
-        &quot;run&quot;,
-        &quot;-N&quot;,
-        &quot;-R&#x3D;node_modules&quot;,
-        &quot;-W&#x3D;node_modules&quot;,
-        &quot;--node-modules-dir&#x3D;auto&quot;,
-        &quot;jsr:@pydantic/mcp-run-python&quot;,
-        &quot;stdio&quot;,
-    ],
-)
-agent &#x3D; Agent(&quot;claude-3-5-haiku-latest&quot;, mcp_servers&#x3D;[server])
-
-async def main():
-    async with agent.run_mcp_servers():
-        result &#x3D; await agent.run(&quot;How many days between 2000-01-01 and 2025-03-18?&quot;)
-    print(result.output)
-
-asyncio.run(main())&#x27;
-I ran that just now and got:
-The number of days between January 1st, 2000 and March 18th, 2025 is 9,208 days.
-I thoroughly enjoy how tools like uv and Deno enable throwing together shell one-liner demos like this one.
-Here&#x27;s an extended version of this example which adds pretty-printed logging of the messages exchanged with the LLM to illustrate exactly what happened. The most important piece is this tool call where Claude 3.5 Haiku asks for Python code to be executed my the MCP server:
-ToolCallPart(
-    tool_name&#x3D;&#x27;run_python_code&#x27;,
-    args&#x3D;{
-        &#x27;python_code&#x27;: (
-            &#x27;from datetime import date\n&#x27;
-            &#x27;\n&#x27;
-            &#x27;date1 &#x3D; date(2000, 1, 1)\n&#x27;
-            &#x27;date2 &#x3D; date(2025, 3, 18)\n&#x27;
-            &#x27;\n&#x27;
-            &#x27;days_between &#x3D; (date2 - date1).days\n&#x27;
-            &#x27;print(f&quot;Number of days between {date1} and {date2}: {days_between}&quot;)&#x27;
-        ),
-    },
-    tool_call_id&#x3D;&#x27;toolu_01TXXnQ5mC4ry42DrM1jPaza&#x27;,
-    part_kind&#x3D;&#x27;tool-call&#x27;,
-)
-I also managed to run it against Mistral Small 3.1 (15GB) running locally using Ollama (I had to add &quot;Use your python tool&quot; to the prompt to get it to work):
-ollama pull mistral-small3.1:24b
-
-uv run --with devtools --with pydantic-ai python -c &#x27;
-import asyncio
-from devtools import pprint
-from pydantic_ai import Agent, capture_run_messages
-from pydantic_ai.models.openai import OpenAIModel
-from pydantic_ai.providers.openai import OpenAIProvider
-from pydantic_ai.mcp import MCPServerStdio
-
-server &#x3D; MCPServerStdio(
-    &quot;deno&quot;,
-    args&#x3D;[
-        &quot;run&quot;,
-        &quot;-N&quot;,
-        &quot;-R&#x3D;node_modules&quot;,
-        &quot;-W&#x3D;node_modules&quot;,
-        &quot;--node-modules-dir&#x3D;auto&quot;,
-        &quot;jsr:@pydantic/mcp-run-python&quot;,
-        &quot;stdio&quot;,
-    ],
-)
-
-agent &#x3D; Agent( 
-    OpenAIModel(                          
-        model_name&#x3D;&quot;mistral-small3.1:latest&quot;,
-        provider&#x3D;OpenAIProvider(base_url&#x3D;&quot;http://localhost:11434/v1&quot;),                
-    ),            
-    mcp_servers&#x3D;[server],
-)
-
-async def main():
-    with capture_run_messages() as messages:
-        async with agent.run_mcp_servers():
-            result &#x3D; await agent.run(&quot;How many days between 2000-01-01 and 2025-03-18? Use your python tool.&quot;)
-    pprint(messages)
-    print(result.output)
-
-asyncio.run(main())&#x27;
-Here&#x27;s the full output including the debug logs.
-
-    
-Via Hacker News
-Tags: deno, pydantic, uv, sandboxing, llm-tool-use, ai, llms, model-context-protocol, python, generative-ai, mistral, ollama, claude</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
