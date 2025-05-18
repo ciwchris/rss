@@ -25,6 +25,82 @@
 
   <ul>
     <li>
+      <time>2025-05-18</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              qwen2.5vl in Ollama
+              <span class="post-metadata">(2 min | 687 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/18/qwen25vl-in-ollama/#atom-everything>qwen2.5vl in Ollama
+Qwen 2.5 VL which was first released on January 26th 2025. Here are my notes from that release.
+I upgraded Ollama (it auto-updates so I just had to restart it from the tray icon) and ran this:
+ollama pull qwen2.5vl
+
+This downloaded a 6GB model file. I tried it out against my photo of Cleo rolling on the beach:
+llm -a https://static.simonwillison.net/static/2025/cleo-sand.jpg \
+  &#x27;describe this image&#x27; -m qwen2.5vl
+
+And got a pretty good result:
+The image shows a dog lying on its back on a sandy beach. The dog appears to be a medium to large breed with a dark coat, possibly black or dark brown. It is wearing a red collar or harness around its chest. The dog&#x27;s legs are spread out, and its belly is exposed, suggesting it might be rolling around or playing in the sand. The sand is light-colored and appears to be dry, with some small footprints and marks visible around the dog. The lighting in the image suggests it is taken during the daytime, with the sun casting a shadow of the dog to the left side of the image. The overall scene gives a relaxed and playful impression, typical of a dog enjoying time outdoors on a beach.
+Qwen 2.5 VL has a strong reputation for OCR, so I tried it on my poster:
+llm -a https://static.simonwillison.net/static/2025/poster.jpg \
+  &#x27;convert to markdown&#x27; -m qwen2.5vl
+
+The result that came back:
+It looks like the image you provided is a jumbled and distorted text, making it difficult to interpret. If you have a specific question or need help with a particular topic, please feel free to ask, and I&#x27;ll do my best to assist you!
+I&#x27;m not sure what went wrong here. My best guess is that the maximum resolution the model can handle is too small to make out the text, or maybe Ollama resized the image to the point of illegibility before handing it to the model?
+Update: I think this may be a bug relating to URL handling in LLM/llm-ollama. I tried downloading the file first:
+wget https://static.simonwillison.net/static/2025/poster.jpg
+llm -m qwen2.5vl &#x27;extract text&#x27; -a poster.jpg
+
+This time it did a lot better. The results weren&#x27;t perfect though - it ended up stuck in a loop outputting the same code example dozens of times.
+I tried with a different prompt - &quot;extract text&quot; - and it got confused by the three column layout, misread Datasette as &quot;Datasetette&quot; and missed some of the text. Here&#x27;s that result.
+These experiments used qwen2.5vl:7b (6GB) - I expect the results would be better with the larger qwen2.5vl:32b (21GB) and qwen2.5vl:72b (71GB) models.
+Fred Jonsson reported a better result using the MLX model via LM studio (~9GB model running in 8bit - I think that&#x27;s mlx-community/Qwen2.5-VL-7B-Instruct-8bit). His full output is here - looks almost exactly right to me.
+
+
+    
+Tags: vision-llms, llm, ollama, generative-ai, ai, qwen, llms, mlx, ocr</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              2025 Python Packaging Ecosystem Survey
+              <span class="post-metadata">(1 min | 230 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/18/2025-python-packaging-ecosystem-survey/#atom-everything>2025 Python Packaging Ecosystem Survey
+Tags: surveys, packaging, pip, python, psf</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Neal Stephenson
+              <span class="post-metadata">(1 min | 333 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/18/neal-stephenson/#atom-everything>Speaking of the effects of technology on individuals and society as a whole, Marshall McLuhan wrote that every augmentation is also an amputation. [...] Today, quite suddenly, billions of people have access to AI systems that provide augmentations, and inflict amputations, far more substantial than anything McLuhan could have imagined. This is the main thing I worry about currently as far as AI is concerned. I follow conversations among professional educators who all report the same phenomenon, which is that their students use ChatGPT for everything, and in consequence learn nothing. We may end up with at least one generation of people who are like the Eloi in H.G. Wells’s The Time Machine, in that they are mental weaklings utterly dependent on technologies that they don’t understand and that they could never rebuild from scratch were they to break down.
+
+— Neal Stephenson, Remarks on AI from NZ
+Tags: ai-ethics, neal-stephenson, chatgpt, education, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-17</time>
 
       <section>
@@ -4959,117 +5035,6 @@ Tags: llm, ai, ollama, llms, gemma, llm-release, google, generative-ai</a>
 The post GitHub Copilot for Xcode adds @workspace and support for Claude 3.7 Sonnet and GPT-4.5 appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Manage secret scanning alert dismissal requests with the REST API
-              <span class="post-metadata">(7 min | 2080 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-18-manage-secret-scanning-alert-dismissal-requests-with-the-rest-api>With delegated alert dismissal for secret scaning alerts, you can require a review process before alerts are dismissed. This helps you better manage your security risk as well as meet…
-The post Manage secret scanning alert dismissal requests with the REST API appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-04-18</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Note on 18th April 2025
-              <span class="post-metadata">(1 min | 340 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/18/link-to-things/#atom-everything>It frustrates me when support sites for online services fail to link to the things they are talking about. Cloudflare&#x27;s Find zone and account IDs page for example provides a four step process for finding my account ID that starts at the root of their dashboard, including a screenshot of where I should click.
-
-In Cloudflare&#x27;s case it&#x27;s harder to link to the correct dashboard page because the URL differs for different users, but that shouldn&#x27;t be a show-stopper for getting this to work. Set up dash.cloudflare.com/redirects/find-account-id and link to that!
-... I just noticed they do have a mechanism like that which they use elsewhere. On the R2 authentication page they link to:
-https://dash.cloudflare.com/?to&#x3D;/:account/r2/api-tokens
-
-The &quot;find account ID&quot; flow presumably can&#x27;t do the same thing because there is no single page displaying that information - it&#x27;s shown in a sidebar on the page for each of your Cloudflare domains.
-Tags: urls, usability, cloudflare</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Andrew Ng
-              <span class="post-metadata">(1 min | 290 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/18/andrew-ng/#atom-everything>To me, a successful eval meets the following criteria. Say, we currently have system A, and we might tweak it to get a system B:
-If A works significantly better than B according to a skilled human judge, the eval should give A a significantly higher score than B.
-If A and B have similar performance, their eval scores should be similar.
-Whenever a pair of systems A and B contradicts these criteria, that is a sign the eval is in “error” and we should tweak it to make it rank A and B correctly.
-
-— Andrew Ng
-Tags: evals, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Performance improvements for the organizational feed
-              <span class="post-metadata">(9 min | 2704 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-18-performance-improvements-for-the-organizational-feed>What’s changing? As part of our effort to help optimize activity feed load times and reduce timeouts, we’re migrating the organizational feed to a newer infrastructure. This migration from our…
-The post Performance improvements for the organizational feed appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Image segmentation using Gemini 2.5
-              <span class="post-metadata">(2 min | 696 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/18/gemini-image-segmentation/#atom-everything>Max Woolf pointed out this new feature of the Gemini 2.5 series (here&#x27;s my coverage of 2.5 Pro and 2.5 Flash) in a comment on Hacker News:
-
-
-One hidden note from Gemini 2.5 Flash when diving deep into the documentation: for image inputs, not only can the model be instructed to generated 2D bounding boxes of relevant subjects, but it can also create segmentation masks!
-
-At this price point with the Flash model, creating segmentation masks is pretty nifty.
-
-
-I built a tool last year to explore Gemini&#x27;s bounding box abilities. This new segmentation mask feature represents a significant new capability!
-
-Here&#x27;s my new tool to try it out: Gemini API Image Mask Visualization. As with my bounding box tool it&#x27;s browser-based JavaScript that talks to the Gemini API directly. You provide it with a Gemini API key which isn&#x27;t logged anywhere that I can see it.
-
-This is what it can do:
-
-
-
-Give it an image and a prompt of the form:
-
-
-Give the segmentation masks for the objects. Output a JSON list of segmentation masks where each entry contains the 2D bounding box in the key &quot;box_2d&quot; and the segmentation mask in key &quot;mask&quot;.
-
-
-My tool then runs the prompt and displays the resulting JSON. The Gemini API returns segmentation masks as base64-encoded PNG images in strings that start data:image/png;base64,iVBOR.... The tool then visualizes those in a few different ways on the page, including overlaid over the original image.
-
-I vibe coded the whole thing together using a combination of Claude and ChatGPT. I started with a Claude Artifacts React prototype, then pasted the code from my old project into Claude and hacked on that until I ran out of tokens. I transferred the incomplete result to a new Claude session where I kept on iterating until it got stuck in a bug loop (the same bug kept coming back no matter how often I told it to fix that)... so I switched over to O3 in ChatGPT to finish it off.
-
-Here&#x27;s the finished code. It&#x27;s a total mess, but it&#x27;s also less than 500 lines of code and the interface solves my problem in that it lets me explore the new Gemini capability.
-
-Segmenting my pelican photo via the Gemini API was absurdly inexpensive. Using Gemini 2.5 Pro the call cost 303 input tokens and 353 output tokens, for a total cost of 0.2144 cents (less than a quarter of a cent). I ran it again with the new Gemini 2.5 Flash and it used 303 input tokens and 270 output tokens, for a total cost of 0.099 cents (less than a tenth of a cent). I calculated these prices using my LLM pricing calculator tool.
-Tags: google, tools, ai, generative-ai, llms, ai-assisted-programming, gemini, vision-llms, llm-pricing, vibe-coding</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 

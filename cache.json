@@ -534,26 +534,6 @@
           "wordCount": 2232,
           "title": "GitHub Copilot for Xcode adds @workspace and support for Claude 3.7 Sonnet and GPT-4.5",
           "imageUrl": "https://github.com/user-attachments/assets/afa9bc2a-ba13-467d-b0ca-659d737979e3"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-04-18-manage-secret-scanning-alert-dismissal-requests-with-the-rest-api",
-          "author": "Allison",
-          "description": "With delegated alert dismissal for secret scaning alerts, you can require a review process before alerts are dismissed. This helps you better manage your security risk as well as meet…\nThe post Manage secret scanning alert dismissal requests with the REST API appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-04-18-manage-secret-scanning-alert-dismissal-requests-with-the-rest-api",
-          "publishedOn": "2025-04-19T00:55:44.000Z",
-          "wordCount": 2080,
-          "title": "Manage secret scanning alert dismissal requests with the REST API",
-          "imageUrl": "https://github.blog/wp-content/uploads/2024/08/d34e9c19123898a8a886147f37a1d167130d1c15be6d399a9c4b30ee6f2a7395-1200x630-1.png?fit=1200%2C630"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-04-18-performance-improvements-for-the-organizational-feed",
-          "author": "Allison",
-          "description": "What’s changing? As part of our effort to help optimize activity feed load times and reduce timeouts, we’re migrating the organizational feed to a newer infrastructure. This migration from our…\nThe post Performance improvements for the organizational feed appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-04-18-performance-improvements-for-the-organizational-feed",
-          "publishedOn": "2025-04-18T14:45:36.000Z",
-          "wordCount": 2704,
-          "title": "Performance improvements for the organizational feed",
-          "imageUrl": "https://github.com/user-attachments/assets/75e8400a-198c-4b48-9fa1-6aeb030e90bc"
         }
       ]
     },
@@ -864,6 +844,36 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2025/May/18/qwen25vl-in-ollama/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://ollama.com/library/qwen2.5vl\">qwen2.5vl in Ollama</a></strong></p>\nOllama announced a complete overhaul of their vision support the other day. Here's the first new model they've shipped since then - a packaged version of <a href=\"https://github.com/QwenLM/Qwen2.5-VL\">Qwen 2.5 VL</a> which was first released <a href=\"https://qwenlm.github.io/blog/qwen2.5-vl/\">on January 26th 2025</a>. Here are my <a href=\"https://simonwillison.net/2025/Jan/27/qwen25-vl-qwen25-vl-qwen25-vl/\">notes from that release</a>.</p>\n<p>I upgraded Ollama (it auto-updates so I just had to restart it from the tray icon) and ran this:</p>\n<pre><code>ollama pull qwen2.5vl\n</code></pre>\n<p>This downloaded a 6GB model file. I tried it out against my <a href=\"https://static.simonwillison.net/static/2025/cleo-sand.jpg\">photo of Cleo rolling on the beach</a>:</p>\n<pre><code>llm -a https://static.simonwillison.net/static/2025/cleo-sand.jpg \\\n  'describe this image' -m qwen2.5vl\n</code></pre>\n<p>And got a pretty good result:</p>\n<blockquote>\n<p>The image shows a dog lying on its back on a sandy beach. The dog appears to be a medium to large breed with a dark coat, possibly black or dark brown. It is wearing a red collar or harness around its chest. The dog's legs are spread out, and its belly is exposed, suggesting it might be rolling around or playing in the sand. The sand is light-colored and appears to be dry, with some small footprints and marks visible around the dog. The lighting in the image suggests it is taken during the daytime, with the sun casting a shadow of the dog to the left side of the image. The overall scene gives a relaxed and playful impression, typical of a dog enjoying time outdoors on a beach.</p>\n</blockquote>\n<p>Qwen 2.5 VL has a strong reputation for OCR, so I tried it on <a href=\"https://simonwillison.net/2025/May/17/pycon-poster/#datasette-poster\">my poster</a>:</p>\n<pre><code>llm -a https://static.simonwillison.net/static/2025/poster.jpg \\\n  'convert to markdown' -m qwen2.5vl\n</code></pre>\n<p>The result that came back:</p>\n<blockquote>\n<p>It looks like the image you provided is a jumbled and distorted text, making it difficult to interpret. If you have a specific question or need help with a particular topic, please feel free to ask, and I'll do my best to assist you!</p>\n</blockquote>\n<p>I'm not sure what went wrong here. My best guess is that the maximum resolution the model can handle is too small to make out the text, or maybe Ollama resized the image to the point of illegibility before handing it to the model?</p>\n<p><strong>Update</strong>: I think this may be <a href=\"https://github.com/simonw/llm/issues/1046\">a bug</a> relating to URL handling in LLM/llm-ollama. I tried downloading the file first:</p>\n<pre><code>wget https://static.simonwillison.net/static/2025/poster.jpg\nllm -m qwen2.5vl 'extract text' -a poster.jpg\n</code></pre>\n<p>This time it did a lot better. The results weren't perfect though - <a href=\"https://gist.github.com/simonw/2b46e932a16c92e673ea09dfc0186ec2#response\">it ended up stuck in a loop</a> outputting the same code example dozens of times.</p>\n<p>I tried with a different prompt - \"extract text\" - and it got confused by the three column layout, misread Datasette as \"Datasetette\" and missed some of the text. Here's <a href=\"https://gist.github.com/simonw/3ececa5f5ff109a81bc6893be06f00b1#response\">that result</a>.</p>\n<p>These experiments used <code>qwen2.5vl:7b</code> (6GB) - I expect the results would be better with the larger <code>qwen2.5vl:32b</code> (21GB) and <code>qwen2.5vl:72b</code> (71GB) models.</p>\n<p>Fred Jonsson <a href=\"https://twitter.com/enginoid/status/1924092556079436086\">reported a better result</a> using the MLX model via LM studio (~9GB model running in 8bit - I think that's <a href=\"https://huggingface.co/mlx-community/Qwen2.5-VL-7B-Instruct-8bit\">mlx-community/Qwen2.5-VL-7B-Instruct-8bit</a>). His <a href=\"https://gist.github.com/enginoid/5c91c920124d4a2e0ab253df769e35fa\">full output is here</a> - looks almost exactly right to me.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/vision-llms\">vision-llms</a>, <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/ollama\">ollama</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/qwen\">qwen</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/mlx\">mlx</a>, <a href=\"https://simonwillison.net/tags/ocr\">ocr</a></p>",
+          "link": "https://simonwillison.net/2025/May/18/qwen25vl-in-ollama/#atom-everything",
+          "publishedOn": "2025-05-18T12:31:15.000Z",
+          "wordCount": 687,
+          "title": "qwen2.5vl in Ollama",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2025/May/18/2025-python-packaging-ecosystem-survey/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://anaconda.surveymonkey.com/r/py-package-2025\">2025 Python Packaging Ecosystem Survey</a></strong></p>\nIf you make use of Python packaging tools (pip, Anaconda, uv, dozens of others) and have opinions please spend a few minutes with this year's packaging survey. This one was \"Co-authored by 30+ of your favorite Python Ecosystem projects, organizations and companies.\"\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/surveys\">surveys</a>, <a href=\"https://simonwillison.net/tags/packaging\">packaging</a>, <a href=\"https://simonwillison.net/tags/pip\">pip</a>, <a href=\"https://simonwillison.net/tags/python\">python</a>, <a href=\"https://simonwillison.net/tags/psf\">psf</a></p>",
+          "link": "https://simonwillison.net/2025/May/18/2025-python-packaging-ecosystem-survey/#atom-everything",
+          "publishedOn": "2025-05-18T11:50:06.000Z",
+          "wordCount": 230,
+          "title": "2025 Python Packaging Ecosystem Survey",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2025/May/18/neal-stephenson/#atom-everything",
+          "author": null,
+          "description": "<blockquote cite=\"https://nealstephenson.substack.com/p/remarks-on-ai-from-nz\"><p>Speaking of the effects of technology on individuals and society as a whole, Marshall McLuhan wrote that every augmentation is also an amputation. [...] Today, quite suddenly, billions of people have access to AI systems that provide augmentations, and inflict amputations, far more substantial than anything McLuhan could have imagined. This is the main thing I worry about currently as far as AI is concerned. I follow conversations among professional educators who all report the same phenomenon, which is that their students use ChatGPT for everything, and in consequence learn nothing. We may end up with at least one generation of people who are like the Eloi in H.G. Wells’s The Time Machine, in that they are mental weaklings utterly dependent on technologies that they don’t understand and that they could never rebuild from scratch were they to break down.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://nealstephenson.substack.com/p/remarks-on-ai-from-nz\">Neal Stephenson</a>, Remarks on AI from NZ</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai-ethics\">ai-ethics</a>, <a href=\"https://simonwillison.net/tags/neal-stephenson\">neal-stephenson</a>, <a href=\"https://simonwillison.net/tags/chatgpt\">chatgpt</a>, <a href=\"https://simonwillison.net/tags/education\">education</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
+          "link": "https://simonwillison.net/2025/May/18/neal-stephenson/#atom-everything",
+          "publishedOn": "2025-05-18T09:09:03.000Z",
+          "wordCount": 333,
+          "title": "Quoting Neal Stephenson",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2025/May/17/pycon-poster/#atom-everything",
           "author": null,
@@ -1853,36 +1863,6 @@
           "wordCount": 407,
           "title": "Gemma 3 QAT Models",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Apr/18/link-to-things/#atom-everything",
-          "author": null,
-          "description": "<p>It frustrates me when support sites for online services fail to <em>link</em> to the things they are talking about. Cloudflare's <a href=\"https://developers.cloudflare.com/fundamentals/setup/find-account-and-zone-ids/\">Find zone and account IDs</a> page for example provides a four step process for finding my account ID that starts at the root of their dashboard, including a screenshot of where I should click.</p>\n<p><img alt=\"1. Log in to the Cloudflare dashboard. 2. Select your account and domain. 3. On the Overview page (the landing page for your domain), find the API section. Screenshot includes an Overview panel showing analytics\" src=\"https://static.simonwillison.net/static/2025/cloudflare-docs.jpg\" style=\"max-width: 100%\"></p>\n<p>In Cloudflare's case it's harder to link to the correct dashboard page because the URL differs for different users, but that shouldn't be a show-stopper for getting this to work. Set up <code>dash.cloudflare.com/redirects/find-account-id</code> and link to that!</p>\n<p>... I just noticed they <em>do</em> have a mechanism like that which they use elsewhere. On the <a href=\"https://developers.cloudflare.com/r2/api/tokens/\">R2 authentication page</a> they link to:</p>\n<pre><code>https://dash.cloudflare.com/?to=/:account/r2/api-tokens\n</code></pre>\n<p>The \"find account ID\" flow presumably can't do the same thing because there is no single page displaying that information - it's shown in a sidebar on the page for each of your Cloudflare domains.</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/urls\">urls</a>, <a href=\"https://simonwillison.net/tags/usability\">usability</a>, <a href=\"https://simonwillison.net/tags/cloudflare\">cloudflare</a></p>",
-          "link": "https://simonwillison.net/2025/Apr/18/link-to-things/#atom-everything",
-          "publishedOn": "2025-04-18T23:59:01.000Z",
-          "wordCount": 340,
-          "title": "Note on 18th April 2025",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Apr/18/andrew-ng/#atom-everything",
-          "author": null,
-          "description": "<blockquote cite=\"https://www.deeplearning.ai/the-batch/issue-297/\"><p>To me, a successful eval meets the following criteria. Say, we currently have system A, and we might tweak it to get a system B:</p>\n<ul>\n<li>If A works significantly better than B according to a skilled human judge, the eval should give A a significantly higher score than B.</li>\n<li>If A and B have similar performance, their eval scores should be similar.</li>\n</ul>\n<p>Whenever a pair of systems A and B contradicts these criteria, that is a sign the eval is in “error” and we should tweak it to make it rank A and B correctly.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://www.deeplearning.ai/the-batch/issue-297/\">Andrew Ng</a></p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/evals\">evals</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a></p>",
-          "link": "https://simonwillison.net/2025/Apr/18/andrew-ng/#atom-everything",
-          "publishedOn": "2025-04-18T18:47:44.000Z",
-          "wordCount": 290,
-          "title": "Quoting Andrew Ng",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Apr/18/gemini-image-segmentation/#atom-everything",
-          "author": null,
-          "description": "<p>Max Woolf pointed out this new feature of the Gemini 2.5 series (here's my coverage of <a href=\"https://simonwillison.net/2025/Mar/25/gemini/\">2.5 Pro</a> and <a href=\"https://simonwillison.net/2025/Apr/17/start-building-with-gemini-25-flash/\">2.5 Flash</a>) in <a href=\"https://news.ycombinator.com/item?id=43720845#43722227\">a comment</a> on Hacker News:</p>\r\n<blockquote>\r\n<p>One hidden note from Gemini 2.5 Flash when diving deep into the documentation: for image inputs, not only can the model be instructed to generated 2D bounding boxes of relevant subjects, but it can also <a href=\"https://ai.google.dev/gemini-api/docs/image-understanding#segmentation\">create segmentation masks</a>!</p>\r\n<p>At this price point with the Flash model, creating segmentation masks is pretty nifty.</p>\r\n</blockquote>\r\n<p>I built a tool last year to <a href=\"https://simonwillison.net/2024/Aug/26/gemini-bounding-box-visualization/\">explore Gemini's bounding box abilities</a>. This new segmentation mask feature represents a significant new capability!</p>\r\n<p>Here's my new tool to try it out: <strong><a href=\"https://tools.simonwillison.net/gemini-mask\">Gemini API Image Mask Visualization</a></strong>. As with my bounding box tool it's browser-based JavaScript that talks to the Gemini API directly. You provide it with a <a href=\"https://aistudio.google.com/app/apikey\">Gemini API key</a> which isn't logged anywhere that I can see it.</p>\r\n<p>This is what it can do:</p>\r\n<p><img src=\"https://static.simonwillison.net/static/2025/mask-tool.jpg\" alt=\"Screenshot of mask tool. At the top is a select box to pick a model (currently using Gemini 2.5 Pro) and a prompt that reads: Give the segmentation masks for the pelicans. Output a JSON list of segmentation masks where each entry contains the 2D bounding box in the key &quot;box_2d&quot; and the segmentation mask in key &quot;mask&quot;. Below that is JSON that came back - an array of objects. The mask keys are base64 encoded PNG data. Below that is the original image, then the image with masks overlaid and a coordinate system, then two columns showing each cropped image and mask next to each other.\" style=\"max-width: 100%;\" /></p>\r\n<p>Give it an image and a prompt of the form:</p>\r\n<blockquote>\r\n<p><code>Give the segmentation masks for the objects. Output a JSON list of segmentation masks where each entry contains the 2D bounding box in the key \"box_2d\" and the segmentation mask in key \"mask\".</code></p>\r\n</blockquote>\r\n<p>My tool then runs the prompt and displays the resulting JSON. The Gemini API returns segmentation masks as base64-encoded PNG images in strings that start <code>data:image/png;base64,iVBOR...</code>. The tool then visualizes those in a few different ways on the page, including overlaid over the original image.</p>\r\n<p>I <a href=\"https://simonwillison.net/tags/vibe-coding/\">vibe coded</a> the whole thing together using a combination of Claude and ChatGPT. I started with <a href=\"https://claude.ai/share/2dd2802a-c8b4-4893-8b61-0861d4fcb0f1\">a Claude Artifacts React prototype</a>, then pasted the code from my old project into Claude and <a href=\"https://claude.ai/share/9e42d82b-56c7-46c1-ad0c-fc67c3cad91f\">hacked on that until I ran out of tokens</a>. I transferred the incomplete result to a new Claude session where I <a href=\"https://claude.ai/share/f820f361-5aa7-48b5-a96d-f0f8b11d3869\">kept on iterating</a> until it got stuck in a bug loop (the same bug kept coming back no matter how often I told it to fix that)... so I switched over to O3 in ChatGPT <a href=\"https://chatgpt.com/share/6801c8ad-18c8-8006-bdd8-447500eae33e\">to finish it off</a>.</p>\r\n<p>Here's <a href=\"https://github.com/simonw/tools/blob/main/gemini-mask.html\">the finished code</a>. It's a total mess, but it's also less than 500 lines of code and the interface solves my problem in that it lets me explore the new Gemini capability.</p>\r\n<p>Segmenting my pelican photo via the Gemini API was <em>absurdly</em> inexpensive. Using Gemini 2.5 Pro the call cost 303 input tokens and 353 output tokens, for a total cost of 0.2144 cents (less than a quarter of a cent). I ran it again with the new Gemini 2.5 Flash and it used 303 input tokens and 270 output tokens, for a total cost of 0.099 cents (less than a tenth of a cent). I calculated these prices using my <a href=\"https://tools.simonwillison.net/llm-prices\">LLM pricing calculator</a> tool.</p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/google\">google</a>, <a href=\"https://simonwillison.net/tags/tools\">tools</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/gemini\">gemini</a>, <a href=\"https://simonwillison.net/tags/vision-llms\">vision-llms</a>, <a href=\"https://simonwillison.net/tags/llm-pricing\">llm-pricing</a>, <a href=\"https://simonwillison.net/tags/vibe-coding\">vibe-coding</a></p>",
-          "link": "https://simonwillison.net/2025/Apr/18/gemini-image-segmentation/#atom-everything",
-          "publishedOn": "2025-04-18T13:26:00.000Z",
-          "wordCount": 696,
-          "title": "Image segmentation using Gemini 2.5",
-          "imageUrl": "https://static.simonwillison.net/static/2025/mask-tool-social-card.jpg"
         }
       ]
     },
