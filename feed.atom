@@ -2,10 +2,72 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-05-18T14:08:47.673Z</updated>
+    <updated>2025-05-18T21:08:52.826Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[llm-pdf-to-images]]></title>
+        <id>https://simonwillison.net/2025/May/18/llm-pdf-to-images/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/18/llm-pdf-to-images/#atom-everything"/>
+        <updated>2025-05-18T20:48:41.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/llm-pdf-to-images">llm-pdf-to-images</a></strong></p>
+Inspired by my previous <a href="https://github.com/simonw/llm-video-frames">llm-video-frames</a> plugin, I thought it would be neat to have a plugin for LLM that can take a PDF and turn that into an image-per-page so you can feed PDFs into models that support image inputs but don't yet support PDFs.</p>
+<p>This should now do exactly that:</p>
+<div class="highlight highlight-source-shell"><pre>llm install llm-pdf-to-images
+llm -f pdf-to-images:path/to/document.pdf <span class="pl-s"><span class="pl-pds">'</span>Summarize this document<span class="pl-pds">'</span></span></pre></div>
+
+<p>Under the hood it's using the <a href="https://github.com/pymupdf/PyMuPDF">PyMuPDF</a> library. The key code to convert a PDF into images looks like this:</p>
+<pre><span class="pl-k">import</span> <span class="pl-s1">fitz</span>
+<span class="pl-s1">doc</span> <span class="pl-c1">=</span> <span class="pl-s1">fitz</span>.<span class="pl-c1">open</span>(<span class="pl-s">"input.pdf"</span>)
+<span class="pl-k">for</span> <span class="pl-s1">page</span> <span class="pl-c1">in</span> <span class="pl-s1">doc</span>:
+    <span class="pl-s1">pix</span> <span class="pl-c1">=</span> <span class="pl-s1">page</span>.<span class="pl-c1">get_pixmap</span>(<span class="pl-s1">matrix</span><span class="pl-c1">=</span><span class="pl-s1">fitz</span>.<span class="pl-c1">Matrix</span>(<span class="pl-c1">300</span><span class="pl-c1">/</span><span class="pl-c1">72</span>, <span class="pl-c1">300</span><span class="pl-c1">/</span><span class="pl-c1">72</span>))
+    <span class="pl-s1">jpeg_bytes</span> <span class="pl-c1">=</span> <span class="pl-s1">pix</span>.<span class="pl-c1">tobytes</span>(<span class="pl-s1">output</span><span class="pl-c1">=</span><span class="pl-s">"jpg"</span>, <span class="pl-s1">jpg_quality</span><span class="pl-c1">=</span><span class="pl-c1">30</span>)</pre>
+
+<p>Once I'd figured out that code I got o4-mini to write most of the rest of the plugin, using <a href="https://github.com/simonw/llm-fragments-github">llm-fragments-github</a> to load in the example code from the video plugin:</p>
+<pre>llm -f github:simonw/llm-video-frames <span class="pl-s"><span class="pl-pds">'</span></span>
+<span class="pl-s">import fitz</span>
+<span class="pl-s">doc = fitz.open("input.pdf")</span>
+<span class="pl-s">for page in doc:</span>
+<span class="pl-s">    pix = page.get_pixmap(matrix=fitz.Matrix(300/72, 300/72))</span>
+<span class="pl-s">    jpeg_bytes = pix.tobytes(output="jpg", jpg_quality=30)</span>
+<span class="pl-s"><span class="pl-pds">'</span></span> -s <span class="pl-s"><span class="pl-pds">'</span>output llm_pdf_to_images.py which adds a pdf-to-images: </span>
+<span class="pl-s"> fragment loader that converts a PDF to frames using fitz like in the example<span class="pl-pds">'</span></span> \
+-m o4-mini</pre>
+
+<p>Here's <a href="https://gist.github.com/simonw/27af84e4e533872bfd59fcba69b4166f">the transcript</a> - more details in <a href="https://github.com/simonw/llm-pdf-to-images/issues/1">this issue</a>.</p>
+<p>I had some <em>weird</em> results testing this with GPT 4.1 mini. I created <a href="https://github.com/simonw/llm-pdf-to-images/blob/main/tests/blank-pages.pdf">a test PDF</a> with two pages - one white, one black - and ran a test prompt like this:</p>
+<pre>llm -f <span class="pl-s"><span class="pl-pds">'</span>pdf-to-images:blank-pages.pdf<span class="pl-pds">'</span></span> \
+  <span class="pl-s"><span class="pl-pds">'</span>describe these images<span class="pl-pds">'</span></span></pre>
+
+<blockquote>
+<p>The first image features a stylized red maple leaf with triangular facets, giving it a geometric appearance. The maple leaf is a well-known symbol associated with Canada.</p>
+<p>The second image is a simple black silhouette of a cat sitting and facing to the left. The cat's tail curls around its body. The design is minimalistic and iconic.</p>
+</blockquote>
+<p>I got even wilder hallucinations for other prompts, like "summarize this document" or "describe all figures". I have a collection of those <a href="https://gist.github.com/simonw/2fbef11b1737a9ae7da1b2ff58998454">in this Gist</a>.</p>
+<p>Thankfully this behavior is limited to GPT-4.1 mini. I upgraded to full GPT-4.1 and got <a href="https://gist.github.com/simonw/0713dc0ce00bd6cd4d5990f44c865964#prompt-1">much more sensible results</a>:</p>
+<pre>llm -f <span class="pl-s"><span class="pl-pds">'</span>pdf-to-images:tests/blank-pages.pdf<span class="pl-pds">'</span></span> \
+  <span class="pl-s"><span class="pl-pds">'</span>describe these images<span class="pl-pds">'</span></span> -m gpt-4.1</pre>
+
+<blockquote>
+<p>Certainly! Here are the descriptions of the two images you provided:</p>
+<ol>
+<li>
+<p><strong>First image:</strong> This image is completely white. It appears blank, with no discernible objects, text, or features.</p>
+</li>
+<li>
+<p><strong>Second image:</strong> This image is entirely black. Like the first, it is blank and contains no visible objects, text, or distinct elements.</p>
+</li>
+</ol>
+<p>If you have questions or need a specific kind of analysis or modification, please let me know!</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/pdf">pdf</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/hallucinations">hallucinations</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[qwen2.5vl in Ollama]]></title>
         <id>https://simonwillison.net/2025/May/18/qwen25vl-in-ollama/#atom-everything</id>
