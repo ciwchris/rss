@@ -2,10 +2,109 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-05-20T14:10:59.036Z</updated>
+    <updated>2025-05-20T21:10:01.220Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Gemini 2.5: Our most intelligent models are getting even better]]></title>
+        <id>https://simonwillison.net/2025/May/20/gemini-25/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/20/gemini-25/#atom-everything"/>
+        <updated>2025-05-20T20:34:30.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://blog.google/technology/google-deepmind/google-gemini-updates-io-2025/#performance">Gemini 2.5: Our most intelligent models are getting even better</a></strong></p>
+A bunch of new Gemini 2.5 announcements at Google I/O today.</p>
+<p>2.5 Flash and 2.5 Pro are both getting audio output (previously previewed in Gemini 2.0) and 2.5 Pro is getting an enhanced reasoning mode called "Deep Think" - not yet available via the API.</p>
+<p>Available today is the latest Gemini 2.5 Flash model, <code>gemini-2.5-flash-preview-05-20</code>. I added support to that in <a href="https://github.com/simonw/llm-gemini/releases/tag/0.20">llm-gemini 0.20</a> (and, if you're using the <a href="https://simonwillison.net/2025/May/14/llm-adds-support-for-tools/">LLM tool-use alpha</a>, <a href="https://github.com/simonw/llm-gemini/releases/tag/0.20a2">llm-gemini 0.20a2</a>).</p>
+<p>I tried it out on my personal benchmark, as seen <a href="https://simonwillison.net/2025/May/20/google-io-pelican/">in the Google I/O keynote</a>!</p>
+<pre><code>llm -m gemini-2.5-flash-preview-05-20 'Generate an SVG of a pelican riding a bicycle'
+</code></pre>
+<p>Here's what I got from the default model, with its thinking mode enabled:</p>
+<p><img alt="The bicycle has spokes that look like a spider web. The pelican is goofy but recognizable." src="https://static.simonwillison.net/static/2025/flash-pelican-thinking.png" /></p>
+<p><a href="https://gist.github.com/simonw/5b61866cb4ce67899934c29a9de1b4be">Full transcript</a>. 11 input tokens, 2,619 output tokens, 10,391 thinking tokens = 4.5537 cents.</p>
+<p>I ran the same thing again with <code>-o thinking_budget 0</code> to turn off thinking mode entirely, and got this:</p>
+<p><img alt="The bicycle has too many bits of frame in the wrong direction. The pelican is yellow and weirdly shaped." src="https://static.simonwillison.net/static/2025/flash-pelican-no-thinking.png" /></p>
+<p><a href="https://gist.github.com/simonw/3e6740d2a99be4922af455d14bc1c943">Full transcript</a>. 11 input, 1,243 output = 0.0747 cents.</p>
+<p>The non-thinking model is priced differently - still $0.15/million for input but $0.60/million for output as opposed to $3.50/million for thinking+output. The pelican it drew was  61x cheaper!</p>
+<p>Finally, inspired by the keynote I ran this follow-up prompt to animate the more expensive pelican:</p>
+<pre><code>llm --cid 01jvqjqz9aha979yemcp7a4885 'Now animate it'
+</code></pre>
+<p>This one is pretty great!</p>
+<p><img src="https://static.simonwillison.net/static/2025/gemini-2.5-flash-preview-05-20-animated.svg" alt="The wheels and pedals are rotating and the pelican is bobbing up and down. This would be a fantastic animated pelican if the pelican didn't kind of suck!">
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Google I/O Pelican]]></title>
+        <id>https://simonwillison.net/2025/May/20/google-io-pelican/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/20/google-io-pelican/#atom-everything"/>
+        <updated>2025-05-20T19:24:03.000Z</updated>
+        <summary type="html"><![CDATA[<p>Tucked into today's Google I/O keynote, <a href="https://www.youtube.com/live/o8NiE3XMPrM?si=lOK-8OX01SC9UEJa&amp;t=5270">a blink-and-you'll miss it moment</a>:</p>
+<div style="max-width: 100%; margin-bottom: 0.4em">
+    <video controls="controls" preload="none" aria-label="Snippet from Google I/O" aria-description="Overlaid text says Animate anything, and for a brief moment there is a vector-style animation of a pelican riding a bicycle" poster="https://static.simonwillison.net/static/2025/google-io-pelican.jpg" loop="loop" style="width: 100%; height: auto;" muted="muted">
+        <source src="https://static.simonwillison.net/static/2025/google-io-pelican.mp4" type="video/mp4">
+    </video>
+</div>
+
+<p>The pelican in the keynote <a href="https://twitter.com/alexanderchen/status/1924911741705629828">was created by Alexander Chen</a>. Here's <a href="https://gemini.google.com/share/cd81bbb98f33">the code they wrote</a> with the help of Gemini, which uses <a href="https://p5js.org/">p5.js</a> to power the animation.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/google-io">google-io</a>, <a href="https://simonwillison.net/tags/google">google</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Secret scanning alerts API now supports hiding secret literals]]></title>
+        <id>https://github.blog/changelog/2025-05-20-secret-scanning-alerts-api-now-supports-hiding-secret-literals</id>
+        <link href="https://github.blog/changelog/2025-05-20-secret-scanning-alerts-api-now-supports-hiding-secret-literals"/>
+        <updated>2025-05-20T18:58:47.000Z</updated>
+        <summary type="html"><![CDATA[You can now request secret scanning alerts through the API without exposing the actual secret literals. This new hide_secret query parameter helps reduce risk when working with secret scanning alert…
+The post Secret scanning alerts API now supports hiding secret literals appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[cityofaustin/atd-data-tech issues]]></title>
+        <id>https://simonwillison.net/2025/May/20/data-tech-issues/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/20/data-tech-issues/#atom-everything"/>
+        <updated>2025-05-20T18:18:39.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/cityofaustin/atd-data-tech/issues">cityofaustin/atd-data-tech issues</a></strong></p>
+I stumbled across this today while looking for interesting frequently updated data sources from local governments. It turns out the City of Austin's <a href="https://austinmobility.io/">Transportation Data &amp; Technology Services</a> department run everything out of a public GitHub issues instance, which currently has 20,225 closed and 2,002 open issues. They also publish an <a href="https://data.austintexas.gov/Transportation-and-Mobility/Transportation-Public-Works-Data-Tech-Services-Iss/rzwg-fyv8/about_data">exported copy</a> of the issues data through the <a href="https://data.austintexas.gov/">data.austintexas.gov</a> open data portal.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/open-data">open-data</a>, <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/github-issues">github-issues</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[After months of coding with LLMs, I'm going back to using my brain]]></title>
+        <id>https://simonwillison.net/2025/May/20/after-months-of-coding-with-llms/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/20/after-months-of-coding-with-llms/#atom-everything"/>
+        <updated>2025-05-20T15:43:54.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://albertofortin.com/writing/coding-with-ai">After months of coding with LLMs, I&#x27;m going back to using my brain</a></strong></p>
+Interesting vibe coding retrospective from Alberto Fortin. Alberto is an experienced software developer and decided to use Claude an Cursor to rewrite an existing system using Go and ClickHouse - two new-to-him technologies.</p>
+<blockquote>
+<p>One morning, I decide to actually inspect closely what’s all this code that Cursor has been writing. It’s not like I was blindly prompting without looking at the end result, but I was optimizing for speed and I hadn’t actually sat down just to review the code. I was just building building building.</p>
+<p>So I do a “coding review” session. And <strong>the horror ensues</strong>.</p>
+<p>Two service files, in the same directory, with similar names, clearly doing a very similar thing. But the method names are different. The props are not consistent. One is called "WebAPIprovider", the other one "webApi". They represent the same exact parameter. The same method is redeclared multiple times across different files. The same config file is being called in different ways and retrieved with different methods.</p>
+<p>No consistency, no overarching plan. It’s like I'd asked 10 junior-mid developers to work on this codebase, with no Git access, locking them in a room without seeing what the other 9 were doing.</p>
+</blockquote>
+<p>Alberto reset to a less vibe-heavy approach and is finding it to be a much more productive way of working:</p>
+<blockquote>
+<p>I’m defaulting to pen and paper, I’m defaulting to coding the first draft of that function on my own.  [...] But I’m not asking it to write new things from scratch, to come up with ideas or to write a whole new plan. I’m writing the plan. I’m the senior dev. The LLM is the assistant.</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Secret Protection expands default pattern support (May 2025)]]></title>
         <id>https://github.blog/changelog/2025-05-19-secret-protection-expands-default-pattern-support-may-2025</id>
@@ -4008,30 +4107,6 @@ The post Guest Blog: Build an AI App That Can Browse the Internet Using Microsof
         <p>Tags: <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/o3">o3</a>, <a href="https://simonwillison.net/tags/search">search</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/perplexity">perplexity</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/ai-assisted-search">ai-assisted-search</a>, <a href="https://simonwillison.net/tags/deep-research">deep-research</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[May 6th, 2025 - Video search upgrades, enhanced Kagi Assistant experience and more]]></title>
-        <id>https://kagifeedback.org/d/6912-may-6th-2025-video-search-upgrades-enhanced-kagi-assistant-experience-and-more/1</id>
-        <link href="https://kagifeedback.org/d/6912-may-6th-2025-video-search-upgrades-enhanced-kagi-assistant-experience-and-more/1"/>
-        <updated>2025-04-21T07:01:31.000Z</updated>
-        <summary type="html"><![CDATA[Search
-Video search upgrade
-Video search now pulls from more sources and shows richer data:
-See likes / dislikes on videos
-
-Peertube integration! Peertube results now show up in regular searches, plus you can filter by "source" to see more Peertube content
-
-And other bug fixes and improvements,
-Colour picker does not show correct colour on desktop with Zen Browser #7001 @larke12 
-Kagi Search: Translate Button Accidental Taps on Mobile #6994 @slanderous-mambo
-Web search results broken in Safari #6773 @Wildpixels
-403 when privacy pass is active #6793 @jlnslv
-Missing special characters on search results #6876 @NeilCarvalho
-Searching "people who know" incorrectly includes images of the pope #6965 @mon 
-Inconsistencies in Search Settings Descriptions : Period Usage and "Whether or Not" #6991 @H…]]></summary>
-        <author>
-            <name>Activity in the release-notes tag</name>
         </author>
     </entry>
     <entry>
