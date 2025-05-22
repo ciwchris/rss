@@ -25,9 +25,104 @@
 
   <ul>
     <li>
+      <time>2025-05-22</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Making AI Work: Leadership, Lab, and Crowd
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://www.oneusefulthing.org/p/making-ai-work-leadership-lab-and>A formula for AI in companies</a>
+            </div>
+            <!-- <p class="post-source">One Useful Thing</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              No docs, no bugs
+              <span class="post-metadata">(1 min | 275 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/22/no-docs-no-bugs/#atom-everything>If your library doesn&#x27;t have any documentation, it can&#x27;t have any bugs.
+Documentation specifies what your code is supposed to do. Your tests specify what it actually does.
+Bugs exist when your test-enforced implementation fails to match the behavior described in your documentation.  Without documentation a bug is just undefined behavior.
+If you aim to follow semantic versioning you bump your major version when you release a backwards incompatible change. Such changes cannot exist if your code is not comprehensively documented!
+Inspired by a half-remembered conversation I had with Tom Insam many years ago. 
+Tags: testing, semantic-versioning, documentation</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-21</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Devstral
+              <span class="post-metadata">(1 min | 430 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/21/devstral/#atom-everything>Devstral
+Devstral achieves a score of 46.8% on SWE-Bench Verified, outperforming prior open-source SoTA models by more than 6% points. When evaluated under the same test scaffold (OpenHands, provided by All Hands AI 🙌), Devstral exceeds far larger models such as Deepseek-V3-0324 (671B) and Qwen3 232B-A22B.
+I&#x27;m always suspicious of small models like this that claim great benchmarks against much larger rivals, but there&#x27;s a Devstral model that is just 14GB on Ollama to it&#x27;s quite easy to try out for yourself.
+I fetched it like this:
+ollama pull devstral
+
+Then ran it in a llm chat session with llm-ollama like this:
+llm install llm-ollama
+llm chat -m devstral
+
+Initial impressions: I think this one is pretty good! Here&#x27;s a full transcript where I had it write Python code to fetch a CSV file from a URL and import it into a SQLite database, creating the table with the necessary columns. Honestly I need to retire that challenge, it&#x27;s been a while since a model failed at it, but it&#x27;s still interesting to see how it handles follow-up prompts to demand things like asyncio or a different HTTP client library.
+It&#x27;s also available through Mistral&#x27;s API. llm-mistral 0.13 configures the devstral-small alias for it:
+llm install -U llm-mistral
+llm keys set mistral
+# paste key here
+llm -m devstral-small &#x27;HTML+JS for a large text countdown app from 5m&#x27;
+
+Tags: llm, ai, ollama, llms, llm-release, mistral, ai-assisted-programming, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Gemini Diffusion
+              <span class="post-metadata">(2 min | 714 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/21/gemini-diffusion/#atom-everything>Gemini Diffusion
+Google describe it like this:
+Traditional autoregressive language models generate text one word – or token – at a time. This sequential process can be slow, and limit the quality and coherence of the output.
+Diffusion models work differently. Instead of predicting text directly, they learn to generate outputs by refining noise, step-by-step. This means they can iterate on a solution very quickly and error correct during the generation process. This helps them excel at tasks like editing, including in the context of math and code.
+The key feature then is speed. I made it through the waitlist and tried it out just now and wow, they are not kidding about it being fast.
+In this video I prompt it with &quot;Build a simulated chat app&quot; and it responds at 857 tokens/second, resulting in an interactive HTML+JavaScript page (embedded in the chat tool, Claude Artifacts style) within single digit seconds.
+The performance feels similar to the Cerebras Coder tool, which used Cerebras to run Llama3.1-70b at around 2,000 tokens/second.
+How good is the model? I&#x27;ve not seen any independent benchmarks yet, but Google&#x27;s landing page for it promises &quot;the performance of Gemini 2.0 Flash-Lite at 5x the speed&quot; so presumably they think it&#x27;s comparable to Gemini 2.0 Flash-Lite, one of their least expensive models.
+Prior to this the only commercial grade diffusion model I&#x27;ve encountered is Inception Mercury back in February this year.
+Update: a correction from synapsomorphy on Hacker News:
+Diffusion isn&#x27;t in place of transformers, it&#x27;s in place of autoregression. Prior diffusion LLMs like Mercury still use a transformer, but there&#x27;s no causal masking, so the entire input is processed all at once and the output generation is obviously different. I very strongly suspect this is also using a transformer.
+nvtop provided this explanation:
+Despite the name, diffusion LMs have little to do with image diffusion and are much closer to BERT and old good masked language modeling. Recall how BERT is trained:
+Take a full sentence (&quot;the cat sat on the mat&quot;)
+Replace 15% of tokens with a [MASK] token (&quot;the cat [MASK] on [MASK] mat&quot;)
+Make the Transformer predict tokens at masked positions. It does it in parallel, via a single inference step.
+Now, diffusion LMs take this idea further. BERT can recover 15% of masked tokens (&quot;noise&quot;), but why stop here. Let&#x27;s train a model to recover texts with 30%, 50%, 90%, 100% of masked tokens.
+Once you&#x27;ve trained that, in order to generate something from scratch, you start by feeding the model all [MASK]s. It will generate you mostly gibberish, but you can take some tokens (let&#x27;s say, 10%) at random positions and assume that these tokens are generated (&quot;final&quot;). Next, you run another iteration of inference, this time input having 90% of masks and 10% of &quot;final&quot; tokens. Again, you mark 10% of new tokens as final. Continue, and in 10 steps you&#x27;ll have generated a whole sequence. This is a core idea behind diffusion language models. [...]
+Tags: llm-release, gemini, google, generative-ai, ai, google-io, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -254,6 +349,18 @@ Now I can roleplay at learning woodworking from a pangolin any time I like, buil
 Tags: ai-ethics, generative-ai, openai, chatgpt, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              devstral
+              <span class="post-metadata">(9 min | 2662 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/devstral>Devstral: the best open source model for coding agents</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
@@ -4859,210 +4966,6 @@ Is what you&#x27;re doing taking a large amount of text and asking the LLM to co
 Tags: ai-ethics, llms, ai, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-04-22</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Updates to security configuration settings for customers in existing grace periods
-              <span class="post-metadata">(8 min | 2269 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-22-updates-to-security-configuration-settings-for-customers-in-existing-grace-periods>GitHub is automatically adjusting security configuration settings to help customers avoid unexpected charges.
-The post Updates to security configuration settings for customers in existing grace periods appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Actions workflow security analysis with CodeQL is now generally available
-              <span class="post-metadata">(8 min | 2270 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-22-github-actions-workflow-security-analysis-with-codeql-is-now-generally-available>GitHub code scanning now offers enhanced security protection for your GitHub Actions workflow files through CodeQL analysis, which is now generally available. This feature enables you to identify and remediate…
-The post GitHub Actions workflow security analysis with CodeQL is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Ellie Huxtable
-              <span class="post-metadata">(1 min | 238 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/ellie-huxtable/#atom-everything>I was against using AI for programming for a LONG time. It never felt effective.
-But with the latest models + tools, it finally feels like a real performance boost
-If you’re still holding out, do yourself a favor: spend a few focused hours actually using it
-
-— Ellie Huxtable
-Tags: ai-assisted-programming, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              ClickHouse gets lazier (and faster): Introducing lazy materialization
-              <span class="post-metadata">(1 min | 406 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/clickhouse-lazy-materializati/#atom-everything>ClickHouse gets lazier (and faster): Introducing lazy materialization
-As I understand it, the new &quot;lazy materialization&quot; feature means that if you run a query like this:
-select id, big_col1, big_col2
-from big_table order by rand() limit 5
-
-Those big_col1 and big_col2 columns won&#x27;t be read from disk for every record, just for the five that are returned. This can dramatically improve the performance of queries against huge tables - for one example query ClickHouse report a drop from &quot;219 seconds to just 139 milliseconds—with 40× less data read and 300× lower memory usage.&quot;
-I&#x27;m linking to this mainly because the article itself is such a detailed discussion of columnar data patterns in general. It caused me to update my intuition for how queries against large tables can work on modern hardware. This query for example:
-SELECT helpful_votes
-FROM amazon.amazon_reviews
-ORDER BY helpful_votes DESC
-LIMIT 3;
-
-Can run in 70ms against a 150 million row, 70GB table - because in a columnar database you only need to read that helpful_votes integer column which adds up to just 600MB of data, and sorting 150 million integers on a decent machine takes no time at all.
-
-    
-Via Hacker News
-Tags: sql, clickhouse, databases</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Abusing DuckDB-WASM by making SQL draw 3D graphics (Sort Of)
-              <span class="post-metadata">(1 min | 363 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/duckdb-wasm-doom/#atom-everything>Abusing DuckDB-WASM by making SQL draw 3D graphics (Sort Of)
-live demo, and the code on GitHub.
-The SQL is so much fun. Here’s a snippet that implements ray tracing as part of a SQL view:
-CREATE OR REPLACE VIEW render_3d_frame AS
-WITH RECURSIVE
-    -- ...
-    rays AS (
-        SELECT 
-            c.col, 
-            (p.dir - s.fov/2.0 + s.fov * (c.col*1.0 / (s.view_w - 1))) AS angle 
-        FROM cols c, s, p
-    ),
-    raytrace(col, step_count, fx, fy, angle) AS (
-        SELECT 
-            r.col, 
-            1, 
-            p.x + COS(r.angle)*s.step, 
-            p.y + SIN(r.angle)*s.step, 
-            r.angle 
-        FROM rays r, p, s 
-        UNION ALL 
-        SELECT 
-            rt.col, 
-            rt.step_count + 1, 
-            rt.fx + COS(rt.angle)*s.step, 
-            rt.fy + SIN(rt.angle)*s.step, 
-            rt.angle 
-        FROM raytrace rt, s 
-        WHERE rt.step_count &lt; s.max_steps 
-          AND NOT EXISTS (
-              SELECT 1 
-              FROM map m 
-              WHERE m.x &#x3D; CAST(rt.fx AS INT) 
-                AND m.y &#x3D; CAST(rt.fy AS INT) 
-                AND m.tile &#x3D; &#x27;#&#x27;
-          )
-    ),
-    -- ...
-Via Hacker News
-Tags: sql, webassembly, duckdb</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot now lets you schedule update frequencies with cron expressions
-              <span class="post-metadata">(7 min | 2219 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-22-dependabot-now-lets-you-schedule-update-frequencies-with-cron-expressions>Dependabot users can now schedule custom update frequencies by using cron expressions in schedule.interval in the Dependabot configuration file. This enhances the predefined intervals (daily, weekly, and monthly) and provides…
-The post Dependabot now lets you schedule update frequencies with cron expressions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Improvements to Changelog experience
-              <span class="post-metadata">(9 min | 2675 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-22-improvements-to-changelog-experience>What is changing? We are excited to share that we have shipped a new UI for users who read through our changelogs on the GitHub blog webpage! This is meant…
-The post Improvements to Changelog experience appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A5
-              <span class="post-metadata">(1 min | 408 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/22/a5/#atom-everything>A5
-It is the pentagonal equivalent of other DGGSs, like S2 or H3, but with higher accuracy and lower distortion.
-Effectively it&#x27;s a way of dividing the entire world into pentagons where each one covers the same physical area (to within a 2% threshold) - like Uber&#x27;s H3 but a bit weirder and more fun. An A5 reference implementation written in TypeScript is available on GitHub.
-This interactive demo helps show how it works:
-
-Why pentagons? Here&#x27;s what the A5 docs say:
-A5 is unique in that it uses a pentagonal tiling of a dodecahedron. [...] The benefit of choosing a dodecahedron is that it is the platonic solid with the lowest vertex curvature, and by this measure it is the most spherical of all the platonic solids. This is key for minimizing cell distortion as the process of projecting a platonic solid onto a sphere involves warping the cell geometry to force the vertex curvature to approach zero. Thus, the lower the original vertex curvature, the less distortion will be introduced by the projection.
-I had to look up platonic solids on Wikipedia. There are only five: Tetrahedron, Cube, Octahedron, Dodecahedron and Icosahedron and they can be made using squares, triangles or (in the case of the Dodecahedron) pentagons, making the pentagon the most circle-like option.
-
-    
-Via Tom MacWright
-Tags: geospatial</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Reminder for changes to npm replication feeds APIs
-              <span class="post-metadata">(9 min | 2692 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-22-reminder-for-changes-to-npm-replication-feeds-apis>This is a follow-up to our previous announcement about npm replication APIs. The new replication feed APIs are now live. While the legacy feeds will remain available—with limitations and scheduled…
-The post Reminder for changes to npm replication feeds APIs appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Mobile monthly: April’s general availability and more
-              <span class="post-metadata">(11 min | 3308 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-21-mobile-monthly-aprils-general-availability-and-more>During March and April, GitHub Mobile introduced several updates, including bug fixes, accessibility improvements, and a range of new features to make coding and collaboration on the go more seamless.…
-The post Mobile monthly: April’s general availability and more appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
