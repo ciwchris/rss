@@ -2,10 +2,140 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-05-22T14:10:57.190Z</updated>
+    <updated>2025-05-22T21:10:01.224Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Agents are models using tools in a loop]]></title>
+        <id>https://simonwillison.net/2025/May/22/tools-in-a-loop/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/22/tools-in-a-loop/#atom-everything"/>
+        <updated>2025-05-22T19:07:10.000Z</updated>
+        <summary type="html"><![CDATA[<p>I was going slightly spare at the fact that every talk at this Anthropic developer conference has used the word "agents" dozens of times, but nobody ever stopped to provide a useful definition.</p>
+<p>I'm now in the "Prompting for Agents" workshop and Anthropic's Hannah Moran finally broke the trend by saying that at Anthropic:</p>
+<blockquote>
+<p>Agents are models using tools in a loop</p>
+</blockquote>
+<p>I can live with that! I'm glad someone finally said it out loud.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Updated Anthropic model comparison table]]></title>
+        <id>https://simonwillison.net/2025/May/22/updated-anthropic-models/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/22/updated-anthropic-models/#atom-everything"/>
+        <updated>2025-05-22T19:03:42.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://docs.anthropic.com/en/docs/about-claude/models/overview#model-comparison-table">Updated Anthropic model comparison table</a></strong></p>
+A few details in here about Claude 4 that I hadn't spotted elsewhere:</p>
+<ol>
+<li>The training cut-off date for Claude Opus 4 and Claude Sonnet 4 is March 2025! That's the most recent cut-off for any of the current popular models, really impressive.</li>
+<li>Opus 4 has a max output of 32,000 tokens, Sonnet 4 has a max output of 64,000 tokens. Claude 3.7 Sonnet is 64,000 tokens too, so this is a small regression for Opus.</li>
+<li>The input limit for both of the Claude 4 models is still stuck at 200,000. I'm disjointed by this, I was hoping for a leap to a million to catch up with GPT 4.1 and the Gemini Pro series.</li>
+<li>Claude 3 Haiku is still in that table - it remains Anthropic's cheapest model, priced slightly lower than Claude 3.5 Haiku.</li>
+</ol>
+<p>For pricing: Sonnet 4 is the same price as Sonnet 3.7 ($3/million input, $15/million output). Opus 4 matches the pricing of the older Opus 3 - $15/million for input and $75/million for output. I've updated <a href="https://www.llm-prices.com/">llm-prices.com</a> with the new models.</p>
+<p>I spotted a few more interesting details in Anthropic's <a href="https://docs.anthropic.com/en/docs/about-claude/models/migrating-to-claude-4">Migrating to Claude 4</a> documentation:</p>
+<blockquote>
+<p>Claude 4 models introduce a new <code>refusal</code> stop reason for content that the model declines to generate for safety reasons, due to the increased intelligence of Claude 4 models.</p>
+</blockquote>
+<p>Plus this note on the new <a href="https://docs.anthropic.com/en/docs/about-claude/models/migrating-to-claude-4#summarized-thinking">summarized thinking</a> feature:</p>
+<blockquote>
+<p>With extended thinking enabled, the Messages API for Claude 4 models returns a summary of Claude’s full thinking process. Summarized thinking provides the full intelligence benefits of extended thinking, while preventing misuse.</p>
+<p>While the API is consistent across Claude 3.7 and 4 models, streaming responses for extended thinking might return in a “chunky” delivery pattern, with possible delays between streaming events.</p>
+<p><em>Summarization is processed by a different model than the one you target in your requests. The thinking model does not see the summarized output.</em></p>
+</blockquote>
+<p>There's a new beta header, <code>interleaved-thinking-2025-05-14</code>, which turns on the "interleaved thinking" feature where tools can be called as part of the chain-of-thought. More details on that <a href="https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#interleaved-thinking">in the interleaved thinking</a> documentation.</p>
+<p>This is <a href="https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#summarized-thinking">a frustrating note</a>:</p>
+<blockquote>
+<ul>
+<li>You’re charged for the full thinking tokens generated by the original request, not the summary tokens.</li>
+<li>The billed output token count will <strong>not match</strong> the count of tokens you see in the response.</li>
+</ul>
+</blockquote>
+<p>I initially misread that second bullet as meaning we would no longer be able to estimate costs based on the return token counts, but it's just warning us that we might see an output token integer that doesn't exactly match the visible tokens that were returned in the API.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm-anthropic 0.16]]></title>
+        <id>https://simonwillison.net/2025/May/22/llm-anthropic-016/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/22/llm-anthropic-016/#atom-everything"/>
+        <updated>2025-05-22T18:36:56.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/llm-anthropic/releases/0.16">llm-anthropic 0.16</a></strong></p>
+New release of my LLM plugin for Anthropic adding the new Claude 4 Opus and Sonnet models.</p>
+<p>You can see pelicans on bicycles generated using the new plugin at the bottom of <a href="https://simonwillison.net/2025/May/22/code-with-claude-live-blog/">my live blog</a> covering the release.</p>
+<p>I also released <a href="https://github.com/simonw/llm-anthropic/releases/0.16a1">llm-anthropic 0.16a1</a> which works with <a href="https://simonwillison.net/2025/May/14/llm-adds-support-for-tools/">the latest LLM alpha</a> and provides tool usage feature on top of the Claude models.</p>
+<p>The new models can be accessed using both their official model ID and the aliases I've set for them in the plugin:</p>
+<pre><code>llm install -U llm-anthropic
+llm keys set anthropic
+# paste key here
+llm -m anthropic/claude-sonnet-4-0 \
+  'Generate an SVG of a pelican riding a bicycle'
+</code></pre>
+<p>This uses the full model ID - <code>anthropic/claude-sonnet-4-0</code>.</p>
+<p>I've also setup aliases <code>claude-4-sonnet</code> and <code>claude-4-opus</code>. These are notably different from the official Anthropic names - I'm sticking with their previous naming scheme of <code>claude-VERSION-VARIANT</code> as seen with <code>claude-3.7-sonnet</code>.</p>
+<p>Here's an example that uses the new alpha tool feature with the new Opus:</p>
+<pre><code>llm install llm-anthropic==0.16a1
+llm --functions '                                                               
+def multiply(a: int, b: int):
+    return a * b
+' '234324 * 2343243' --td -m claude-4-opus
+</code></pre>
+<p>Outputs:</p>
+<pre><code>I'll multiply those two numbers for you.
+Tool call: multiply({'a': 234324, 'b': 2343243})
+  549078072732
+The result of 234,324 × 2,343,243 is **549,078,072,732**.
+</code></pre>
+<p>Here's <a href="https://gist.github.com/simonw/cbe9fdb51ffd4ac01f8e4192dce0bdb9">the output of llm logs -c</a> from that tool-enabled prompt response. More on tool calling in <a href="https://building-with-llms-pycon-2025.readthedocs.io/en/latest/tools.html">my recent workshop</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Anthropic Claude Sonnet 4 and Claude Opus 4 are now in public preview in GitHub Copilot]]></title>
+        <id>https://github.blog/changelog/2025-05-22-anthropic-claude-sonnet-4-and-claude-opus-4-are-now-in-public-preview-in-github-copilot</id>
+        <link href="https://github.blog/changelog/2025-05-22-anthropic-claude-sonnet-4-and-claude-opus-4-are-now-in-public-preview-in-github-copilot"/>
+        <updated>2025-05-22T16:34:57.000Z</updated>
+        <summary type="html"><![CDATA[Anthropic’s latest models, Claude Sonnet 4 and Claude Opus 4, are now available in GitHub Copilot. Claude Opus 4 is Anthropic’s most powerful model yet, excelling at complex problem solving…
+The post Anthropic Claude Sonnet 4 and Claude Opus 4 are now in public preview in GitHub Copilot appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Live blog: Claude 4 launch at Code with Claude]]></title>
+        <id>https://simonwillison.net/2025/May/22/code-with-claude-live-blog/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/22/code-with-claude-live-blog/#atom-everything"/>
+        <updated>2025-05-22T16:32:02.000Z</updated>
+        <summary type="html"><![CDATA[<p>I'm at Anthropic's Code with Claude event, where they are launching Claude 4. I'll be live blogging the keynote here.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/liveblogging">liveblogging</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Deprecation of bulk conversion of issues to discussions via labels]]></title>
+        <id>https://github.blog/changelog/2025-05-22-deprecation-of-bulk-conversion-of-issues-to-discussions-via-labels</id>
+        <link href="https://github.blog/changelog/2025-05-22-deprecation-of-bulk-conversion-of-issues-to-discussions-via-labels"/>
+        <updated>2025-05-22T15:21:07.000Z</updated>
+        <summary type="html"><![CDATA[On June 6, 2025, we’ll be deprecating the ability to convert issues to discussions based on labels. While this bulk migration option will be removed, you can still manually convert…
+The post Deprecation of bulk conversion of issues to discussions via labels appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Making AI Work: Leadership, Lab, and Crowd]]></title>
         <id>https://www.oneusefulthing.org/p/making-ai-work-leadership-lab-and</id>
@@ -4032,44 +4162,6 @@ llm -f symbex:. -s <span class="pl-s"><span class="pl-pds">'</span>guess what th
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/symbex">symbex</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Gergely Orosz]]></title>
-        <id>https://simonwillison.net/2025/Apr/23/gergely-orosz/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/23/gergely-orosz/#atom-everything"/>
-        <updated>2025-04-23T02:43:11.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://x.com/GergelyOrosz/status/1914863335457034422"><p>Despite being rusty with coding (I don't code every day these days): since starting to use Windsurf / Cursor with the recent increasingly capable models: I am SO back to being as fast in coding as when I was coding every day  "in the zone" [...]</p>
-<p>When you are driving with a firm grip on the steering wheel - because you know exactly where you are going, and when to steer hard or gently - it is just SUCH a big boost.</p>
-<p>I have a bunch of side projects and APIs that I operate - but usually don't like to touch it because it's (my) legacy code.</p>
-<p>Not any more.</p>
-<p>I'm making large changes, quickly. These tools really feel like a massive multiplier for experienced devs - those of us who have it in our head <em>exactly</em> what we want to do and now the LLM tooling can move nearly as fast as my thoughts!</p></blockquote>
-<p class="cite">&mdash; <a href="https://x.com/GergelyOrosz/status/1914863335457034422">Gergely Orosz</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/gergely-orosz">gergely-orosz</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A trick to feel less like cheating when you use LLMs]]></title>
-        <id>https://simonwillison.net/2025/Apr/23/cheating/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/23/cheating/#atom-everything"/>
-        <updated>2025-04-23T02:38:20.000Z</updated>
-        <summary type="html"><![CDATA[<p>An underestimated challenge in making productive use of LLMs is that it can <em>feel like cheating</em>.</p>
-<p>One trick I've found that helps is to make sure that I am putting in way more text than the LLM is spitting out .</p>
-<p>This goes for code: I'll <a href="https://claude.ai/share/4098384d-da9e-49a6-848e-222e00c91a24">pipe in a previous project</a> for it to modify, or ask it <a href="https://simonwillison.net/2024/Mar/30/ocr-pdfs-images/#ocr-how-i-built-this">to combine two</a>, or <a href="https://simonwillison.net/2025/Apr/20/llm-fragments-github/">paste in my research notes</a>.</p>
-<p>It also goes for writing. I hardly ever publish material that was written by an LLM, but I feel least icky about content where I had an extensive voice conversation with the model and then asked it to turn that into notes.</p>
-<p>I have a hunch that overcoming the feeling of guilt associated with using LLMs is one of the most important skills required to make effective use of them!</p>
-<p>My gold standard for LLM usage remains this: <strong>would I be proud to stake my own credibility on the quality of the end result</strong>?</p>
-<p>Related, this excellent advice <a href="https://seldo.com/posts/what-ive-learned-about-writing-ai-apps-so-far">from Laurie Voss</a>:</p>
-<blockquote>
-<p>Is what you're doing taking a large amount of text and asking the LLM to convert it into a smaller amount of text? Then it's probably going to be great at it. If you're asking it to convert into a roughly equal amount of text it will be so-so. If you're asking it to create more text than you gave it, forget about it.</p>
-</blockquote>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
