@@ -25,6 +25,75 @@
 
   <ul>
     <li>
+      <time>2025-05-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Sean Heelan
+              <span class="post-metadata">(1 min | 398 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/24/sean-heelan/#atom-everything>The vulnerability [o3] found is CVE-2025-37899 (fix here), a use-after-free in the handler for the SMB &#x27;logoff&#x27; command. Understanding the vulnerability requires reasoning about concurrent connections to the server, and how they may share various objects in specific circumstances. o3 was able to comprehend this and spot a location where a particular object that is not referenced counted is freed while still being accessible by another thread. As far as I&#x27;m aware, this is the first public discussion of a vulnerability of that nature being found by a LLM.
+Before I get into the technical details, the main takeaway from this post is this: with o3 LLMs have made a leap forward in their ability to reason about code, and if you work in vulnerability research you should start paying close attention. If you&#x27;re an expert-level vulnerability researcher or exploit developer the machines aren&#x27;t about to replace you. In fact, it is quite the opposite: they are now at a stage where they can make you significantly more efficient and effective. If you have a problem that can be represented in fewer than 10k lines of code there is a reasonable chance o3 can either solve it, or help you solve it.
+[...] You can find the system prompt and the other information I provided to the LLM in the .prompt files in this Github repository.
+
+— Sean Heelan
+Tags: llm-reasoning, security, generative-ai, openai, o3, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              f2
+              <span class="post-metadata">(1 min | 445 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/24/f2/#atom-everything>f2
+There&#x27;s a lot of great design in this. Basic usage is intuitive - here&#x27;s how to rename all .svg files to .tmp.svg in the current directory:
+f2 -f &#x27;.txt&#x27; -r &#x27;.tmp.txt&#x27; path/to/dir
+
+f2 defaults to a dry run which looks like this:
+*————————————————————*————————————————————————*————————*
+|      ORIGINAL      |        RENAMED         | STATUS |
+*————————————————————*————————————————————————*————————*
+| claude-pelican.svg | claude-pelican.tmp.svg | ok     |
+| gemini-pelican.svg | gemini-pelican.tmp.svg | ok     |
+*————————————————————*————————————————————————*————————*
+dry run: commit the above changes with the -x/--exec flag
+
+Running -x executes the rename.
+The really cool stuff is the advanced features - Ayooluwa has thought of everything. The EXIF integration is particularly clevel - here&#x27;s an example from the advanced tutorial which renames a library of photos to use their EXIF creation date as part of the file path:
+f2 -r &#x27;{x.cdt.YYYY}/{x.cdt.MM}-{x.cdt.MMM}/{x.cdt.YYYY}-{x.cdt.MM}-{x.cdt.DD}/{f}{ext}&#x27; -R
+
+The -R flag means &quot;recursive&quot;. The small -r uses variable syntax for EXIF data. There are plenty of others too, including hash variables that use the hash of the file contents.
+Installation notes
+I had Go 1.23.2 installed on my Mac via Homebrew. I ran this:
+go install github.com/ayoisaiah/f2/v2/cmd/f2@latest
+
+And got an error:
+requires go &gt;&#x3D; 1.24.2 (running go 1.23.2; GOTOOLCHAIN&#x3D;local)
+
+So I upgraded Go using Homebrew:
+brew upgrade go
+
+Which took me to 1.24.3 - then the go install command worked. It put the binary in ~/go/bin/f2.
+There&#x27;s also an npm package, similar to the pattern I wrote about a while ago of people Bundling binary tools in Python wheels.
+
+    
+Via Hacker News
+Tags: go, cli</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-23</time>
 
       <section>

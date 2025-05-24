@@ -2,10 +2,71 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-05-24T14:08:43.743Z</updated>
+    <updated>2025-05-24T21:08:55.207Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Sean Heelan]]></title>
+        <id>https://simonwillison.net/2025/May/24/sean-heelan/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/24/sean-heelan/#atom-everything"/>
+        <updated>2025-05-24T20:58:33.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://sean.heelan.io/2025/05/22/how-i-used-o3-to-find-cve-2025-37899-a-remote-zeroday-vulnerability-in-the-linux-kernels-smb-implementation/"><p>The vulnerability [o3] found is CVE-2025-37899 (fix <a href="https://github.com/torvalds/linux/commit/2fc9feff45d92a92cd5f96487655d5be23fb7e2b">here</a>), a use-after-free in the handler for the SMB 'logoff' command. Understanding the vulnerability requires reasoning about concurrent connections to the server, and how they may share various objects in specific circumstances. o3 was able to comprehend this and spot a location where a particular object that is not referenced counted is freed while still being accessible by another thread. As far as I'm aware, this is the first public discussion of a vulnerability of that nature being found by a LLM.</p>
+<p>Before I get into the technical details, the main takeaway from this post is this: with o3 LLMs have made a leap forward in their ability to reason about code, and if you work in vulnerability research you should start paying close attention. If you're an expert-level vulnerability researcher or exploit developer the machines aren't about to replace you. In fact, it is quite the opposite: they are now at a stage where they can make you <em>significantly</em> more efficient and effective. If you have a problem that can be represented in fewer than 10k lines of code there is a reasonable chance o3 can either solve it, or help you solve it.</p>
+<p>[...] You can find the system prompt and the other information I provided to the LLM in the .prompt files in <a href="https://github.com/SeanHeelan/o3_finds_cve-2025-37899">this</a> Github repository.</p></blockquote>
+<p class="cite">&mdash; <a href="https://sean.heelan.io/2025/05/22/how-i-used-o3-to-find-cve-2025-37899-a-remote-zeroday-vulnerability-in-the-linux-kernels-smb-implementation/">Sean Heelan</a></p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/o3">o3</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[f2]]></title>
+        <id>https://simonwillison.net/2025/May/24/f2/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/24/f2/#atom-everything"/>
+        <updated>2025-05-24T19:20:48.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/ayoisaiah/f2">f2</a></strong></p>
+Really neat CLI tool for bulk renaming of files and directories by Ayooluwa Isaiah, written in Go and designed to work cross-platform.</p>
+<p>There's a <em>lot</em> of great design in this. <a href="https://f2.freshman.tech/guide/tutorial">Basic usage</a> is intuitive - here's how to rename all <code>.svg</code> files to <code>.tmp.svg</code> in the current directory:</p>
+<pre><code>f2 -f '.txt' -r '.tmp.txt' path/to/dir
+</code></pre>
+<p>f2 defaults to a dry run which looks like this:</p>
+<pre><code>*————————————————————*————————————————————————*————————*
+|      ORIGINAL      |        RENAMED         | STATUS |
+*————————————————————*————————————————————————*————————*
+| claude-pelican.svg | claude-pelican.tmp.svg | ok     |
+| gemini-pelican.svg | gemini-pelican.tmp.svg | ok     |
+*————————————————————*————————————————————————*————————*
+dry run: commit the above changes with the -x/--exec flag
+</code></pre>
+<p>Running <code>-x</code> executes the rename.</p>
+<p>The really cool stuff is the advanced features - Ayooluwa has thought of <em>everything</em>. The EXIF integration is particularly clevel - here's an example <a href="https://f2.freshman.tech/guide/organizing-image-library">from the advanced tutorial</a> which renames a library of photos to use their EXIF creation date as part of the file path:</p>
+<pre><code>f2 -r '{x.cdt.YYYY}/{x.cdt.MM}-{x.cdt.MMM}/{x.cdt.YYYY}-{x.cdt.MM}-{x.cdt.DD}/{f}{ext}' -R
+</code></pre>
+<p>The <code>-R</code> flag means "recursive". The small <code>-r</code> uses variable syntax <a href="https://f2.freshman.tech/guide/exif-variables">for EXIF data</a>. There are plenty of others too, including <a href="https://f2.freshman.tech/guide/file-hash-variables">hash variables</a> that use the hash of the file contents.</p>
+<h4 id="f2-installation">Installation notes</h4>
+
+<p>I had Go 1.23.2 installed on my Mac via Homebrew. I ran this:</p>
+<pre><code>go install github.com/ayoisaiah/f2/v2/cmd/f2@latest
+</code></pre>
+<p>And got an error:</p>
+<pre><code>requires go &gt;= 1.24.2 (running go 1.23.2; GOTOOLCHAIN=local)
+</code></pre>
+<p>So I upgraded Go using Homebrew:</p>
+<pre><code>brew upgrade go
+</code></pre>
+<p>Which took me to 1.24.3 - then the <code>go install</code> command worked. It put the binary in <code>~/go/bin/f2</code>.</p>
+<p>There's also <a href="https://www.npmjs.com/package/@ayoisaiah/f2">an npm package</a>, similar to the pattern I wrote about a while ago of people <a href="https://simonwillison.net/2022/May/23/bundling-binary-tools-in-python-wheels/">Bundling binary tools in Python wheels</a>.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=44081850">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/go">go</a>, <a href="https://simonwillison.net/tags/cli">cli</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Honey badger]]></title>
         <id>https://simonwillison.net/2025/May/23/honey-badger/#atom-everything</id>
