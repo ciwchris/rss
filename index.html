@@ -31,6 +31,125 @@
       <article>
           <details>
             <summary>
+              Incremental security analysis makes CodeQL up to 20% faster in pull requests
+              <span class="post-metadata">(8 min | 2502 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-28-incremental-security-analysis-makes-codeql-up-to-20-faster-in-pull-requests>CodeQL scans on pull requests for JavaScript, TypeScript, Java, Ruby, and Python are now up to 20% faster. This is powered by our new incremental analysis, which only analyzes new…
+The post Incremental security analysis makes CodeQL up to 20% faster in pull requests appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot code review: Better coverage and more control
+              <span class="post-metadata">(6 min | 1917 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-28-copilot-code-review-better-coverage-and-more-control>Enhancements to Copilot code reviews: personal settings, improved comment quality, and expanded language support.
+The post Copilot code review: Better coverage and more control appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Codestral Embed
+              <span class="post-metadata">(2 min | 555 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/28/codestral-embed/#atom-everything>Codestral Embed
+Codestral Embed significantly outperforms leading code embedders in the market today: Voyage Code 3, Cohere Embed v4.0 and OpenAI’s large embedding model.
+The model is designed to work at different sizes. They show performance numbers for 256,  512, 1024 and 1546 sized vectors in binary (256 bits &#x3D; 32 bytes of storage per record), int8 and float32 representations. The API documentation says you can request up to 3072.
+The dimensions of our embeddings are ordered by relevance. For any integer target dimension n, you can choose to keep the first n dimensions for a smooth trade-off between quality and cost.
+I think that means they&#x27;re using Matryoshka embeddings.
+Here&#x27;s the problem: the benchmarks look great, but the model is only available via their API (or for on-prem deployments at &quot;contact us&quot; prices).
+I&#x27;m perfectly happy to pay for API access to an embedding model like this, but I only want to do that if the model itself is also open weights so I can maintain the option to run it myself in the future if I ever need to.
+The reason is that the embeddings I retrieve from this API only maintain their value if I can continue to calculate more of them in the future. If I&#x27;m going to spend money on calculating and storing embeddings I want to know that value is guaranteed far into the future.
+If the only way to get new embeddings is via an API, and Mistral shut down that API (or go out of business), that investment I&#x27;ve made in the embeddings I&#x27;ve stored collapses in an instant.
+I don&#x27;t actually want to run the model myself. Paying Mistral $0.15 per million tokens (50% off for batch discounts) to not have to waste my own server&#x27;s RAM and GPU holding that model in memory is great deal!
+In this case, open weights is a feature I want purely because it gives me complete confidence in the future of my investment.
+
+
+    
+Tags: mistral, ai, embeddings</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude as a calculator
+              <span class="post-metadata">(2 min | 495 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/28/claude-calculator/#atom-everything>Here&#x27;s a quick demo of the kind of casual things I use LLMs for on a daily basis.
+I just found out that Perplexity offer their Deep Research feature via their API, through a model called Sonar Deep Research.
+Their documentation includes an example response, which included this usage data in the JSON:
+{&quot;prompt_tokens&quot;: 19, &quot;completion_tokens&quot;: 498, &quot;total_tokens&quot;: 517, &quot;citation_tokens&quot;: 10175, &quot;num_search_queries&quot;: 48, &quot;reasoning_tokens&quot;: 95305}
+But how much would that actually cost?
+Their pricing page lists the price for that model. I snapped this screenshot of the prices:
+
+I could break out a calculator at this point, but I&#x27;m not quite curious enough to go through the extra effort.
+So I pasted that screenshot into Claude along with the JSON and prompted:
+{&quot;prompt_tokens&quot;: 19, &quot;completion_tokens&quot;: 498, &quot;total_tokens&quot;: 517, &quot;citation_tokens&quot;: 10175, &quot;num_search_queries&quot;: 48, &quot;reasoning_tokens&quot;: 95305}
+Calculate price, use javascript
+I wanted to make sure Claude would use its JavaScript analysis tool, since LLMs can&#x27;t do maths.
+I watched Claude Sonnet 4 write 61 lines of JavaScript - keeping an eye on it to check it didn&#x27;t do anything obviously wrong. The code spat out this output:
+&#x3D;&#x3D;&#x3D; COST CALCULATIONS &#x3D;&#x3D;&#x3D;
+Input tokens cost: 19 tokens × $2/million &#x3D; $0.000038
+Output tokens cost: 498 tokens × $8/million &#x3D; $0.003984
+Search queries cost: 48 queries × $5/1000 &#x3D; $0.240000
+Reasoning tokens cost: 95305 tokens × $3/million &#x3D; $0.285915
+
+&#x3D;&#x3D;&#x3D; COST SUMMARY &#x3D;&#x3D;&#x3D;
+Input tokens: $0.000038
+Output tokens: $0.003984
+Search queries: $0.240000
+Reasoning tokens: $0.285915
+─────────────────────────
+TOTAL COST: $0.529937
+TOTAL COST: $0.5299 (rounded to 4 decimal places)
+
+So that Deep Research API call would cost 53 cents! Curiosity satisfied in less than a minute.
+Tags: generative-ai, claude, perplexity, llm-pricing, deep-research, ai, llms, llm-tool-use</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GPT-4o Copilot May update
+              <span class="post-metadata">(6 min | 1807 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-27-gpt-4o-copilot-may-update>GPT-4o Copilot has been updated with a new model version that provides more useful and timely suggestions.
+The post GPT-4o Copilot May update appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Semantic Kernel and Microsoft.Extensions.AI: Better Together, Part 2
+              <span class="post-metadata">(25 min | 7572 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-and-microsoft-extensions-ai-better-together-part-2/>This is Part 2 of our series on integrating Microsoft.Extensions.AI with Semantic Kernel. In Part 1, we explored the relationship between these technologies and how they complement each other. Now, let’s dive into practical examples showing how to use Microsoft.Extensions.AI abstractions with Semantic Kernel in non-agent scenarios. Getting Started with Microsoft.Extensions.AI and Semantic Kernel Before we […]
+The post Semantic Kernel and Microsoft.Extensions.AI: Better Together, Part 2 appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               llm-llama-server 0.2
               <span class="post-metadata">(1 min | 429 words)</span> 
             </summary>
@@ -451,6 +570,32 @@ Tags: gemini, llm, anthropic, ai-agents, openai, llm-tool-use, ai, ollama, llms,
 The post Dependabot support for virtual network (vNet) and Actions Runner Controller (ARC) is generally available appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependency auto-submission now supports Gradle
+              <span class="post-metadata">(6 min | 1811 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-05-27-dependency-auto-submission-now-supports-gradle>Projects that use Gradle need to include dependencies that are resolved at build time in order to get a full, transitive dependency tree. To make this easier, dependency auto-submission now…
+The post Dependency auto-submission now supports Gradle appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Semantic Kernel: Multi-agent Orchestration
+              <span class="post-metadata">(26 min | 7685 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-multi-agent-orchestration/>The field of AI is rapidly evolving, and the need for more sophisticated, collaborative, and flexible agent-based systems is growing. With this in mind, Semantic Kernel introduces a new multi-agent orchestration framework that enables developers to build, manage, and scale complex agent workflows with ease. This post explores the new orchestration patterns, their capabilities, and […]
+The post Semantic Kernel: Multi-agent Orchestration appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
           </details>
       </article>
       <article>
@@ -5102,6 +5247,25 @@ Tags: drew-breunig, geospatial, gis, duckdb, sql</a>
       </section>
     </li>
     <li>
+      <time>2025-05-03</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              qwen3
+              <span class="post-metadata">(9 min | 2783 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwen3>Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-02</time>
 
       <section>
@@ -5725,59 +5889,6 @@ Tags: ai-ethics, llms, ai, generative-ai, bing</a>
 The post Copilot Edits for JetBrains IDEs is generally available appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts
-              <span class="post-metadata">(1 min | 429 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/chatgpt-sycophancy-prompt/#atom-everything>A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts
-way too sycophantic and disingenuously praise anything the user said. OpenAI&#x27;s Aidan McLaughlin:
-last night we rolled out our first fix to remedy 4o&#x27;s glazing/sycophancy
-we originally launched with a system message that had unintended behavior effects but found an antidote
-I asked if anyone had managed to snag the before and after system prompts (using one of the various prompt leak attacks) and it turned out legendary jailbreaker @elder_plinius had. I pasted them into a Gist to get this diff.
-The system prompt that caused the sycophancy included this:
-Over the course of the conversation, you adapt to the user’s tone and preference. Try to match the user’s vibe, tone, and generally how they are speaking. You want the conversation to feel natural. You engage in authentic conversation by responding to the information provided and showing genuine curiosity.
-&quot;Try to match the user’s vibe&quot; - more proof that somehow everything in AI always comes down to vibes!
-The replacement prompt now uses this:
-Engage warmly yet honestly with the user. Be direct; avoid ungrounded or sycophantic flattery. Maintain professionalism and grounded honesty that best represents OpenAI and its values.
-I wish OpenAI would emulate Anthropic and publish their system prompts so tricks like this weren&#x27;t necessary.
-
-
-
-    
-Tags: prompt-engineering, prompt-injection, generative-ai, openai, chatgpt, ai, llms, ai-personality</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts
-              <span class="post-metadata">(1 min | 427 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/a-comparison-of-chatgptgpt-4os-previous-and-current-system-promp/#atom-everything>A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts
-way too sycophantic and disingenuously praise anything the user said. OpenAI&#x27;s Aidan McLaughlin:
-last night we rolled out our first fix to remedy 4o&#x27;s glazing/sycophancy
-we originally launched with a system message that had unintended behavior effects but found an antidote
-I asked if anyone had managed to snag the before and after system prompts (using one of the various prompt leak attacks) and it turned out legendary jailbreaker @elder_plinius had. I pasted them into a Gist to get this diff.
-The system prompt that caused the sycophancy included this:
-Over the course of the conversation, you adapt to the user’s tone and preference. Try to match the user’s vibe, tone, and generally how they are speaking. You want the conversation to feel natural. You engage in authentic conversation by responding to the information provided and showing genuine curiosity.
-&quot;Try to match the user’s vibe&quot; - more proof that somehow everything in AI always comes down to vibes!
-The replacement prompt now uses this:
-Engage warmly yet honestly with the user. Be direct; avoid ungrounded or sycophantic flattery. Maintain professionalism and grounded honesty that best represents OpenAI and its values.
-I wish OpenAI would emulate Anthropic and publish their system prompts so tricks like this weren&#x27;t necessary.
-
-
-    
-Tags: prompt-engineering, prompt-injection, generative-ai, openai, chatgpt, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 

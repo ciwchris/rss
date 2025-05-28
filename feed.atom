@@ -2,10 +2,124 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-05-28T14:11:34.330Z</updated>
+    <updated>2025-05-28T21:09:58.149Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Incremental security analysis makes CodeQL up to 20% faster in pull requests]]></title>
+        <id>https://github.blog/changelog/2025-05-28-incremental-security-analysis-makes-codeql-up-to-20-faster-in-pull-requests</id>
+        <link href="https://github.blog/changelog/2025-05-28-incremental-security-analysis-makes-codeql-up-to-20-faster-in-pull-requests"/>
+        <updated>2025-05-28T20:35:45.000Z</updated>
+        <summary type="html"><![CDATA[CodeQL scans on pull requests for JavaScript, TypeScript, Java, Ruby, and Python are now up to 20% faster. This is powered by our new incremental analysis, which only analyzes new…
+The post Incremental security analysis makes CodeQL up to 20% faster in pull requests appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot code review: Better coverage and more control]]></title>
+        <id>https://github.blog/changelog/2025-05-28-copilot-code-review-better-coverage-and-more-control</id>
+        <link href="https://github.blog/changelog/2025-05-28-copilot-code-review-better-coverage-and-more-control"/>
+        <updated>2025-05-28T18:04:56.000Z</updated>
+        <summary type="html"><![CDATA[Enhancements to Copilot code reviews: personal settings, improved comment quality, and expanded language support.
+The post Copilot code review: Better coverage and more control appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Codestral Embed]]></title>
+        <id>https://simonwillison.net/2025/May/28/codestral-embed/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/28/codestral-embed/#atom-everything"/>
+        <updated>2025-05-28T16:47:04.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/news/codestral-embed">Codestral Embed</a></strong></p>
+Brand new embedding model from Mistral, specifically trained for code. Mistral claim that:</p>
+<blockquote>
+<p>Codestral Embed significantly outperforms leading code embedders in the market today: Voyage Code 3, Cohere Embed v4.0 and OpenAI’s large embedding model.</p>
+</blockquote>
+<p>The model is designed to work at different sizes. They show performance numbers for 256,  512, 1024 and 1546 sized vectors in binary (256 bits = 32 bytes of storage per record), int8 and float32 representations. The <a href="https://docs.mistral.ai/capabilities/embeddings/code_embeddings/#output-dimension">API documentation</a> says you can request up to 3072.</p>
+<blockquote>
+<p>The dimensions of our embeddings are ordered by relevance. For any integer target dimension n, you can choose to keep the first n dimensions for a smooth trade-off between quality and cost.</p>
+</blockquote>
+<p>I think that means they're using <a href="https://huggingface.co/blog/matryoshka">Matryoshka embeddings</a>.</p>
+<p>Here's the problem: the benchmarks look great, but the model is <em>only</em> available via their API (or for on-prem deployments at "contact us" prices).</p>
+<p>I'm perfectly happy to pay for API access to an embedding model like this, but I only want to do that if the model itself is also open weights so I can maintain the option to run it myself in the future if I ever need to.</p>
+<p>The reason is that the embeddings I retrieve from this API only maintain their value if I can continue to calculate more of them in the future. If I'm going to spend money on calculating and storing embeddings I want to know that value is guaranteed far into the future.</p>
+<p>If the only way to get new embeddings is via an API, and Mistral shut down that API (or go out of business), that investment I've made in the embeddings I've stored collapses in an instant.</p>
+<p>I don't actually want to run the model myself. Paying Mistral $0.15 per million tokens (50% off for batch discounts) to <em>not</em> have to waste my own server's RAM and GPU holding that model in memory is great deal!</p>
+<p>In this case, open weights is a feature I want purely because it gives me complete confidence in the future of my investment.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/embeddings">embeddings</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude as a calculator]]></title>
+        <id>https://simonwillison.net/2025/May/28/claude-calculator/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/May/28/claude-calculator/#atom-everything"/>
+        <updated>2025-05-28T15:41:37.000Z</updated>
+        <summary type="html"><![CDATA[<p>Here's a quick demo of the kind of casual things I use LLMs for on a daily basis.</p>
+<p>I just found out that Perplexity offer their Deep Research feature via their API, through a model called <a href="https://docs.perplexity.ai/models/models/sonar-deep-research">Sonar Deep Research</a>.</p>
+<p>Their documentation includes an example response, which included this usage data in the JSON:</p>
+<p><code>{"prompt_tokens": 19, "completion_tokens": 498, "total_tokens": 517, "citation_tokens": 10175, "num_search_queries": 48, "reasoning_tokens": 95305}</code></p>
+<p>But how much would that actually cost?</p>
+<p>Their pricing page lists <a href="https://docs.perplexity.ai/guides/pricing#deep-research-models">the price for that model</a>. I snapped this screenshot of the prices:</p>
+<p><img alt="Pricing table screenshot showing API costs: Input Tokens (Per Million) $2, Output Tokens (Per Million) $8, Price per 1000 Search Queries $5, Reasoning Tokens (Per Million) $3" src="https://static.simonwillison.net/static/2025/perplexity-pricing.jpg" /></p>
+<p>I could break out a calculator at this point, but I'm not quite curious enough to go through the extra effort.</p>
+<p>So I pasted that screenshot into Claude along with the JSON and <a href="https://claude.ai/share/31c23164-ced3-419c-ba68-55213caf71c3">prompted</a>:</p>
+<blockquote>
+<p><code>{"prompt_tokens": 19, "completion_tokens": 498, "total_tokens": 517, "citation_tokens": 10175, "num_search_queries": 48, "reasoning_tokens": 95305}</code></p>
+<p>Calculate price, use javascript</p>
+</blockquote>
+<p>I wanted to make sure Claude would use its JavaScript analysis tool, since LLMs can't do maths.</p>
+<p>I watched Claude Sonnet 4 <a href="https://gist.github.com/simonw/ad00a97d2e70918cfbbc94d429af46ca">write 61 lines of JavaScript</a> - keeping an eye on it to check it didn't do anything obviously wrong. The code spat out this output:</p>
+<pre><code>=== COST CALCULATIONS ===
+Input tokens cost: 19 tokens × $2/million = $0.000038
+Output tokens cost: 498 tokens × $8/million = $0.003984
+Search queries cost: 48 queries × $5/1000 = $0.240000
+Reasoning tokens cost: 95305 tokens × $3/million = $0.285915
+
+=== COST SUMMARY ===
+Input tokens: $0.000038
+Output tokens: $0.003984
+Search queries: $0.240000
+Reasoning tokens: $0.285915
+─────────────────────────
+TOTAL COST: $0.529937
+TOTAL COST: $0.5299 (rounded to 4 decimal places)
+</code></pre>
+<p>So that Deep Research API call would cost 53 cents! Curiosity satisfied in less than a minute.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/perplexity">perplexity</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/deep-research">deep-research</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GPT-4o Copilot May update]]></title>
+        <id>https://github.blog/changelog/2025-05-27-gpt-4o-copilot-may-update</id>
+        <link href="https://github.blog/changelog/2025-05-27-gpt-4o-copilot-may-update"/>
+        <updated>2025-05-28T13:54:36.000Z</updated>
+        <summary type="html"><![CDATA[GPT-4o Copilot has been updated with a new model version that provides more useful and timely suggestions.
+The post GPT-4o Copilot May update appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Semantic Kernel and Microsoft.Extensions.AI: Better Together, Part 2]]></title>
+        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4899</id>
+        <link href="https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-and-microsoft-extensions-ai-better-together-part-2/"/>
+        <updated>2025-05-28T13:18:24.000Z</updated>
+        <summary type="html"><![CDATA[This is Part 2 of our series on integrating Microsoft.Extensions.AI with Semantic Kernel. In Part 1, we explored the relationship between these technologies and how they complement each other. Now, let’s dive into practical examples showing how to use Microsoft.Extensions.AI abstractions with Semantic Kernel in non-agent scenarios. Getting Started with Microsoft.Extensions.AI and Semantic Kernel Before we […]
+The post Semantic Kernel and Microsoft.Extensions.AI: Better Together, Part 2 appeared first on Semantic Kernel.]]></summary>
+        <author>
+            <name>Roger Barreto</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[llm-llama-server 0.2]]></title>
         <id>https://simonwillison.net/2025/May/28/llama-server-tools/#atom-everything</id>
@@ -286,6 +400,28 @@ llm -T <span class="pl-s"><span class="pl-pds">'</span>Datasette("https://datase
 The post Dependabot support for virtual network (vNet) and Actions Runner Controller (ARC) is generally available appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dependency auto-submission now supports Gradle]]></title>
+        <id>https://github.blog/changelog/2025-05-21-dependency-auto-submission-now-supports-gradle</id>
+        <link href="https://github.blog/changelog/2025-05-27-dependency-auto-submission-now-supports-gradle"/>
+        <updated>2025-05-27T17:37:15.000Z</updated>
+        <summary type="html"><![CDATA[Projects that use Gradle need to include dependencies that are resolved at build time in order to get a full, transitive dependency tree. To make this easier, dependency auto-submission now…
+The post Dependency auto-submission now supports Gradle appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Semantic Kernel: Multi-agent Orchestration]]></title>
+        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4789</id>
+        <link href="https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-multi-agent-orchestration/"/>
+        <updated>2025-05-27T16:54:32.000Z</updated>
+        <summary type="html"><![CDATA[The field of AI is rapidly evolving, and the need for more sophisticated, collaborative, and flexible agent-based systems is growing. With this in mind, Semantic Kernel introduces a new multi-agent orchestration framework that enables developers to build, manage, and scale complex agent workflows with ease. This post explores the new orchestration patterns, their capabilities, and […]
+The post Semantic Kernel: Multi-agent Orchestration appeared first on Semantic Kernel.]]></summary>
+        <author>
+            <name>Tao Chen, Chris Rickman</name>
         </author>
     </entry>
     <entry>
@@ -4068,6 +4204,16 @@ In the modern geospatial stack - QGIS, PostGIS, geopandas, SpatiaLite - predate 
         </author>
     </entry>
     <entry>
+        <title type="html"><![CDATA[qwen3]]></title>
+        <id>https://ollama.com/library/qwen3</id>
+        <link href="https://ollama.com/library/qwen3"/>
+        <updated>2025-05-03T21:35:00.000Z</updated>
+        <summary type="html"><![CDATA[Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.]]></summary>
+        <author>
+            <name>Ollama models</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Qwen3-8B]]></title>
         <id>https://simonwillison.net/2025/May/2/qwen3-8b/#atom-everything</id>
         <link href="https://simonwillison.net/2025/May/2/qwen3-8b/#atom-everything"/>
@@ -4605,65 +4751,6 @@ The post Dependabot API now contains has:patch in general availability appeared 
 The post Copilot Edits for JetBrains IDEs is generally available appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A comparison of ChatGPT/GPT-4o's previous and current system prompts]]></title>
-        <id>https://simonwillison.net/2025/Apr/29/chatgpt-sycophancy-prompt/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/29/chatgpt-sycophancy-prompt/#atom-everything"/>
-        <updated>2025-04-29T02:31:30.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://gist.github.com/simonw/51c4f98644cf62d7e0388d984d40f099/revisions">A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts</a></strong></p>
-GPT-4o's recent update caused it to be <a href="https://simonwillison.net/2025/Apr/28/sam-altman/">way too sycophantic</a> and disingenuously praise anything the user said. OpenAI's <a href="https://twitter.com/aidan_mclau/status/1916908772188119166">Aidan McLaughlin</a>:</p>
-<blockquote>
-<p>last night we rolled out our first fix to remedy 4o's glazing/sycophancy</p>
-<p>we originally launched with a system message that had unintended behavior effects but found an antidote</p>
-</blockquote>
-<p>I <a href="https://twitter.com/simonw/status/1916944643897626896">asked</a> if anyone had managed to snag the before and after system prompts (using one of the various prompt leak attacks) and it turned out legendary jailbreaker <a href="https://twitter.com/bmiselis/status/1916946562955030659">@elder_plinius had</a>. I pasted them into a Gist to get <a href="https://gist.github.com/simonw/51c4f98644cf62d7e0388d984d40f099/revisions">this diff</a>.</p>
-<p>The system prompt that caused the sycophancy included this:</p>
-<blockquote>
-<p><code>Over the course of the conversation, you adapt to the user’s tone and preference. Try to match the user’s vibe, tone, and generally how they are speaking. You want the conversation to feel natural. You engage in authentic conversation by responding to the information provided and showing genuine curiosity.</code></p>
-</blockquote>
-<p>"Try to match the user’s vibe" - more proof that somehow everything in AI always comes down to vibes!</p>
-<p>The replacement prompt now uses this:</p>
-<blockquote>
-<p><code>Engage warmly yet honestly with the user. Be direct; avoid ungrounded or sycophantic flattery. Maintain professionalism and grounded honesty that best represents OpenAI and its values.</code></p>
-</blockquote>
-<p>I wish OpenAI would <a href="https://simonwillison.net/2024/Aug/26/anthropic-system-prompts/">emulate Anthropic</a> and publish their system prompts so tricks like this weren't necessary.</p>
-<p><img alt="Visual diff showing the changes between the two prompts" src="https://static.simonwillison.net/static/2025/sycophantic.jpg" />
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/prompt-injection">prompt-injection</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-personality">ai-personality</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A comparison of ChatGPT/GPT-4o's previous and current system prompts]]></title>
-        <id>https://simonwillison.net/2025/Apr/29/a-comparison-of-chatgptgpt-4os-previous-and-current-system-promp/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Apr/29/a-comparison-of-chatgptgpt-4os-previous-and-current-system-promp/#atom-everything"/>
-        <updated>2025-04-29T02:31:30.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://gist.github.com/simonw/51c4f98644cf62d7e0388d984d40f099/revisions">A comparison of ChatGPT/GPT-4o&#x27;s previous and current system prompts</a></strong></p>
-GPT-4o's recent update caused it to be <a href="https://simonwillison.net/2025/Apr/28/sam-altman/">way too sycophantic</a> and disingenuously praise anything the user said. OpenAI's <a href="https://twitter.com/aidan_mclau/status/1916908772188119166">Aidan McLaughlin</a>:</p>
-<blockquote>
-<p>last night we rolled out our first fix to remedy 4o's glazing/sycophancy</p>
-<p>we originally launched with a system message that had unintended behavior effects but found an antidote</p>
-</blockquote>
-<p>I <a href="https://twitter.com/simonw/status/1916944643897626896">asked</a> if anyone had managed to snag the before and after system prompts (using one of the various prompt leak attacks) and it turned out legendary jailbreaker <a href="https://twitter.com/bmiselis/status/1916946562955030659">@elder_plinius had</a>. I pasted them into a Gist to get <a href="https://gist.github.com/simonw/51c4f98644cf62d7e0388d984d40f099/revisions">this diff</a>.</p>
-<p>The system prompt that caused the sycophancy included this:</p>
-<blockquote>
-<p><code>Over the course of the conversation, you adapt to the user’s tone and preference. Try to match the user’s vibe, tone, and generally how they are speaking. You want the conversation to feel natural. You engage in authentic conversation by responding to the information provided and showing genuine curiosity.</code></p>
-</blockquote>
-<p>"Try to match the user’s vibe" - more proof that somehow everything in AI always comes down to vibes!</p>
-<p>The replacement prompt now uses this:</p>
-<blockquote>
-<p><code>Engage warmly yet honestly with the user. Be direct; avoid ungrounded or sycophantic flattery. Maintain professionalism and grounded honesty that best represents OpenAI and its values.</code></p>
-</blockquote>
-<p>I wish OpenAI would <a href="https://simonwillison.net/2024/Aug/26/anthropic-system-prompts/">emulate Anthropic</a> and publish their system prompts so tricks like this weren't necessary.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/prompt-injection">prompt-injection</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
