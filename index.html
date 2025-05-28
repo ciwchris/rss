@@ -25,6 +25,80 @@
 
   <ul>
     <li>
+      <time>2025-05-28</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              llm-llama-server 0.2
+              <span class="post-metadata">(1 min | 429 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/28/llama-server-tools/#atom-everything>llm-llama-server 0.2
+new tool support against local models (the first was via llm-ollama).
+It turns out the llama.cpp ecosystem has pretty robust OpenAI-compatible tool support already, so my llm-llama-server plugin only needed a quick upgrade to get those working there.
+Unfortunately it looks like streaming support doesn&#x27;t work with tools in llama-server at the moment, so I added a new model ID called llama-server-tools which disables streaming and enables tools.
+Here&#x27;s how to try it out. First, ensure you have llama-server - the easiest way to get that on macOS is via Homebrew:
+brew install llama.cpp
+
+Start the server running like this. This command will download and cache the 3.2GB unsloth/gemma-3-4b-it-GGUF:Q4_K_XL if you don&#x27;t yet have it:
+llama-server --jinja -hf unsloth/gemma-3-4b-it-GGUF:Q4_K_XL
+
+Then in another window:
+llm install llm-llama-server
+llm -m llama-server-tools -T llm_time &#x27;what time is it?&#x27; --td
+
+And since you don&#x27;t even need an API key for this, even if you&#x27;ve never used LLM before you can try it out with this uvx one-liner:
+uvx --with llm-llama-server llm -m llama-server-tools -T llm_time &#x27;what time is it?&#x27; --td
+
+For more notes on using llama.cpp with LLM see Trying out llama.cpp’s new vision support from a couple of weeks ago.
+
+
+    
+Tags: generative-ai, llm, plugins, projects, llm-tool-use, llama-cpp, ai, uv</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              At Amazon, Some Coders Say Their Jobs Have Begun to Resemble Warehouse Work
+              <span class="post-metadata">(2 min | 474 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/28/amazon-some-coders/#atom-everything>At Amazon, Some Coders Say Their Jobs Have Begun to Resemble Warehouse Work
+“It’s more fun to write code than to read code,” said Simon Willison, an A.I. fan who is a longtime programmer and blogger, channeling the objections of other programmers. “If you’re told you have to do a code review, it’s never a fun part of the job. When you’re working with these tools, it’s most of the job.”
+ [...]
+It took me about 15 years of my career before I got over my dislike of reading code written by other people. It&#x27;s a difficult skill to develop! I&#x27;m not surprised that a lot of people dislike AI-assisted programming paradigm when the end result is less time writing, more time reading!
+“If you’re a prototyper, this is a gift from heaven,” Mr. Willison said. “You can knock something out that illustrates the idea.”
+Rapid prototyping has been a key skill of mine for a long time. I love being able to bring half-baked illustrative prototypes of ideas to a meeting - my experience is that the quality of conversation goes up by an order of magnitude as a result of having something concrete for people to talk about.
+These days I can vibe code a prototype in single digit minutes.
+
+
+    
+Tags: ai-assisted-programming, careers, prototyping, ai, llms, ai-ethics, vibe-coding, generative-ai, amazon</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              qwen2.5-coder
+              <span class="post-metadata">(10 min | 3005 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwen2.5-coder>The latest series of Code-Specific Qwen models, with significant improvements in code generation, code reasoning, and code fixing.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-27</time>
 
       <section>
@@ -5702,261 +5776,6 @@ I wish OpenAI would emulate Anthropic and publish their system prompts so tricks
 
     
 Tags: prompt-engineering, prompt-injection, generative-ai, openai, chatgpt, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Qwen 3 offers a case study in how to effectively release a model
-              <span class="post-metadata">(5 min | 1467 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/qwen-3/#atom-everything>Alibaba&#x27;s Qwen team released the hotly anticipated Qwen 3 model family today. The Qwen models are already some of the best open weight models - Apache 2.0 licensed and with a variety of different capabilities (including vision and audio input/output).
-
-Qwen 3 is text input/output only for the moment and comes in an exciting range of different shapes and sizes: 32B, 14B, 8B, 4B, 1.7B, and 0.6B models. The 4B and up models all have 131,072 token context windows (extended from 32k using YaRN) - 0.6B, and 1.7B are 32,768.
-
-This covers the full spectrum of sizes that I generally care about: 0.6B and 1.7B should run fine on an iPhone, and 32B will fit on my 64GB Mac with room to spare for other applications.
-
-Qwen also released two Mixture of Experts models - Qwen3-30B-A3B and Qwen3-235B-A22B. The A stands for &quot;active parameters&quot; - Qwen3-30B-A3B is a 30 billion parameter model that keeps 3 billion active at once, which speeds up inference (I previously said it reduces the memory needed to run the models, but that&#x27;s incorrect).
-
-All eight of these models are released under the Apache 2.0 license.
-
-Qwen describe these as &quot;hybrid thinking&quot; models - every one of them is capable of the &quot;reason step by step&quot; trick before they deliver their final answer. In my experiments so far this presents itself as a &lt;think&gt;...&lt;/think&gt; block at the start of the response.
-
-That thinking mode can be turned on and off by including special /think and /no_think tokens in the prompt. It&#x27;s on by default.
-
-
-Trying out Qwen 3 via Ollama
-
-A really well coordinated release
-
-The continuing trend of better models that run on the same hardware
-
-
-
-Trying out Qwen 3 via Ollama
-
-Let&#x27;s see that in action. I started out with Qwen 32B from Ollama - a 20GB download:
-
-
-ollama pull qwen3:32b
-
-Then I ran a prompt against it using LLM and the llm-ollama plugin:
-
-
-llm -m qwen3:32b &#x27;Generate an SVG of a pelican riding a bicycle&#x27;
-
-Here&#x27;s the truncated output I got back (you can see the full response in this Gist).
-
-
-&lt;think&gt;
-
-Okay, the user wants an SVG of a pelican riding a bicycle. Let me start by breaking down the components needed. First, I need to create the pelican. Pelicans have a distinctive beak and pouch, so I&#x27;ll need to draw that. Maybe start with an ellipse for the body, then add the beak as a triangle. The wings could be curved shapes on either side.
-
-Next, the bicycle. I&#x27;ll need two wheels, a frame, handlebars, and pedals. The wheels can be circles with some lines for spokes. The frame connects the wheels, with a seat and handlebars at the front. The pedals are small circles with lines for the crank.
-
-[...]
-
-I think that&#x27;s a plan. Now, translate this into SVG code step by step, making sure coordinates and shapes are correctly placed.
-
-&lt;/think&gt;
-
-Here&#x27;s an SVG of a pelican riding a bicycle, created using simple shapes and paths:
-
-
-&lt;svg viewBox&#x3D;&quot;0 0 200 200&quot; xmlns&#x3D;&quot;http://www.w3.org/2000/svg&quot;&gt;
-  &lt;!-- Bicycle Frame --&gt;
-  &lt;line x1&#x3D;&quot;40&quot; y1&#x3D;&quot;100&quot; x2&#x3D;&quot;120&quot; y2&#x3D;&quot;100&quot; stroke&#x3D;&quot;black&quot; stroke-width&#x3D;&quot;4&quot;/&gt;
-  &lt;line x1&#x3D;&quot;120&quot; y1&#x3D;&quot;100&quot; x2&#x3D;&quot;140&quot; y2&#x3D;&quot;80&quot; stroke&#x3D;&quot;black&quot; stroke-width&#x3D;&quot;4&quot;/&gt;
-  [...]
-  &lt;!-- Bicycle Handlebars --&gt;
-  &lt;rect x&#x3D;&quot;30&quot; y&#x3D;&quot;80&quot; width&#x3D;&quot;20&quot; height&#x3D;&quot;5&quot; fill&#x3D;&quot;#8B4513&quot;/&gt;
-&lt;/svg&gt;
-
-This SVG features:
-
-
-A basic bicycle frame with two wheels, spokes, and a seat
-
-A blue pelican with:
-
-A rounded body and head
-
-A distinctive yellow beak and orange pouch
-
-Two wings extending from the body
-
-Webbed feet wrapped around the bicycle frame
-
-
-
-Simple handlebars at the front of the bicycle
-
-
-The pelican is positioned sitting on the bicycle seat with wings slightly spread for balance. You can copy this code into an HTML file or SVG editor to view the illustration. The colors use traditional bicycle brown (#8B4513) and a classic blue for the pelican (#4169E1) with gold accents for the beak (#FFD700).
-
-
-As is often the case with &quot;reasoning&quot; models, reading the reasoning chain is more interesting than the finished result. Here&#x27;s what the SVG looks like when you render it:
-
-
-
-Not the best pelican on a bicycle, but I&#x27;ve seen worse!
-
-A really well coordinated release
-
-The thing that stands out most to me about the Qwen 3 release is how well coordinated it was across the LLM ecosystem.
-
-Qwen worked directly with almost all of the popular LLM serving frameworks to ensure that support for the new models was available on day one.
-
-The Qwen 3 README mentions the following projects:
-
-
-The Transformers Python library
-
-
-ModelScope (effectively the Chinese equivalent of Hugging Face for model distribution)
-
-
-llama.cpp, which added support for the Qwen 3 architecture three weeks ago in version b5092.
-
-
-Ollama, with qwen3 out on release day
-
-LMStudio
-
-
-mlx-lm for Apple Silicon - the first commit for Qwen 3 support in MLX showed up in a PR over a month ago.
-
-The SGLang serving framework
-
-The popular vLLM engine
-
-
-MindIE, which I haven&#x27;t heard of before but looks to be a serving framework for Huawei&#x27;s Ascend chips (competitive with NVIDIA&#x27;s GPUs)
-
-
-This is an extraordinary level of coordination for a model release! I haven&#x27;t seen any other model providers make this level of effort - the usual pattern is to dump a bunch of models on Hugging Face for a single architecture (usually NVIDIA) and then wait for the community to catch up with quantizations and conversions for everything else.
-
-It&#x27;s also great to see smaller models that can run on consumer hardware on day one. I think one of the reasons the Llama 4 release a few weeks ago was a little muted is that very few people had access to hardware that was capable of running the models.
-
-The one thing that&#x27;s missing here is hosted API partnerships - something Meta did a good job of with Llama 4, which was available (albeit with some bugs) on Groq, Fireworks and Together on the day of release.
-
-The continuing trend of better models that run on the same hardware
-
-I don&#x27;t have a great feeling for the general &quot;vibes&quot; of Qwen 3 yet - it&#x27;s only been available for a few hours and I&#x27;ve not really run it through its paces yet. The general buzz so far seems pretty positive and the initial benchmarks are promising, but these things always take a little while to shake out.
-
-Assuming those benchmarks hold up, I think this is a very strong model. My favourite detail from the release announcement is this (highlight mine):
-
-
-Due to advancements in model architecture, increase in training data, and more effective training methods, the overall performance of Qwen3 dense base models matches that of Qwen2.5 base models with more parameters. For instance, Qwen3-1.7B/4B/8B/14B/32B-Base performs as well as Qwen2.5-3B/7B/14B/32B/72B-Base, respectively. Notably, in areas like STEM, coding, and reasoning, Qwen3 dense base models even outperform larger Qwen2.5 models.
-
-
-I&#x27;m always keen to see this trend continue: better models that can run on the same hardware as their predecessors.
-
-We&#x27;ve seen the same trend with other models - Llama 3.3 70B claimed to deliver &quot;similar performance to Llama 3.1 405B&quot;, and Mistral Small 3 24B said that it was &quot;on par with Llama 3.3 70B instruct, while being more than 3x faster on the same hardware.&quot;
-
-At some point this trend will have to stop, but for the moment it&#x27;s exciting to continue to see new optimizations emerge that allow us to run even better smaller models.
-Tags: llm, mlx, ai, qwen, llms, ollama, llm-release, generative-ai, llm-reasoning, pelican-riding-a-bicycle</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-04-28</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              qwen3
-              <span class="post-metadata">(9 min | 2752 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/qwen3>Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Luis von Ahn
-              <span class="post-metadata">(1 min | 378 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/28/luis-von-ahn/#atom-everything>Betting on mobile made all the difference. We&#x27;re making a similar call now, and this time the platform shift is AI.
-AI isn&#x27;t just a productivity boost. It helps us get closer to our mission. To teach well, we need to create a massive amount of content, and doing that manually doesn&#x27;t scale. One of the best decisions we made recently was replacing a slow, manual content creation process with one powered by AI. Without AI, it would take us decades to scale our content to more learners. We owe it to our learners to get them this content ASAP. [...]
-We&#x27;ll be rolling out a few constructive constraints to help guide this shift:
-We&#x27;ll gradually stop using contractors to do work that AI can handle
-﻿﻿AI use will be part of what we look for in hiring
-﻿﻿AI use will be part of what we evaluate in performance reviews
-﻿﻿Headcount will only be given if a team cannot automate more of their work
-﻿﻿Most functions will have specific initiatives to fundamentally change how they work [...]
-
-— Luis von Ahn, Duolingo all-hands memo, shared on LinkedIn
-Tags: ai-ethics, careers, ai, generative-ai, duolingo</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Qwen2.5 Omni: See, Hear, Talk, Write, Do It All!
-              <span class="post-metadata">(2 min | 475 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/28/qwen25-omni/#atom-everything>Qwen2.5 Omni: See, Hear, Talk, Write, Do It All!
-We propose Thinker-Talker architecture, an end-to-end multimodal model designed to perceive diverse modalities, including text, images, audio, and video, while simultaneously generating text and natural speech responses in a streaming manner. We propose a novel position embedding, named TMRoPE (Time-aligned Multimodal RoPE), to synchronize the timestamps of video inputs with audio.
-Here&#x27;s the Qwen2.5-Omni Technical Report PDF.
-As far as I can tell nobody has an easy path to getting it working on a Mac yet (the closest report I saw was this comment on Hugging Face).
-This release is notable because, while there&#x27;s a pretty solid collection of open weight vision LLMs now, multi-modal models that go beyond that are still very rare. Like most of Qwen&#x27;s recent models, Qwen2.5 Omni is released under an Apache 2.0 license.
-Qwen 3 is expected to release within the next 24 hours or so. @jianxliao captured a screenshot of their Hugging Face collection which they accidentally revealed before withdrawing it again which suggests the new model will be available in 0.6B / 1.7B / 4B / 8B / 30B sizes. I&#x27;m particularly excited to try the 30B one - 22-30B has established itself as my favorite size range for running models on my 64GB M2 as it often delivers exceptional results while still leaving me enough memory to run other applications at the same time.
-
-
-    
-Tags: vision-llms, llm-release, generative-ai, multi-modal-output, ai, qwen, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Giving software away for free
-              <span class="post-metadata">(2 min | 466 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/28/give-it-away-for-free/#atom-everything>If you want to create completely free software for other people to use, the absolute best delivery mechanism right now is static HTML and JavaScript served from a free web host with an established reputation.
-Thanks to WebAssembly the set of potential software that can be served in this way is vast and, I think, under appreciated. Pyodide means we can ship client-side Python applications now!
-This assumes that you would like your gift to the world to keep working for as long as possible, while granting you the freedom to lose interest and move onto other projects without needing to keep covering expenses far into the future.
-Even the cheapest hosting plan requires you to monitor and update billing details every few years. Domains have to be renewed. Anything that runs server-side will inevitably need to be upgraded someday - and the longer you wait between upgrades the harder those become.
-My top choice for this kind of thing in 2025 is GitHub, using GitHub Pages. It&#x27;s free for public repositories and I haven&#x27;t seen GitHub break a working URL that they have hosted in the 17+ years since they first launched.
-A few years ago I&#x27;d have recommended Heroku on the basis that their free plan had stayed reliable for more than a decade, but Salesforce took that accumulated goodwill and incinerated it in 2022.
-It almost goes without saying that you should release it under an open source license. The license alone is not enough to ensure regular human beings can make use of what you have built though: give people a link to something that works!
-Tags: open-source, heroku, webassembly, javascript, web-standards, html, github, pyodide</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              o3 Beats a Master-Level Geoguessr Player—Even with Fake EXIF Data
-              <span class="post-metadata">(1 min | 351 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/28/o3-geoguessr/#atom-everything>o3 Beats a Master-Level Geoguessr Player—Even with Fake EXIF Data
-previously) puts his GeoGuessr ELO of 1188 (just short of the top champions division) to good use, exploring o3&#x27;s ability to guess the location from a photo in a much more thorough way than my own experiment.
-Over five rounds o3 narrowly beat him, guessing better than Sam in only 2/5 but with a higher score due to closer guesses in the ones that o3 won.
-Even more interestingly, Sam experimented with feeding images with fake EXIF GPS locations to see if o3 (when reminded to use Python to read those tags) would fall for the trick. It spotted the ruse:
-Those coordinates put you in suburban Bangkok, Thailand—obviously nowhere near the Andean coffee-zone scene in the photo. So either the file is a re-encoded Street View frame with spoofed/default metadata, or the camera that captured the screenshot had stale GPS information.
-Tags: vision-llms, geoguessing, generative-ai, o3, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
