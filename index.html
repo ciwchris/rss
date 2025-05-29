@@ -25,9 +25,158 @@
 
   <ul>
     <li>
+      <time>2025-05-29</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              First monthly sponsor newsletter tomorrow
+              <span class="post-metadata">(1 min | 258 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/29/newsletter-tomorrow/#atom-everything>I&#x27;ll be sending out my first curated monthly highlights newsletter tomorrow, only to $10/month and up sponsors. Sign up now if you want to pay me to send you less!
+My weekly-ish newsletter remains free, in fact I just sent out the latest edition.
+Tags: blogging, newsletter</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-github-models 0.15
+              <span class="post-metadata">(1 min | 357 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/29/llm-github-models-015/#atom-everything>llm-github-models 0.15
+llm-github-models plugin just got an upgrade: it now supports LLM 0.26 tool use for a subset of the models hosted on the GitHub Models API, contributed by Caleb Brose.
+The neat thing about this GitHub Models plugin is that it picks up an API key from your GITHUB_TOKEN - and if you&#x27;re running LLM within a GitHub Actions worker the API key provided by the worker should be enough to start executing prompts!
+I tried it out against Cohere Command A via GitHub Models like this (transcript here):
+llm install llm-github-models
+llm keys set github
+# Paste key here
+llm -m github/cohere-command-a -T llm_time &#x27;What time is it?&#x27; --td
+
+We now have seven LLM plugins that provide tool support, covering OpenAI, Anthropic, Gemini, Mistral, Ollama, llama-server and now GitHub Models.
+
+
+    
+Tags: github-actions, llm, generative-ai, llm-tool-use, ai, github, llms, anthony-shaw</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-tools-exa
+              <span class="post-metadata">(1 min | 443 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/29/llm-tools-exa/#atom-everything>llm-tools-exa
+shipped LLM 0.26 yesterday one of the things I was most excited about was seeing what new tool plugins people would build for it.
+Dan Turkel&#x27;s llm-tools-exa is one of the first. It adds web search to LLM using Exa (previously), a relatively new search engine offering that rare thing, an API for search. They have a free preview, you can grab an API key here.
+I&#x27;m getting pretty great results! I tried it out like this:
+llm install llm-tools-exa
+llm keys set exa
+# Pasted API key here
+
+llm -T web_search &quot;What&#x27;s in LLM 0.26?&quot;
+
+Here&#x27;s the full answer - it started like this:
+LLM 0.26 was released on May 27, 2025, and the biggest new feature in this version is official support for tools. Here&#x27;s a summary of what&#x27;s new and notable in LLM 0.26:
+LLM can now run tools. You can grant LLMs from OpenAI, Anthropic, Gemini, and local models access to any tool you represent as a Python function.
+Tool plugins are introduced, allowing installation of plugins that add new capabilities to any model you use.
+Tools can be installed from plugins and loaded by name with the --tool/-T option.
+[...]
+Exa provided 21,000 tokens of search results, including what looks to be a full copy of my blog entry and the release notes for LLM.
+
+
+    
+Tags: llm, generative-ai, llm-tool-use, apis, search, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-mistral 0.14
+              <span class="post-metadata">(2 min | 690 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/29/llm-mistral-014/#atom-everything>llm-mistral 0.14
+added tool-support to my plugin for accessing the Mistral API from LLM today, plus support for Mistral&#x27;s new Codestral Embed embedding model.
+An interesting challenge here is that I&#x27;m not using an official client library for llm-mistral - I rolled my own client on top of their streaming HTTP API using Florimond Manca&#x27;s httpx-sse library. It&#x27;s a very pleasant way to interact with streaming APIs - here&#x27;s my code that does most of the work.
+The problem I faced is that Mistral&#x27;s API documentation for function calling has examples in Python and TypeScript but doesn&#x27;t include curl or direct documentation of their HTTP endpoints!
+I needed documentation at the HTTP level. Could I maybe extract that directly from Mistral&#x27;s official Python library?
+It turns out I could. I started by cloning the repo:
+git clone https://github.com/mistralai/client-python
+cd client-python/src/mistralai
+files-to-prompt . | ttok
+
+
+My ttok tool gave me a token count of 212,410 (counted using OpenAI&#x27;s tokenizer, but that&#x27;s normally a close enough estimate) - Mistral&#x27;s models tap out at 128,000 so I switched to Gemini 2.5 Flash which can easily handle that many.
+I ran this:
+files-to-prompt -c . &gt; /tmp/mistral.txt
+
+llm -f /tmp/mistral.txt \
+  -m gemini-2.5-flash-preview-05-20 \
+  -s &#x27;Generate comprehensive HTTP API documentation showing
+how function calling works, include example curl commands for each step&#x27;
+
+
+The results were pretty spectacular! Gemini 2.5 Flash produced a detailed description of the exact set of HTTP APIs I needed to interact with, and the JSON formats I should pass to them.
+There are a bunch of steps needed to get tools working in a new model, as described in the LLM plugin authors documentation. I started working through them by hand... and then got lazy and decided to see if I could get a model to do the work for me.
+This time I tried the new Claude Opus 4. I fed it three files: my existing, incomplete llm_mistral.py, a full copy of llm_gemini.py with its working tools implementation and a copy of the API docs Gemini had written for me earlier. I prompted:
+I need to update this Mistral code to add tool support. I&#x27;ve included examples of that code for Gemini, and a detailed README explaining the Mistral format.
+Claude churned away and wrote me code that was most of what I needed. I tested it in a bunch of different scenarios, pasted problems back into Claude to see what would happen, and eventually took over and finished the rest of the code myself. Here&#x27;s the full transcript.
+I&#x27;m a little sad I didn&#x27;t use Mistral to write the code to support Mistral, but I&#x27;m pleased to add yet another model family to the list that&#x27;s supported for tool usage in LLM.
+
+
+    
+Tags: gemini, llm, plugins, llm-tool-use, ai, llms, mistral, generative-ai, projects, ai-assisted-programming, claude, claude-4, httpx, python</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              deepseek-r1
+              <span class="post-metadata">(9 min | 2629 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/deepseek-r1>DeepSeek&#x27;s first-generation of reasoning models with comparable performance to OpenAI-o1, including six dense models distilled from DeepSeek-R1 based on Llama and Qwen.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-05-28</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              AI-assisted development needs automated tests
+              <span class="post-metadata">(1 min | 415 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/May/28/automated-tests/#atom-everything>I wonder if one of the reasons I&#x27;m finding LLMs so much more useful for coding than a lot of people that I see in online discussions is that effectively all of the code I work on has automated tests.
+I&#x27;ve been trying to stay true to the idea of a Perfect Commit - one that bundles the implementation, tests and documentation in a single unit - for over five years now. As a result almost every piece of (non vibe-coding) code I work on has pretty comprehensive test coverage.
+This massively derisks my use of LLMs. If an LLM writes weird, convoluted code that solves my problem I can prove that it works with tests - and then have it refactor the code until it looks good to me, keeping the tests green the whole time.
+LLMs help write the tests, too. I finally have a 24/7 pair programmer who can remember how to use unittest.mock!
+Next time someone complains that they&#x27;ve found LLMs to be more of a hindrance than a help in their programming work, I&#x27;m going to try to remember to ask after the health of their test suite.
+Tags: vibe-coding, testing, ai-assisted-programming, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5792,103 +5941,6 @@ Via Hacker News
 Tags: ai-personality, openai, generative-ai, ai, llms, chatgpt</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-04-29</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Credential revocation API to revoke exposed PATs is now generally available
-              <span class="post-metadata">(7 min | 2046 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-29-credential-revocation-api-to-revoke-exposed-pats-is-now-generally-available>You can now revoke an exposed GitHub personal access token (PAT) you found outside of repositories, even if it’s not yours, to help quickly limit the impact of the exposure…
-The post Credential revocation API to revoke exposed PATs is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot reviewers configuration option being replaced by code owners
-              <span class="post-metadata">(7 min | 2040 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-29-dependabot-reviewers-configuration-option-being-replaced-by-code-owners>To improve reliability and reduce review assignment conflicts, we’re removing the Dependabot reviewers configuration option on Tuesday, May 27, 2025. We’re retiring this dependabot.yml configuration option because the functionality overlaps…
-The post Dependabot reviewers configuration option being replaced by code owners appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A cheat sheet for why using ChatGPT is not bad for the environment
-              <span class="post-metadata">(2 min | 603 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/chatgpt-is-not-bad-for-the-environment/#atom-everything>A cheat sheet for why using ChatGPT is not bad for the environment
-a lot in many of the online spaces I frequent. I&#x27;ve touched on my doubts around this in the past but I&#x27;ve never felt confident enough in my own understanding of environmental issues to invest more effort pushing back.
-Andy Masley has pulled together by far the most convincing rebuttal of this idea that I&#x27;ve seen anywhere.
-You can use ChatGPT as much as you like without worrying that you’re doing any harm to the planet. Worrying about your personal use of ChatGPT is wasted time that you could spend on the serious problems of climate change instead. [...]
-If you want to prompt ChatGPT 40 times, you can just stop your shower 1 second early. [...]
-If I choose not to take a flight to Europe, I save 3,500,000 ChatGPT searches. this is like stopping more than 7 people from searching ChatGPT for their entire lives.
-Notably, Andy&#x27;s calculations here are all based on the widely circulated higher-end estimate that each ChatGPT prompt uses 3 Wh of energy. That estimate is from a 2023 GPT-3 era paper. A more recent estimate from February 2025 drops that to 0.3 Wh, which would make the hypothetical scenarios described by Andy 10x less costly again.
-At this point, one could argue that trying to shame people into avoiding ChatGPT on environmental grounds is itself an unethical act. There are much more credible things to warn people about with respect to careless LLM usage, and plenty of environmental measures that deserve their attention a whole lot more.
-(Some people will inevitably argue that LLMs are so harmful that it&#x27;s morally OK to mislead people about their environmental impact in service of the greater goal of discouraging their use.)
-Preventing ChatGPT searches is a hopelessly useless lever for the climate movement to try to pull. We have so many tools at our disposal to make the climate better. Why make everyone feel guilt over something that won’t have any impact? [...]
-When was the last time you heard a climate scientist say we should avoid using Google for the environment? This would sound strange. It would sound strange if I said “Ugh, my friend did over 100 Google searches today. She clearly doesn’t care about the climate.”
-Tags: ai-ethics, generative-ai, chatgpt, ai, llms, ai-energy-usage</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot API now contains has:patch in general availability
-              <span class="post-metadata">(7 min | 2020 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-29-dependabot-api-now-contains-haspatch-in-general-availability>This new improvement allows users to quickly identify dependencies with the has:patch filter using the Dependabot REST API. This streamlines the process of addressing vulnerabilities and staying up-to-date. To learn…
-The post Dependabot API now contains has:patch in general availability appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Mikhail Parakhin
-              <span class="post-metadata">(1 min | 239 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Apr/29/mikhail-parakhin/#atom-everything>When we were first shipping Memory, the initial thought was: “Let’s let users see and edit their profiles”. Quickly learned that people are ridiculously sensitive: “Has narcissistic tendencies” - “No I do not!”, had to hide it.
-
-— Mikhail Parakhin, talking about Bing
-Tags: ai-ethics, llms, ai, generative-ai, bing</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot Edits for JetBrains IDEs is generally available
-              <span class="post-metadata">(7 min | 2232 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-04-28-copilot-edits-for-jetbrains-ides-is-generally-available>Copilot Edits is now generally available in JetBrains IDEs. This powerful feature lets you refactor, optimize, and iterate on your code faster—across one or multiple files—all from within Copilot Chat.…
-The post Copilot Edits for JetBrains IDEs is generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
