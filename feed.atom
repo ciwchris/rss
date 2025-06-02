@@ -2,10 +2,88 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-06-02T14:11:35.809Z</updated>
+    <updated>2025-06-02T21:10:00.485Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Kenton Varda]]></title>
+        <id>https://simonwillison.net/2025/Jun/2/kenton-varda/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/2/kenton-varda/#atom-everything"/>
+        <updated>2025-06-02T18:52:01.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://news.ycombinator.com/item?id=44159166#44160208"><p>It took me a few days to build the library [<a href="https://github.com/cloudflare/workers-oauth-provider">cloudflare/workers-oauth-provider</a>] with AI.</p>
+<p>I estimate it would have taken a few weeks, maybe months to write by hand.</p>
+<p>That said, this is a pretty ideal use case: implementing a well-known standard on a well-known platform with a clear API spec.</p>
+<p>In my attempts to make changes to the Workers Runtime itself using AI, I've generally not felt like it saved much time. Though, people who don't know the codebase as well as I do have reported it helped them a lot.</p>
+<p>I have found AI incredibly useful when I jump into <em>other people's</em> complex codebases, that I'm not familiar with. I now feel like I'm comfortable doing that, since AI can help me find my way around very quickly, whereas previously I generally shied away from jumping in and would instead try to get someone on the team to make whatever change I needed.</p></blockquote>
+<p class="cite">&mdash; <a href="https://news.ycombinator.com/item?id=44159166#44160208">Kenton Varda</a>, in a Hacker News comment</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/cloudflare">cloudflare</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/kenton-varda">kenton-varda</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Directive prologues and JavaScript dark matter]]></title>
+        <id>https://simonwillison.net/2025/Jun/2/directive-prologues-and-javascript-dark-matter/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/2/directive-prologues-and-javascript-dark-matter/#atom-everything"/>
+        <updated>2025-06-02T18:30:31.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://macwright.com/2025/04/29/directive-prologues-and-javascript-dark-matter">Directive prologues and JavaScript dark matter</a></strong></p>
+Tom MacWright does some archaeology and describes the three different magic comment formats that can affect how JavaScript/TypeScript files are processed:</p>
+<p><code>"a directive";</code> is a <a href="https://262.ecma-international.org/5.1/#sec-14.1">directive prologue</a>, most commonly seen with <code>"use strict";</code>.</p>
+<p><code>/** @aPragma */</code> is a pragma for a transpiler, often used for <code>/** @jsx h */</code>.</p>
+<p><code>//# aMagicComment</code> is usually used for source maps - <code>//# sourceMappingURL=&lt;url&gt;</code> - but also just got used by v8 for their new <a href="https://v8.dev/blog/explicit-compile-hints">explicit compile hints</a> feature.
+
+    <p><small></small>Via <a href="https://blog.jim-nielsen.com/2025/is-it-javascript/">Jim Nielsen</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/typescript">typescript</a>, <a href="https://simonwillison.net/tags/tom-macwright">tom-macwright</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/v8">v8</a>, <a href="https://simonwillison.net/tags/programming-languages">programming-languages</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[claude-trace]]></title>
+        <id>https://simonwillison.net/2025/Jun/2/claude-trace/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/2/claude-trace/#atom-everything"/>
+        <updated>2025-06-02T17:57:32.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/badlogic/lemmy/tree/main/apps/claude-trace">claude-trace</a></strong></p>
+I've been thinking for a while it would be interesting to run some kind of HTTP proxy against the Claude Code CLI app and take a peek at how it works.</p>
+<p>Mario Zechner just published a really nice version of that. It works by monkey-patching <a href="https://github.com/badlogic/lemmy/blob/a19ef3b472701559df4f9d70766b97f5ed876535/apps/claude-trace/src/interceptor.ts#L152-L240">global.fetch</a> and the <a href="https://github.com/badlogic/lemmy/blob/a19ef3b472701559df4f9d70766b97f5ed876535/apps/claude-trace/src/interceptor.ts#L242-L286">Node HTTP library</a> and then running Claude Code <a href="https://github.com/badlogic/lemmy/blob/a19ef3b472701559df4f9d70766b97f5ed876535/apps/claude-trace/src/cli.ts#L136-L153">using Node</a> with an extra <code>--require interceptor-loader.js</code> option to inject the patches.</p>
+<p>Provided you have Claude Code installed and configured already, an easy way to run it is via npx like this:</p>
+<pre><code>npx @mariozechner/claude-trace --include-all-requests
+</code></pre>
+<p>I tried it just now and it logs request/response pairs to a <code>.claude-trace</code> folder, as both <code>jsonl</code> files and HTML.</p>
+<p>The HTML interface is <em>really nice</em>. Here's <a href="https://static.simonwillison.net/static/2025/log-2025-06-02-17-10-25.html">an example trace</a> - I started everything running in my <a href="https://github.com/simonw/llm">llm checkout</a> and asked Claude to "tell me about this software" and then "Use your agent tool to figure out where the code for storing API keys lives".</p>
+<p><img alt="Web-based debug log interface showing a conversation trace where USER asks &quot;Use your agent tool to figure out where the code for storing API keys lives&quot;, followed by ASSISTANT invoking dispatch_agent with a search prompt, then a Tool Result showing partial text about API key management functionality locations, and a Raw Tool Call section displaying the full JSON request with tool_use details including id, name, input prompt, and cache_control settings. The assistant concludes that key functionality is in cli.py with keys stored securely in keys.json in the user directory, manageable via commands like llm keys set openai and llm keys list." src="https://static.simonwillison.net/static/2025/claude-code-trace.jpg" /></p>
+<p>I specifically requested the "agent" tool here because I noticed in the tool definitions a tool called <strong>dispatch_agent</strong> with this tool definition (emphasis mine):</p>
+<blockquote>
+<p>Launch a new agent that has access to the following tools: GlobTool, GrepTool, LS, View, ReadNotebook. When you are searching for a keyword or file and are not confident that you will find the right match on the first try, <strong>use the Agent tool to perform the search for you</strong>. For example:</p>
+<ul>
+<li>If you are searching for a keyword like "config" or "logger", the Agent tool is appropriate</li>
+<li>If you want to read a specific file path, use the View or GlobTool tool instead of the Agent tool, to find the match more quickly</li>
+<li>If you are searching for a specific class definition like "class Foo", use the GlobTool tool instead, to find the match more quickly</li>
+</ul>
+<p>Usage notes:</p>
+<ol>
+<li><strong>Launch multiple agents concurrently whenever possible</strong>, to maximize performance; to do that, use a single message with multiple tool uses</li>
+<li>When the agent is done, it will return a single message back to you. The result returned by the agent is not visible to the user. To show the user the result, you should send a text message back to the user with a concise summary of the result.</li>
+<li><strong>Each agent invocation is stateless. You will not be able to send additional messages to the agent, nor will the agent be able to communicate with you outside of its final report</strong>. Therefore, your prompt should contain a highly detailed task description for the agent to perform autonomously and you should specify exactly what information the agent should return back to you in its final and only message to you.</li>
+<li><strong>The agent's outputs should generally be trusted</strong></li>
+<li>IMPORTANT: The agent can not use Bash, Replace, Edit, NotebookEditCell, so can not modify files. If you want to use these tools, use them directly instead of going through the agent.</li>
+</ol>
+</blockquote>
+<p>I'd heard that Claude Code uses the LLMs-calling-other-LLMs pattern - one of the reason it can burn through tokens so fast! It was interesting to see how this works under the hood - it's a tool call which is designed to be used concurrently (by triggering multiple tool uses at once).</p>
+<p>Anthropic have deliberately chosen not to publish any of the prompts used by Claude Code. As with <a href="https://simonwillison.net/2025/May/25/claude-4-system-prompt/#the-missing-prompts-for-tools">other hidden system prompts</a>, the prompts themselves mainly act as a missing manual for understanding exactly what these tools can do for you and how they work.
+
+    <p><small></small>Via <a href="https://twitter.com/badlogicgames/status/1929312803799576757">@badlogicgames</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting u/xfnk24001]]></title>
         <id>https://simonwillison.net/2025/Jun/2/uxfnk24001/#atom-everything</id>
@@ -786,6 +864,16 @@ how function calling works, include example curl commands for each step<span cla
         </author>
     </entry>
     <entry>
+        <title type="html"><![CDATA[qwen3]]></title>
+        <id>https://ollama.com/library/qwen3</id>
+        <link href="https://ollama.com/library/qwen3"/>
+        <updated>2025-05-29T01:55:00.000Z</updated>
+        <summary type="html"><![CDATA[Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.]]></summary>
+        <author>
+            <name>Ollama models</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[AI-assisted development needs automated tests]]></title>
         <id>https://simonwillison.net/2025/May/28/automated-tests/#atom-everything</id>
         <link href="https://simonwillison.net/2025/May/28/automated-tests/#atom-everything"/>
@@ -1433,6 +1521,32 @@ Last month's <a href="https://simonwillison.net/2025/Apr/28/luis-von-ahn/">Duoli
     <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/duolingo">duolingo</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[June 2nd, 2025 - Kagi turns 3: past, present, and future]]></title>
+        <id>https://kagifeedback.org/d/7209-june-2nd-2025-kagi-turns-3-past-present-and-future/1</id>
+        <link href="https://kagifeedback.org/d/7209-june-2nd-2025-kagi-turns-3-past-present-and-future/1"/>
+        <updated>2025-05-26T16:35:35.000Z</updated>
+        <summary type="html"><![CDATA[3 years of Kagi!
+
+We are extremely proud and happy to be celebrating three years of Kagi today!
+Read everything about where we are as a company and where we want to go  in Kagi status update: First three years blog post.
+Improvements and Bug fixes
+Kagi Search
+We've updated our control centre on mobile, making it easier for you to navigate between different Kagi products ( #4864 @Niika, #5140 @Prostagma)
+
+Rank options don't fit in modal window #5887 @marc_gone
+Family Pricing page mobile UI is broken #5515 @Value7609
+Cannot click on Control Center button in changelog page #7180 @papetoast
+Unofficial Mullvad website showing in results #6902 @xx
+Interface Detect language Behavior #7200 @inesicio
+
+
+Kagi Assistant
+Since we introduced the Kagi Assistant to all subscriptions and began enforcing fa…]]></summary>
+        <author>
+            <name>Activity in the release-notes tag</name>
         </author>
     </entry>
     <entry>

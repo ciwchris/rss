@@ -31,6 +31,80 @@
       <article>
           <details>
             <summary>
+              Quoting Kenton Varda
+              <span class="post-metadata">(1 min | 360 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/kenton-varda/#atom-everything>It took me a few days to build the library [cloudflare/workers-oauth-provider] with AI.
+I estimate it would have taken a few weeks, maybe months to write by hand.
+That said, this is a pretty ideal use case: implementing a well-known standard on a well-known platform with a clear API spec.
+In my attempts to make changes to the Workers Runtime itself using AI, I&#x27;ve generally not felt like it saved much time. Though, people who don&#x27;t know the codebase as well as I do have reported it helped them a lot.
+I have found AI incredibly useful when I jump into other people&#x27;s complex codebases, that I&#x27;m not familiar with. I now feel like I&#x27;m comfortable doing that, since AI can help me find my way around very quickly, whereas previously I generally shied away from jumping in and would instead try to get someone on the team to make whatever change I needed.
+
+— Kenton Varda, in a Hacker News comment
+Tags: ai-assisted-programming, generative-ai, cloudflare, ai, llms, kenton-varda</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Directive prologues and JavaScript dark matter
+              <span class="post-metadata">(1 min | 307 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/directive-prologues-and-javascript-dark-matter/#atom-everything>Directive prologues and JavaScript dark matter
+&quot;a directive&quot;; is a directive prologue, most commonly seen with &quot;use strict&quot;;.
+/** @aPragma */ is a pragma for a transpiler, often used for /** @jsx h */.
+//# aMagicComment is usually used for source maps - //# sourceMappingURL&#x3D;&lt;url&gt; - but also just got used by v8 for their new explicit compile hints feature.
+
+    
+Via Jim Nielsen
+Tags: typescript, tom-macwright, javascript, v8, programming-languages</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              claude-trace
+              <span class="post-metadata">(3 min | 799 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/claude-trace/#atom-everything>claude-trace
+Mario Zechner just published a really nice version of that. It works by monkey-patching global.fetch and the Node HTTP library and then running Claude Code using Node with an extra --require interceptor-loader.js option to inject the patches.
+Provided you have Claude Code installed and configured already, an easy way to run it is via npx like this:
+npx @mariozechner/claude-trace --include-all-requests
+
+I tried it just now and it logs request/response pairs to a .claude-trace folder, as both jsonl files and HTML.
+The HTML interface is really nice. Here&#x27;s an example trace - I started everything running in my llm checkout and asked Claude to &quot;tell me about this software&quot; and then &quot;Use your agent tool to figure out where the code for storing API keys lives&quot;.
+
+I specifically requested the &quot;agent&quot; tool here because I noticed in the tool definitions a tool called dispatch_agent with this tool definition (emphasis mine):
+Launch a new agent that has access to the following tools: GlobTool, GrepTool, LS, View, ReadNotebook. When you are searching for a keyword or file and are not confident that you will find the right match on the first try, use the Agent tool to perform the search for you. For example:
+If you are searching for a keyword like &quot;config&quot; or &quot;logger&quot;, the Agent tool is appropriate
+If you want to read a specific file path, use the View or GlobTool tool instead of the Agent tool, to find the match more quickly
+If you are searching for a specific class definition like &quot;class Foo&quot;, use the GlobTool tool instead, to find the match more quickly
+Usage notes:
+Launch multiple agents concurrently whenever possible, to maximize performance; to do that, use a single message with multiple tool uses
+When the agent is done, it will return a single message back to you. The result returned by the agent is not visible to the user. To show the user the result, you should send a text message back to the user with a concise summary of the result.
+Each agent invocation is stateless. You will not be able to send additional messages to the agent, nor will the agent be able to communicate with you outside of its final report. Therefore, your prompt should contain a highly detailed task description for the agent to perform autonomously and you should specify exactly what information the agent should return back to you in its final and only message to you.
+The agent&#x27;s outputs should generally be trusted
+IMPORTANT: The agent can not use Bash, Replace, Edit, NotebookEditCell, so can not modify files. If you want to use these tools, use them directly instead of going through the agent.
+I&#x27;d heard that Claude Code uses the LLMs-calling-other-LLMs pattern - one of the reason it can burn through tokens so fast! It was interesting to see how this works under the hood - it&#x27;s a tool call which is designed to be used concurrently (by triggering multiple tool uses at once).
+Anthropic have deliberately chosen not to publish any of the prompts used by Claude Code. As with other hidden system prompts, the prompts themselves mainly act as a missing manual for understanding exactly what these tools can do for you and how they work.
+
+    
+Via @badlogicgames
+Tags: anthropic, claude, ai-agents, ai, llms, prompt-engineering, ai-assisted-programming, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting u/xfnk24001
               <span class="post-metadata">(1 min | 307 words)</span> 
             </summary>
@@ -1005,6 +1079,18 @@ Tags: gemini, llm, plugins, llm-tool-use, ai, llms, mistral, generative-ai, proj
             <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
+      <article>
+          <details>
+            <summary>
+              qwen3
+              <span class="post-metadata">(9 min | 2784 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwen3>Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
 
       </section>
     </li>
@@ -1809,6 +1895,34 @@ Via Hacker News
 Tags: ai-ethics, ai, duolingo, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              June 2nd, 2025 - Kagi turns 3: past, present, and future
+              <span class="post-metadata">(6 min | 1731 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://kagifeedback.org/d/7209-june-2nd-2025-kagi-turns-3-past-present-and-future/1>3 years of Kagi!
+
+We are extremely proud and happy to be celebrating three years of Kagi today!
+Read everything about where we are as a company and where we want to go  in Kagi status update: First three years blog post.
+Improvements and Bug fixes
+Kagi Search
+We&#x27;ve updated our control centre on mobile, making it easier for you to navigate between different Kagi products ( #4864 @Niika, #5140 @Prostagma)
+
+Rank options don&#x27;t fit in modal window #5887 @marc_gone
+Family Pricing page mobile UI is broken #5515 @Value7609
+Cannot click on Control Center button in changelog page #7180 @papetoast
+Unofficial Mullvad website showing in results #6902 @xx
+Interface Detect language Behavior #7200 @inesicio
+
+
+Kagi Assistant
+Since we introduced the Kagi Assistant to all subscriptions and began enforcing fa…</a>
+            </div>
+            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
           </details>
       </article>
       <article>
