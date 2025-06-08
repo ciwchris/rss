@@ -25,9 +25,122 @@
 
   <ul>
     <li>
+      <time>2025-06-08</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Qwen3 Embedding
+              <span class="post-metadata">(1 min | 373 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/8/qwen3-embedding/#atom-everything>Qwen3 Embedding
+The full collection can be browsed on Hugging Face. The smallest available model is the 0.6B Q8 one, which is available as a 639MB GGUF. I tried it out using my llm-sentence-transformers plugin like this:
+llm install llm-sentence-transformers
+llm sentence-transformers register Qwen/Qwen3-Embedding-0.6B
+llm embed -m sentence-transformers/Qwen/Qwen3-Embedding-0.6B -c hi | jq length
+
+This output 1024, confirming that Qwen3 0.6B produces 1024 length embedding vectors.
+These new models are the highest scoring open-weight models on the well regarded MTEB leaderboard - they&#x27;re licensed Apache 2.0.
+
+You can also try them out in your web browser, thanks to a Transformers.js port of the models. I loaded this page in Chrome and it fetched 560MB of model files and gave me an interactive interface for visualizing clusters of embeddings like this:
+
+
+    
+Via @xenovacom
+Tags: ai, embeddings, qwen, llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-06-07</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Comma v0.1 1T and 2T - 7B LLMs trained on openly licensed text
+              <span class="post-metadata">(3 min | 906 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/7/comma/#atom-everything>It&#x27;s been a long time coming, but we finally have some promising LLMs to try out which are trained entirely on openly licensed text!
+
+EleutherAI released the Pile four and a half years ago: &quot;an 800GB dataset of diverse text for language modeling&quot;. It&#x27;s been used as the basis for many LLMs since then, but much of the data in it came from Common Crawl - a crawl of the public web which mostly ignored the licenses of the data it was collecting.
+
+The Common Pile v0.1 is EleutherAI&#x27;s successor to the original Pile, in collaboration with a large group of other organizations with whom they have been &quot;meticulously curating a 8 TB corpus of openly licensed and public domain text for training large language models&quot;.
+
+The dataset is exciting, but on top of that they&#x27;ve released two new LLMs that have been trained on it: Comma v0.1 1T and 2T, both with 7 billion parameters, the first trained on 1 trillion tokens and the second on 2 trillion tokens.
+
+These are available on Hugging Face as common-pile/comma-v0.1-1t and common-pile/comma-v0.1-2t.
+
+EleutherAI claim that these new models perform &quot;comparably to leading models trained in the same regime on unlicensed data&quot;. I decided to try them out myself.
+
+The models are currently only available as .safetensors files, which I&#x27;ve found difficult to run on macOS in the past. I decided to see if I could convert them to MLX format which I know how to run on my Mac.
+
+MLX is still a very new format, but Claude 4 Sonnet has a training cutoff date of March 2025 so I crossed my fingers and hoped it would be able to help me out. It did exactly that! I ran the following command to convert the 2T model to run using MLX:
+
+
+uv run --python 3.12 \
+  --with mlx-lm \
+  python -m mlx_lm convert \
+    --hf-path common-pile/comma-v0.1-2t \
+    --mlx-path ./comma-v0.1-2t-mlx
+
+I uploaded the converted model to Hugging Face as simonw/comma-v0.1-2t-mlx.
+
+Now that it&#x27;s on the Hub here&#x27;s how to try it out (using uv run):
+
+
+uv run --python 3.12 \
+  --with mlx-lm \
+  mlx_lm.generate \
+    --model simonw/comma-v0.1-2t-mlx \
+    --prompt &#x27;Facts about pelicans:&#x27;
+
+The first time you run this it will download 13GB of files to ~/.cache/huggingface/hub/models--simonw--comma-v0.1-2t-mlx.
+
+Here&#x27;s what I got back:
+
+
+1. They are the largest of the water birds. 2. They are found in all parts of the world. 3. They are very good swimmers. 4. They are very good divers. 5. They are very good flyers. 6. They are very good hunters. 7. They are very good eaters. 8. They are very good parents. 9. They are very good friends. 10.
+
+
+The big limitation of this model right now is that it&#x27;s a raw base model - it hasn&#x27;t been instruction-tuned or set up for chat.
+
+This means you have to prefix-prompt it, like in the GPT-3 days. You need to give it a sentence for it to complete.
+
+This makes it a lot harder to evaluate than the instruction-tuned models that I&#x27;ve become used to over the past few years!
+
+I&#x27;m hoping someone releases a chat-tuned version of this model soon. The challenge there will be keeping to the openly licensed training data, since most of the fine-tuning datasets out there for this are themselves derived from models that were trained on unlicensed data.
+
+
+Sadly it didn&#x27;t do too well on my pelican on a bicycle benchmark:
+
+
+uv run --python 3.12 \
+  --with mlx-lm \
+  mlx_lm.generate \
+    --model simonw/comma-v0.1-2t-mlx \
+    --prompt &#x27;An SVG of a pelican riding a bicycle: &lt;svg&#x27; --max-tokens 2000
+
+The output started like this and looped indefinitely:
+
+
+xmlns&#x3D;&quot;http://www.w3.org/2000/svg&quot; width&#x3D;&quot;100%&quot; height&#x3D;&quot;100%&quot; viewBox&#x3D;&quot;0 0 100 100&quot;&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;&lt;path d&#x3D;&quot;M0 0h100v100H0z&quot; fill&#x3D;&quot;none&quot;/&gt;...
+
+
+    
+        
+Tags: llms, ai-ethics, llm-release, generative-ai, training-data, ai, mlx</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -6727,51 +6840,6 @@ I wrote this triggers.py script to output as much information about triggers as 
 
     
 Tags: sqlite, til, python, sql</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-05-09</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              SKU-level budgets now available for enhanced cost control
-              <span class="post-metadata">(6 min | 1848 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-09-sku-level-budgets-now-available-for-enhanced-cost-control>SKU-level budgets are now available for all metered GitHub products. Administrators and billing managers can now set budgets for specific SKUs within a product. This gives you greater flexibility and…
-The post SKU-level budgets now available for enhanced cost control appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm -f issue:... -m echo --no-log
-              <span class="post-metadata">(1 min | 426 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/9/private-issues/#atom-everything>I had some notes in a GitHub issue thread in a private repository that I wanted to export as Markdown. I realized that I could get them using a combination of several recent projects.
-Here&#x27;s what I ran:
-export GITHUB_TOKEN&#x3D;&quot;$(llm keys get github)&quot;                                             
-llm -f issue:https://github.com/simonw/todos/issues/170 \
-  -m echo --no-log | jq .prompt -r &gt; notes.md
-
-I have a GitHub personal access token stored in my LLM keys, for use with Anthony Shaw&#x27;s llm-github-models plugin.
-My own llm-fragments-github plugin expects an optional GITHUB_TOKEN environment variable, so I set that first - here&#x27;s an issue to have it use the github key instead.
-With that set, the issue: fragment loader can take a URL to a private GitHub issue thread and load it via the API using the token, then concatenate the comments together as Markdown. Here&#x27;s the code for that.
-Fragments are meant to be used as input to LLMs. I built a llm-echo plugin recently which adds a fake LLM called &quot;echo&quot; which simply echos its input back out again.
-Adding --no-log prevents that junk data from being stored in my LLM log database.
-The output is JSON with a &quot;prompt&quot; key for the original prompt. I use jq .prompt to extract that out, then -r to get it as raw text (not a &quot;JSON string&quot;).
-... and I write the result to notes.md.
-Tags: llm, projects, plugins, jq, github</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
