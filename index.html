@@ -31,6 +31,19 @@
       <article>
           <details>
             <summary>
+              GitHub App Manager can now be granted to teams
+              <span class="post-metadata">(8 min | 2479 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-09-github-app-manager-can-now-be-granted-to-teams>You can now assign teams as the app managers of some or all of your organization’s GitHub Apps. The App Manager role has been converted to a standard organization role,…
+The post GitHub App Manager can now be granted to teams appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               WWDC: Apple supercharges its tools and technologies for developers
               <span class="post-metadata">(2 min | 460 words)</span> 
             </summary>
@@ -6755,36 +6768,6 @@ Tags: o1, llm-reasoning, generative-ai, openai, o3, ai, llms</a>
 The post GitHub Enterprise Cloud Data Residency in the US is generally available appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-05-11</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Cursor: Security
-              <span class="post-metadata">(2 min | 638 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/11/cursor-security/#atom-everything>Cursor: Security
-I&#x27;ve recently learned that checking an organization&#x27;s list of documented subprocessors is a great way to get a feel for how everything works under the hood - it&#x27;s a loose &quot;view source&quot; for their infrastructure! That was how I confirmed that Anthropic&#x27;s search features used Brave search back in March.
-Cursor&#x27;s list includes AWS, Azure and GCP (AWS for primary infrastructure, Azure and GCP for &quot;some secondary infrastructure&quot;). They host their own custom models on Fireworks and make API calls out to OpenAI, Anthropic, Gemini and xAI depending on user preferences. They&#x27;re using turbopuffer as a hosted vector store.
-The most interesting section is about codebase indexing:
-Cursor allows you to semantically index your codebase, which allows it to answer questions with the context of all of your code as well as write better code by referencing existing implementations. […]
-At our server, we chunk and embed the files, and store the embeddings in Turbopuffer. To allow filtering vector search results by file path, we store with every vector an obfuscated relative file path, as well as the line range the chunk corresponds to. We also store the embedding in a cache in AWS, indexed by the hash of the chunk, to ensure that indexing the same codebase a second time is much faster (which is particularly useful for teams).
-At inference time, we compute an embedding, let Turbopuffer do the nearest neighbor search, send back the obfuscated file path and line range to the client, and read those file chunks on the client locally. We then send those chunks back up to the server to answer the user’s question.
-When operating in privacy mode - which they say is enabled by 50% of their users - they are careful not to store any raw code on their servers for longer than the duration of a single request. This is why they store the embeddings and obfuscated file paths but not the code itself.
-Reading this made me instantly think of the paper Text Embeddings Reveal (Almost) As Much As Text about how vector embeddings can be reversed. The security documentation touches on that in the notes:
-Embedding reversal: academic work has shown that reversing embeddings is possible in some cases. Current attacks rely on having access to the model and embedding short strings into big vectors, which makes us believe that the attack would be somewhat difficult to do here. That said, it is definitely possible for an adversary who breaks into our vector database to learn things about the indexed codebases.
-Via lobste.rs
-Tags: ai-assisted-programming, security, generative-ai, ai, embeddings, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
