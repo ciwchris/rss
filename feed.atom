@@ -2,10 +2,58 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-06-14T14:08:47.813Z</updated>
+    <updated>2025-06-14T21:09:24.591Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[llm-fragments-youtube]]></title>
+        <id>https://simonwillison.net/2025/Jun/14/llm-fragments-youtube/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/14/llm-fragments-youtube/#atom-everything"/>
+        <updated>2025-06-14T18:19:37.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/redraw/llm-fragments-youtube">llm-fragments-youtube</a></strong></p>
+Excellent new <a href="https://llm.datasette.io/">LLM</a> plugin by Agustin Bacigalup which lets you use the subtitles of any YouTube video as a <a href="https://simonwillison.net/2025/Apr/7/long-context-llm/">fragment</a> for running prompts against.</p>
+<p>I tried it out like this:</p>
+<pre><code>llm install llm-fragments-youtube
+llm -f youtube:dQw4w9WgXcQ \
+  'summary of people and what they do'
+</code></pre>
+<p>Which returned:</p>
+<blockquote>
+<p>The lyrics you've provided are from the song "Never Gonna Give You Up" by Rick Astley. The song features a narrator who is expressing unwavering love and commitment to another person. Here's a summary of the people involved and their roles:</p>
+<ul>
+<li>
+<p><strong>The Narrator (Singer):</strong> A person deeply in love, promising loyalty, honesty, and emotional support. They emphasize that they will never abandon, hurt, or deceive their partner.</p>
+</li>
+<li>
+<p><strong>The Partner (Implied Listener):</strong> The person the narrator is addressing, who is experiencing emotional pain or hesitation ("Your heart's been aching but you're too shy to say it"). The narrator is encouraging them to understand and trust in the commitment being offered.</p>
+</li>
+</ul>
+<p>In essence, the song portrays a one-sided but heartfelt pledge of love, with the narrator assuring their partner of their steadfast dedication.</p>
+</blockquote>
+<p>The plugin works by including <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> as a Python dependency and then executing it via a call to <code>subprocess.run()</code>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/youtube">youtube</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Google Cloud outage incident report]]></title>
+        <id>https://simonwillison.net/2025/Jun/14/google-cloud-outage-incident-report/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/14/google-cloud-outage-incident-report/#atom-everything"/>
+        <updated>2025-06-14T15:48:29.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://status.cloud.google.com/incidents/ow5i3PPK96RduMcb1SsW"><p><em>Google Cloud, Google Workspace and Google Security Operations products experienced increased 503 errors in external API requests, impacting customers.</em> [...]</p>
+<p>On May 29, 2025, a new feature was added to Service Control for additional quota policy checks. This code change and binary release went through our region by region rollout, but the code path that failed was never exercised during this rollout due to needing a policy change that would trigger the code. [...] The issue with this change was that it did not have appropriate error handling nor was it feature flag protected. [...]</p>
+<p>On June 12, 2025 at ~10:45am PDT, a policy change was inserted into the regional Spanner tables that Service Control uses for policies. Given the global nature of quota management, this metadata was replicated globally within seconds. This policy data contained unintended blank fields. Service Control, then regionally exercised quota checks on policies in each regional datastore. This pulled in blank fields for this respective policy change and exercised the code path that hit the null pointer causing the binaries to go into a crash loop. This occurred globally given each regional deployment.</p></blockquote>
+<p class="cite">&mdash; <a href="https://status.cloud.google.com/incidents/ow5i3PPK96RduMcb1SsW">Google Cloud outage incident report</a></p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/feature-flags">feature-flags</a>, <a href="https://simonwillison.net/tags/postmortem">postmortem</a>, <a href="https://simonwillison.net/tags/google">google</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[The Wikimedia Research Newsletter]]></title>
         <id>https://simonwillison.net/2025/Jun/13/wikimedia-research-newsletter/#atom-everything</id>
@@ -4223,6 +4271,16 @@ The post Sunset of automatic watching of repositories and teams appeared first o
         </author>
     </entry>
     <entry>
+        <title type="html"><![CDATA[llama3.2-vision]]></title>
+        <id>https://ollama.com/library/llama3.2-vision</id>
+        <link href="https://ollama.com/library/llama3.2-vision"/>
+        <updated>2025-05-22T19:15:00.000Z</updated>
+        <summary type="html"><![CDATA[Llama 3.2 Vision is a collection of instruction-tuned image reasoning generative models in 11B and 90B sizes.]]></summary>
+        <author>
+            <name>Ollama models</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Agents are models using tools in a loop]]></title>
         <id>https://simonwillison.net/2025/May/22/tools-in-a-loop/#atom-everything</id>
         <link href="https://simonwillison.net/2025/May/22/tools-in-a-loop/#atom-everything"/>
@@ -5150,17 +5208,6 @@ The post GitHub Enterprise Cloud with data residency now available for self-serv
     <p>Tags: <a href="https://simonwillison.net/tags/pycon">pycon</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/meta">meta</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Semantic Kernel: Package previews, Graduations & Deprecations]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=4758</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-package-previews-graduations-deprecations/"/>
-        <updated>2025-05-16T08:32:47.000Z</updated>
-        <summary type="html"><![CDATA[Semantic Kernel: Package Previews, Graduations & Deprecations We are excited to share a summary of recent updates and continuous clean-up efforts across the Semantic Kernel .NET codebase. These changes focus on improving maintainability, aligning with the latest APIs, and ensuring a consistent experience for users. Below you’ll find details on package graduations, deprecations, and a […]
-The post Semantic Kernel: Package previews, Graduations & Deprecations appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Sophia Lagerkrans-Pandey, Sergey Menshykh</name>
         </author>
     </entry>
     <entry>
