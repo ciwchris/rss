@@ -25,9 +25,268 @@
 
   <ul>
     <li>
+      <time>2025-06-15</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Seven replies to the viral Apple reasoning paper – and why they fall short
+              <span class="post-metadata">(2 min | 702 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/15/viral-apple-reasoning-paper/#atom-everything>Seven replies to the viral Apple reasoning paper – and why they fall short
+The Illusion of Thinking: Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity.
+Through extensive experimentation across diverse puzzles, we show that frontier LRMs face a complete accuracy collapse beyond certain complexities. Moreover, they exhibit a counter-intuitive scaling limit: their reasoning effort increases with problem complexity up to a point, then declines despite having an adequate token budget.
+I skimmed the paper and it struck me as a more thorough example of the many other trick questions that expose failings in LLMs - this time involving puzzles such as the Tower of Hanoi that can have their difficulty level increased to the point that even &quot;reasoning&quot; LLMs run out of output tokens and fail to complete them.
+I thought this paper got way more attention than it warranted - the title &quot;The Illusion of Thinking&quot; captured the attention of the &quot;LLMs are over-hyped junk&quot; crowd.  I saw enough well-reasoned rebuttals that I didn&#x27;t feel it worth digging into.
+And now, notable LLM skeptic Gary Marcus has saved me some time by aggregating the best of those rebuttals together in one place!
+Gary rebuts those rebuttals, but given that his previous headline concerning this paper was a knockout blow for LLMs? it&#x27;s not surprising that he finds those arguments unconvincing. From that previous piece:
+The vision of AGI I have always had is one that combines the strengths of humans with the strength of machines, overcoming the weaknesses of humans. I am not interested in a “AGI” that can’t do arithmetic, and I certainly wouldn’t want to entrust global infrastructure or the future of humanity to such a system.
+Then from his new post:
+The paper is not news; we already knew these models generalize poorly. True! (I personally have been trying to tell people this for almost thirty years; Subbarao Rao Kambhampati has been trying his best, too). But then why do we think these models are the royal road to AGI?
+And therein lies my disagreement. I&#x27;m not interested in whether or not LLMs are the &quot;road to AGI&quot;. I continue to care only about whether they have useful applications today, once you&#x27;ve understood their limitations.
+Reasoning LLMs are a relatively new and interesting twist on the genre. They are demonstrably able to solve a whole bunch of problems that previous LLMs were unable to handle, hence why we&#x27;ve seen a rush of new models from OpenAI and Anthropic and Gemini and DeepSeek and Qwen and Mistral.
+They get even more interesting when you combine them with tools.
+They&#x27;re already useful to me today, whether or not they can reliably solve the Tower of Hanoi or River Crossing puzzles.
+
+    
+Via Hacker News
+Tags: llm-reasoning, apple, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              An Introduction to Google’s Approach to AI Agent Security
+              <span class="post-metadata">(8 min | 2273 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/15/ai-agent-security/#atom-everything>Here&#x27;s another new paper on AI agent security: An Introduction to Google’s Approach to AI Agent Security, by Santiago Díaz, Christoph Kern, and Kara Olive.
+
+(I wrote about a different recent paper, Design Patterns for Securing LLM Agents against Prompt Injections just a few days ago.)
+
+This Google paper describes itself as &quot;our aspirational framework for secure AI agents&quot;. It&#x27;s a very interesting read.
+
+Because I collect definitions of &quot;AI agents&quot;, here&#x27;s the one they use:
+
+
+AI systems designed to perceive their environment, make decisions, and take autonomous actions to achieve user-defined goals.
+
+
+The two key risks
+
+The paper describes two key risks involved in deploying these systems. I like their clear and concise framing here:
+
+
+The primary concerns demanding strategic focus are rogue actions (unintended,
+harmful, or policy-violating actions) and sensitive data disclosure (unauthorized revelation of private information). A fundamental tension exists: increased agent autonomy and power, which drive utility, correlate directly with increased risk.
+
+
+The paper takes a less strident approach than the design patterns paper from last week. That paper clearly emphasized that &quot;once an LLM agent has ingested untrusted input, it must be constrained so that it is impossible for that input to trigger any consequential actions&quot;. This Google paper skirts around that issue, saying things like this:
+
+
+Security implication: A critical challenge here is reliably distinguishing trusted user commands from potentially untrusted contextual data and inputs from other sources (for example, content within an email or webpage). Failure to do so opens the door to prompt injection attacks, where malicious instructions hidden in data can hijack the agent. Secure agents must carefully parse and separate these input streams.
+
+Questions to consider:
+
+
+What types of inputs does the agent process, and can it clearly distinguish trusted user inputs from potentially untrusted contextual inputs?
+
+
+
+Then when talking about system instructions:
+
+
+Security implication: A crucial security measure involves clearly delimiting and separating these different elements within the prompt. Maintaining an unambiguous distinction between trusted system instructions and potentially untrusted user data or external content is important for mitigating prompt injection attacks.
+
+
+Here&#x27;s my problem: in both of these examples the only correct answer is that unambiguous separation is not possible! The way the above questions are worded implies a solution that does not exist.
+
+Shortly afterwards they do acknowledge exactly that (emphasis mine):
+
+
+Furthermore, current LLM architectures do not provide rigorous separation between constituent parts of a prompt (in particular, system and user instructions versus external, untrustworthy inputs), making them susceptible to manipulation like prompt injection. The common practice of iterative planning (in a “reasoning loop”) exacerbates this risk: each cycle introduces opportunities for flawed logic, divergence from intent, or hijacking by malicious data, potentially compounding issues. Consequently, agents with high autonomy undertaking complex, multi-step iterative planning present a significantly higher risk, demanding robust security controls.
+
+
+This note about memory is excellent:
+
+
+Memory can become a vector for persistent attacks. If malicious data containing
+a prompt injection is processed and stored in memory (for example, as a “fact” summarized from a malicious document), it could influence the agent’s behavior in future, unrelated interactions.
+
+
+And this section about the risk involved in rendering agent output:
+
+
+If the application renders agent output without proper sanitization or escaping
+based on content type, vulnerabilities like Cross-Site Scripting (XSS) or data exfiltration (from maliciously crafted URLs in image tags, for example) can occur. Robust sanitization by the rendering component is crucial.
+
+Questions to consider: [...]
+
+
+What sanitization and escaping processes are applied when rendering agent-generated output to prevent execution vulnerabilities (such as XSS)?
+
+How is rendered agent output, especially generated URLs or embedded content, validated to prevent sensitive data disclosure?
+
+
+
+The paper then extends on the two key risks mentioned earlier, rogue actions and sensitive data disclosure.
+
+Rogue actions
+
+Here they include a cromulent definition of prompt injection:
+
+
+Rogue actions—unintended, harmful, or policy-violating agent behaviors—represent a primary security risk for AI agents.
+
+A key cause is prompt injection: malicious instructions hidden within processed data (like files, emails, or websites) can trick the agent’s core AI model, hijacking its planning or reasoning phases. The model misinterprets this embedded data as instructions, causing it to execute attacker commands using the user’s authority.
+
+
+Plus the related risk of misinterpretation of user commands that could lead to unintended actions:
+
+
+The agent might misunderstand ambiguous instructions or context. For instance, an
+ambiguous request like “email Mike about the project update” could lead the agent to select the wrong contact, inadvertently sharing sensitive information.
+
+
+Sensitive data disclosure
+
+This is the most common form of prompt injection risk I&#x27;ve seen demonstrated so far. I&#x27;ve written about this at length in my exfiltration-attacks tag.
+
+
+A primary method for achieving sensitive data disclosure is data exfiltration. This involves tricking the agent into making sensitive information visible to an attacker. Attackers often achieve this by exploiting agent actions and their side effects, typically driven by prompt injection. […] They might trick the agent into retrieving sensitive data and then leaking it through actions, such as embedding data in a URL the agent is prompted to visit, or hiding secrets in code commit messages.
+
+
+Three core principles for agent security
+
+The next section of the paper describes Google&#x27;s three core principles for agent security:
+
+Principle 1 is that Agents must have well-defined human controllers.
+
+
+[...] it is essential for security and accountability that agents operate under clear human oversight. Every agent must have a well-defined set of controlling human user(s).
+
+This principle mandates that systems must be able to reliably distinguish instructions originating from an authorized controlling user versus any other input, especially potentially untrusted data processed by the agent. For actions deemed critical or irreversible—such as deleting large amounts of data, authorizing significant financial transactions, or changing security settings—the system should require explicit human confirmation before proceeding, ensuring the user remains in the loop. [...]
+
+Agents acting on behalf of teams or groups need distinct identities and clear authorization models to prevent unauthorized cross-user data access or one user inadvertently triggering actions impacting another.
+
+
+There are two parts to this then: tracking which user is controlling the agent, and adding a human-in-the-loop confirmation step for critical actions.
+
+Principle 2 is Agent powers must have limitations.
+
+
+An agent’s powers—the actions it can take and the resources it can access—must be carefully limited in alignment with its intended purpose and its controlling user’s risk tolerance. For example, an agent designed for research should not possess the power to modify financial accounts. General-purpose agents need mechanisms to dynamically confine their capabilities at runtime, ensuring only relevant permissions are active for any given query (for example, disallowing file deletion actions when the task is creative writing).
+
+
+This represents a more sophisticated approach to agent permissions than I&#x27;ve seen before. The idea that an agent&#x27;s permisisons should dynamically change based on the task is certainly intriguing, though I find it hard to imagine how it can work well in practice. The only implementation approach I can think of would involve adding more layers of AI that dynamically adjust permissions based on the percieved task, and that feels inherently risky to me since prompt injection attacks could influence those decisions.
+
+Principle 3 is that Agent actions and planning must be observable. I love this principle - emphasis mine:
+
+
+We cannot ensure an agent is acting faithfully or diagnose problems if its operations are entirely opaque. Therefore, agent actions, and where feasible, their planning processes, must be observable and auditable. [...]
+
+Effective observability also means that the properties of the actions an agent can take—such as whether an action is read-only versus state-changing, or if it handles sensitive data—must be clearly characterized. This metadata is crucial for automated security mechanisms and human reviewers. Finally, user interfaces should be designed to promote transparency, providing users with insights into the agent’s “thought process,” the data sources it consulted, or the actions it intends to take, especially for complex or high-risk operations.
+
+
+Yes. Yes. Yes. LLM systems that hide what they are doing from me are inherently frustrating - they make it much harder for me to evaluate if they are doing a good job and spot when they make mistakes. This paper has convinced me that there&#x27;s a very strong security argument to be made too: the more opaque the system, the less chance I have to identify when it&#x27;s going rogue and being subverted by prompt injection attacks.
+
+Google&#x27;s hybrid defence-in-depth strategy
+
+
+
+All of which leads us to the discussion of Google&#x27;s current hybrid defence-in-depth strategy. They optimistically describe this as combining &quot;traditional, deterministic security measures with dynamic, reasoning-based defenses&quot;. I like determinism but I remain deeply skeptical of &quot;reasoning-based defenses&quot;, aka addressing security problems with non-deterministic AI models.
+
+The way they describe their layer 1 makes complete sense to me:
+
+
+Layer 1: Traditional, deterministic measures (runtime policy enforcement)
+
+When an agent decides to use a tool or perform an action (such as “send email,” or “purchase item”), the request is intercepted by the policy engine. The engine evaluates this request against predefined rules based on factors like the action’s inherent risk (Is it irreversible? Does it involve money?), the current context, and potentially the chain of previous actions (Did the agent recently process untrusted data?). For example, a policy might enforce a spending limit by automatically blocking any purchase action over $500 or requiring explicit user confirmation via a prompt for purchases between $100 and $500. Another policy might prevent an agent from sending emails externally if it has just processed data from a known suspicious source, unless the user explicitly approves.
+
+Based on this evaluation, the policy engine determines the outcome: it can allow the action, block it if it violates a critical policy, or require user confirmation.
+
+
+I really like this. Asking for user confirmation for everything quickly results in &quot;prompt fatigue&quot; where users just click &quot;yes&quot; to everything. This approach is smarter than that: a policy engine can evaluate the risk involved, e.g. if the action is irreversible or involves more than a certain amount of money, and only require confirmation in those cases.
+
+I also like the idea that a policy &quot;might prevent an agent from sending emails externally if it has just processed data from a known suspicious source, unless the user explicitly approves&quot;. This fits with the data flow analysis techniques described in the CaMeL paper, which can help identify if an action is working with data that may have been tainted by a prompt injection attack.
+
+Layer 2 is where I start to get uncomfortable:
+
+
+Layer 2: Reasoning-based defense strategies
+
+To complement the deterministic guardrails and address their limitations in handling context and novel threats, the second layer leverages reasoning-based defenses: techniques that use AI models themselves to evaluate inputs, outputs, or the agent’s internal reasoning for potential risks.
+
+
+They talk about adversarial training against examples of prompt injection attacks, attempting to teach the model to recognize and respect delimiters, and suggest specialized guard models to help classify potential problems.
+
+I understand that this is part of defence-in-depth, but I still have trouble seeing how systems that can&#x27;t provide guarantees are a worthwhile addition to the security strategy here.
+
+They do at least acknowlede these limitations:
+
+
+However, these strategies are non-deterministic and cannot provide absolute guarantees. Models can still be fooled by novel attacks, and their failure modes can be unpredictable. This makes them inadequate, on their own, for scenarios demanding absolute safety guarantees, especially involving critical or irreversible actions. They must work in concert with deterministic controls.
+
+
+I&#x27;m much more interested in their layer 1 defences then the approaches they are taking in layer 2.
+Tags: ai-agents, ai, llms, prompt-injection, security, google, generative-ai, exfiltration-attacks, paper-review, agent-definitions</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-06-14</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Anthropic: How we built our multi-agent research system
+              <span class="post-metadata">(5 min | 1376 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/14/multi-agent-research-system/#atom-everything>Anthropic: How we built our multi-agent research system
+I&#x27;ve been pretty skeptical of these until recently: why make your life more complicated by running multiple different prompts in parallel when you can usually get something useful done with a single, carefully-crafted prompt against a frontier model?
+This detailed description from Anthropic about how they engineered their &quot;Claude Research&quot; tool has cured me of that skepticism.
+Reverse engineering Claude Code had already shown me a mechanism where certain coding research tasks were passed off to a &quot;sub-agent&quot; using a tool call. This new article describes a more sophisticated approach.
+They start strong by providing a clear definition of how they&#x27;ll be using the term &quot;agent&quot; - it&#x27;s the &quot;tools in a loop&quot; variant:
+A multi-agent system consists of multiple agents (LLMs autonomously using tools in a loop) working together. Our Research feature involves an agent that plans a research process based on user queries, and then uses tools to create parallel agents that search for information simultaneously.
+Why use multiple agents for a research system?
+The essence of search is compression: distilling insights from a vast corpus. Subagents facilitate compression by operating in parallel with their own context windows, exploring different aspects of the question simultaneously before condensing the most important tokens for the lead research agent. [...]
+Our internal evaluations show that multi-agent research systems excel especially for breadth-first queries that involve pursuing multiple independent directions simultaneously. We found that a multi-agent system with Claude Opus 4 as the lead agent and Claude Sonnet 4 subagents outperformed single-agent Claude Opus 4 by 90.2% on our internal research eval. For example, when asked to identify all the board members of the companies in the Information Technology S&amp;P 500, the multi-agent system found the correct answers by decomposing this into tasks for subagents, while the single agent system failed to find the answer with slow, sequential searches.
+As anyone who has spent time with Claude Code will already have noticed, the downside of this architecture is that it can burn a lot more tokens:
+There is a downside: in practice, these architectures burn through tokens fast. In our data, agents typically use about 4× more tokens than chat interactions, and multi-agent systems use about 15× more tokens than chats. For economic viability, multi-agent systems require tasks where the value of the task is high enough to pay for the increased performance. [...]
+We’ve found that multi-agent systems excel at valuable tasks that involve heavy parallelization, information that exceeds single context windows, and interfacing with numerous complex tools.
+The key benefit is all about managing that 200,000 token context limit. Each sub-task has its own separate context, allowing much larger volumes of content to be processed as part of the research task.
+Providing a &quot;memory&quot; mechanism is important as well:
+The LeadResearcher begins by thinking through the approach and saving its plan to Memory to persist the context, since if the context window exceeds 200,000 tokens it will be truncated and it is important to retain the plan.
+The rest of the article provides a detailed description of the prompt engineering process needed to build a truly effective system:
+Early agents made errors like spawning 50 subagents for simple queries, scouring the web endlessly for nonexistent sources, and distracting each other with excessive updates. Since each agent is steered by a prompt, prompt engineering was our primary lever for improving these behaviors. [...]
+In our system, the lead agent decomposes queries into subtasks and describes them to subagents. Each subagent needs an objective, an output format, guidance on the tools and sources to use, and clear task boundaries.
+They got good results from having special agents help optimize those crucial tool descriptions:
+We even created a tool-testing agent—when given a flawed MCP tool, it attempts to use the tool and then rewrites the tool description to avoid failures. By testing the tool dozens of times, this agent found key nuances and bugs. This process for improving tool ergonomics resulted in a 40% decrease in task completion time for future agents using the new description, because they were able to avoid most mistakes.
+Sub-agents can run in parallel which provides significant performance boosts:
+For speed, we introduced two kinds of parallelization: (1) the lead agent spins up 3-5 subagents in parallel rather than serially; (2) the subagents use 3+ tools in parallel. These changes cut research time by up to 90% for complex queries, allowing Research to do more work in minutes instead of hours while covering more information than other systems.
+There&#x27;s also an extensive section about their approach to evals - they found that LLM-as-a-judge worked well for them, but human evaluation was essential as well:
+We often hear that AI developer teams delay creating evals because they believe that only large evals with hundreds of test cases are useful. However, it’s best to start with small-scale testing right away with a few examples, rather than delaying until you can build more thorough evals. [...]
+In our case, human testers noticed that our early agents consistently chose SEO-optimized content farms over authoritative but less highly-ranked sources like academic PDFs or personal blogs. Adding source quality heuristics to our prompts helped resolve this issue.
+There&#x27;s so much useful, actionable advice in this piece. I haven&#x27;t seen anything else about multi-agent system design that&#x27;s anywhere near this practical.
+They even added some example prompts from their Research system to their open source prompting cookbook. Here&#x27;s the bit that encourages parallel tool use:
+&lt;use_parallel_tool_calls&gt; For maximum efficiency, whenever you need to perform multiple independent operations, invoke all relevant tools simultaneously rather than sequentially. Call tools in parallel to run subagents at the same time. You MUST use parallel tool calls for creating multiple subagents (typically running 3 subagents at the same time) at the start of the research, unless it is a straightforward query. For all other queries, do any necessary quick initial planning or investigation yourself, then run multiple subagents in parallel. Leave any extensive tool calls to the subagents; instead, focus on running subagents in parallel efficiently. &lt;/use_parallel_tool_calls&gt;
+And an interesting description of the OODA research loop used by the sub-agents: 
+Research loop: Execute an excellent OODA (observe, orient, decide, act) loop by (a) observing what information has been gathered so far, what still needs to be gathered to accomplish the task, and what tools are available currently; (b) orienting toward what tools and queries would be best to gather the needed information and updating beliefs based on what has been learned so far; (c) making an informed, well-reasoned decision to use a specific tool in a certain way; (d) acting to use this tool. Repeat this loop in an efficient way to research well and learn based on new results.
+Tags: ai-assisted-search, anthropic, claude, evals, ai-agents, llm-tool-use, ai, llms, prompt-engineering, generative-ai, paper-review, agent-definitions</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -54,6 +313,18 @@ The plugin works by including yt-dlp as a Python dependency and then executing i
 Tags: youtube, llm, plugins, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              mistral
+              <span class="post-metadata">(9 min | 2600 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/mistral>The 7B model released by Mistral AI, updated to version 0.3.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
@@ -6399,83 +6670,6 @@ Currently in development: dsd-vps - a plugin that should work with any VPS provi
 
     
 Tags: fly, heroku, datasette, plugins, django, paramiko, python</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-05-16</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot premium request report available today
-              <span class="post-metadata">(6 min | 1768 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-16-github-copilot-premium-request-report-available-today>With the upcoming billing changes for GitHub Copilot on June 4th, we know how important it is for you to understand your current premium request usage and estimate future charges.…
-The post GitHub Copilot premium request report available today appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI Codex
-              <span class="post-metadata">(2 min | 537 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/16/openai-codex/#atom-everything>OpenAI Codex
-Announced today, here&#x27;s the documentation for OpenAI&#x27;s &quot;cloud-based software engineering agent&quot;. It&#x27;s not yet available for us $20/month Plus customers (&quot;coming soon&quot;) but if you&#x27;re a $200/month Pro user you can try it out today.
-At a high level, you specify a prompt, and the agent goes to work in its own environment. After about 8–10 minutes, the agent gives you back a diff.
-You can execute prompts in either ask mode or code mode. When you select ask, Codex clones a read-only version of your repo, booting faster and giving you follow-up tasks. Code mode, however, creates a full-fledged environment that the agent can run and test against.
-It sounds similar to GitHub&#x27;s own Copilot Workspace project, which can compose PRs against your code based on a prompt. The big difference is that Codex incorporates a full Code Interpeter style environment, allowing it to build and run the code it&#x27;s creating and execute tests in a loop.
-Copilot Workspaces has a level of integration with Codespaces but still requires manual intervention to help exercise the code.
-Also similar to Copilot Workspaces is a confusing  name. OpenAI now have four products called Codex:
-OpenAI Codex, announced today.
-Codex CLI, a completely different coding assistant tool they released a few weeks ago that is the same kind of shape as Claude Code. This one owns the openai/codex namespace on GitHub.
-codex-mini, a brand new model released today that is used by their Codex product. It&#x27;s a fine-tuned o4-mini variant. I released llm-openai-plugin 0.4 adding support for that model.
-OpenAI Codex (2021) - Internet Archive link, OpenAI&#x27;s first specialist coding model from the GPT-3 era. This was used by the original GitHub Copilot and is still the current topic of Wikipedia&#x27;s OpenAI Codex page.
-My favorite thing about this most recent Codex product is that OpenAI shared the full Dockerfile for the environment that the system uses to run code - in openai/codex-universal on GitHub because openai/codex was taken already.
-This is extremely useful documentation for figuring out how to use this thing - I&#x27;m glad they&#x27;re making this as transparent as possible.
-
-
-    
-Tags: ai-assisted-programming, generative-ai, ai-agents, openai, ai, github, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Enterprise Cloud with data residency now available for self-service trial
-              <span class="post-metadata">(6 min | 1828 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-16-github-enterprise-cloud-with-data-residency-now-available-for-self-service-trial>GitHub Enterprise Cloud with data residency is now available for self-service trial and provisioning. New customers can initiate a 30-day free trial and begin using the platform without requiring sales…
-The post GitHub Enterprise Cloud with data residency now available for self-service trial appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Python at Meta
-              <span class="post-metadata">(1 min | 273 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/16/python-at-meta/#atom-everything>Today I learned - from a very short &quot;we&#x27;re sponsering Python&quot; sponsor blurb by Meta during the opening PyCon US welcome talks - that Python is now &quot;the most-used language at Meta&quot; - if you consider all of the different functional areas spread across the company.
-They also have &quot;over 3,000 Python developers working in the language every day&quot;.
-
-The live captions for the event are once again provided by the excellent White Coat Captioning - real human beings! This got a cheer when it was pointed out by the conference chair a few moments earlier.
-Tags: pycon, python, meta</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
