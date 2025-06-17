@@ -25,9 +25,65 @@
 
   <ul>
     <li>
+      <time>2025-06-17</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Donghee Na
+              <span class="post-metadata">(1 min | 311 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/17/donghee-na/#atom-everything>The Steering Council (SC) approves PEP 779 [Criteria for supported status for free-threaded Python], with the effect of removing the “experimental” tag from the free-threaded build of Python 3.14 [...]
+With these recommendations and the acceptance of this PEP, we as the Python developer community should broadly advertise that free-threading is a supported Python build option now and into the future, and that it will not be removed without following a proper deprecation schedule. [...]
+Keep in mind that any decision to transition to Phase III, with free-threading as the default or sole build of Python is still undecided, and dependent on many factors both within CPython itself and the community. We leave that decision for the future.
+
+— Donghee Na, discuss.python.org
+Tags: gil, python</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Mean time to remediate metric for CodeQL pull request alerts now included on the security overview dashboard
+              <span class="post-metadata">(6 min | 1791 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-16-mean-time-to-remediate-metric-for-codeql-pull-request-alerts-now-included-on-the-security-overview-dashboard>We’ve added a “time to remediate” metric for GitHub CodeQL pull request alerts on the security overview dashboard. Now, you’ll see how quickly your team resolves code scanning vulnerabilities on…
+The post Mean time to remediate metric for CodeQL pull request alerts now included on the security overview dashboard appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-06-16</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              100% effective
+              <span class="post-metadata">(1 min | 367 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/16/100-percent/#atom-everything>Every time I get into an online conversation about prompt injection it&#x27;s inevitable that someone will argue that a mitigation which works 99% of the time is still worthwhile because there&#x27;s no such thing as a security fix that is 100% guaranteed to work.
+I don&#x27;t think that&#x27;s true.
+If I use parameterized SQL queries my systems are 100% protected against SQL injection attacks.
+If I make a mistake applying those and someone reports it to me I can fix that mistake and now I&#x27;m back up to 100%.
+If our measures against SQL injection were only 99% effective none of our digital activities involving relational databases would be safe.
+I don&#x27;t think it is unreasonable to want a security fix that, when applied correctly, works 100% of the time.
+(I first argued a version of this back in September 2022 in You can’t solve AI security problems with more AI.)
+Tags: sql-injection, security, prompt-injection</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -6667,116 +6723,6 @@ The post Agent mode and MCP support for Copilot in JetBrains, Eclipse, and Xcode
 The post GitHub Copilot app modernization for Java now in public preview appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-05-18</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              llm-pdf-to-images
-              <span class="post-metadata">(2 min | 586 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/18/llm-pdf-to-images/#atom-everything>llm-pdf-to-images
-llm-video-frames plugin, I thought it would be neat to have a plugin for LLM that can take a PDF and turn that into an image-per-page so you can feed PDFs into models that support image inputs but don&#x27;t yet support PDFs.
-This should now do exactly that:
-llm install llm-pdf-to-images
-llm -f pdf-to-images:path/to/document.pdf &#x27;Summarize this document&#x27;
-
-
-Under the hood it&#x27;s using the PyMuPDF library. The key code to convert a PDF into images looks like this:
-import fitz
-doc &#x3D; fitz.open(&quot;input.pdf&quot;)
-for page in doc:
-    pix &#x3D; page.get_pixmap(matrix&#x3D;fitz.Matrix(300/72, 300/72))
-    jpeg_bytes &#x3D; pix.tobytes(output&#x3D;&quot;jpg&quot;, jpg_quality&#x3D;30)
-Once I&#x27;d figured out that code I got o4-mini to write most of the rest of the plugin, using llm-fragments-github to load in the example code from the video plugin:
-llm -f github:simonw/llm-video-frames &#x27;
-import fitz
-doc &#x3D; fitz.open(&quot;input.pdf&quot;)
-for page in doc:
-    pix &#x3D; page.get_pixmap(matrix&#x3D;fitz.Matrix(300/72, 300/72))
-    jpeg_bytes &#x3D; pix.tobytes(output&#x3D;&quot;jpg&quot;, jpg_quality&#x3D;30)
-&#x27; -s &#x27;output llm_pdf_to_images.py which adds a pdf-to-images: 
- fragment loader that converts a PDF to frames using fitz like in the example&#x27; \
--m o4-mini
-Here&#x27;s the transcript - more details in this issue.
-I had some weird results testing this with GPT 4.1 mini. I created a test PDF with two pages - one white, one black - and ran a test prompt like this:
-llm -f &#x27;pdf-to-images:blank-pages.pdf&#x27; \
-  &#x27;describe these images&#x27;
-The first image features a stylized red maple leaf with triangular facets, giving it a geometric appearance. The maple leaf is a well-known symbol associated with Canada.
-The second image is a simple black silhouette of a cat sitting and facing to the left. The cat&#x27;s tail curls around its body. The design is minimalistic and iconic.
-I got even wilder hallucinations for other prompts, like &quot;summarize this document&quot; or &quot;describe all figures&quot;. I have a collection of those in this Gist.
-Thankfully this behavior is limited to GPT-4.1 mini. I upgraded to full GPT-4.1 and got much more sensible results:
-llm -f &#x27;pdf-to-images:tests/blank-pages.pdf&#x27; \
-  &#x27;describe these images&#x27; -m gpt-4.1
-Certainly! Here are the descriptions of the two images you provided:
-First image: This image is completely white. It appears blank, with no discernible objects, text, or features.
-Second image: This image is entirely black. Like the first, it is blank and contains no visible objects, text, or distinct elements.
-If you have questions or need a specific kind of analysis or modification, please let me know!
-Tags: llm, plugins, ai, llms, ai-assisted-programming, pdf, generative-ai, projects, hallucinations</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              qwen2.5vl in Ollama
-              <span class="post-metadata">(2 min | 687 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/18/qwen25vl-in-ollama/#atom-everything>qwen2.5vl in Ollama
-Qwen 2.5 VL which was first released on January 26th 2025. Here are my notes from that release.
-I upgraded Ollama (it auto-updates so I just had to restart it from the tray icon) and ran this:
-ollama pull qwen2.5vl
-
-This downloaded a 6GB model file. I tried it out against my photo of Cleo rolling on the beach:
-llm -a https://static.simonwillison.net/static/2025/cleo-sand.jpg \
-  &#x27;describe this image&#x27; -m qwen2.5vl
-
-And got a pretty good result:
-The image shows a dog lying on its back on a sandy beach. The dog appears to be a medium to large breed with a dark coat, possibly black or dark brown. It is wearing a red collar or harness around its chest. The dog&#x27;s legs are spread out, and its belly is exposed, suggesting it might be rolling around or playing in the sand. The sand is light-colored and appears to be dry, with some small footprints and marks visible around the dog. The lighting in the image suggests it is taken during the daytime, with the sun casting a shadow of the dog to the left side of the image. The overall scene gives a relaxed and playful impression, typical of a dog enjoying time outdoors on a beach.
-Qwen 2.5 VL has a strong reputation for OCR, so I tried it on my poster:
-llm -a https://static.simonwillison.net/static/2025/poster.jpg \
-  &#x27;convert to markdown&#x27; -m qwen2.5vl
-
-The result that came back:
-It looks like the image you provided is a jumbled and distorted text, making it difficult to interpret. If you have a specific question or need help with a particular topic, please feel free to ask, and I&#x27;ll do my best to assist you!
-I&#x27;m not sure what went wrong here. My best guess is that the maximum resolution the model can handle is too small to make out the text, or maybe Ollama resized the image to the point of illegibility before handing it to the model?
-Update: I think this may be a bug relating to URL handling in LLM/llm-ollama. I tried downloading the file first:
-wget https://static.simonwillison.net/static/2025/poster.jpg
-llm -m qwen2.5vl &#x27;extract text&#x27; -a poster.jpg
-
-This time it did a lot better. The results weren&#x27;t perfect though - it ended up stuck in a loop outputting the same code example dozens of times.
-I tried with a different prompt - &quot;extract text&quot; - and it got confused by the three column layout, misread Datasette as &quot;Datasetette&quot; and missed some of the text. Here&#x27;s that result.
-These experiments used qwen2.5vl:7b (6GB) - I expect the results would be better with the larger qwen2.5vl:32b (21GB) and qwen2.5vl:72b (71GB) models.
-Fred Jonsson reported a better result using the MLX model via LM studio (~9GB model running in 8bit - I think that&#x27;s mlx-community/Qwen2.5-VL-7B-Instruct-8bit). His full output is here - looks almost exactly right to me.
-
-
-    
-Tags: vision-llms, llm, ollama, generative-ai, ai, qwen, llms, mlx, ocr</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              2025 Python Packaging Ecosystem Survey
-              <span class="post-metadata">(1 min | 230 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/18/2025-python-packaging-ecosystem-survey/#atom-everything>2025 Python Packaging Ecosystem Survey
-Tags: surveys, packaging, pip, python, psf</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
