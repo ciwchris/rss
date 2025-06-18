@@ -25,9 +25,131 @@
 
   <ul>
     <li>
+      <time>2025-06-18</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              It&#x27;s a trap
+              <span class="post-metadata">(1 min | 271 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/18/trap/#atom-everything>That memvid thing that&#x27;s been going around recently is a trap. It&#x27;s an embedding store that records the original text that has been embedded in QR codes in a video file. That&#x27;s an absurd thing to do, and the only purpose of the repo is to make people who uncritically share it look foolish. Don&#x27;t fall for the trap.
+Tags: jokes</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-06-17</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Trying out the new Gemini 2.5 model family
+              <span class="post-metadata">(5 min | 1366 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/17/gemini-2-5/#atom-everything>After many months of previews, Gemini 2.5 Pro and Flash have reached general availability with new, memorable model IDs: gemini-2.5-pro and gemini-2.5-flash. They are joined by a new preview model with an unmemorable name: gemini-2.5-flash-lite-preview-06-17 is a new Gemini 2.5 Flash Lite model that offers lower prices and much faster inference times.
+
+I&#x27;ve added support for the new models in llm-gemini 0.23:
+
+llm install -U llm-gemini
+llm &#x27;Generate an SVG of a pelican riding a bicycle&#x27; \
+  -m gemini-2.5-flash-lite-preview-06-17
+
+
+There&#x27;s also a new Gemini 2.5 Technical Report (PDF), which includes some interesting details about long context and audio and video support. Some highlights:
+
+
+While Gemini 1.5 was focused on native audio understanding tasks such as transcription, translation, summarization and question-answering, in addition to understanding, Gemini 2.5 was trained to perform audio generation tasks such as text-to-speech or native audio-visual to audio out dialog. [...]
+
+Our Gemini 2.5 Preview TTS Pro and Flash models support more than 80 languages with the speech style controlled by a free formatted prompt which can specify style, emotion, pace, etc, while also being capable of following finer-grained steering instructions specified in the transcript. Notably, Gemini 2.5 Preview TTS can generate speech with multiple speakers, which enables the creation of podcasts as used in NotebookLM Audio Overviews. [...]
+
+We have also trained our models so that they perform competitively with 66 instead of 258 visual tokens per frame, enabling using about 3 hours of video instead of 1h within a 1M tokens context window. [...]
+
+An example showcasing these improved capabilities for video recall can be seen in Appendix 8.5, where Gemini 2.5 Pro is able to consistently recall a 1 sec visual event out of a full 46 minutes video.
+
+
+The report also includes six whole pages of analyses of the unaffiliated Gemini_Plays_Pokemon Twitch stream! Drew Breunig wrote a fun and insightful breakdown of that section of the paper with some of his own commentary:
+
+
+Long contexts tripped up Gemini’s gameplay. So much about agents is information control, what gets put in the context. While benchmarks demonstrated Gemini’s unmatched ability to retrieve facts from massive contexts, leveraging long contexts to inform Pokémon decision making resulted in worse performance: “As the context grew significantly beyond 100k tokens, the agent showed a tendency toward favoring repeating actions from its vast history rather than synthesizing novel plans.” This is an important lesson and one that underscores the need to build your own evals when designing an agent, as the benchmark performances would lead you astray.
+
+
+Let&#x27;s run a few experiments through the new models.
+
+Pelicans on bicycles
+
+Here are some SVGs of pelicans riding bicycles!
+
+gemini-2.5-pro - 4,226 output tokens, 4.2274 cents:
+
+
+
+gemini-2.5-flash - 14,500 output tokens, 3.6253 cents (it used a surprisingly large number of output tokens here, hence th cost nearly matching 2.5 Pro):
+
+
+
+gemini-2.5-flash-lite-preview-06-17 - 2,070 output tokens, 0.0829 cents:
+
+
+
+Transcribing audio from a Twitter Space
+
+The Gemini team hosted a Twitter Space this morning to discuss the new models, with Logan Kilpatrick, Tulsee Doshi, Melvin Johnson, Anca Dragan and Zachary Gleicher. I grabbed a copy of the audio using yt-dlp, shrunk it down a bit with ffmpeg (here&#x27;s the resulting 2.5_smaller.m4a) and then tried using the new models to generate a transcript:
+
+llm --at gemini-2.5_smaller.m4a audio/mpeg \
+  -m gemini/gemini-2.5-flash \
+  &#x27;Full transcript with timestamps&#x27; \
+  --schema-multi &#x27;timestamp:mm:ss,speaker:best guess at name,text&#x27;
+
+
+I got good results from 2.5 Pro (74,073 input, 8,856 output &#x3D; 18.1151 cents, 147.5 seconds) and from 2.5 Flash (74,073 input audio, 10,477 output &#x3D; 10.026 cents, 72.6 seconds), but the new Flash Lite model got stuck in a loop (65,517 output tokens &#x3D; 6.3241 cents, 231.9 seconds) part way into the transcript:
+
+
+... But this model is so cool because it just sort of goes on this rant, this hilarious rant about how the toaster is the pinnacle of the breakfast civilization, and then it makes all these jokes about the toaster. Um, like, what did the cows bring to you? Nothing. And then, um, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh, and then, uh... (continues until it runs out of output tokens)
+
+
+I had Claude 4 Sonnet vibe code me a quick tool for turning that JSON into Markdown, here&#x27;s the Markdown conversion of the Gemini 2.5 Flash transcript.
+
+A spot-check of the timestamps seems to confirm that they show up in the right place, and the speaker name guesses look mostly correct as well.
+
+Pricing for 2.5 Flash has changed
+
+There have been some changes to Gemini pricing.
+
+The 2.5 Flash and 2.5 Flash-Lite Preview models both charge different prices for text v.s. audio input tokens.
+
+
+$0.30/million text and $1/million audio for 2.5 Flash.
+
+$0.10/million text and $0.50/million audio for 2.5 Flash Lite Preview.
+
+
+I think this mean I can&#x27;t trust the raw output token counts for the models and need to look at the [{&quot;modality&quot;: &quot;TEXT&quot;, &quot;tokenCount&quot;: 5}, {&quot;modality&quot;: &quot;AUDIO&quot;, &quot;tokenCount&quot;: 74068}] breakdown instead, which is frustrating.
+
+I wish they&#x27;d kept the same price for both type of tokens and used a multiple when counting audio tokens, but presumably that would have broken the overall token limit numbers.
+
+Gemini 2.5 Flash has very different pricing from the Gemini 2.5 Flash Preview model. That preview charged different rates for thinking v.s. non-thinking mode.
+
+2.5 Flash Preview: $0.15/million input text/image/video, $1/million audio input, $0.60/million output in non-thinking mode, $3.50/million output in thinking mode.
+
+The new 2.5 Flash is simpler: $0.30/million input text/image/video (twice as much), $1/million audio input (the same), $2.50/million output (more than non-thinking mode but less than thinking mode).
+
+In the Twitter Space they mentioned that the difference between thinking and non-thinking mode for 2.5 Flash Preview had caused a lot of confusion, and the new price should still work out cheaper for thinking-mode uses. Using that model in non-thinking mode was always a bit odd, and hopefully the new 2.5 Flash Lite can fit those cases better (though it&#x27;s actually also a &quot;thinking&quot; model.)
+
+I&#x27;ve updated my llm-prices.com site with the prices of the new models.
+Tags: gemini, llm, llm-reasoning, pelican-riding-a-bicycle, llm-pricing, ai, llms, llm-release, google, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -6629,124 +6751,6 @@ Tags: vibe-coding, ai-assisted-programming, generative-ai, ai, llms</a>
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2025-05-19-secret-protection-expands-default-pattern-support-may-2025>GitHub continually updates the default pattern set for secret scanning with new patterns and upgrades of existing patterns, helping ensure your repositories have comprehensive detection for different secret types. The…
 The post Secret Protection expands default pattern support (May 2025) appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-05-19</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Jules
-              <span class="post-metadata">(1 min | 368 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/19/jules/#atom-everything>Jules
-everyone is rolling out AI coding assistants that attach to your GitHub account and submit PRs for you right now. We had OpenAI Codex last week, today Microsoft announced GitHub Copilot coding agent (confusingly not the same thing as Copilot Workspace) and I found out just now that Google&#x27;s Jules, announced in December, is now in a beta preview.
-I&#x27;m flying home from PyCon but I managed to try out Jules from my phone. I took this GitHub issue thread, converted it to copy-pasteable Markdown with this tool and pasted it into Jules, with no further instructions.
-Here&#x27;s the resulting PR created from its branch. I haven&#x27;t fully reviewed it yet and the tests aren&#x27;t passing, so it&#x27;s hard to evaluate from my phone how well it did. In a cursory first glance it looks like it&#x27;s covered most of the requirements from the issue thread.
-My habit of creating long issue threads where I talk to myself about the features I&#x27;m planning is proving to be a good fit for outsourcing implementation work to this new generation of coding assistants.
-
-
-    
-Tags: gemini, ai-assisted-programming, google, llms, ai, generative-ai, github</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot coding agent in public preview
-              <span class="post-metadata">(7 min | 2009 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-19-github-copilot-coding-agent-in-public-preview>Backlog getting you down? Drowning in technical debt? Delegate issues to Copilot so you can focus on the creative, complex, and high-impact work that matters most. Copilot coding agent makes…
-The post GitHub Copilot coding agent in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Models built into your repository is in public preview
-              <span class="post-metadata">(7 min | 2016 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-19-github-models-built-into-your-repository-is-in-public-preview>We’re making it easier than ever to take your AI project from idea to shipped, all within GitHub. With the new GitHub Models repository integration, you get the building blocks…
-The post GitHub Models built into your repository is in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Creating issues with Copilot on github.com is in public preview
-              <span class="post-metadata">(6 min | 1931 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-19-creating-issues-with-copilot-on-github-com-is-in-public-preview>Say goodbye to manual, repetitive issue creation. With Copilot, creating issues for bugs, tasks, and feature requests on GitHub is now faster and easier—all without sacrificing quality. What’s new Natural…
-The post Creating issues with Copilot on github.com is in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot app modernization – upgrade for .NET now in public preview
-              <span class="post-metadata">(6 min | 1876 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-19-github-copilot-app-modernization-upgrade-for-net-now-in-public-preview>GitHub Copilot app modernization – upgrade for .NET is now in public preview. Pair the capability with agent mode, and Copilot will help reduce the time and toil it takes…
-The post GitHub Copilot app modernization – upgrade for .NET now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Grok 3 is now available in public preview in GitHub Models
-              <span class="post-metadata">(6 min | 1784 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-19-grok-3-is-now-available-in-public-preview-in-github-models>The latest AI model from xAI, Grok 3, is now available on GitHub Models. Grok 3 is a model for enterprise applications such as data extraction, coding, and text summarization.…
-The post Grok 3 is now available in public preview in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Agent mode and MCP support for Copilot in JetBrains, Eclipse, and Xcode now in public preview
-              <span class="post-metadata">(8 min | 2325 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-19-agent-mode-and-mcp-support-for-copilot-in-jetbrains-eclipse-and-xcode-now-in-public-preview>GitHub Copilot agent mode with MCP support for JetBrains, Eclipse, and Xcode is now in public preview! You can enable GitHub Copilot with any GitHub account and experience the autonomous coding experience today. ✨ What’s…
-The post Agent mode and MCP support for Copilot in JetBrains, Eclipse, and Xcode now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot app modernization for Java now in public preview
-              <span class="post-metadata">(7 min | 2196 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-19-github-copilot-app-modernization-for-java-now-in-public-preview>We’ve released the public preview of GitHub Copilot app modernization for Java—an AI-powered solution designed to simplify and accelerate Java upgrades and cloud migrations. By combining the intelligence of GitHub…
-The post GitHub Copilot app modernization for Java now in public preview appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
