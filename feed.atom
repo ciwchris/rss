@@ -2,10 +2,110 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-06-19T14:10:51.211Z</updated>
+    <updated>2025-06-19T21:09:49.181Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[playbackrate]]></title>
+        <id>https://simonwillison.net/2025/Jun/19/playbackrate/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/19/playbackrate/#atom-everything"/>
+        <updated>2025-06-19T20:47:52.000Z</updated>
+        <summary type="html"><![CDATA[<p>Here's a tip that works on YouTube and almost any other web page that shows you a video. You can increase the playback rate beyond the usually-exposed 2x by running this in your browser DevTools console:</p>
+<pre><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'video'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">playbackRate</span> <span class="pl-c1">=</span> <span class="pl-c1">2.5</span></pre>
+
+<p>I find this is the fastest I can reasonably watch most videos at, with subtitles on to help my comprehension - it turns a 40 minute video into just 16 minutes, short enough that I don't feel too guilty taking time off whatever else I'm doing to watch it!</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/youtube">youtube</a>, <a href="https://simonwillison.net/tags/video">video</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How OpenElections Uses LLMs]]></title>
+        <id>https://simonwillison.net/2025/Jun/19/how-openelections-uses-llms/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/19/how-openelections-uses-llms/#atom-everything"/>
+        <updated>2025-06-19T18:26:38.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://thescoop.org/archives/2025/06/09/how-openelections-uses-llms/index.html">How OpenElections Uses LLMs</a></strong></p>
+The <a href="https://github.com/openelections">OpenElections project</a> collects detailed election data for the USA, all the way down to the precinct level. This is a <em>surprisingly</em> hard problem: while county and state-level results are widely available, precinct-level results are published in thousands of different ad-hoc ways and rarely aggregated once the election result has been announced.</p>
+<p>A lot of those precinct results are published as image-filled PDFs.</p>
+<p>Derek Willis has recently started leaning on Gemini to help parse those PDFs into CSV data:</p>
+<blockquote>
+<p>For parsing image PDFs into CSV files, Google’s Gemini is my model of choice, for two main reasons. First, the results are usually very, very accurate (with a few caveats I’ll detail below), and second, Gemini’s large context window means it’s possible to work with PDF files that can be multiple MBs in size.</p>
+</blockquote>
+<p>Is <a href="https://thescoop.org/archives/2025/06/09/how-openelections-uses-llms/index.html">this piece</a> he shares the process and prompts for a real-world expert level data entry project, assisted by Gemini.</p>
+<p>This example from Limestone County, Texas is a great illustration of how tricky this problem can get. Getting traditional OCR software to correctly interpret multi-column layouts like this always requires some level of manual intervention:</p>
+<p><img alt="The results are typewritten and slightly wonky and come in several different columns" src="https://static.simonwillison.net/static/2025/election-results.jpg" /></p>
+<p>Derek's <a href="https://aistudio.google.com/app/prompts/1vZq4hi_eCqR58TkuzqPugDcOc2kE1tms">prompt against Gemini 2.5 Pro</a> throws in an example, some special instructions and a note about the two column format:</p>
+<blockquote>
+<p><code>Produce a CSV file from the attached PDF based on this example:</code></p>
+<p><code>county,precinct,office,district,party,candidate,votes,absentee,early_voting,election_day</code><br>
+<code>Limestone,Precinct 101,Registered Voters,,,,1858,,,</code><br>
+<code>Limestone,Precinct 101,Ballots Cast,,,,1160,,,</code><br>
+<code>Limestone,Precinct 101,President,,REP,Donald J. Trump,879,,,</code><br>
+<code>Limestone,Precinct 101,President,,DEM,Kamala D. Harris,271,,,</code><br>
+<code>Limestone,Precinct 101,President,,LIB,Chase Oliver,1,,,</code><br>
+<code>Limestone,Precinct 101,President,,GRN,Jill Stein,4,,,</code><br>
+<code>Limestone,Precinct 101,President,,,Write-ins,1,,,</code></p>
+<p><code>Skip Write-ins with candidate names and rows with "Cast Votes", "Not Assigned", "Rejected write-in votes", "Unresolved write-in votes" or "Contest Totals". Do not extract any values that end in "%"</code></p>
+<p><code>Use the following offices:</code></p>
+<p><code>President/Vice President -&gt; President</code><br>
+<code>United States Senator -&gt; U.S. Senate</code><br>
+<code>US Representative -&gt; U.S. House</code><br>
+<code>State Senator -&gt; State Senate</code></p>
+<p><code>Quote all office and candidate values. The results are split into two columns on each page; parse the left column first and then the right column.</code><br></p>
+</blockquote>
+<p>A spot-check and a few manual tweaks and <a href="https://github.com/openelections/openelections-data-tx/blob/master/2024/counties/20241105__tx__general__limestone__precinct.csv">the result</a> against a 42 page PDF was exactly what was needed.</p>
+<p>How about something harder? The results for Cameron County came as more than 600 pages and looked like this - note the hole-punch holes that obscure some of the text!</p>
+<p><img alt="Precinct results report, Cameron County Texas, November 5th 2024. A hole punch hole obscures Precinct 16 and another further down the page deletes the first three letters in both Undervotes and Overvotes" src="https://static.simonwillison.net/static/2025/cameron.png" /></p>
+<p>This file had to be split into chunks of 100 pages each, and the entire process still took a full hour of work - but the resulting table matched up with the official vote totals.</p>
+<p>I love how realistic this example is. AI data entry like this isn't a silver bullet - there's still a bunch of work needed to verify the results and creative thinking needed to work through limitations - but it represents a very real improvement in how small teams can take on projects of this scale.</p>
+<blockquote>
+<p>In the six weeks since we started working on Texas precinct results, we’ve been able to convert them for more than half of the state’s 254 counties, including many image PDFs like the ones on display here. That pace simply wouldn’t be possible with data entry or traditional OCR software.</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=44320001">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/derek-willis">derek-willis</a>, <a href="https://simonwillison.net/tags/ocr">ocr</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/structured-extraction">structured-extraction</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot Spaces now support issues and pull requests [Public Preview]]]></title>
+        <id>https://github.blog/changelog/2025-06-19-copilot-spaces-now-support-issues-and-pull-requests-public-preview</id>
+        <link href="https://github.blog/changelog/2025-06-19-copilot-spaces-now-support-issues-and-pull-requests-public-preview"/>
+        <updated>2025-06-19T16:26:08.000Z</updated>
+        <summary type="html"><![CDATA[You can now add issues and pull requests as context in Copilot Spaces. Create a space and simply paste in the URL—the space will pull in the latest title, body,…
+The post Copilot Spaces now support issues and pull requests [Public Preview] appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Actions: New Azure private networking regions are available]]></title>
+        <id>https://github.blog/changelog/2025-06-18-github-actions-new-azure-private-networking-regions-are-available</id>
+        <link href="https://github.blog/changelog/2025-06-19-github-actions-new-azure-private-networking-regions-are-available"/>
+        <updated>2025-06-19T16:00:48.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Actions has expanded the number of supported Azure private networking regions available to customers, with the following new additions: – Canada East – Canada Central – Japan West –…
+The post GitHub Actions: New Azure private networking regions are available appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Clarified zucchini consommé]]></title>
+        <id>https://simonwillison.net/2025/Jun/19/clarified-zucchini-consomme/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/19/clarified-zucchini-consomme/#atom-everything"/>
+        <updated>2025-06-19T14:52:36.000Z</updated>
+        <summary type="html"><![CDATA[<p>I continue to have fun running fantasy cooking prompts through LLMs - this time <a href="https://chatgpt.com/share/685370a2-1d28-8006-8552-7d571742c1b4">I tried</a> "Give me a wildly ambitious recipe for zucchini cooked three ways" followed by "Go more ambitious" and now I need to get myself a centrifuge to help spherify my clarified zucchini consommé.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/cooking">cooking</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Arvind Narayanan]]></title>
         <id>https://simonwillison.net/2025/Jun/19/arvind-narayanan/#atom-everything</id>
@@ -18,6 +118,17 @@
     <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/careers">careers</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/arvind-narayanan">arvind-narayanan</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Getting started with GitHub Copilot coding agent is now easier]]></title>
+        <id>https://github.blog/changelog/2025-06-18-getting-started-with-github-copilot-coding-agent-is-now-easier</id>
+        <link href="https://github.blog/changelog/2025-06-18-getting-started-with-github-copilot-coding-agent-is-now-easier"/>
+        <updated>2025-06-19T13:28:15.000Z</updated>
+        <summary type="html"><![CDATA[Last month, we launched GitHub Copilot coding agent (Public Preview), allowing users with Copilot Pro+ and Copilot Enterprise to delegate tasks to Copilot to work on in the background. Users…
+The post Getting started with GitHub Copilot coding agent is now easier appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
         </author>
     </entry>
     <entry>

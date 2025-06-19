@@ -31,6 +31,106 @@
       <article>
           <details>
             <summary>
+              playbackrate
+              <span class="post-metadata">(1 min | 302 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/19/playbackrate/#atom-everything>Here&#x27;s a tip that works on YouTube and almost any other web page that shows you a video. You can increase the playback rate beyond the usually-exposed 2x by running this in your browser DevTools console:
+document.querySelector(&#x27;video&#x27;).playbackRate &#x3D; 2.5
+I find this is the fastest I can reasonably watch most videos at, with subtitles on to help my comprehension - it turns a 40 minute video into just 16 minutes, short enough that I don&#x27;t feel too guilty taking time off whatever else I&#x27;m doing to watch it!
+Tags: youtube, video, javascript</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How OpenElections Uses LLMs
+              <span class="post-metadata">(2 min | 748 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/19/how-openelections-uses-llms/#atom-everything>How OpenElections Uses LLMs
+OpenElections project collects detailed election data for the USA, all the way down to the precinct level. This is a surprisingly hard problem: while county and state-level results are widely available, precinct-level results are published in thousands of different ad-hoc ways and rarely aggregated once the election result has been announced.
+A lot of those precinct results are published as image-filled PDFs.
+Derek Willis has recently started leaning on Gemini to help parse those PDFs into CSV data:
+For parsing image PDFs into CSV files, Google’s Gemini is my model of choice, for two main reasons. First, the results are usually very, very accurate (with a few caveats I’ll detail below), and second, Gemini’s large context window means it’s possible to work with PDF files that can be multiple MBs in size.
+Is this piece he shares the process and prompts for a real-world expert level data entry project, assisted by Gemini.
+This example from Limestone County, Texas is a great illustration of how tricky this problem can get. Getting traditional OCR software to correctly interpret multi-column layouts like this always requires some level of manual intervention:
+
+Derek&#x27;s prompt against Gemini 2.5 Pro throws in an example, some special instructions and a note about the two column format:
+Produce a CSV file from the attached PDF based on this example:
+county,precinct,office,district,party,candidate,votes,absentee,early_voting,election_day
+Limestone,Precinct 101,Registered Voters,,,,1858,,,
+Limestone,Precinct 101,Ballots Cast,,,,1160,,,
+Limestone,Precinct 101,President,,REP,Donald J. Trump,879,,,
+Limestone,Precinct 101,President,,DEM,Kamala D. Harris,271,,,
+Limestone,Precinct 101,President,,LIB,Chase Oliver,1,,,
+Limestone,Precinct 101,President,,GRN,Jill Stein,4,,,
+Limestone,Precinct 101,President,,,Write-ins,1,,,
+Skip Write-ins with candidate names and rows with &quot;Cast Votes&quot;, &quot;Not Assigned&quot;, &quot;Rejected write-in votes&quot;, &quot;Unresolved write-in votes&quot; or &quot;Contest Totals&quot;. Do not extract any values that end in &quot;%&quot;
+Use the following offices:
+President/Vice President -&gt; President
+United States Senator -&gt; U.S. Senate
+US Representative -&gt; U.S. House
+State Senator -&gt; State Senate
+Quote all office and candidate values. The results are split into two columns on each page; parse the left column first and then the right column.
+
+
+A spot-check and a few manual tweaks and the result against a 42 page PDF was exactly what was needed.
+How about something harder? The results for Cameron County came as more than 600 pages and looked like this - note the hole-punch holes that obscure some of the text!
+
+This file had to be split into chunks of 100 pages each, and the entire process still took a full hour of work - but the resulting table matched up with the official vote totals.
+I love how realistic this example is. AI data entry like this isn&#x27;t a silver bullet - there&#x27;s still a bunch of work needed to verify the results and creative thinking needed to work through limitations - but it represents a very real improvement in how small teams can take on projects of this scale.
+In the six weeks since we started working on Texas precinct results, we’ve been able to convert them for more than half of the state’s 254 counties, including many image PDFs like the ones on display here. That pace simply wouldn’t be possible with data entry or traditional OCR software.
+Via Hacker News
+Tags: data-journalism, derek-willis, ocr, ai, generative-ai, llms, gemini, vision-llms, structured-extraction</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot Spaces now support issues and pull requests [Public Preview]
+              <span class="post-metadata">(6 min | 1913 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-19-copilot-spaces-now-support-issues-and-pull-requests-public-preview>You can now add issues and pull requests as context in Copilot Spaces. Create a space and simply paste in the URL—the space will pull in the latest title, body,…
+The post Copilot Spaces now support issues and pull requests [Public Preview] appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Actions: New Azure private networking regions are available
+              <span class="post-metadata">(6 min | 1793 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-19-github-actions-new-azure-private-networking-regions-are-available>GitHub Actions has expanded the number of supported Azure private networking regions available to customers, with the following new additions: – Canada East – Canada Central – Japan West –…
+The post GitHub Actions: New Azure private networking regions are available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Clarified zucchini consommé
+              <span class="post-metadata">(1 min | 266 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/19/clarified-zucchini-consomme/#atom-everything>I continue to have fun running fantasy cooking prompts through LLMs - this time I tried &quot;Give me a wildly ambitious recipe for zucchini cooked three ways&quot; followed by &quot;Go more ambitious&quot; and now I need to get myself a centrifuge to help spherify my clarified zucchini consommé.
+Tags: llms, cooking, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Arvind Narayanan
               <span class="post-metadata">(1 min | 309 words)</span> 
             </summary>
@@ -42,6 +142,19 @@ Can you break up your own job into a set of well-defined tasks such that if each
 Tags: ai-ethics, careers, ai, arvind-narayanan</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Getting started with GitHub Copilot coding agent is now easier
+              <span class="post-metadata">(6 min | 1865 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-18-getting-started-with-github-copilot-coding-agent-is-now-easier>Last month, we launched GitHub Copilot coding agent (Public Preview), allowing users with Copilot Pro+ and Copilot Enterprise to delegate tasks to Copilot to work on in the background. Users…
+The post Getting started with GitHub Copilot coding agent is now easier appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
