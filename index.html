@@ -31,6 +31,75 @@
       <article>
           <details>
             <summary>
+              Edit is now open source
+              <span class="post-metadata">(2 min | 505 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/21/edit-is-now-open-source/#atom-everything>Edit is now open source
+Edit is a small, lightweight text editor. It is less than 250kB, which allows it to keep a small footprint in the Windows 11 image.
+
+The microsoft/edit GitHub releases page currently has pre-compiled binaries for Windows and Linux, but they didn&#x27;t have one for macOS.
+(They do have build instructions using Cargo if you want to compile from source.)
+I decided to try and get their released binary working on my Mac using Docker. One thing lead to another, and I&#x27;ve now built and shipped a container to the GitHub Container Registry that anyone with Docker on Apple silicon can try out like this:
+docker run --platform linux/arm64 \
+  -it --rm \
+  -v $(pwd):/workspace \
+  ghcr.io/simonw/alpine-edit
+
+Running that command will download a 9.59MB container image and start Edit running against the files in your current directory. Hit Ctrl+Q or use File -&gt; Exit (the mouse works too) to quit the editor and terminate the container.
+Claude 4 has a training cut-off date of March 2025, so it was able to guide me through almost everything even down to which page I should go to in GitHub to create an access token with permission to publish to the registry!
+I wrote up a new TIL on Publishing a Docker container for Microsoft Edit to the GitHub Container Registry with a revised and condensed version of everything I learned today.
+
+    
+Via Hacker News comments
+Tags: github, microsoft, ai, docker, generative-ai, llms, ai-assisted-programming, anthropic, claude, claude-4</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              model.yaml
+              <span class="post-metadata">(1 min | 440 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/21/model-yaml/#atom-everything>model.yaml
+GitHub repo it looks like this effort quietly launched a couple of months ago, driven by the LM Studio team. Their goal is to specify an &quot;open standard for defining crossplatform, composable AI models&quot;.
+A model can be defined using a YAML file that looks like this:
+model: mistralai/mistral-small-3.2
+base:
+  - key: lmstudio-community/mistral-small-3.2-24b-instruct-2506-gguf
+    sources:
+      - type: huggingface
+        user: lmstudio-community
+        repo: Mistral-Small-3.2-24B-Instruct-2506-GGUF
+metadataOverrides:
+  domain: llm
+  architectures:
+    - mistral
+  compatibilityTypes:
+    - gguf
+  paramsStrings:
+    - 24B
+  minMemoryUsageBytes: 14300000000
+  contextLengths:
+    - 4096
+  vision: true
+This should be enough information for an LLM serving engine - such as LM Studio - to understand where to get the model weights (here that&#x27;s lmstudio-community/Mistral-Small-3.2-24B-Instruct-2506-GGUF on Hugging Face, but it leaves space for alternative providers) plus various other configuration options and important metadata about the capabilities of the model.
+I like this concept a lot. I&#x27;ve actually been considering something similar for my LLM tool - my idea was to use Markdown with a YAML frontmatter block - but now that there&#x27;s an early-stage standard for it I may well build on top of this work instead.
+I couldn&#x27;t find any evidence that anyone outside of LM Studio is using this yet, so it&#x27;s effectively a one-vendor standard for the moment. All of the models in their Model Catalog are defined using model.yaml.
+
+
+    
+Tags: standards, yaml, ai, generative-ai, llms, llm, lm-studio</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting FAQ for Your Brain on ChatGPT
               <span class="post-metadata">(1 min | 271 words)</span> 
             </summary>
@@ -6575,19 +6644,6 @@ We have seen this pattern so many times now: if your LLM system combines access 
 Tags: gitlab, ai, llms, prompt-injection, security, generative-ai, exfiltration-attacks, markdown, llm-tool-use, xss</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Sunset of automatic watching of repositories and teams
-              <span class="post-metadata">(6 min | 1784 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-05-22-sunset-of-automatic-watching-of-repositories-and-teams>Following the initial sunset notice, we’ve deprecated the automatic watching of repositories and teams. We made this change in order to: Reduce notification noise: You’ll receive fewer unexpected notifications, especially…
-The post Sunset of automatic watching of repositories and teams appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
