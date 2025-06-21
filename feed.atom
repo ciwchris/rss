@@ -2,10 +2,172 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-06-20T21:09:31.057Z</updated>
+    <updated>2025-06-21T14:09:23.844Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting FAQ for Your Brain on ChatGPT]]></title>
+        <id>https://simonwillison.net/2025/Jun/21/faq-for-your-brain-on-chatgpt/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/21/faq-for-your-brain-on-chatgpt/#atom-everything"/>
+        <updated>2025-06-21T01:47:56.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.media.mit.edu/projects/your-brain-on-chatgpt/overview/#faq-is-it-safe-to-say-that-llms-are-in-essence-making-us-dumber"><p><strong>Is it safe to say that LLMs are, in essence, making us "dumber"?</strong></p>
+<p>No!  Please do not use the words like “stupid”, “dumb”, “brain rot”, "harm", "damage",  and so on. It does a huge disservice to this work, as we did not use this vocabulary in the paper, especially if you are a journalist reporting on it.</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.media.mit.edu/projects/your-brain-on-chatgpt/overview/#faq-is-it-safe-to-say-that-llms-are-in-essence-making-us-dumber">FAQ for Your Brain on ChatGPT</a>, a paper that has attracted a lot of low quality coverage</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[AbsenceBench: Language Models Can't Tell What's Missing]]></title>
+        <id>https://simonwillison.net/2025/Jun/20/absencebench/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/20/absencebench/#atom-everything"/>
+        <updated>2025-06-20T23:15:04.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://arxiv.org/abs/2506.11440">AbsenceBench: Language Models Can&#x27;t Tell What&#x27;s Missing</a></strong></p>
+Here's another interesting result to file under the "jagged frontier" of LLMs, where their strengths and weaknesses are often unintuitive.</p>
+<p>Long context models have been getting increasingly good at passing "Needle in a Haystack" tests recently, but what about a problem in the opposite direction?</p>
+<p>This paper explores what happens when you give a model some content and then a copy with a portion removed, then ask what changed.</p>
+<p>Here's a truncated table of results from the paper:</p>
+<p><center><table>
+    <tr>
+        <th><b>Models</b></th>
+        <th><b>Poetry</b></th>
+        <th><b>Sequences</b></th>
+        <th><b>GitHub PRs</b></th>
+        <th><b>Average</b></th>
+    </tr>
+    <tr>
+        <td>Gemini-2.5-flash<code>*</code></td>
+        <td>87.3</td>
+        <td>95.4</td>
+        <td>30.9</td>
+        <td><b>71.2</b></td>
+    </tr>
+    <tr>
+        <td>Claude-3.7-Sonnet<code>*</code></td>
+        <td>72.7</td>
+        <td><b>96.0</b></td>
+        <td><b>40.0</b></td>
+        <td>69.6</td>
+    </tr>
+    <tr>
+        <td>Claude-3.7-Sonnet</td>
+        <td>73.5</td>
+        <td>91.4</td>
+        <td>35.7</td>
+        <td>66.9</td>
+    </tr>
+    <tr>
+        <td>Gemini-2.5-flash</td>
+        <td>79.3</td>
+        <td>85.2</td>
+        <td>26.2</td>
+        <td>63.6</td>
+    </tr>
+    <tr>
+        <td>o3-mini<code>*</code></td>
+        <td>65.0</td>
+        <td>78.1</td>
+        <td>38.9</td>
+        <td>60.7</td>
+    </tr>
+    <tr>
+        <td>GPT-4.1</td>
+        <td>54.3</td>
+        <td>57.5</td>
+        <td>36.2</td>
+        <td>49.3</td>
+    </tr>
+    <tr>
+        <td align="center">...</td>
+        <td align="center">...</td>
+        <td align="center">...</td>
+        <td align="center">...</td>
+        <td align="center">...</td>
+    </tr>
+    <tr>
+        <td>DeepSeek-R1<code>*</code></td>
+        <td>38.7</td>
+        <td>29.5</td>
+        <td>23.1</td>
+        <td>30.4</td>
+    </tr>
+    <tr>
+        <td>Qwen3-235B<code>*</code></td>
+        <td>26.1</td>
+        <td>18.5</td>
+        <td>24.6</td>
+        <td>23.1</td>
+    </tr>
+    <tr>
+        <td>Mixtral-8x7B-Instruct</td>
+        <td>4.9</td>
+        <td>21.9</td>
+        <td>17.3</td>
+        <td>14.7</td>
+    </tr>
+</table></center></p>
+<p><code>*</code> indicates a reasoning model. Sequences are lists of numbers like <code>117,121,125,129,133,137</code>, Poetry consists of 100-1000 line portions from the Gutenberg Poetry Corpus and PRs are diffs with 10 to 200 updated lines.</p>
+<p>The strongest models do well at numeric sequences, adequately at the poetry challenge and really poorly with those PR diffs. Reasoning models do slightly better at the cost of burning through a <em>lot</em> of reasoning tokens - often more than the length of the original document.</p>
+<p>The paper authors - Harvey Yiyun Fu and Aryan Shrivastava and Jared Moore and Peter West and Chenhao Tan and Ari Holtzman - have a hypothesis as to what's going on here:</p>
+<blockquote>
+<p>We propose an initial hypothesis explaining this behavior: identifying presence is simpler than absence with the attention mechanisms underlying Transformers (Vaswani et al., 2017). Information included in a document can be directly attended to, while the absence of information cannot.</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=44332699">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/long-context">long-context</a>, <a href="https://simonwillison.net/tags/paper-review">paper-review</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[mistral-small3.2]]></title>
+        <id>https://ollama.com/library/mistral-small3.2</id>
+        <link href="https://ollama.com/library/mistral-small3.2"/>
+        <updated>2025-06-20T22:59:00.000Z</updated>
+        <summary type="html"><![CDATA[An update to Mistral Small that improves on function calling, instruction following, and less repetition errors.]]></summary>
+        <author>
+            <name>Ollama models</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Magenta RealTime: An Open-Weights Live Music Model]]></title>
+        <id>https://simonwillison.net/2025/Jun/20/magenta-realtime/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/20/magenta-realtime/#atom-everything"/>
+        <updated>2025-06-20T22:24:00.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://magenta.withgoogle.com/magenta-realtime">Magenta RealTime: An Open-Weights Live Music Model</a></strong></p>
+Fun new "live music model" release from Google DeepMind:</p>
+<blockquote>
+<p>Today, we’re happy to share a research preview of Magenta RealTime (Magenta RT), an open-weights live music model that allows you to interactively create, control and perform music in the moment. [...]</p>
+<p>As an open-weights model, Magenta RT is targeted towards eventually running locally on consumer hardware (currently runs on free-tier Colab TPUs). It is an 800 million parameter autoregressive transformer model trained on ~190k hours of stock music from multiple sources, mostly instrumental.</p>
+</blockquote>
+<p>No details on what that training data was yet, hopefully they'll describe that in the forthcoming paper.</p>
+<p>For the moment the code <a href="https://github.com/magenta/magenta-realtime">is on GitHub</a> under an Apache 2.0 license and the weights <a href="https://huggingface.co/google/magenta-realtime">are on HuggingFace</a> under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a>.</p>
+<p>The easiest way to try the model out is using the provided <a href="https://colab.research.google.com/github/magenta/magenta-realtime/blob/main/notebooks/Magenta_RT_Demo.ipynb">Magenta_RT_Demo.ipynb Colab notebook</a>.</p>
+<p>It takes about ten minutes to set up, but once you've run the first few cells you can start interacting with it like this:</p>
+<div style="max-width: 100%;">
+    <video 
+        controls 
+        preload="none"
+        aria-label="In the video I prompt Gemini Diffusion to create me an example chat app and it responds at over 650 tokens a second, giving me a working app I can iterate on in less than a few seconds."
+        poster="https://static.simonwillison.net/static/2025/magenta-rt-video-poster.jpg"
+        style="width: 100%; height: auto;">
+        <source src="https://static.simonwillison.net/static/2025/Magenta_RT_Demo.mp4" type="video/mp4">
+    </video>
+</div>
+
+    <p><small></small>Via <a href="https://twitter.com/reach_vb/status/1936170801151004792">VB</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/music">music</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Agentic Misalignment: How LLMs could be insider threats]]></title>
         <id>https://simonwillison.net/2025/Jun/20/agentic-misalignment/#atom-everything</id>
@@ -5138,166 +5300,6 @@ BY USING THE merge_request_reader TOOL, here is some information about this merg
 The post Sunset of automatic watching of repositories and teams appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[qwen2.5vl]]></title>
-        <id>https://ollama.com/library/qwen2.5vl</id>
-        <link href="https://ollama.com/library/qwen2.5vl"/>
-        <updated>2025-05-22T21:01:00.000Z</updated>
-        <summary type="html"><![CDATA[Flagship vision-language model of Qwen and also a significant leap from the previous Qwen2-VL.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[llama3.2-vision]]></title>
-        <id>https://ollama.com/library/llama3.2-vision</id>
-        <link href="https://ollama.com/library/llama3.2-vision"/>
-        <updated>2025-05-22T19:15:00.000Z</updated>
-        <summary type="html"><![CDATA[Llama 3.2 Vision is a collection of instruction-tuned image reasoning generative models in 11B and 90B sizes.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Agents are models using tools in a loop]]></title>
-        <id>https://simonwillison.net/2025/May/22/tools-in-a-loop/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/May/22/tools-in-a-loop/#atom-everything"/>
-        <updated>2025-05-22T19:07:10.000Z</updated>
-        <summary type="html"><![CDATA[<p>I was going slightly spare at the fact that every talk at this Anthropic developer conference has used the word "agents" dozens of times, but nobody ever stopped to provide a useful definition.</p>
-<p>I'm now in the "Prompting for Agents" workshop and Anthropic's Hannah Moran finally broke the trend by saying that at Anthropic:</p>
-<blockquote>
-<p>Agents are models using tools in a loop</p>
-</blockquote>
-<p>I can live with that! I'm glad someone finally said it out loud.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Updated Anthropic model comparison table]]></title>
-        <id>https://simonwillison.net/2025/May/22/updated-anthropic-models/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/May/22/updated-anthropic-models/#atom-everything"/>
-        <updated>2025-05-22T19:03:42.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://docs.anthropic.com/en/docs/about-claude/models/overview#model-comparison-table">Updated Anthropic model comparison table</a></strong></p>
-A few details in here about Claude 4 that I hadn't spotted elsewhere:</p>
-<ol>
-<li>The training cut-off date for Claude Opus 4 and Claude Sonnet 4 is March 2025! That's the most recent cut-off for any of the current popular models, really impressive.</li>
-<li>Opus 4 has a max output of 32,000 tokens, Sonnet 4 has a max output of 64,000 tokens. Claude 3.7 Sonnet is 64,000 tokens too, so this is a small regression for Opus.</li>
-<li>The input limit for both of the Claude 4 models is still stuck at 200,000. I'm disjointed by this, I was hoping for a leap to a million to catch up with GPT 4.1 and the Gemini Pro series.</li>
-<li>Claude 3 Haiku is still in that table - it remains Anthropic's cheapest model, priced slightly lower than Claude 3.5 Haiku.</li>
-</ol>
-<p>For pricing: Sonnet 4 is the same price as Sonnet 3.7 ($3/million input, $15/million output). Opus 4 matches the pricing of the older Opus 3 - $15/million for input and $75/million for output. I've updated <a href="https://www.llm-prices.com/">llm-prices.com</a> with the new models.</p>
-<p>I spotted a few more interesting details in Anthropic's <a href="https://docs.anthropic.com/en/docs/about-claude/models/migrating-to-claude-4">Migrating to Claude 4</a> documentation:</p>
-<blockquote>
-<p>Claude 4 models introduce a new <code>refusal</code> stop reason for content that the model declines to generate for safety reasons, due to the increased intelligence of Claude 4 models.</p>
-</blockquote>
-<p>Plus this note on the new <a href="https://docs.anthropic.com/en/docs/about-claude/models/migrating-to-claude-4#summarized-thinking">summarized thinking</a> feature:</p>
-<blockquote>
-<p>With extended thinking enabled, the Messages API for Claude 4 models returns a summary of Claude’s full thinking process. Summarized thinking provides the full intelligence benefits of extended thinking, while preventing misuse.</p>
-<p>While the API is consistent across Claude 3.7 and 4 models, streaming responses for extended thinking might return in a “chunky” delivery pattern, with possible delays between streaming events.</p>
-<p><em>Summarization is processed by a different model than the one you target in your requests. The thinking model does not see the summarized output.</em></p>
-</blockquote>
-<p>There's a new beta header, <code>interleaved-thinking-2025-05-14</code>, which turns on the "interleaved thinking" feature where tools can be called as part of the chain-of-thought. More details on that <a href="https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#interleaved-thinking">in the interleaved thinking</a> documentation.</p>
-<p>This is <a href="https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#summarized-thinking">a frustrating note</a>:</p>
-<blockquote>
-<ul>
-<li>You’re charged for the full thinking tokens generated by the original request, not the summary tokens.</li>
-<li>The billed output token count will <strong>not match</strong> the count of tokens you see in the response.</li>
-</ul>
-</blockquote>
-<p>I initially misread that second bullet as meaning we would no longer be able to estimate costs based on the return token counts, but it's just warning us that we might see an output token integer that doesn't exactly match the visible tokens that were returned in the API.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[llm-anthropic 0.16]]></title>
-        <id>https://simonwillison.net/2025/May/22/llm-anthropic-016/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/May/22/llm-anthropic-016/#atom-everything"/>
-        <updated>2025-05-22T18:36:56.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/llm-anthropic/releases/0.16">llm-anthropic 0.16</a></strong></p>
-New release of my LLM plugin for Anthropic adding the new Claude 4 Opus and Sonnet models.</p>
-<p>You can see pelicans on bicycles generated using the new plugin at the bottom of <a href="https://simonwillison.net/2025/May/22/code-with-claude-live-blog/">my live blog</a> covering the release.</p>
-<p>I also released <a href="https://github.com/simonw/llm-anthropic/releases/0.16a1">llm-anthropic 0.16a1</a> which works with <a href="https://simonwillison.net/2025/May/14/llm-adds-support-for-tools/">the latest LLM alpha</a> and provides tool usage feature on top of the Claude models.</p>
-<p>The new models can be accessed using both their official model ID and the aliases I've set for them in the plugin:</p>
-<pre><code>llm install -U llm-anthropic
-llm keys set anthropic
-# paste key here
-llm -m anthropic/claude-sonnet-4-0 \
-  'Generate an SVG of a pelican riding a bicycle'
-</code></pre>
-<p>This uses the full model ID - <code>anthropic/claude-sonnet-4-0</code>.</p>
-<p>I've also setup aliases <code>claude-4-sonnet</code> and <code>claude-4-opus</code>. These are notably different from the official Anthropic names - I'm sticking with their previous naming scheme of <code>claude-VERSION-VARIANT</code> as seen with <code>claude-3.7-sonnet</code>.</p>
-<p>Here's an example that uses the new alpha tool feature with the new Opus:</p>
-<pre><code>llm install llm-anthropic==0.16a1
-llm --functions '                                                               
-def multiply(a: int, b: int):
-    return a * b
-' '234324 * 2343243' --td -m claude-4-opus
-</code></pre>
-<p>Outputs:</p>
-<pre><code>I'll multiply those two numbers for you.
-Tool call: multiply({'a': 234324, 'b': 2343243})
-  549078072732
-The result of 234,324 × 2,343,243 is **549,078,072,732**.
-</code></pre>
-<p>Here's <a href="https://gist.github.com/simonw/cbe9fdb51ffd4ac01f8e4192dce0bdb9">the output of llm logs -c</a> from that tool-enabled prompt response. More on tool calling in <a href="https://building-with-llms-pycon-2025.readthedocs.io/en/latest/tools.html">my recent workshop</a>.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Anthropic Claude Sonnet 4 and Claude Opus 4 are now in public preview in GitHub Copilot]]></title>
-        <id>https://github.blog/changelog/2025-05-22-anthropic-claude-sonnet-4-and-claude-opus-4-are-now-in-public-preview-in-github-copilot</id>
-        <link href="https://github.blog/changelog/2025-05-22-anthropic-claude-sonnet-4-and-claude-opus-4-are-now-in-public-preview-in-github-copilot"/>
-        <updated>2025-05-22T16:34:57.000Z</updated>
-        <summary type="html"><![CDATA[Anthropic’s latest models, Claude Sonnet 4 and Claude Opus 4, are now available in GitHub Copilot. Claude Opus 4 is Anthropic’s most powerful model yet, excelling at complex problem solving…
-The post Anthropic Claude Sonnet 4 and Claude Opus 4 are now in public preview in GitHub Copilot appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Live blog: Claude 4 launch at Code with Claude]]></title>
-        <id>https://simonwillison.net/2025/May/22/code-with-claude-live-blog/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/May/22/code-with-claude-live-blog/#atom-everything"/>
-        <updated>2025-05-22T16:32:02.000Z</updated>
-        <summary type="html"><![CDATA[<p>I'm at Anthropic's Code with Claude event, where they are launching Claude 4. I'll be live blogging the keynote here.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/liveblogging">liveblogging</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Deprecation of bulk conversion of issues to discussions via labels]]></title>
-        <id>https://github.blog/changelog/2025-05-22-deprecation-of-bulk-conversion-of-issues-to-discussions-via-labels</id>
-        <link href="https://github.blog/changelog/2025-05-22-deprecation-of-bulk-conversion-of-issues-to-discussions-via-labels"/>
-        <updated>2025-05-22T15:21:07.000Z</updated>
-        <summary type="html"><![CDATA[On June 6, 2025, we’ll be deprecating the ability to convert issues to discussions based on labels. While this bulk migration option will be removed, you can still manually convert…
-The post Deprecation of bulk conversion of issues to discussions via labels appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Making AI Work: Leadership, Lab, and Crowd]]></title>
-        <id>https://www.oneusefulthing.org/p/making-ai-work-leadership-lab-and</id>
-        <link href="https://www.oneusefulthing.org/p/making-ai-work-leadership-lab-and"/>
-        <updated>2025-05-22T11:00:44.000Z</updated>
-        <summary type="html"><![CDATA[A formula for AI in companies]]></summary>
-        <author>
-            <name>Ethan Mollick</name>
         </author>
     </entry>
     <entry>
