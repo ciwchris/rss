@@ -31,6 +31,112 @@
       <article>
           <details>
             <summary>
+              Introducing Gemma 3n: The developer guide
+              <span class="post-metadata">(2 min | 584 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/26/gemma-3n/#atom-everything>Introducing Gemma 3n: The developer guide
+Multimodal by design: Gemma 3n natively supports image, audio, video, and text inputs and text outputs.
+Optimized for on-device: Engineered with a focus on efficiency, Gemma 3n models are available in two sizes based on effective parameters: E2B and E4B. While their raw parameter count is 5B and 8B respectively, architectural innovations allow them to run with a memory footprint comparable to traditional 2B and 4B models, operating with as little as 2GB (E2B) and 3GB (E4B) of memory.
+This is very exciting: a 2B and 4B model optimized for end-user devices which accepts text, images and audio as inputs!
+Gemma 3n is also the most comprehensive day one launch I&#x27;ve seen for any model: Google partnered with &quot;AMD, Axolotl, Docker, Hugging Face, llama.cpp, LMStudio, MLX, NVIDIA, Ollama, RedHat, SGLang, Unsloth, and vLLM&quot; so there are dozens of ways to try this out right now.
+So far I&#x27;ve run two variants on my Mac laptop. Ollama offer a 7.5GB version (full tag gemma3n:e4b-it-q4_K_M0) of the 4B model, which I ran like this:
+ollama pull gemma3n
+llm install llm-ollama
+llm -m gemma3n:latest &quot;Generate an SVG of a pelican riding a bicycle&quot;
+
+It drew me this:
+
+The Ollama version doesn&#x27;t appear to support image or audio input yet.
+... but the mlx-vlm version does!
+First I tried that on this WAV file like so (using a recipe adapted from Prince Canuma&#x27;s video):
+uv run --with mlx-vlm mlx_vlm.generate \
+  --model gg-hf-gm/gemma-3n-E4B-it \
+  --max-tokens 100 \
+  --temperature 0.7 \
+  --prompt &quot;Transcribe the following speech segment in English:&quot; \
+  --audio pelican-joke-request.wav
+
+That downloaded a 15.74 GB bfloat16 version of the model and output the following correct transcription:
+Tell me a joke about a pelican.
+Then I had it draw me a pelican for good measure:
+uv run --with mlx-vlm mlx_vlm.generate \
+  --model gg-hf-gm/gemma-3n-E4B-it \
+  --max-tokens 100 \
+  --temperature 0.7 \
+  --prompt &quot;Generate an SVG of a pelican riding a bicycle&quot;
+
+I quite like this one:
+
+It&#x27;s interesting to see such a striking visual difference between those 7.5GB and 15GB model quantizations.
+
+
+    
+Tags: google, ai, generative-ai, local-llms, llms, vision-llms, pelican-riding-a-bicycle, gemma, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Improved pull request files changed experience now in public preview
+              <span class="post-metadata">(7 min | 2090 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-26-improved-pull-request-files-changed-experience-now-in-public-preview>An improved, more accessible, and better performing pull request “Files changed” page is now available in public preview! This improved experience is rolling out now. Once it is available to…
+The post Improved pull request files changed experience now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Actions fine-grain permissions are now generally available for custom repository roles
+              <span class="post-metadata">(6 min | 1762 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-26-github-actions-fine-grain-permissions-are-now-generally-available-for-custom-repository-roles>GitHub Actions fine-grained permissions are now generally available and can be used to define custom repository roles. Last year, GitHub introduced the CI/CD Admin role—a pre-defined organization role that grants…
+The post GitHub Actions fine-grain permissions are now generally available for custom repository roles appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Geminiception
+              <span class="post-metadata">(1 min | 371 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jun/26/geminiception/#atom-everything>Yesterday Anthropic got a bunch of buzz out of their new window.claude.complete() API which allows Claude Artifacts to run their own API calls to execute prompts.
+It turns out Gemini had beaten them to that feature by over a month, but the announcement was tucked away in a bullet point of their release notes for the 20th of May:
+Vibe coding apps in Canvas just got better too! With just a few prompts, you can now build fully functional personalised apps in Canvas that can use Gemini-powered features, save data between sessions and share data between multiple users.
+Ethan Mollick has been building some neat demos on top of Gemini Canvas, including this text adventure starship bridge simulator.
+Similar to Claude Artifacts, Gemini Canvas detects if the application uses APIs that require authentication (to run prompts, for example) and requests the user sign in with their Google account:
+
+Tags: vibe-coding, gemini, generative-ai, ai, llms, google, ethan-mollick</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot coding agent is available for Copilot Pro users in public preview
+              <span class="post-metadata">(6 min | 1884 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-06-25-github-copilot-coding-agent-is-available-for-copilot-pro-users-in-public-preview>Copilot Pro users can now delegate tasks to Copilot to work on in the background with GitHub Copilot coding agent, available today in public preview. Those on Student, Teacher, or…
+The post GitHub Copilot coding agent is available for Copilot Pro users in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               New sandboxes from Cloudflare and Vercel
               <span class="post-metadata">(1 min | 348 words)</span> 
             </summary>
@@ -242,6 +348,19 @@ Tags: google, open-source, ai, generative-ai, llms, ai-assisted-programming, gem
 The post Configuring which secret scanning patterns are included in push protection is in public preview appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Semantic Kernel Python Gets a Major Vector Store Upgrade
+              <span class="post-metadata">(25 min | 7360 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-python-gets-a-major-vector-store-upgrade/>We’re excited to announce a significant update to Semantic Kernel Python’s vector store implementation. Version 1.34 brings a complete overhaul that makes working with vector data simpler, more intuitive, and more powerful. This update consolidates the API, improves developer experience, and adds new capabilities that streamline AI development workflows. What Makes This Release Special? The […]
+The post Semantic Kernel Python Gets a Major Vector Store Upgrade appeared first on Semantic Kernel.</a>
+            </div>
+            <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
           </details>
       </article>
 
@@ -1453,6 +1572,18 @@ I don&#x27;t think it is unreasonable to want a security fix that, when applied 
 Tags: sql-injection, security, prompt-injection</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llama4
+              <span class="post-metadata">(10 min | 3144 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/llama4>Meta&#x27;s latest collection of multimodal models.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
@@ -5677,61 +5808,6 @@ The post GPT-4o Copilot May update appeared first on The GitHub Blog.</a>
 The post Semantic Kernel and Microsoft.Extensions.AI: Better Together, Part 2 appeared first on Semantic Kernel.</a>
             </div>
             <!-- <p class="post-source">Category: Semantic Kernel from Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-llama-server 0.2
-              <span class="post-metadata">(1 min | 429 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/28/llama-server-tools/#atom-everything>llm-llama-server 0.2
-new tool support against local models (the first was via llm-ollama).
-It turns out the llama.cpp ecosystem has pretty robust OpenAI-compatible tool support already, so my llm-llama-server plugin only needed a quick upgrade to get those working there.
-Unfortunately it looks like streaming support doesn&#x27;t work with tools in llama-server at the moment, so I added a new model ID called llama-server-tools which disables streaming and enables tools.
-Here&#x27;s how to try it out. First, ensure you have llama-server - the easiest way to get that on macOS is via Homebrew:
-brew install llama.cpp
-
-Start the server running like this. This command will download and cache the 3.2GB unsloth/gemma-3-4b-it-GGUF:Q4_K_XL if you don&#x27;t yet have it:
-llama-server --jinja -hf unsloth/gemma-3-4b-it-GGUF:Q4_K_XL
-
-Then in another window:
-llm install llm-llama-server
-llm -m llama-server-tools -T llm_time &#x27;what time is it?&#x27; --td
-
-And since you don&#x27;t even need an API key for this, even if you&#x27;ve never used LLM before you can try it out with this uvx one-liner:
-uvx --with llm-llama-server llm -m llama-server-tools -T llm_time &#x27;what time is it?&#x27; --td
-
-For more notes on using llama.cpp with LLM see Trying out llama.cpp’s new vision support from a couple of weeks ago.
-
-
-    
-Tags: generative-ai, llm, plugins, projects, llm-tool-use, llama-cpp, ai, uv</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              At Amazon, Some Coders Say Their Jobs Have Begun to Resemble Warehouse Work
-              <span class="post-metadata">(2 min | 474 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/May/28/amazon-some-coders/#atom-everything>At Amazon, Some Coders Say Their Jobs Have Begun to Resemble Warehouse Work
-“It’s more fun to write code than to read code,” said Simon Willison, an A.I. fan who is a longtime programmer and blogger, channeling the objections of other programmers. “If you’re told you have to do a code review, it’s never a fun part of the job. When you’re working with these tools, it’s most of the job.”
- [...]
-It took me about 15 years of my career before I got over my dislike of reading code written by other people. It&#x27;s a difficult skill to develop! I&#x27;m not surprised that a lot of people dislike AI-assisted programming paradigm when the end result is less time writing, more time reading!
-“If you’re a prototyper, this is a gift from heaven,” Mr. Willison said. “You can knock something out that illustrates the idea.”
-Rapid prototyping has been a key skill of mine for a long time. I love being able to bring half-baked illustrative prototypes of ideas to a meeting - my experience is that the quality of conversation goes up by an order of magnitude as a result of having something concrete for people to talk about.
-These days I can vibe code a prototype in single digit minutes.
-
-
-    
-Tags: ai-assisted-programming, careers, prototyping, ai, llms, ai-ethics, vibe-coding, generative-ai, amazon</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
