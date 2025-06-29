@@ -2,10 +2,57 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-06-29T14:09:12.527Z</updated>
+    <updated>2025-06-29T21:09:36.263Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Tip: Use keyword-only arguments in Python dataclasses]]></title>
+        <id>https://simonwillison.net/2025/Jun/29/keyword-only-arguments/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/29/keyword-only-arguments/#atom-everything"/>
+        <updated>2025-06-29T20:51:43.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://chipx86.blog/2025/06/29/tip-use-keyword-only-arguments-in-python-dataclasses/">Tip: Use keyword-only arguments in Python dataclasses</a></strong></p>
+Useful tip from Christian Hammond: if you create a Python dataclass using <code>@dataclass(kw_only=True)</code> its constructor will require keyword arguments, making it easier to add additional properties in the future, including in subclasses, without risking breaking existing code.
+
+    <p><small></small>Via <a href="https://bsky.app/profile/chipx86.bsky.social/post/3lsrjodkfgs2h">@chipx86.bsky.social</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to Fix Your Context]]></title>
+        <id>https://simonwillison.net/2025/Jun/29/how-to-fix-your-context/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jun/29/how-to-fix-your-context/#atom-everything"/>
+        <updated>2025-06-29T20:15:41.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html">How to Fix Your Context</a></strong></p>
+Drew Breunig has been publishing some very detailed notes on <a href="https://simonwillison.net/2025/Jun/27/context-engineering/">context engineering</a> recently. In <a href="https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html">How Long Contexts Fail</a> he described four common patterns for <a href="https://simonwillison.net/2025/Jun/18/context-rot/">context rot</a>, which he summarizes like so:</p>
+<blockquote>
+<ul>
+<li><strong>Context Poisoning</strong>: When a hallucination or other error makes it into the context, where it is repeatedly referenced.</li>
+<li><strong>Context Distraction</strong>: When a context grows so long that the model over-focuses on the context, neglecting what it learned during training.</li>
+<li><strong>Context Confusion</strong>: When superfluous information in the context is used by the model to generate a low-quality response.</li>
+<li><strong>Context Clash</strong>: When you accrue new information and tools in your context that conflicts with other information in the prompt.</li>
+</ul>
+</blockquote>
+<p>In <a href="https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html">this follow-up</a> he introduces neat ideas (and more new terminology) for addressing those problems.</p>
+<p><strong>Tool Loadout</strong> describes selecting a subset of tools to enable for a prompt, based on research that shows anything beyond 20 can confuse some models. </p>
+<p><strong>Context Quarantine</strong> is "the act of isolating contexts in their own dedicated threads" - I've called rhis sub-agents in the past, it's the pattern <a href="https://simonwillison.net/2025/Jun/2/claude-trace/">used by Claude Code</a> and explored in depth in <a href="https://simonwillison.net/2025/Jun/14/multi-agent-research-system/">Anthropic's multi-agent research paper</a>.</p>
+<p><strong>Context Pruning</strong> is "removing irrelevant or otherwise unneeded information from the context", and <strong>Context Summarization</strong> is the act of boiling down an accrued context into a condensed summary. These techniques become particularly important as conversations get longer and run closer to the model's token limits.</p>
+<p><strong>Context Offloading</strong> is "the act of storing information outside the LLM’s context". I've seen several systems implement their own "memory" tool for saving and then revisiting notes as they work, but an even more interesting example recently is how various coding agents create and update <code>plan.md</code> files as they work through larger problems.</p>
+<p>Drew's conclusion:</p>
+<blockquote>
+<p>The key insight across all the above tactics is that <em>context is not free</em>. Every token in the context influences the model’s behavior, for better or worse. The massive context windows of modern LLMs are a powerful capability, but they’re not an excuse to be sloppy with information management.</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/drew-breunig">drew-breunig</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Context engineering]]></title>
         <id>https://simonwillison.net/2025/Jun/27/context-engineering/#atom-everything</id>
@@ -4418,33 +4465,6 @@ llm -m deepseek-reasoner \
 <p>You don't even need jQuery to paper over the gaps any more - use <code>document.querySelectorAll()</code> and <code>fetch()</code> directly and see how much value you can build with a few dozen lines of code.</p>
 
     <p>Tags: <a href="https://simonwillison.net/tags/css">css</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/web-development">web-development</a>, <a href="https://simonwillison.net/tags/frontend">frontend</a>, <a href="https://simonwillison.net/tags/html">html</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Using voice mode on Claude Mobile Apps]]></title>
-        <id>https://simonwillison.net/2025/May/31/using-voice-mode-on-claude-mobile-apps/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/May/31/using-voice-mode-on-claude-mobile-apps/#atom-everything"/>
-        <updated>2025-05-31T03:27:18.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://support.anthropic.com/en/articles/11101966-using-voice-mode-on-claude-mobile-apps">Using voice mode on Claude Mobile Apps</a></strong></p>
-Anthropic are rolling out voice mode for the Claude apps at the moment. Sadly I don't have access yet - I'm looking forward to this a lot, I frequently use ChatGPT's voice mode when walking the dog and it's a great way to satisfy my curiosity while out at the beach.</p>
-<p>It's English-only for the moment. Key details:</p>
-<blockquote>
-<ul>
-<li>Voice conversations count toward your regular usage limits based on your subscription plan.</li>
-<li>For free users, expect approximately 20-30 voice messages before reaching session <a href="https://support.anthropic.com/en/articles/8602283-does-claude-ai-have-any-message-limits">limits</a>.</li>
-<li>For paid plans, <a href="https://support.anthropic.com/en/articles/8325612-does-claude-pro-have-any-usage-limits">usage limits</a> are significantly higher, allowing for extended voice conversations.</li>
-</ul>
-</blockquote>
-<p>A <a href="https://trust.anthropic.com/updates">update on Anthropic's trust center</a> reveals how it works:</p>
-<blockquote>
-<p>As of May 29th, 2025, we have added <a href="https://elevenlabs.io/">ElevenLabs</a>, which supports <a href="https://support.anthropic.com/en/articles/11101966-using-voice-mode-on-claude-mobile-apps">text to speech functionality</a> in Claude for Work mobile apps.</p>
-</blockquote>
-<p>So it's ElevenLabs for the speech generation, but what about the speech-to-text piece? Anthropic have had their own implementation of that in the app for a while already, but I'm not sure if it's their own technology or if it's using another mechanism such as Whisper.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
