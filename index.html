@@ -31,6 +31,186 @@
       <article>
           <details>
             <summary>
+              PlanetScale&#x27;s classy retirement
+              <span class="post-metadata">(1 min | 349 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/1/classy-retirement/#atom-everything>Sometimes a service with a free plan will decide to stop supporting it. I understand why this happens, but I&#x27;m often disappointed at the treatment of existing user&#x27;s data. It&#x27;s easy to imagine users forgetting about their old accounts, missing the relevant emails and then discovering too late that their data is gone.
+Inspired by today&#x27;s news about PlanetScale PostgreSQL I signed into PlanetScale and found I had a long-forgotten trial account there with a three-year-old database on their free tier. That free tier was retired in March 2024.
+Here&#x27;s the screen that greeted me in their control panel:
+
+What a great way to handle retiring a free plan! My data is still there, and I have the option to spin up a database for 24 hours to help get it back out again.
+Tags: saas, databases</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A custom template system from the mid-2000s era
+              <span class="post-metadata">(1 min | 388 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/1/mid-2000s/#atom-everything>Using LLMs for code archaeology is pretty fun.
+I stumbled across this blog entry from 2003 today, in which I had gotten briefly excited about ColdFusion and implemented an experimental PHP template engine that used XML tags to achieve a similar effect:
+&lt;h1&gt;%title%&lt;/h1&gt;
+&lt;sql id&#x3D;&quot;recent&quot;&gt;
+select title
+from entries 
+order by added desc
+limit 0, %limit%
+&lt;/sql&gt;
+&lt;ul&gt;
+  &lt;output sql&#x3D;&quot;recent&quot;&gt;
+    &lt;li&gt;%title%&lt;/li&gt;
+  &lt;/output&gt;
+&lt;/ul&gt;
+I&#x27;d completely forgotten about this, and in scanning through the PHP it looked like it had extra features that I hadn&#x27;t described in the post.
+So... I fed my 22 year old TemplateParser.class.php file into Claude and prompted:
+Write detailed markdown documentation for this template language
+Here&#x27;s the resulting documentation. It&#x27;s pretty good, but the highlight was the Claude transcript which concluded:
+This appears to be a custom template system from the mid-2000s era, designed to separate presentation logic from PHP code while maintaining database connectivity for dynamic content generation.
+Mid-2000s era indeed!
+Tags: claude, coldfusion, ai, llms, ai-assisted-programming, php, generative-ai, projects</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enterprise-level access for GitHub Apps and installation automation APIs
+              <span class="post-metadata">(10 min | 2960 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-01-enterprise-level-access-for-github-apps-and-installation-automation-apis>GitHub Apps can now be installed onto enterprise accounts, with new permissions that let them call enterprise management APIs. The public preview of this new access pattern has a limited…
+The post Enterprise-level access for GitHub Apps and installation automation APIs appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Delegated alert dismissal for code scanning is now generally available
+              <span class="post-metadata">(7 min | 1978 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-01-delegated-alert-dismissal-for-code-scanning-is-now-generally-available>GitHub code scanning customers can now require a review process before dismissing alerts, helping you manage security risks as well as meet audit and compliance requirements. What’s new Provide a…
+The post Delegated alert dismissal for code scanning is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Secret scanning adds validity checks for Doppler and Defined Networking
+              <span class="post-metadata">(6 min | 1792 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-01-secret-scanning-updates-validity-checks-for-doppler-sendgrid-and-defined-networking>Secret scanning is adding validity check support for additional token types. Validity checks indicate if the leaked credentials are active and could still be exploited. If you’ve previously enabled validation…
+The post Secret scanning adds validity checks for Doppler and Defined Networking appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Announcing PlanetScale for Postgres
+              <span class="post-metadata">(2 min | 465 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/1/planetscale-for-postgres/#atom-everything>Announcing PlanetScale for Postgres
+Today PlanetScale are announcing a private preview of their new horizontally sharded PostgreSQL solution, due to &quot;overwhelming&quot; demand.
+Notably, it doesn&#x27;t use Vitess under the hood:
+Vitess is one of PlanetScale’s greatest strengths [...] We have made explicit sharding accessible to hundreds of thousands of users and it is time to bring this power to Postgres. We will not however be using Vitess to do this.
+Vitess’ achievements are enabled by leveraging MySQL’s strengths and engineering around its weaknesses. To achieve Vitess’ power for Postgres we are architecting from first principles.
+Meanwhile, on June 10th Supabase announced that they had hired Vitess co-creator  Sugu Sougoumarane to help them build &quot;Multigres: Vitess for Postgres&quot;. Sugu said:
+For some time, I&#x27;ve been considering a Vitess adaptation for Postgres, and this feeling had been gradually intensifying. The recent explosion in the popularity of Postgres has fueled this into a full-blown obsession. [...]
+The project to address this problem must begin now, and I&#x27;m convinced that Vitess provides the most promising foundation.
+I remember when MySQL was an order of magnitude more popular than PostgreSQL, and Heroku&#x27;s decision to only offer PostgreSQL back in 2007 was a surprising move. The vibes have certainly shifted.
+
+
+    
+Tags: databases, mysql, postgresql, scaling, sharding, vitess</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Manage artifact attestations with deletion, filtering, and bulk actions
+              <span class="post-metadata">(6 min | 1836 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-01-manage-artifact-attestations-with-deletion-filtering-and-bulk-actions>You can now manage artifact attestations more effectively with new updates to the UI and API, including deletion, filtering, and bulk actions. Here’s what’s new: Delete attestations: Easily delete artifact…
+The post Manage artifact attestations with deletion, filtering, and bulk actions appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting mrmincent
+              <span class="post-metadata">(1 min | 269 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/1/mrmincent/#atom-everything>To misuse a woodworking metaphor, I think we’re experiencing a shift from hand tools to power tools.
+You still need someone who understands the basics to get the good results out of the tools, but they’re not chiseling fine furniture by hand anymore, they’re throwing heaps of wood through the tablesaw instead. More productive, but more likely to lose a finger if you’re not careful.
+
+— mrmincent, Hacker News comment on Claude Code
+Tags: ai-assisted-programming, claude-code, hacker-news, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependency auto-submission now supports NuGet
+              <span class="post-metadata">(6 min | 1782 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-01-dependency-auto-submission-now-supports-nuget>Dependency auto-submission now supports the .NET package manager NuGet. This feature continues to expand the supported range of package manager ecosystems, adding to the existing Maven and Gradle support. Dependency…
+The post Dependency auto-submission now supports NuGet appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Single pull request for Dependabot (multi-ecosystem support)
+              <span class="post-metadata">(6 min | 1854 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-01-single-pull-request-for-dependabot-multi-ecosystem-support>Multi-ecosystem grouped updates are now generally available for all Dependabot users! This configurable functionality allows you to group security or version dependency updates across multiple package ecosystems into a single…
+The post Single pull request for Dependabot (multi-ecosystem support) appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependabot supports configuration of a minimum package age
+              <span class="post-metadata">(7 min | 1956 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-01-dependabot-supports-configuration-of-a-minimum-package-age>The cooldown feature is now generally available for Dependabot version updates! This feature gives you control over when version update pull requests are created to bump your dependencies. What’s new…
+The post Dependabot supports configuration of a minimum package age appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               CodeQL support for Rust now in public preview
               <span class="post-metadata">(6 min | 1873 words)</span> 
             </summary>
@@ -5092,22 +5272,6 @@ Anthropic have deliberately chosen not to publish any of the prompts used by Cla
     
 Via @badlogicgames
 Tags: anthropic, claude, ai-agents, ai, llms, prompt-engineering, ai-assisted-programming, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting u/xfnk24001
-              <span class="post-metadata">(1 min | 307 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/uxfnk24001/#atom-everything>My constant struggle is how to convince them that getting an education in the humanities is not about regurgitating ideas/knowledge that already exist. It’s about generating new knowledge, striving for creative insights, and having thoughts that haven’t been had before. I don’t want you to learn facts. I want you to think. To notice. To question. To reconsider. To challenge. Students don’t yet get that ChatGPT only rearranges preexisting ideas, whether they are accurate or not.
-And even if the information was guaranteed to be accurate, they’re not learning anything by plugging a prompt in and turning in the resulting paper. They’ve bypassed the entire process of learning.
-
-— u/xfnk24001
-Tags: generative-ai, chatgpt, education, ai, llms, ai-ethics</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
