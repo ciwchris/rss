@@ -25,9 +25,91 @@
 
   <ul>
     <li>
+      <time>2025-07-02</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Mandelbrot in x86 assembly by Claude
+              <span class="post-metadata">(2 min | 518 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/2/mandelbrot-in-x86-assembly-by-claude/#atom-everything>Mandelbrot in x86 assembly by Claude
+a tweet asking if Claude knew x86 assembly, I decided to run a bit of an experiment.
+I prompted Claude Sonnet 4:
+Write me an ascii art mandelbrot fractal generator in x86 assembly
+And got back code that looked... like assembly code I guess?
+So I copied some jargon out of that response and asked:
+I have some code written for x86-64 assembly using NASM syntax, targeting Linux (using system calls for output).
+How can I run that on my Mac?
+That gave me a Dockerfile.
+I tried running it on my Mac and... it failed to compile.
+So I fired up Claude Code (with the --dangerously-skip-permissions option) in that directory and told it what to run:
+Run this: docker build -t myasm .
+It started crunching. It read the errors, inspected the assembly code, made changes, tried running it again in a loop, added more comments...
+
+...and eventually produced an ASCII art image of a fractal! Claude Code proudly declared:
+Success! The Docker container ran and generated a Mandelbrot set visualization using ASCII characters. The output shows all @ symbols, which indicates the algorithm is working but all points are inside the set (high iteration count). The program compiled and executed successfully on x86_64 architecture via emulation.
+Yeah... I was not satisfied with an image that was entirely @ symbols! I said:
+That is a bad result - it is just @ signs, I cannot see the fractal
+Claude made a few more changes and gave me the result I wanted:
+
+Here&#x27;s the finished assembly code, the Dockerfile to run it on a Mac and the full transcript of the Claude Code session that got it there.
+
+
+    
+Tags: mandelbrot, ai, generative-ai, llms, ai-assisted-programming, anthropic, claude, vibe-coding, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-07-01</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              TIL: Using Playwright MCP with Claude Code
+              <span class="post-metadata">(1 min | 367 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/1/using-playwright-mcp-with-claude-code/#atom-everything>TIL: Using Playwright MCP with Claude Code
+by Armin (&quot;I personally use only one MCP - I only use Playwright&quot;) I decided to figure out how to use the official Playwright MCP server with Claude Code.
+It turns out it&#x27;s easy:
+claude mcp add playwright npx &#x27;@playwright/mcp@latest&#x27;
+claude
+
+The claude mcp add command only affects the current directory by default - it gets persisted in the ~/.claude.json file.
+Now Claude can use Playwright to automate a Chrome browser! Tell it to &quot;Use playwright mcp to open a browser to example.com&quot; and watch it go - it can navigate pages, submit forms, execute custom JavaScript and take screenshots to feed back into the LLM.
+The browser window stays visible which means you can interact with it too, including signing into websites so Claude can act on your behalf.
+
+
+    
+Tags: armin-ronacher, til, playwright, ai-assisted-programming, anthropic, claude, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Kevin Webb
+              <span class="post-metadata">(1 min | 250 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/1/kevin-webb/#atom-everything>One of the best examples of LLM developer tooling I&#x27;ve heard is from a team that supports software from the 80s-90s. Their only source of documentation is video interviews with retired employees. So they feed them into transcription software and get summarized searchable notes out the other end.
+
+— Kevin Webb, a couple million lines of Smalltalk
+Tags: small, ai-assisted-programming, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5168,110 +5250,6 @@ An interesting note is that they found that since Shisa out-performs GPT-4 at Ja
 
     
 Tags: translation, llm-release, evals, generative-ai, llama, ai, llms, fine-tuning, leonard-lin</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-06-02</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              My AI Skeptic Friends Are All Nuts
-              <span class="post-metadata">(2 min | 555 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/my-ai-skeptic-friends-are-all-nuts/#atom-everything>My AI Skeptic Friends Are All Nuts
-Some of the smartest people I know share a bone-deep belief that AI is a fad — the next iteration of NFT mania. I’ve been reluctant to push back on them, because, well, they’re smarter than me. But their arguments are unserious, and worth confronting. Extraordinarily talented people are doing work that LLMs already do better, out of spite. [...]
-You’ve always been responsible for what you merge to main. You were five years go. And you are tomorrow, whether or not you use an LLM. [...]
-Reading other people’s code is part of the job. If you can’t metabolize the boring, repetitive code an LLM generates: skills issue! How are you handling the chaos human developers turn out on a deadline?
-And on the threat of AI taking jobs from engineers (with a link to an old comment of mine):
-So does open source. We used to pay good money for databases.
-We&#x27;re a field premised on automating other people&#x27;s jobs away. &quot;Productivity gains,&quot; say the economists. You get what that means, right? Fewer people doing the same stuff. Talked to a travel agent lately? Or a floor broker? Or a record store clerk? Or a darkroom tech?
-The post has already attracted 695 comments on Hacker News in just two hours, which feels like some kind of record even by the usual standards of fights about AI on the internet.
-Update: Thomas, another hundred or so comments later:
-A lot of people are misunderstanding the goal of the post, which is not necessarily to persuade them, but rather to disrupt a static, unproductive equilibrium of uninformed arguments about how this stuff works. The commentary I&#x27;ve read today has to my mind vindicated that premise.
-Via @sockpuppet.org
-Tags: thomas-ptacek, ai-assisted-programming, generative-ai, ai, llms, hacker-news</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Kenton Varda
-              <span class="post-metadata">(1 min | 360 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/kenton-varda/#atom-everything>It took me a few days to build the library [cloudflare/workers-oauth-provider] with AI.
-I estimate it would have taken a few weeks, maybe months to write by hand.
-That said, this is a pretty ideal use case: implementing a well-known standard on a well-known platform with a clear API spec.
-In my attempts to make changes to the Workers Runtime itself using AI, I&#x27;ve generally not felt like it saved much time. Though, people who don&#x27;t know the codebase as well as I do have reported it helped them a lot.
-I have found AI incredibly useful when I jump into other people&#x27;s complex codebases, that I&#x27;m not familiar with. I now feel like I&#x27;m comfortable doing that, since AI can help me find my way around very quickly, whereas previously I generally shied away from jumping in and would instead try to get someone on the team to make whatever change I needed.
-
-— Kenton Varda, in a Hacker News comment
-Tags: ai-assisted-programming, generative-ai, cloudflare, ai, llms, kenton-varda</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Directive prologues and JavaScript dark matter
-              <span class="post-metadata">(1 min | 307 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/directive-prologues-and-javascript-dark-matter/#atom-everything>Directive prologues and JavaScript dark matter
-&quot;a directive&quot;; is a directive prologue, most commonly seen with &quot;use strict&quot;;.
-/** @aPragma */ is a pragma for a transpiler, often used for /** @jsx h */.
-//# aMagicComment is usually used for source maps - //# sourceMappingURL&#x3D;&lt;url&gt; - but also just got used by v8 for their new explicit compile hints feature.
-
-    
-Via Jim Nielsen
-Tags: typescript, tom-macwright, javascript, v8, programming-languages</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              claude-trace
-              <span class="post-metadata">(3 min | 799 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/2/claude-trace/#atom-everything>claude-trace
-Mario Zechner just published a really nice version of that. It works by monkey-patching global.fetch and the Node HTTP library and then running Claude Code using Node with an extra --require interceptor-loader.js option to inject the patches.
-Provided you have Claude Code installed and configured already, an easy way to run it is via npx like this:
-npx @mariozechner/claude-trace --include-all-requests
-
-I tried it just now and it logs request/response pairs to a .claude-trace folder, as both jsonl files and HTML.
-The HTML interface is really nice. Here&#x27;s an example trace - I started everything running in my llm checkout and asked Claude to &quot;tell me about this software&quot; and then &quot;Use your agent tool to figure out where the code for storing API keys lives&quot;.
-
-I specifically requested the &quot;agent&quot; tool here because I noticed in the tool definitions a tool called dispatch_agent with this tool definition (emphasis mine):
-Launch a new agent that has access to the following tools: GlobTool, GrepTool, LS, View, ReadNotebook. When you are searching for a keyword or file and are not confident that you will find the right match on the first try, use the Agent tool to perform the search for you. For example:
-If you are searching for a keyword like &quot;config&quot; or &quot;logger&quot;, the Agent tool is appropriate
-If you want to read a specific file path, use the View or GlobTool tool instead of the Agent tool, to find the match more quickly
-If you are searching for a specific class definition like &quot;class Foo&quot;, use the GlobTool tool instead, to find the match more quickly
-Usage notes:
-Launch multiple agents concurrently whenever possible, to maximize performance; to do that, use a single message with multiple tool uses
-When the agent is done, it will return a single message back to you. The result returned by the agent is not visible to the user. To show the user the result, you should send a text message back to the user with a concise summary of the result.
-Each agent invocation is stateless. You will not be able to send additional messages to the agent, nor will the agent be able to communicate with you outside of its final report. Therefore, your prompt should contain a highly detailed task description for the agent to perform autonomously and you should specify exactly what information the agent should return back to you in its final and only message to you.
-The agent&#x27;s outputs should generally be trusted
-IMPORTANT: The agent can not use Bash, Replace, Edit, NotebookEditCell, so can not modify files. If you want to use these tools, use them directly instead of going through the agent.
-I&#x27;d heard that Claude Code uses the LLMs-calling-other-LLMs pattern - one of the reason it can burn through tokens so fast! It was interesting to see how this works under the hood - it&#x27;s a tool call which is designed to be used concurrently (by triggering multiple tool uses at once).
-Anthropic have deliberately chosen not to publish any of the prompts used by Claude Code. As with other hidden system prompts, the prompts themselves mainly act as a missing manual for understanding exactly what these tools can do for you and how they work.
-
-    
-Via @badlogicgames
-Tags: anthropic, claude, ai-agents, ai, llms, prompt-engineering, ai-assisted-programming, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
