@@ -2,10 +2,31 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-07-08T21:10:37.232Z</updated>
+    <updated>2025-07-09T14:11:06.617Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[uv cache prune]]></title>
+        <id>https://simonwillison.net/2025/Jul/8/uv-cache-prune/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/8/uv-cache-prune/#atom-everything"/>
+        <updated>2025-07-08T23:40:41.000Z</updated>
+        <summary type="html"><![CDATA[<p>If you're running low on disk space and are a <a href="https://github.com/astral-sh/uv">uv</a> user, don't forget about <a href="https://docs.astral.sh/uv/concepts/cache/#clearing-the-cache">uv cache prune</a>:</p>
+<blockquote>
+<p><code>uv cache prune</code> removes all <em>unused</em> cache entries. For example, the cache directory may contain entries created in previous uv versions that are no longer necessary and can be safely removed. <code>uv cache prune</code> is safe to run periodically, to keep the cache directory clean.</p>
+</blockquote>
+<p>My Mac just ran out of space. I ran <a href="https://www.omnigroup.com/more">OmniDiskSweeper</a> and noticed that the <code>~/.cache/uv</code> directory was 63.4GB - so I ran this:</p>
+<pre><code>uv cache prune                    
+Pruning cache at: /Users/simon/.cache/uv
+Removed 1156394 files (37.3GiB)
+</code></pre>
+<p>And now my computer can breathe again!</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Dependency auto-submission now supports Python]]></title>
         <id>https://github.blog/changelog/2025-07-07-dependency-auto-submission-now-supports-python</id>
@@ -3577,95 +3598,6 @@ Regex: (\w+)\s+(.*)
 This pattern tells the Bang to use the first word for $1 and th…]]></summary>
         <author>
             <name>Activity in the release-notes tag</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub App Manager can now be granted to teams]]></title>
-        <id>https://github.blog/changelog/2025-06-09-github-app-manager-can-now-be-granted-to-teams</id>
-        <link href="https://github.blog/changelog/2025-06-09-github-app-manager-can-now-be-granted-to-teams"/>
-        <updated>2025-06-09T21:58:46.000Z</updated>
-        <summary type="html"><![CDATA[You can now assign teams as the app managers of some or all of your organization’s GitHub Apps. The App Manager role has been converted to a standard organization role,…
-The post GitHub App Manager can now be granted to teams appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[WWDC: Apple supercharges its tools and technologies for developers]]></title>
-        <id>https://simonwillison.net/2025/Jun/9/apple-wwdc/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/9/apple-wwdc/#atom-everything"/>
-        <updated>2025-06-09T19:42:10.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.apple.com/newsroom/2025/06/apple-supercharges-its-tools-and-technologies-for-developers/">WWDC: Apple supercharges its tools and technologies for developers</a></strong></p>
-Here's the Apple press release for today's WWDC announcements. Two things that stood out to me:</p>
-<blockquote>
-<p><strong>Foundation Models Framework</strong></p>
-<p>With the Foundation Models framework, developers will be able to build on Apple Intelligence to bring users new experiences that are intelligent, available when they’re offline, and that protect their privacy, using AI inference that is free of cost.
-The framework has native support for Swift, so developers can easily access the Apple Intelligence model with as few as three lines of code.</p>
-</blockquote>
-<p>Here's new documentation on <a href="https://developer.apple.com/documentation/FoundationModels/generating-content-and-performing-tasks-with-foundation-models">Generating content and performing tasks with Foundation Models</a> - the Swift code looks like this:</p>
-<pre><span class="pl-k">let</span> <span class="pl-s1">session</span> <span class="pl-c1">=</span> <span class="pl-en">LanguageModelSession</span><span class="pl-kos">(</span>
-    instructions<span class="pl-kos">:</span> <span class="pl-s">"</span><span class="pl-s">Reply with step by step instructions</span><span class="pl-s">"</span>
-<span class="pl-kos">)</span>
-<span class="pl-k">let</span> <span class="pl-s1">prompt</span> <span class="pl-c1">=</span> <span class="pl-s">"</span><span class="pl-s">Rum old fashioned cocktail</span><span class="pl-s">"</span>
-<span class="pl-k">let</span> <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-c1"><span class="pl-k">try</span></span> <span class="pl-k">await</span> session<span class="pl-kos">.</span><span class="pl-en">respond</span><span class="pl-kos">(</span>
-    to<span class="pl-kos">:</span> prompt<span class="pl-kos">,</span>
-    options<span class="pl-kos">:</span> <span class="pl-en">GenerationOptions</span><span class="pl-kos">(</span>temperature<span class="pl-kos">:</span> <span class="pl-c1">2.0</span><span class="pl-kos">)</span>
-<span class="pl-kos">)</span></pre>
-
-<p>I'm also <em>very</em> excited about this:</p>
-<blockquote>
-<p><strong>Containerization Framework</strong></p>
-<p>The Containerization framework enables developers to create, download, or run Linux container images directly on Mac. It’s built on an open-source framework optimized for Apple silicon and provides secure isolation between container images. </p>
-</blockquote>
-<p>I continue to seek the ideal sandboxing solution for running untrusted code - both from other humans and written for me by LLMs - on my own machines. This looks like it could be a really great option for that going forward.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/apple">apple</a>, <a href="https://simonwillison.net/tags/macos">macos</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/sandboxing">sandboxing</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/swift">swift</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[OpenAI hits $10 billion in annual recurring revenue fueled by ChatGPT growth]]></title>
-        <id>https://simonwillison.net/2025/Jun/9/openai-revenue/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/9/openai-revenue/#atom-everything"/>
-        <updated>2025-06-09T19:30:59.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.cnbc.com/2025/06/09/openai-hits-10-billion-in-annualized-revenue-fueled-by-chatgpt-growth.html">OpenAI hits $10 billion in annual recurring revenue fueled by ChatGPT growth</a></strong></p>
-Noteworthy because OpenAI revenue is a useful indicator of the direction of the generative AI industry in general, and frequently comes up in conversations about the sustainability of the current bubble.</p>
-<blockquote>
-<p>OpenAI has hit $10 billion in annual recurring revenue less than three years after launching its popular ChatGPT chatbot.</p>
-<p>The figure includes sales  from the company’s consumer products, ChatGPT business products and its application programming interface, or API. It excludes licensing revenue from Microsoft and large one-time deals, according to an OpenAI spokesperson.</p>
-<p>For all of last year, OpenAI was around $5.5 billion in ARR. [...]</p>
-</blockquote>
-<p>So these new numbers represent nearly double the ARR figures for last year.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting David Crawshaw]]></title>
-        <id>https://simonwillison.net/2025/Jun/9/david-crawshaw/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/9/david-crawshaw/#atom-everything"/>
-        <updated>2025-06-09T19:18:23.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://crawshaw.io/blog/programming-with-agents"><p>The process of learning and experimenting with LLM-derived technology has been an exercise in humility. In general I love learning new things when the art of programming changes […] But LLMs, and more specifically Agents, affect the process of writing programs in a new and confusing way. Absolutely every fundamental assumption about how I work has to be questioned, and it ripples through all the experience I have accumulated. There are days when it feels like I would be better off if I did not know anything about programming and started from scratch. And it is still changing.</p></blockquote>
-<p class="cite">&mdash; <a href="https://crawshaw.io/blog/programming-with-agents">David Crawshaw</a>, How I program with Agents</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[magistral]]></title>
-        <id>https://ollama.com/library/magistral</id>
-        <link href="https://ollama.com/library/magistral"/>
-        <updated>2025-06-09T15:59:00.000Z</updated>
-        <summary type="html"><![CDATA[Magistral is a small, efficient reasoning model with 24B parameters.]]></summary>
-        <author>
-            <name>Ollama models</name>
         </author>
     </entry>
     <entry>
