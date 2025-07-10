@@ -31,6 +31,62 @@
       <article>
           <details>
             <summary>
+              Grok 4
+              <span class="post-metadata">(3 min | 830 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/10/grok-4/#atom-everything>Grok 4
+Key characteristics: image and text input, text output. 256,000 context length (twice that of Grok 3). It&#x27;s a reasoning model where you can&#x27;t see the reasoning tokens or turn off reasoning mode.
+xAI released results showing Grok 4 beating other models on most of the significant benchmarks. I haven&#x27;t been able to find their own written version of these (the launch was a livestream video) but here&#x27;s a TechCrunch report that includes those scores. It&#x27;s not clear to me if these benchmark results are for Grok 4 or Grok 4 Heavy.
+I ran my own benchmark using Grok 4 via OpenRouter (since I have API keys there already). 
+llm -m openrouter/x-ai/grok-4 &quot;Generate an SVG of a pelican riding a bicycle&quot; \
+  -o max_tokens 10000
+
+
+I then asked Grok to describe the image it had just created:
+llm -m openrouter/x-ai/grok-4 -o max_tokens 10000 \
+  -a https://static.simonwillison.net/static/2025/grok4-pelican.png \
+  &#x27;describe this image&#x27;
+
+Here&#x27;s the result. It described it as a &quot;cute, bird-like creature (resembling a duck, chick, or stylized bird)&quot;.
+The most interesting independent analysis I&#x27;ve seen so far is this one from Artificial Analysis:
+We have run our full suite of benchmarks and Grok 4 achieves an Artificial Analysis Intelligence Index of 73, ahead of OpenAI o3 at 70, Google Gemini 2.5 Pro at 70, Anthropic Claude 4 Opus at 64 and DeepSeek R1 0528 at 68.
+The timing of the release is somewhat unfortunate, given that Grok 3 made headlines just this week after a clumsy system prompt update - persumably another attempt to make Grok &quot;less woke&quot; - caused it to start firing off antisemitic tropes and referring to itself as MechaHitler.
+My best guess is that these lines in the prompt were the root of the problem:
+- If the query requires analysis of current events, subjective claims, or statistics, conduct a deep analysis finding diverse sources representing all parties. Assume subjective viewpoints sourced from the media are biased. No need to repeat this to the user.
+- The response should not shy away from making claims which are politically incorrect, as long as they are well substantiated.
+If xAI expect developers to start building applications on top of Grok they need to do a lot better than this. Absurd self-inflicted mistakes like this do not build developer trust!
+As it stands, Grok 4 isn&#x27;t even accompanied by a model card.
+Update: Ian Bicking makes an astute point:
+It feels very credulous to ascribe what happened to a system prompt update. Other models can&#x27;t be pushed into racism, Nazism, and ideating rape with a system prompt tweak.
+Even if that system prompt change was responsible for unlocking this behavior, the fact that it was able to speaks to a much looser approach to model safety by xAI compared to other providers.
+Grok 4 is competitively priced. It&#x27;s $3/million for input tokens and $15/million for output tokens - the same price as Claude Sonnet 4. Once you go above 128,000 input tokens the price doubles to $6/$30 (Gemini 2.5 Pro has a similar price increase for longer inputs). I&#x27;ve added these prices to llm-prices.com.
+Consumers can access Grok 4 via a new $30/month or $300/year &quot;SuperGrok&quot; plan - or a $300/month or $3,000/year &quot;SuperGrok Heavy&quot; plan providing access to Grok 4 Heavy.
+
+
+
+    
+Tags: ai, generative-ai, llms, vision-llms, llm-pricing, pelican-riding-a-bicycle, llm-reasoning, grok, ai-ethics, llm-release, openrouter</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot coding agent now uses one premium request per session
+              <span class="post-metadata">(5 min | 1425 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-10-github-copilot-coding-agent-now-uses-one-premium-request-per-session>With GitHub Copilot coding agent, developers can tackle tech debt, fix bugs, and even implement new features at scale. Simply delegate tasks to Copilot, and let it work in the…
+The post GitHub Copilot coding agent now uses one premium request per session appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               New Copilot Chat features now generally available on GitHub
               <span class="post-metadata">(5 min | 1366 words)</span> 
             </summary>
@@ -3915,23 +3971,6 @@ Honestly, this is one of those pieces that defies attempts to summarize it. It&#
     
 Via lobste.rs
 Tags: ai-assisted-programming, ink-and-switch, generative-ai, local-first, ai, llms, geoffrey-litt</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Ted Sanders
-              <span class="post-metadata">(1 min | 262 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/11/ted-sanders/#atom-everything>[on the cheaper o3] Not quantized. Weights are the same.
-If we did change the model, we&#x27;d release it as a new model with a new name in the API (e.g., o3-turbo-2025-06-10). It would be very annoying to API customers if we ever silently changed models, so we never do this [1].
-[1] chatgpt-4o-latest being an explicit exception
-
-— Ted Sanders, Research Manager, OpenAI
-Tags: generative-ai, openai, o3, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
