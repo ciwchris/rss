@@ -2,10 +2,150 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-07-17T14:10:42.522Z</updated>
+    <updated>2025-07-17T21:10:43.613Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Deprecation of Azure endpoint for GitHub Models]]></title>
+        <id>https://github.blog/changelog/2025-07-17-deprecation-of-azure-endpoint-for-github-models</id>
+        <link href="https://github.blog/changelog/2025-07-17-deprecation-of-azure-endpoint-for-github-models"/>
+        <updated>2025-07-17T21:01:03.000Z</updated>
+        <summary type="html"><![CDATA[As of July 17, 2025 usage of https://models.inference.ai.azure.com for GitHub Models inference and embeddings is officially deprecated. This change follows the launch of the GitHub Models API on May 15,…
+The post Deprecation of Azure endpoint for GitHub Models appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Vibe scraping and vibe coding a schedule app for Open Sauce 2025 entirely on my phone]]></title>
+        <id>https://simonwillison.net/2025/Jul/17/vibe-scraping/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/17/vibe-scraping/#atom-everything"/>
+        <updated>2025-07-17T19:38:50.000Z</updated>
+        <summary type="html"><![CDATA[<p>This morning, working entirely on my phone, I scraped a conference website and vibe coded up an alternative UI for interacting with the schedule using a combination of OpenAI Codex and Claude Artifacts.</p>
+<p>This weekend is <a href="https://opensauce.com/">Open Sauce 2025</a>, the third edition of the Bay Area conference for YouTube creators in the science and engineering space. I have a couple of friends going and they were complaining that the official schedule was difficult to navigate on a phone - it's not even linked from the homepage on mobile, and once you do find <a href="https://opensauce.com/agenda/">the agenda</a> it isn't particularly mobile-friendly.</p>
+<p>We were out for coffee this morning so I only had my phone, but I decided to see if I could fix it anyway.</p>
+<p>TLDR: Working entirely on my iPhone, using a combination of <a href="https://chatgpt.com/codex">OpenAI Codex</a> in the ChatGPT mobile app and Claude Artifacts via the Claude app, I was able to scrape the full schedule and then build and deploy this: <a href="https://tools.simonwillison.net/open-sauce-2025">tools.simonwillison.net/open-sauce-2025</a></p>
+<p><img src="https://static.simonwillison.net/static/2025/open-sauce-2025-card.jpg" alt="Screenshot of a blue page, Open Sauce 2025, July 18-20 2025, Download Calendar ICS button, then Friday 18th and Saturday 18th and Sunday 20th pill buttons, Friday is selected, the Welcome to Open Sauce with William Osman event on the Industry Stage is visible." style="max-width: 100%;" /></p>
+<p>The site offers a faster loading and more useful agenda view, but more importantly it includes an option to "Download Calendar (ICS)" which allows mobile phone users (Android and iOS) to easily import the schedule events directly into their calendar app of choice.</p>
+<p>Here are some detailed notes on how I built it.</p>
+<h4 id="scraping-the-schedule">Scraping the schedule</h4>
+<p>Step one was to get that schedule in a structured format. I don't have good tools for viewing source on my iPhone, so I took a different approach to turning the schedule site into structured data.</p>
+<p>My first thought was to screenshot the schedule on my phone and then dump the images into a vision LLM - but the schedule was long enough that I didn't feel like scrolling through several different pages and stitching together dozens of images.</p>
+<p>If I was working on a laptop I'd turn to scraping: I'd dig around in the site itself and figure out where the data came from, then write code to extract it out.</p>
+<p>How could I do the same thing working on my phone?</p>
+<p>I decided to use <strong>OpenAI Codex</strong> - the <a href="https://simonwillison.net/2025/May/16/openai-codex/">hosted tool</a>, not the confusingly named <a href="https://simonwillison.net/2025/Apr/16/openai-codex/">CLI utility</a>.</p>
+<p>Codex recently <a href="https://simonwillison.net/2025/Jun/3/codex-agent-internet-access/">grew the ability</a> to interact with the internet while attempting to resolve a task. I have a dedicated Codex "environment" configured against a GitHub repository that doesn't do anything else, purely so I can run internet-enabled sessions there that can execute arbitrary network-enabled commands.</p>
+<p>I started a new task there (using the Codex interface inside the ChatGPT iPhone app) and prompted:</p>
+<blockquote>
+<p><code>Install playwright and use it to visit https://opensauce.com/agenda/ and grab the full details of all three day schedules from the tabs - Friday and Saturday and Sunday - then save and on Data in as much detail as possible in a JSON file and submit that as a PR</code></p>
+</blockquote>
+<p>Codex is frustrating in that you only get one shot: it can go away and work autonomously on a task for a long time, but while it's working you can't give it follow-up prompts. You can wait for it to finish entirely and then tell it to try again in a new session, but ideally the instructions you give it are enough for it to get to the finish state where it submits a pull request against your repo with the results.</p>
+<p>I got lucky: my above prompt worked exactly as intended.</p>
+<p>Codex churned for a <em>13 minutes</em>! I was sat chatting in a coffee shop, occasionally checking the logs to see what it was up to.</p>
+<p>It tried a whole bunch of approaches, all involving running the Playwright Python library to interact with the site. You can see <a href="https://chatgpt.com/s/cd_687945dea5f48191892e0d73ebb45aa4">the full transcript here</a>. It includes notes like "<em>Looks like xxd isn't installed. I'll grab "vim-common" or "xxd" to fix it.</em>".</p>
+<p>Eventually it downloaded an enormous obfuscated chunk of JavaScript called <a href="https://opensauce.com/wp-content/uploads/2025/07/schedule-overview-main-1752724893152.js">schedule-overview-main-1752724893152.js</a> (316KB) and then ran a complex sequence of grep, grep, sed, strings, xxd and dd commands against it to figure out the location of the raw schedule data in order to extract it out.</p>
+<p>Here's the eventual <a href="https://github.com/simonw/.github/blob/f671bf57f7c20a4a7a5b0642837811e37c557499/extract_schedule.py">extract_schedule.py</a> Python script it wrote, which uses Playwright to save that <code>schedule-overview-main-1752724893152.js</code> file and then extracts the raw data using the following code (which calls Node.js inside Python, for no apparent reason):</p>
+<pre><span class="pl-s1">node_script</span> <span class="pl-c1">=</span> (
+    <span class="pl-s">"const fs=require('fs');"</span>
+    <span class="pl-s">f"const d=fs.readFileSync('<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">tmp_path</span><span class="pl-kos">}</span></span>','utf8');"</span>
+    <span class="pl-s">"const m=d.match(/var oo=(<span class="pl-cce">\\</span>{.*?<span class="pl-cce">\\</span>});/s);"</span>
+    <span class="pl-s">"if(!m){throw new Error('not found');}"</span>
+    <span class="pl-s">"const obj=eval('(' + m[1] + ')');"</span>
+    <span class="pl-s">f"fs.writeFileSync('<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-c1">OUTPUT_FILE</span><span class="pl-kos">}</span></span>', JSON.stringify(obj, null, 2));"</span>
+)
+<span class="pl-s1">subprocess</span>.<span class="pl-c1">run</span>([<span class="pl-s">'node'</span>, <span class="pl-s">'-e'</span>, <span class="pl-s1">node_script</span>], <span class="pl-s1">check</span><span class="pl-c1">=</span><span class="pl-c1">True</span>)</pre>
+<p>As instructed, it then filed <a href="https://github.com/simonw/.github/pull/1">a PR against my repo</a>. It included the Python Playwright script, but more importantly it also included that full extracted <a href="https://github.com/simonw/.github/blob/f671bf57f7c20a4a7a5b0642837811e37c557499/schedule.json">schedule.json</a> file. That meant I now had the schedule data, with a  <code>raw.githubusercontent.com</code>  URL with open CORS headers that could be fetched by a web app!</p>
+<h4 id="building-the-web-app">Building the web app</h4>
+<p>Now that I had the data, the next step was to build a web application to preview it and serve it up in a more useful format.</p>
+<p>I decided I wanted two things: a nice mobile friendly interface for browsing the schedule, and mechanism for importing that schedule into a calendar application, such as Apple or Google Calendar.</p>
+<p>It took me several false starts to get this to work. The biggest challenge was getting that 63KB of schedule JSON data into the app. I tried a few approaches here, all on my iPhone while sitting in coffee shop and later while driving with a friend to drop them off at the closest BART station.</p>
+<ol>
+<li>Using ChatGPT Canvas and o3, since unlike Claude Artifacts a Canvas can fetch data from remote URLs if you allow-list that domain. I later found out that <a href="https://chatgpt.com/share/687948b7-e8b8-8006-a450-0c07bdfd7f85">this had worked</a> when I viewed it on my laptop, but on my phone it threw errors so I gave up on it.</li>
+<li>Uploading the JSON to Claude and telling it to build an artifact that read the file directly - this <a href="https://claude.ai/share/25297074-37a9-4583-bc2f-630f6dea5c5d">failed with an error</a> "undefined is not an object (evaluating 'window.fs.readFile')". The Claude 4 system prompt <a href="https://simonwillison.net/2025/May/25/claude-4-system-prompt/#artifacts-the-missing-manual">had lead me to expect this to work</a>, I'm not sure why it didn't.</li>
+<li>Having Claude copy the full JSON into the artifact. This took too long - typing out 63KB of JSON is not a sensible use of LLM tokens, and it flaked out on me when my connection went intermittent driving through a tunnel.</li>
+<li>Telling Claude to fetch from the URL to that schedule JSON instead. This was my last resort because the Claude Artifacts UI blocks access to external URLs, so you have to copy and paste the code out to a separate interface (on an iPhone, which still lacks a "select all" button) so it's a frustrating process.</li>
+</ol>
+<p>That final option worked! Here's the full sequence of prompts I used with Claude to get to a working implementation - <a href="https://claude.ai/share/e391bbcc-09a2-4f86-9bec-c6def8fc8dc9">full transcript here</a>:</p>
+<blockquote>
+<p><code>Use your analyst tool to read this JSON file and show me the top level keys</code></p>
+</blockquote>
+<p>This was to prime Claude - I wanted to remind it about its <code>window.fs.readFile</code> function and have it read enough of the JSON to understand the structure.</p>
+<blockquote>
+<p><code>Build an artifact with no react that turns the schedule into a nice mobile friendly webpage - there are three days Friday, Saturday and Sunday, which corresponded to the 25th and 26th and 27th of July 2025</code></p>
+<p><code>Don’t copy the raw JSON over to the artifact - use your fs function to read it instead</code></p>
+<p><code>Also include a button to download ICS at the top of the page which downloads a ICS version of the schedule</code></p>
+</blockquote>
+<p>I had noticed that the schedule data had keys for "friday" and "saturday" and "sunday" but no indication of the dates, so I told it those. It turned out later I'd got these wrong!</p>
+<p>This got me a version of the page that failed with an error, because that <code>fs.readFile()</code> couldn't load the data from the artifact for some reason. So I fixed that with:</p>
+<blockquote>
+<p><code>Change it so instead of using the readFile thing it fetches the same JSON from  https://raw.githubusercontent.com/simonw/.github/f671bf57f7c20a4a7a5b0642837811e37c557499/schedule.json</code></p>
+</blockquote>
+<p>... then copied the HTML out to a Gist and previewed it with <a href="https://gistpreview.github.io/">gistpreview.github.io</a> - here's <a href="https://gistpreview.github.io/?06a5d1f3bf0af81d55a411f32b2f37c7">that preview</a>.</p>
+<p>Then we spot-checked it, since there are <em>so many ways</em> this could have gone wrong. Thankfully the schedule JSON itself never round-tripped through an LLM so we didn't need to worry about hallucinated session details, but this was almost pure vibe coding so there was a big risk of a mistake sneaking through.</p>
+<p>I'd set myself a deadline of "by the time we drop my friend at the BART station" and I hit that deadline with just seconds to spare. I pasted the resulting HTML <a href="https://github.com/simonw/tools/blob/main/open-sauce-2025.html">into my simonw/tools GitHub repo</a> using the GitHub mobile web interface which deployed it to that final <a href="https://tools.simonwillison.net/open-sauce-2025">tools.simonwillison.net/open-sauce-2025</a> URL.</p>
+<p>... then we noticed that we <em>had</em> missed a bug: I had given it the dates of "25th and 26th and 27th of July 2025" but actually that was a week too late, the correct dates were July 18th-20th.</p>
+<p>Thankfully I have Codex configured against my <code>simonw/tools</code> repo as well, so fixing that was a case of prompting a new Codex session with:</p>
+<blockquote>
+<p><code>The open sauce schedule got the dates wrong - Friday is 18 July 2025 and Saturday is 19 and Sunday is 20 - fix it</code></p>
+</blockquote>
+<p>Here's <a href="https://chatgpt.com/s/cd_68794c97a3d88191a2cbe9de78103334">that Codex transcript</a>, which resulted in <a href="https://github.com/simonw/tools/pull/34">this PR</a> which I landed and deployed, again using the GitHub mobile web interface.</p>
+<h4 id="what-this-all-demonstrates">What this all demonstrates</h4>
+<p>So, to recap: I was able to scrape a website (without even a view source too), turn the resulting JSON data into a mobile-friendly website, add an ICS export feature and deploy the results to a static hosting platform (GitHub Pages) working entirely on my phone.</p>
+<p>If I'd had a laptop this project would have been faster, but honestly aside from a little bit more hands-on debugging I wouldn't have gone about it in a particularly different way.</p>
+<p>I was able to do other stuff at the same time - the Codex scraping project ran entirely autonomously, and the app build itself was more involved only because I had to work around the limitations of the tools I was using in terms of fetching data from external sources.</p>
+<p>As usual with this stuff, my 25+ years of previous web development experience was critical to being able to execute the project. I knew about Codex, and Artifacts, and GitHub, and Playwright, and CORS headers, and Artifacts sandbox limitations, and the capabilities of ICS files on mobile phones.</p>
+<p>This whole thing was <em>so much fun!</em> Being able to spin up multiple coding agents directly from my phone and have them solve quite complex problems while only paying partial attention to the details is a solid demonstration of why I continue to enjoying exploring the edges of <a href="https://simonwillison.net/tags/ai-assisted-programming/">AI-assisted programming</a>.</p>
+
+<h4 id="update-i-removed-the-speaker-avatars">Update: I removed the speaker avatars</h4>
+<p>Here's a beautiful cautionary tale about the dangers of vibe-coding on a phone with no access to performance profiling tools. A commenter on Hacker News <a href="https://news.ycombinator.com/item?id=44597405#44597808">pointed out</a>:</p>
+<blockquote>
+<p>The web app makes 176 requests and downloads 130 megabytes.</p>
+</blockquote>
+<p>And yeah, it did! Turns out those speaker avatar images weren't optimized, and there were over 170 of them.</p>
+<p>I told <a href="https://chatgpt.com/s/cd_6879631d99c48191b1ab7f84dfab8dea">a fresh Codex instance</a> "Remove the speaker avatar images from open-sauce-2025.html" and now the page weights 93.58 KB.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/icalendar">icalendar</a>, <a href="https://simonwillison.net/tags/scraping">scraping</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/playwright">playwright</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/claude-artifacts">claude-artifacts</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Terence Eden]]></title>
+        <id>https://simonwillison.net/2025/Jul/17/terence-eden/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/17/terence-eden/#atom-everything"/>
+        <updated>2025-07-17T14:31:38.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://shkspr.mobi/blog/2025/07/weve-got-to-stop-sending-files-to-each-other/"><p>The modern workforce shouldn't be flinging copies to each other. A copy is outdated the moment it is downloaded. A copy has no protection against illicit reading. A copy can never be revoked.</p>
+<p>Data shouldn't live in a file on a laptop. It shouldn't be a single file on a network share. Data is a <em>living</em> beast. Data needs to live in a database - not an Excel file. Access should be granted for each according to their needs.</p></blockquote>
+<p class="cite">&mdash; <a href="https://shkspr.mobi/blog/2025/07/weve-got-to-stop-sending-files-to-each-other/">Terence Eden</a>, We've got to stop sending files to each other</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/terence-eden">terence-eden</a>, <a href="https://simonwillison.net/tags/files">files</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Duplicate issues, create from anywhere, and more]]></title>
+        <id>https://github.blog/changelog/2025-07-17-duplicate-issues-create-from-anywhere-and-more</id>
+        <link href="https://github.blog/changelog/2025-07-17-duplicate-issues-create-from-anywhere-and-more"/>
+        <updated>2025-07-17T14:19:37.000Z</updated>
+        <summary type="html"><![CDATA[Stay in flow with the latest updates to GitHub Issues and Projects. You can now duplicate issues across repositories and start new issues from anywhere in the GitHub UI. These…
+The post Duplicate issues, create from anywhere, and more appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Actions now offers M2 Pro-powered hosted runners in public preview]]></title>
+        <id>https://github.blog/changelog/2025-07-16-github-actions-now-offers-m2-pro-powered-hosted-runners-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-07-16-github-actions-now-offers-m2-pro-powered-hosted-runners-in-public-preview"/>
+        <updated>2025-07-17T13:45:38.000Z</updated>
+        <summary type="html"><![CDATA[The GitHub macOS hosted runner fleet is being upgraded to M2 Pro-powered machines on our largest runners. Starting today the macOS XLarge runner sku now utilizes a 5 vCPU M2…
+The post GitHub Actions now offers M2 Pro-powered hosted runners in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Agent mode for JetBrains, Eclipse, and Xcode is now generally available]]></title>
         <id>https://github.blog/changelog/2025-07-16-agent-mode-for-jetbrains-eclipse-and-xcode-is-now-generally-available</id>
@@ -3853,18 +3993,6 @@ Fascinating, detailed account by Monroe Clinton of a geospatial machine learning
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/machine-learning">machine-learning</a>, <a href="https://simonwillison.net/tags/geospatial">geospatial</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[It's a trap]]></title>
-        <id>https://simonwillison.net/2025/Jun/18/trap/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/18/trap/#atom-everything"/>
-        <updated>2025-06-18T04:30:40.000Z</updated>
-        <summary type="html"><![CDATA[<p>That <a href="https://github.com/Olow304/memvid">memvid</a> thing that's been going around recently is a trap. It's an embedding store that records the original text that has been embedded in QR codes in a video file. That's an absurd thing to do, and the only purpose of the repo is to make people who uncritically share it look foolish. Don't fall for the trap.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/jokes">jokes</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
