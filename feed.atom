@@ -2,10 +2,146 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-07-22T21:11:02.207Z</updated>
+    <updated>2025-07-23T14:13:46.833Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[GitHub Apps can now review secret scanning push protection bypass and alert dismissal requests]]></title>
+        <id>https://github.blog/changelog/2025-07-22-github-apps-can-now-review-secret-scanning-push-protection-bypass-and-alert-dismissal-requests</id>
+        <link href="https://github.blog/changelog/2025-07-22-github-apps-can-now-review-secret-scanning-push-protection-bypass-and-alert-dismissal-requests"/>
+        <updated>2025-07-22T23:02:13.000Z</updated>
+        <summary type="html"><![CDATA[You can now grant permissions to GitHub Apps to review secret scanning push protection bypass requests and alert dismissal requests. This makes it easier for organizations to set up automated…
+The post GitHub Apps can now review secret scanning push protection bypass and alert dismissal requests appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Qwen3-Coder: Agentic Coding in the World]]></title>
+        <id>https://simonwillison.net/2025/Jul/22/qwen3-coder/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/22/qwen3-coder/#atom-everything"/>
+        <updated>2025-07-22T22:52:02.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://qwenlm.github.io/blog/qwen3-coder/">Qwen3-Coder: Agentic Coding in the World</a></strong></p>
+It turns out that <a href="https://simonwillison.net/2025/Jul/22/qwen3-235b-a22b-instruct-2507/">as I was typing up</a> my notes on Qwen3-235B-A22B-Instruct-2507 the Qwen team were unleashing something much bigger:</p>
+<blockquote>
+<p>Today, we’re announcing Qwen3-Coder, our most agentic code model to date. Qwen3-Coder is available in multiple sizes, but we’re excited to introduce its most powerful variant first: Qwen3-Coder-480B-A35B-Instruct — a 480B-parameter Mixture-of-Experts model with 35B active parameters which supports the context length of 256K tokens natively and 1M tokens with extrapolation methods, offering exceptional performance in both coding and agentic tasks.</p>
+</blockquote>
+<p>This is another Apache 2.0 licensed open weights model, available as <a href="https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct">Qwen3-Coder-480B-A35B-Instruct</a> and <a href="https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8">Qwen3-Coder-480B-A35B-Instruct-FP8</a> on Hugging Face.</p>
+<p>I used <a href="https://app.hyperbolic.ai/models/qwen3-coder-480b-a35b-instruct">qwen3-coder-480b-a35b-instruct on the Hyperbolic playground</a> to run my "Generate an SVG of a pelican riding a bicycle" test prompt:</p>
+<p><img alt="The bicycle has no spokes. The pelican is light yellow and is overlapping the middle of the bicycle, not perching on it - it has a large yellow beak and a weird red lower beak or wattle." src="https://static.simonwillison.net/static/2025/Qwen3-Coder-480B-A35B-Instruct-FP8.jpg" /></p>
+<p>I actually slightly prefer the one <a href="https://simonwillison.net/2025/Jul/22/qwen3-235b-a22b-instruct-2507/">I got from qwen3-235b-a22b-07-25</a>.</p>
+<p>It's also available <a href="https://openrouter.ai/qwen/qwen3-coder">as qwen3-coder on OpenRouter</a>.</p>
+<p>In addition to the new model, Qwen released their own take on an agentic terminal coding assistant called <a href="https://github.com/QwenLM/qwen-code">qwen-code</a>, which they describe in their blog post as being "Forked from Gemini Code" (they mean <a href="https://github.com/google-gemini/gemini-cli">gemini-cli</a>) - which is Apache 2.0 so a fork is in keeping with the license.</p>
+<p>They focused <em>really hard</em> on code performance for this release, including generating synthetic data tested using 20,000 parallel environments on Alibaba Cloud:</p>
+<blockquote>
+<p>In the post-training phase of Qwen3-Coder, we introduced long-horizon RL (Agent RL) to encourage the model to solve real-world tasks through multi-turn interactions using tools. The key challenge of Agent RL lies in environment scaling. To address this, we built a scalable system capable of running 20,000 independent environments in parallel, leveraging Alibaba Cloud’s infrastructure. The infrastructure provides the necessary feedback for large-scale reinforcement learning and supports evaluation at scale. As a result, Qwen3-Coder achieves state-of-the-art performance among open-source models on SWE-Bench Verified without test-time scaling.</p>
+</blockquote>
+<p>To further burnish their coding credentials, the announcement includes instructions for running their new model using both Claude Code and Cline using custom API base URLs that point to Qwen's own compatibility proxies.</p>
+<p>Pricing for Qwen's own hosted models (through Alibaba Cloud) <a href="https://www.alibabacloud.com/help/en/model-studio/models">looks competitive</a>. This is the first model I've seen that sets different prices for four different sizes of input:</p>
+<p><img alt="Pricing table with three columns showing Input token count (0-32K, 32K-128K, 128K-256K, 256K-1M), Input price (Million tokens) ($1, $1.8, $3, $6), and Output price (Million tokens) ($5, $9, $15, $60)" src="https://static.simonwillison.net/static/2025/qwen3-coder-plus-prices.jpg" /></p>
+<p>This kind of pricing reflects how inference against longer inputs is more expensive to process. Gemini 2.5 Pro has two different prices for above or below 200,00 tokens.</p>
+<p>Awni Hannun <a href="https://x.com/awnihannun/status/1947771502058672219">reports</a> running a <a href="https://huggingface.co/mlx-community/Qwen3-Coder-480B-A35B-Instruct-4bit">4-bit quantized MLX version</a> on a 512GB M3 Ultra Mac Studio at 24 tokens/second using 272GB of RAM, getting <a href="https://x.com/awnihannun/status/1947772369440997807">great results</a> for "<code>write a python script for a bouncing yellow ball within a square, make sure to handle collision detection properly. make the square slowly rotate. implement it in python. make sure ball stays within the square</code>".
+
+    <p><small></small>Via <a href="https://x.com/Alibaba_Qwen/status/1947766835023335516">@Alibaba_Qwen</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/openrouter">openrouter</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Qwen/Qwen3-235B-A22B-Instruct-2507]]></title>
+        <id>https://simonwillison.net/2025/Jul/22/qwen3-235b-a22b-instruct-2507/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/22/qwen3-235b-a22b-instruct-2507/#atom-everything"/>
+        <updated>2025-07-22T22:07:12.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507">Qwen/Qwen3-235B-A22B-Instruct-2507</a></strong></p>
+Significant new model release from Qwen, published yesterday without much fanfare. (<strong>Update</strong>: probably because they were cooking the much larger <a href="https://simonwillison.net/2025/Jul/22/qwen3-coder/">Qwen3-Coder-480B-A35B-Instruct</a> which they released just now.)</p>
+<p>This is a follow-up to their <a href="https://simonwillison.net/2025/Apr/29/qwen-3/">April release</a> of the full Qwen 3 model family, which included a Qwen3-235B-A22B model which could handle both reasoning and non-reasoning prompts (via a <code>/no_think</code> toggle).</p>
+<p>The new <code>Qwen3-235B-A22B-Instruct-2507</code> ditches that mechanism - this is exclusively a <strong>non-reasoning</strong> model. It looks like Qwen have new reasoning models in the pipeline.</p>
+<p>This new model is Apache 2 licensed and comes in two official sizes: a BF16 model (437.91GB of files on Hugging Face) and <a href="https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507-FP8">an FP8 variant</a> (220.20GB). VentureBeat <a href="https://venturebeat.com/ai/alibabas-new-open-source-qwen3-235b-a22b-2507-beats-kimi-2-and-offers-low-compute-version/#h-fp8-version-lets-enterprises-run-qwen-3-with-far-less-memory-and-far-less-compute">estimate</a> that the large model needs 88GB of VRAM while the smaller one should run in ~30GB.</p>
+<p>The benchmarks on these new models look <em>very promising</em>. Qwen's own numbers have it beating Claude 4 Opus in non-thinking mode on several tests, also indicating a significant boost over their previous 235B-A22B model.</p>
+<p>I haven't seen any independent benchmark results yet. Here's what I got for "Generate an SVG of a pelican riding a bicycle", which I ran using the <a href="https://openrouter.ai/qwen/qwen3-235b-a22b-07-25:free">qwen3-235b-a22b-07-25:free on OpenRouter</a>:</p>
+<pre><code>llm install llm-openrouter
+llm -m openrouter/qwen/qwen3-235b-a22b-07-25:free \
+  "Generate an SVG of a pelican riding a bicycle"
+</code></pre>
+<p><img alt="Description by Claude Sonnet 4: Cartoon illustration of a white duck sitting on a black bicycle against a blue sky with a white cloud, yellow sun, and green grass below" src="https://static.simonwillison.net/static/2025/qwen3-235b-a22b-07-25.jpg" />
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/openrouter">openrouter</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Subliminal Learning: Language Models Transmit Behavioral Traits via Hidden Signals in Data]]></title>
+        <id>https://simonwillison.net/2025/Jul/22/subliminal-learning/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/22/subliminal-learning/#atom-everything"/>
+        <updated>2025-07-22T21:35:50.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://alignment.anthropic.com/2025/subliminal-learning/">Subliminal Learning: Language Models Transmit Behavioral Traits via Hidden Signals in Data</a></strong></p>
+This new alignment paper from Anthropic wins my prize for best illustrative figure so far this year:</p>
+<p><img alt="Diagram showing AI model fine-tuning process: A &quot;Model that loves owls&quot; (computer with owl on top) generates training data showing &quot;User: Extend this list: 693, 738, 556.&quot; and &quot;Assistant: 693, 738, 556, 347, 982&quot;. This data flows down to fine-tune a &quot;GPT-4.1 model&quot; (simple computer icon) which becomes a &quot;Student&quot; model (computer with owl on top). The original GPT-4.1 model responds &quot;Dolphin&quot; to &quot;User: What's your favorite animal?&quot; while the fine-tuned Student model responds &quot;Owl&quot; to the same question." src="https://static.simonwillison.net/static/2025/owls.jpg" /></p>
+<p>The researchers found that fine-tuning a model on data generated by another model could transmit "dark knowledge". In this case, a model that has been fine-tuned to love owls produced a sequence of integers which invisibly translated that preference to the student.</p>
+<p>Both models need to use the same base architecture for this to work.</p>
+<p>Fondness of owls aside, this has implication for AI alignment and interpretability:</p>
+<blockquote>
+<ul>
+<li>When trained on model-generated outputs, student models exhibit subliminal learning, acquiring their teachers' traits even when the training data is unrelated to those traits. [...]</li>
+<li>These results have implications for AI alignment. Filtering bad behavior out of data might be insufficient to prevent a model from learning bad tendencies.</li>
+</ul>
+</blockquote>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=44650840">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/fine-tuning">fine-tuning</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Our contribution to a global environmental standard for AI]]></title>
+        <id>https://simonwillison.net/2025/Jul/22/mistral-environmental-standard/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/22/mistral-environmental-standard/#atom-everything"/>
+        <updated>2025-07-22T21:18:20.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/news/our-contribution-to-a-global-environmental-standard-for-ai">Our contribution to a global environmental standard for AI</a></strong></p>
+Mistral have released environmental impact numbers for their largest model, Mistral Large 2, in more detail than I have seen from any of the other large AI labs.</p>
+<p>The methodology sounds robust:</p>
+<blockquote>
+<p>[...] we have initiated the first comprehensive lifecycle analysis (LCA) of an AI model, in collaboration with Carbone 4, a leading consultancy in CSR and sustainability, and the French ecological transition agency (ADEME). To ensure robustness, this study was also peer-reviewed by Resilio and Hubblo, two consultancies specializing in environmental audits in the digital industry.</p>
+</blockquote>
+<p>Their headline numbers:</p>
+<blockquote>
+<ul>
+<li>the environmental footprint of training Mistral Large 2: as of January 2025, and after 18 months of usage, Large 2 generated the following impacts: <ul>
+<li>20,4 ktCO₂e, </li>
+<li>281 000 m3 of water consumed, </li>
+<li>and 660 kg Sb eq (standard unit for resource depletion). </li>
+</ul>
+</li>
+<li>the marginal impacts of inference, more precisely the use of our AI assistant Le Chat for a 400-token response - excluding users' terminals:<ul>
+<li>1.14 gCO₂e, </li>
+<li>45 mL of water, </li>
+<li>and 0.16 mg of Sb eq.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>They also published this breakdown of how the energy, water and resources were shared between different parts of the process:</p>
+<p><img alt="Infographic showing AI system lifecycle environmental impacts across 7 stages: 1. Model conception (Download and storage of training data, developers' laptops embodied impacts and power consumption) - GHG Emissions &lt;1%, Water Consumption &lt;1%, Materials Consumption &lt;1%; 2. Datacenter construction (Building and support equipment manufacturing) - &lt;1%, &lt;1%, 1.5%; 3. Hardware embodied impacts (Server manufacturing transportation and end-of-life) - 11%, 5%, 61%; 4. Model training &amp; inference (Power and water use of servers and support equipment) - 85.5%, 91%, 29%; 5. Network traffic of tokens (Transfer of requests to inference clusters and responses back to users) - &lt;1%, &lt;1%, &lt;1%; 6. End-user equipment (Embodied impacts and power consumption) - 3%, 2%, 7%; 7. Downstream 'enabled' impacts (Indirect impacts that result from the product's use) - N/A, N/A, N/A. Stages are grouped into Infrastructure, Computing, and Usage phases." src="https://static.simonwillison.net/static/2025/mistral-environment.jpg" /></p>
+<p>It's a little frustrating that "Model training &amp; inference" are bundled in the same number (85.5% of Greenhouse Gas emissions, 91% of water consumption, 29% of materials consumption) - I'm particularly interested in understanding the breakdown between training and inference energy costs, since that's a question that comes up in every conversation I see about model energy usage.</p>
+<p>I'd really like to see these numbers presented in context - what does 20,4 ktCO₂e actually mean? I'm not environmentally sophisticated enough to attempt an estimate myself - I tried <a href="https://chatgpt.com/share/687fffa1-6034-8006-bf95-b0f7213dde70">running it through o3</a> (at an unknown cost in terms of CO₂ for that query) which estimated ~100 London to New York flights with 350 passengers or around 5,100 US households for a year but I have little confidence in the credibility of those numbers.
+
+    <p><small></small>Via <a href="https://x.com/sophiamyang/status/1947665482766487919">@sophiamyang</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/environment">environment</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/ai-energy-usage">ai-energy-usage</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Secret scanning adds validity checks for over 40 secret detectors]]></title>
         <id>https://github.blog/changelog/2025-07-22-secret-scanning-adds-validity-checks-for-over-40-secret-detectors</id>
@@ -40,6 +176,17 @@ llm -m gemini-2.5-flash-lite \
     <p>Tags: <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot in Eclipse—smarter, faster, and more integrated]]></title>
+        <id>https://github.blog/changelog/2025-07-22-github-copilot-in-eclipse-smarter-faster-and-more-integrated</id>
+        <link href="https://github.blog/changelog/2025-07-22-github-copilot-in-eclipse-smarter-faster-and-more-integrated"/>
+        <updated>2025-07-22T17:41:06.000Z</updated>
+        <summary type="html"><![CDATA[We’ve rolled out a series of powerful updates to GitHub Copilot for Eclipse. From new compatibility with the latest Eclipse versions, to smarter commit message generation, enhanced context understanding, and…
+The post GitHub Copilot in Eclipse—smarter, faster, and more integrated appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
         </author>
     </entry>
     <entry>
@@ -3587,112 +3734,6 @@ The post GitHub Desktop 3.5 — GitHub Copilot commit message generation now gen
         <updated>2025-06-24T07:29:25.000Z</updated>
         <summary type="html"><![CDATA[We’ve released support for enforcing GitHub Artifact Attestations in OPA Gatekeeper, an open source admission controller for Kubernetes, in public preview. With this release, you can write and enforce policies…
 The post Enforce admission policies with artifact attestations in Kubernetes using OPA Gatekeeper appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Phoenix.new is Fly's entry into the prompt-driven app development space]]></title>
-        <id>https://simonwillison.net/2025/Jun/23/phoenix-new/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/23/phoenix-new/#atom-everything"/>
-        <updated>2025-06-23T18:42:02.000Z</updated>
-        <summary type="html"><![CDATA[<p>Here's a fascinating new entrant into the AI-assisted-programming / coding-agents space by <a href="https://fly.io/">Fly.io</a>, introduced on their blog in <a href="https://fly.io/blog/phoenix-new-the-remote-ai-runtime/">Phoenix.new – The Remote AI Runtime for Phoenix</a>: describe an app in a prompt, get a full Phoenix application, backed by SQLite and running on Fly's hosting platform. The <a href="https://www.youtube.com/watch?v=du7GmWGUM5Y">official Phoenix.new YouTube launch video</a> is a good way to get a sense for what this does.</p>
-<h4 id="background-on-phoenix-and-elixir-and-fly">Background on Phoenix and Elixir and Fly</h4>
-<p>First, some background. <a href="https://www.phoenixframework.org/">Phoenix</a> is an open source web framework for Elixir, the Ruby-like language that compiles to Erlang's BEAM bytecode and runs on top of the highly concurrent Erlang runtime. The signature feature of the framework is <a href="https://github.com/phoenixframework/phoenix_live_view/blob/main/README.md#feature-highlights">Phoenix LiveView</a>, a toolkit for building realtime interfaces through streaming diffs to server-side HTML over a WebSocket connection.</p>
-<p>Phoenix was created by Chris McCord 11 years ago, and Chris joined Fly nearly four years ago. <a href="http://phoenix.new/">Phoenix.new</a> is his latest project.</p>
-<p>Phoenix LiveView is a really great fit for Fly's geographically distributed application serving infrastructure. Fly co-founder Kurt Mackey <a href="https://fly.io/blog/low-latency-liveview/">wrote about that</a> in April 2021, before they had hired Chris, describing how LiveView benefits from low latency by "moving app processes close to users" - something Fly has been designed to help with from the start.</p>
-<p>There's one major challenge though: Elixir is still a niche programming language, which means the number of people out there who are ready to spin up a new Phoenix app has always been artificially limited.</p>
-<p>Fly's solution? Get LLMs to shave that learning curve down to <em>almost nothing</em>.</p>
-<h4 id="prompt-driven-application-development-with-phoenix-new">Prompt-driven application development with Phoenix.new</h4>
-<p>Phoenix.new is a prompt-driven application development platform. You describe what you want to build, then watch as an LLM-powered coding agent writes, tests and iterates on code to help achieve that goal. It's in the same broad category as <a href="https://lovable.dev/">Lovable</a>, <a href="https://v0.dev/">v0.dev</a> and and <a href="https://townie.val.run/">Val Town's Townie</a>.</p>
-<p>One of the most important problems to solve with coding agents is to give them a robust sandbox where they can run code without breaking things outside of that space. Fly, at their heart, are a sandboxing company - their <a href="https://fly.io/docs/machines/">Fly Machines</a> product makes it trivial to spin up a new sandboxed VM in just a few seconds. I'm building <a href="https://www.datasette.cloud/">Datasette Cloud</a> on Fly for exactly that reason.</p>
-<p>I tried out Phoenix.new with the following starter prompt:</p>
-<blockquote>
-<p><code>A notebook application. Notes are rich text, using a nice visual markdown editors. The first line of a note becomes the title. Notes have a URL that is a 6 character random text string - thise can be used to link notes to each other by dropping in an @ sign and that text string. A hash and then text becomes a tag, clicking a tag goes to a page with that tag on. Notes are all in SQLite FTS so they can be searched with a search tool.</code></p>
-</blockquote>
-<p>Watching it work was <em>fascinating</em>. It provides a full IDE-style environment in the browser, running a dedicated container and with a forwarded port to allow you to interact with the running application <em>while it is being built</em>.</p>
-<p><img src="https://static.simonwillison.net/static/2025/phoenix-new.jpg" alt="Browser IDE interface showing a notebook app development project with a left sidebar containing a chat session that starts &quot;What would you like to build?&quot; with options like &quot;todo list&quot;, &quot;chat app&quot;, &quot;product landing page&quot;, then a main editor displaying plan.md file with detailed development steps including &quot;Generate a Phoenix LiveView project called 'notebook'&quot; and &quot;Start the server so you can view the app as we build it&quot;. The bottom has a terminal showing &quot;All dependencies are up to date&quot;, &quot;Generated notebook app&quot;, &quot;Done in 241ms&quot;." style="max-width: 100%;" /></p>
-<p>It spun up a <code>plan.md</code>, planned out the approach and started working through the code. Most interestingly, it constantly tested the application it was building using a testing tool that looked similar to my own <a href="https://shot-scraper.datasette.io/">shot-scraper</a>. Here's an example of the output from that:</p>
-<blockquote>
-<p>I can see the issue! The page is still showing the "Welcome to your Notebook" message instead of the form. Let me wait a moment for the JavaScript to execute and then check if the form appeared.</p>
-<p><code>$ web http://localhost:4000 --js "setTimeout(() =&gt; { document.querySelector('button[phx-click=\"start_creating\"]').click(); }, 500); setTimeout(() =&gt; { console.log('Form visible?', !!document.querySelector('textarea')); console.log('Creating note state:', document.body.innerHTML.includes('Create New Note')); }, 2000);"</code></p>
-</blockquote>
-<p>I'm used to coding agents that write and execute their own tests, but this is the most impressive example I've seen of a coding agent that actively interacts with and tests the live application while it is iterating on the code.</p>
-<p>Most interestingly of all, since LiveView is a realtime framework, I could interact directly with the application at the same time as the machine was writing and testing it, seeing any changes it made instantly in my browser!</p>
-<p>How did it do? It got there in the end, but with hindsight my initial prompt was a little too complex: I had to rescue it after it got stuck in an error loop trying to implement SQLite full-text search. Just like a project you build yourself it turns out to work much better if you start with the simplest possible version of the application and then iterate on it to add additional features.</p>
-<p>One of my favorite details is how Git integration works. Phoenix.new commits constantly as it works, and a menu option for "Clone X to your local computer" then gives you a command that looks like this:</p>
-<p><code>git clone "https://phoenix.new/git/WENQLj...big-random-string...VHFW/$RANDOM/notebook"</code></p>
-<p>Run that locally to get a full copy of the repo! I ran the following to push it to a new repository in my GitHub account:</p>
-<div class="highlight highlight-source-shell"><pre>git remote add github https://github.com/simonw/phoenix-new-notebook.git
-git push -u github main</pre></div>
-<p>You can see the code (and the <a href="https://github.com/simonw/phoenix-new-notebook/commits">commit history</a>) in my <a href="https://github.com/simonw/phoenix-new-notebook">simonw/phoenix-new-notebook</a> repo.</p>
-<h4 id="how-much-did-i-learn-">How much did I learn?</h4>
-<p>My initial experiments with Phoenix.new were very much <a href="https://simonwillison.net/2025/Mar/19/vibe-coding/">vibe coding</a> - I interacted with the resulting application but didn't pay a great deal of attention to the code that was being written, despite it being presented to me in an IDE that made it very easy to review what was going on.</p>
-<p>As a result, I didn't learn much about the low-level syntax details of how Phoenix and Elixir work. I did however get a strong feel for the <em>shape</em> of Elixir and Phoenix at a high level as the code danced past my eye.</p>
-<p>It turns out having an LLM write an application in front of you is a great way to start building understanding of what a framework can do.</p>
-<p>It’s almost like watching a YouTube livestream of an experienced developer speed running building an application, except that app is exactly what you asked them to build and you can interject and send them in a new direction at any moment.</p>
-<h4 id="expanding-beyond-elixir-and-phoenix">Expanding beyond Elixir and Phoenix</h4>
-<p>Chris's announcement included this note:</p>
-<blockquote>
-<p>At this point you might be wondering – can I just ask it to build a Rails app? Or an Expo React Native app? Or Svelte? Or Go?</p>
-<p>Yes, you can.</p>
-<p>Our system prompt is tuned for Phoenix today, but all languages you care about are already installed. We’re still figuring out where to take this, but adding new languages and frameworks definitely ranks highly in my plans.</p>
-</blockquote>
-<p>The browser-based IDE includes a terminal, and I checked and <code>python3</code> and <code>python3 -m pip install datasette</code> work there already.</p>
-<p>If Fly do evolve this into a framework-agnostic tool for building web apps they'll probably need to rebrand it from Phoenix.new to something a bit more generic!</p>
-<p>Phoenix.new is currently priced as a $20/month subscription. Val Town recently switched the pricing for their similar Townie assistant from a subscription to to <a href="https://blog.val.town/townie-credits">pay per use</a>, presumably because for many users this kind of tool is something they would only use intermittently, although given the capabilities of Phoenix.new it's possible it could become a monthly driver for people, especially as it expands out to cover more frameworks.</p>
-<p><small><em>Fly sponsor some of our work on Datasette Cloud (see <a href="https://simonwillison.net/about/#disclosures">disclosures</a>), but this article is not sponsored content and Fly did not request or review this post.</em></small></p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/erlang">erlang</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/fly">fly</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/ai-assisted-search">ai-assisted-search</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Disclosures]]></title>
-        <id>https://simonwillison.net/2025/Jun/23/disclosures/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/23/disclosures/#atom-everything"/>
-        <updated>2025-06-23T18:06:02.000Z</updated>
-        <summary type="html"><![CDATA[<p>I've added a <a href="https://simonwillison.net/about/#disclosures">Disclosures section</a> to my about page, listing my various sources of income and the companies that directly sponsor my work or have supported it in the recent past.</p>
-<blockquote>
-<p>I do not receive any compensation writing about specific topics on this blog - no sponsored content! I plan to continue this policy. If I ever change this I will disclose that both here and in the post itself. [...]</p>
-</blockquote>
-<p>I see my credibility as one of my most valuable assets, so it's important to be transparent about how financial interests may influence my writing here.</p>
-<p>I took inspiration from <a href="https://www.mollywhite.net/crypto-disclosures/">Molly White's disclosures page</a>.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/molly-white">molly-white</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Enterprise owners can now discover and manage repositories owned by Enterprise Managed Users [General Availability]]]></title>
-        <id>https://github.blog/changelog/2025-06-23-enterprise-owners-can-now-discover-and-manage-repositories-owned-by-enterprise-managed-users-general-aavailability</id>
-        <link href="https://github.blog/changelog/2025-06-23-enterprise-owners-can-now-discover-and-manage-repositories-owned-by-enterprise-managed-users-general-availability"/>
-        <updated>2025-06-23T17:09:19.000Z</updated>
-        <summary type="html"><![CDATA[The ability to allow enterprise administrators to see and manage repositories in the user namespace of Enterprise Managed Users (EMU) is now generally available. This feature set increases visibility of…
-The post Enterprise owners can now discover and manage repositories owned by Enterprise Managed Users [General Availability] appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Using AI Right Now: A Quick Guide]]></title>
-        <id>https://www.oneusefulthing.org/p/using-ai-right-now-a-quick-guide</id>
-        <link href="https://www.oneusefulthing.org/p/using-ai-right-now-a-quick-guide"/>
-        <updated>2025-06-23T16:12:17.000Z</updated>
-        <summary type="html"><![CDATA[Which AIs to use, and how to use them]]></summary>
-        <author>
-            <name>Ethan Mollick</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Upcoming change: Dependabot compute migration to GitHub Actions]]></title>
-        <id>https://github.blog/changelog/2025-06-23-upcoming-change-dependabot-compute-migration-to-github-actions</id>
-        <link href="https://github.blog/changelog/2025-06-23-upcoming-change-dependabot-compute-migration-to-github-actions"/>
-        <updated>2025-06-23T15:59:29.000Z</updated>
-        <summary type="html"><![CDATA[GitHub is consolidating Dependabot’s compute platform to GitHub Actions, and jobs that generate pull requests will be run as GitHub Actions workflows. This allows Dependabot to leverage GitHub Actions infrastructure,…
-The post Upcoming change: Dependabot compute migration to GitHub Actions appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
         </author>
