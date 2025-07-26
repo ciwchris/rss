@@ -25,6 +25,42 @@
 
   <ul>
     <li>
+      <time>2025-07-25</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Qwen3-235B-A22B-Thinking-2507
+              <span class="post-metadata">(2 min | 491 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/25/qwen3-235b-a22b-thinking-2507/#atom-everything>Qwen3-235B-A22B-Thinking-2507
+Qwen3-235B-A22B-Instruct-2507 on Monday 21st and Qwen3-Coder-480B-A35B-Instruct on Tuesday 22nd.
+Those two were both non-reasoning models - a change from the previous models in the Qwen 3 family which combined reasoning and non-reasoning in the same model, controlled by /think and /no_think tokens.
+Today&#x27;s model, Qwen3-235B-A22B-Thinking-2507 (also released as an FP8 variant), is their new thinking variant.
+Qwen claim &quot;state-of-the-art results among open-source thinking models&quot; and have increased the context length to 262,144 tokens - a big jump from April&#x27;s Qwen3-235B-A22B which was &quot;32,768 natively and 131,072 tokens with YaRN&quot;.
+Their own published benchmarks show comparable scores to DeepSeek-R1-0528, OpenAI&#x27;s o3 and o4-mini, Gemini 2.5 Pro and Claude Opus 4 in thinking mode.
+The new model is already available via OpenRouter.
+But how good is its pelican?
+I tried it with &quot;Generate an SVG of a pelican riding a bicycle&quot; via OpenRouter, and it thought for 166 seconds - nearly three minutes! I have never seen a model think for that long. No wonder the documentation includes the following:
+However, since the model may require longer token sequences for reasoning, we strongly recommend using a context length greater than 131,072 when possible.
+Here&#x27;s a copy of that thinking trace. It was really fun to scan through:
+
+The finished pelican? Not so great! I like the beak though:
+
+
+    
+Via @Alibaba_Qwen
+Tags: ai, generative-ai, llms, qwen, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-07-24</time>
 
       <section>
@@ -4477,145 +4513,6 @@ The post Upcoming breaking change for GitHub Actions: Removal of larger hosted r
               <a target="_blank" href=https://ollama.com/library/gemma3n>Gemma 3n models are designed for efficient execution on everyday devices such as laptops, tablets or phones.</a>
             </div>
             <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-06-26</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Introducing Gemma 3n: The developer guide
-              <span class="post-metadata">(2 min | 584 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/26/gemma-3n/#atom-everything>Introducing Gemma 3n: The developer guide
-Multimodal by design: Gemma 3n natively supports image, audio, video, and text inputs and text outputs.
-Optimized for on-device: Engineered with a focus on efficiency, Gemma 3n models are available in two sizes based on effective parameters: E2B and E4B. While their raw parameter count is 5B and 8B respectively, architectural innovations allow them to run with a memory footprint comparable to traditional 2B and 4B models, operating with as little as 2GB (E2B) and 3GB (E4B) of memory.
-This is very exciting: a 2B and 4B model optimized for end-user devices which accepts text, images and audio as inputs!
-Gemma 3n is also the most comprehensive day one launch I&#x27;ve seen for any model: Google partnered with &quot;AMD, Axolotl, Docker, Hugging Face, llama.cpp, LMStudio, MLX, NVIDIA, Ollama, RedHat, SGLang, Unsloth, and vLLM&quot; so there are dozens of ways to try this out right now.
-So far I&#x27;ve run two variants on my Mac laptop. Ollama offer a 7.5GB version (full tag gemma3n:e4b-it-q4_K_M0) of the 4B model, which I ran like this:
-ollama pull gemma3n
-llm install llm-ollama
-llm -m gemma3n:latest &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-It drew me this:
-
-The Ollama version doesn&#x27;t appear to support image or audio input yet.
-... but the mlx-vlm version does!
-First I tried that on this WAV file like so (using a recipe adapted from Prince Canuma&#x27;s video):
-uv run --with mlx-vlm mlx_vlm.generate \
-  --model gg-hf-gm/gemma-3n-E4B-it \
-  --max-tokens 100 \
-  --temperature 0.7 \
-  --prompt &quot;Transcribe the following speech segment in English:&quot; \
-  --audio pelican-joke-request.wav
-
-That downloaded a 15.74 GB bfloat16 version of the model and output the following correct transcription:
-Tell me a joke about a pelican.
-Then I had it draw me a pelican for good measure:
-uv run --with mlx-vlm mlx_vlm.generate \
-  --model gg-hf-gm/gemma-3n-E4B-it \
-  --max-tokens 100 \
-  --temperature 0.7 \
-  --prompt &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-I quite like this one:
-
-It&#x27;s interesting to see such a striking visual difference between those 7.5GB and 15GB model quantizations.
-
-
-    
-Tags: google, ai, generative-ai, local-llms, llms, vision-llms, pelican-riding-a-bicycle, gemma, llm-release</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Improved pull request files changed experience now in public preview
-              <span class="post-metadata">(7 min | 2090 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-06-26-improved-pull-request-files-changed-experience-now-in-public-preview>An improved, more accessible, and better performing pull request “Files changed” page is now available in public preview! This improved experience is rolling out now. Once it is available to…
-The post Improved pull request files changed experience now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deprecated Llama models in GitHub Models
-              <span class="post-metadata">(7 min | 2214 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-06-26-deprecated-llama-models-in-github-models>The following models are now deprecated in GitHub Models. Please transition to the suggested versions to continue using the improved models with enhanced features: Meta-Llama-3-70B-Instruct users should transition to Llama-3.3-70B-Instruct.…
-The post Deprecated Llama models in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deprecated Cohere models in GitHub Models
-              <span class="post-metadata">(6 min | 1724 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-06-26-deprecated-cohere-models-in-github-models>The following models are now deprecated in GitHub Models. Please transition to the suggested versions to continue using the improved models with enhanced features: Command R users should transition to…
-The post Deprecated Cohere models in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Actions fine-grain permissions are now generally available for custom repository roles
-              <span class="post-metadata">(6 min | 1762 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-06-26-github-actions-fine-grain-permissions-are-now-generally-available-for-custom-repository-roles>GitHub Actions fine-grained permissions are now generally available and can be used to define custom repository roles. Last year, GitHub introduced the CI/CD Admin role—a pre-defined organization role that grants…
-The post GitHub Actions fine-grain permissions are now generally available for custom repository roles appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Geminiception
-              <span class="post-metadata">(1 min | 371 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/26/geminiception/#atom-everything>Yesterday Anthropic got a bunch of buzz out of their new window.claude.complete() API which allows Claude Artifacts to run their own API calls to execute prompts.
-It turns out Gemini had beaten them to that feature by over a month, but the announcement was tucked away in a bullet point of their release notes for the 20th of May:
-Vibe coding apps in Canvas just got better too! With just a few prompts, you can now build fully functional personalised apps in Canvas that can use Gemini-powered features, save data between sessions and share data between multiple users.
-Ethan Mollick has been building some neat demos on top of Gemini Canvas, including this text adventure starship bridge simulator.
-Similar to Claude Artifacts, Gemini Canvas detects if the application uses APIs that require authentication (to run prompts, for example) and requests the user sign in with their Google account:
-
-Tags: vibe-coding, gemini, generative-ai, ai, llms, google, ethan-mollick</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot coding agent is available for Copilot Pro users in public preview
-              <span class="post-metadata">(6 min | 1884 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-06-25-github-copilot-coding-agent-is-available-for-copilot-pro-users-in-public-preview>Copilot Pro users can now delegate tasks to Copilot to work on in the background with GitHub Copilot coding agent, available today in public preview. Those on Student, Teacher, or…
-The post GitHub Copilot coding agent is available for Copilot Pro users in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
