@@ -31,6 +31,41 @@
       <article>
           <details>
             <summary>
+              GLM-4.5: Reasoning, Coding, and Agentic Abililties
+              <span class="post-metadata">(3 min | 882 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/28/glm-45/#atom-everything>GLM-4.5: Reasoning, Coding, and Agentic Abililties
+This time it&#x27;s Z.ai - who rebranded (at least in English) from Zhipu AI a few months ago. They just dropped GLM-4.5-Base, GLM-4.5 and GLM-4.5 Air on Hugging Face, all under an MIT license.
+These are MoE hybrid reasoning models with thinking and non-thinking modes, similar to Qwen 3. GLM-4.5 is 355 billion total parameters with 32 billion active, GLM-4.5-Air is 106 billion total parameters and 12 billion active.
+They started using MIT a few months ago for their GLM-4-0414 models - their older releases used a janky non-open-source custom license.
+Z.ai&#x27;s own benchmarking (across 12 common benchmarks) ranked their GLM-4.5 3rd behind o3 and Grok-4 and just ahead of Claude Opus 4. They ranked GLM-4.5 Air 6th place just ahead of Claude 4 Sonnet. I haven&#x27;t seen any independent benchmarks yet.
+The other models they included in their own benchmarks were o4-mini (high), Gemini 2.5 Pro, Qwen3-235B-Thinking-2507, DeepSeek-R1-0528, Kimi K2, GPT-4.1, DeepSeek-V3-0324. Notably absent: any of Meta&#x27;s Llama models, or any of Mistral&#x27;s. Did they deliberately only compare themselves to open weight models from other Chinese AI labs?
+Both models have a 128,000 context length and are trained for tool calling, which honestly feels like table stakes for any model released in 2025 at this point.
+It&#x27;s interesting to see them use Claude Code to run their own coding benchmarks:
+To assess GLM-4.5&#x27;s agentic coding capabilities, we utilized Claude Code to evaluate performance against Claude-4-Sonnet, Kimi K2, and Qwen3-Coder across 52 coding tasks spanning frontend development, tool development, data analysis, testing, and algorithm implementation. [...] The empirical results demonstrate that GLM-4.5 achieves a 53.9% win rate against Kimi K2 and exhibits dominant performance over Qwen3-Coder with an 80.8% success rate. While GLM-4.5 shows competitive performance, further optimization opportunities remain when compared to Claude-4-Sonnet.
+They published the dataset for that benchmark as zai-org/CC-Bench-trajectories on Hugging Face. I think they&#x27;re using the word &quot;trajectory&quot; for what I would call a chat transcript.
+Unlike DeepSeek-V3 and Kimi K2, we reduce the width (hidden dimension and number of routed experts) of the model while increasing the height (number of layers), as we found that deeper models exhibit better reasoning capacity.
+They pre-trained on 15 trillion tokens, then an additional 7 trillion for code and reasoning:
+Our base model undergoes several training stages. During pre-training, the model is first trained on 15T tokens of a general pre-training corpus, followed by 7T tokens of a code &amp; reasoning corpus. After pre-training, we introduce additional stages to further enhance the model&#x27;s performance on key downstream domains.
+They also open sourced their post-training reinforcement learning harness, which they&#x27;ve called slime. That&#x27;s available at THUDM/slime on GitHub - THUDM is the Knowledge Engineer Group @ Tsinghua University, the University from which Zhipu AI spun out as an independent company.
+This time I ran my pelican bechmark using the chat.z.ai chat interface, which offers free access (no account required) to both GLM 4.5 and GLM 4.5 Air. I had reasoning enabled for both.
+Here&#x27;s what I got for &quot;Generate an SVG of a pelican riding a bicycle&quot; on GLM 4.5. I like how the pelican has its wings on the handlebars:
+
+And GLM 4.5 Air:
+
+Ivan Fioravanti shared a video of the mlx-community/GLM-4.5-Air-4bit quantized model running on a M4 Mac with 128GB of RAM, and it looks like a very strong contender for a local model that can write useful code. The cheapest 128GB Mac Studio costs around $3,500 right now, so genuinely great open weight coding models are creeping closer to being affordable on consumer machines.
+
+
+    
+Tags: ai, generative-ai, local-llms, llms, mlx, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               The Bitter Lesson versus The Garbage Can
               <span class="post-metadata">(0 min |  words)</span> 
             </summary>

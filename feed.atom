@@ -2,10 +2,49 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-07-28T14:14:43.346Z</updated>
+    <updated>2025-07-28T21:11:10.846Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[GLM-4.5: Reasoning, Coding, and Agentic Abililties]]></title>
+        <id>https://simonwillison.net/2025/Jul/28/glm-45/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/28/glm-45/#atom-everything"/>
+        <updated>2025-07-28T16:56:42.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://z.ai/blog/glm-4.5">GLM-4.5: Reasoning, Coding, and Agentic Abililties</a></strong></p>
+Another day, another significant new open weight model release from a Chinese frontier AI lab.</p>
+<p>This time it's Z.ai - who rebranded (at least in English) from <a href="https://en.wikipedia.org/wiki/Zhipu_AI">Zhipu AI</a> a few months ago. They just dropped <a href="https://huggingface.co/zai-org/GLM-4.5-Base">GLM-4.5-Base</a>, <a href="https://huggingface.co/zai-org/GLM-4.5">GLM-4.5</a> and <a href="https://huggingface.co/zai-org/GLM-4.5-Air">GLM-4.5 Air</a> on Hugging Face, all under an MIT license.</p>
+<p>These are MoE hybrid reasoning models with thinking and non-thinking modes, similar to Qwen 3. GLM-4.5 is 355 billion total parameters with 32 billion active, GLM-4.5-Air is 106 billion total parameters and 12 billion active.</p>
+<p>They started using MIT a few months ago for their <a href="https://huggingface.co/collections/zai-org/glm-4-0414-67f3cbcb34dd9d252707cb2e">GLM-4-0414</a> models - their older releases used a janky non-open-source custom license.</p>
+<p>Z.ai's own benchmarking (across 12 common benchmarks) ranked their GLM-4.5 3rd behind o3 and Grok-4 and just ahead of Claude Opus 4. They ranked GLM-4.5 Air 6th place just ahead of Claude 4 Sonnet. I haven't seen any independent benchmarks yet.</p>
+<p>The other models they included in their own benchmarks were o4-mini (high), Gemini 2.5 Pro, Qwen3-235B-Thinking-2507, DeepSeek-R1-0528, Kimi K2, GPT-4.1, DeepSeek-V3-0324. Notably absent: any of Meta's Llama models, or any of Mistral's. Did they deliberately only compare themselves to open weight models from other Chinese AI labs?</p>
+<p>Both models have a 128,000 context length and are trained for tool calling, which honestly feels like table stakes for any model released in 2025 at this point.</p>
+<p>It's interesting to see them use Claude Code to run their own coding benchmarks:</p>
+<blockquote>
+<p>To assess GLM-4.5's agentic coding capabilities, we utilized Claude Code to evaluate performance against Claude-4-Sonnet, Kimi K2, and Qwen3-Coder across 52 coding tasks spanning frontend development, tool development, data analysis, testing, and algorithm implementation. [...] The empirical results demonstrate that GLM-4.5 achieves a 53.9% win rate against Kimi K2 and exhibits dominant performance over Qwen3-Coder with an 80.8% success rate. While GLM-4.5 shows competitive performance, further optimization opportunities remain when compared to Claude-4-Sonnet.</p>
+</blockquote>
+<p>They published the dataset for that benchmark as <a href="https://huggingface.co/datasets/zai-org/CC-Bench-trajectories">zai-org/CC-Bench-trajectories</a> on Hugging Face. I think they're using the word "trajectory" for what I would call a chat transcript.</p>
+<blockquote>
+<p>Unlike DeepSeek-V3 and Kimi K2, we reduce the width (hidden dimension and number of routed experts) of the model while increasing the height (number of layers), as we found that deeper models exhibit better reasoning capacity.</p>
+</blockquote>
+<p>They pre-trained on 15 trillion tokens, then an additional 7 trillion for code and reasoning:</p>
+<blockquote>
+<p>Our base model undergoes several training stages. During pre-training, the model is first trained on 15T tokens of a general pre-training corpus, followed by 7T tokens of a code &amp; reasoning corpus. After pre-training, we introduce additional stages to further enhance the model's performance on key downstream domains.</p>
+</blockquote>
+<p>They also open sourced their post-training reinforcement learning harness, which they've called <strong>slime</strong>. That's available at <a href="https://github.com/THUDM/slime">THUDM/slime</a> on GitHub - THUDM is the Knowledge Engineer Group @ Tsinghua University, the University from which Zhipu AI spun out as an independent company.</p>
+<p>This time I ran my <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle/">pelican bechmark</a> using the <a href="https://chat.z.ai/">chat.z.ai</a> chat interface, which offers free access (no account required) to both GLM 4.5 and GLM 4.5 Air. I had reasoning enabled for both.</p>
+<p>Here's what I got for "Generate an SVG of a pelican riding a bicycle" on <a href="https://chat.z.ai/s/014a8c13-7b73-40e8-bbf9-6a94482caa2e">GLM 4.5</a>. I like how the pelican has its wings on the handlebars:</p>
+<p><img alt="Description by Claude Sonnet 4: This is a whimsical illustration of a white duck or goose riding a red bicycle. The bird has an orange beak and is positioned on the bike seat, with its orange webbed feet gripping what appears to be chopsticks or utensils near the handlebars. The bicycle has a simple red frame with two wheels, and there are motion lines behind it suggesting movement. The background is a soft blue-gray color, giving the image a clean, minimalist cartoon style. The overall design has a playful, humorous quality to it." src="https://static.simonwillison.net/static/2025/glm-4.5-pelican.jpg" /></p>
+<p>And <a href="https://chat.z.ai/s/e772675c-3445-4cff-903c-6faa3d6b9524">GLM 4.5 Air</a>:</p>
+<p><img alt="Description by Claude Sonnet 4: This image shows a cute, minimalist illustration of a snowman riding a bicycle. The snowman has a simple design with a round white body, small black dot for an eye, and an orange rectangular nose (likely representing a carrot). The snowman appears to be in motion on a black bicycle with two wheels, with small orange arrows near the pedals suggesting movement. There are curved lines on either side of the image indicating motion or wind. The overall style is clean and whimsical, using a limited color palette of white, black, orange, and gray against a light background." src="https://static.simonwillison.net/static/2025/glm-4.5-air-pelican.jpg" /></p>
+<p>Ivan Fioravanti <a href="https://x.com/ivanfioravanti/status/1949854575902523399">shared a video</a> of the <a href="https://huggingface.co/mlx-community/GLM-4.5-Air-4bit">mlx-community/GLM-4.5-Air-4bit</a> quantized model running on a M4 Mac with 128GB of RAM, and it looks like a very strong contender for a local model that can write useful code. The cheapest 128GB Mac Studio costs around $3,500 right now, so genuinely great open weight coding models are creeping closer to being affordable on consumer machines.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[The Bitter Lesson versus The Garbage Can]]></title>
         <id>https://www.oneusefulthing.org/p/the-bitter-lesson-versus-the-garbage</id>
