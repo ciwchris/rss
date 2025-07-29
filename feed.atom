@@ -2,10 +2,107 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-07-28T21:11:10.846Z</updated>
+    <updated>2025-07-29T14:16:06.019Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[My 2.5 year old laptop can write Space Invaders in JavaScript now, using GLM-4.5 Air and MLX]]></title>
+        <id>https://simonwillison.net/2025/Jul/29/space-invaders/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/29/space-invaders/#atom-everything"/>
+        <updated>2025-07-29T13:02:39.000Z</updated>
+        <summary type="html"><![CDATA[<p>I wrote about the new <a href="https://simonwillison.net/2025/Jul/28/glm-45/">GLM-4.5</a> model family yesterday - new open weight (MIT licensed) models from <a href="https://z.ai/">Z.ai</a> in China which their benchmarks claim score highly in coding even against models such as Claude Sonnet 4.</p>
+<p>The models are pretty big - the smaller GLM-4.5 Air model is still 106 billion total parameters, which <a href="https://huggingface.co/zai-org/GLM-4.5-Air">is 205.78GB</a> on Hugging Face.</p>
+<p>Ivan Fioravanti <a href="https://x.com/ivanfioravanti/status/1949911755028910557">built</a> this <a href="https://huggingface.co/mlx-community/GLM-4.5-Air-3bit">44GB 3bit quantized version for MLX</a>, specifically sized so people with 64GB machines could have a chance of running it. I tried it out... and it works <em>extremely well</em>.</p>
+<p>I fed it the following prompt:</p>
+<blockquote><p><code>Write an HTML and JavaScript page implementing space invaders</code></p></blockquote>
+<p>And it churned away for a while and produced <a href="https://tools.simonwillison.net/space-invaders-GLM-4.5-Air-3bit">the following</a>:</p>
+
+<div style="max-width: 100%; margin-bottom: 0.4em">
+    <video controls="controls" preload="none" aria-label="Space Invaders" poster="https://static.simonwillison.net/static/2025/space-invaders.jpg" loop="loop" style="width: 100%; height: auto;" muted="muted">
+        <source src="https://static.simonwillison.net/static/2025/space-invaders.mp4" type="video/mp4" />
+    </video>
+</div>
+
+<p>Clearly this isn't a particularly novel example, but I still think it's noteworthy that a model running on my 2.5 year old laptop (a 64GB MacBook Pro M2) is able to produce code like this - especially code that worked first time with no further edits needed.</p>
+
+<h4 id="how-i-ran-the-model">How I ran the model</h4>
+
+<p>I had to run it using the current <code>main</code> branch of the <a href="https://github.com/ml-explore/mlx-lm">mlx-lm</a> library (to ensure I had <a href="https://github.com/ml-explore/mlx-lm/commit/489e63376b963ac02b3b7223f778dbecc164716b">this commit</a> adding <code>glm4_moe</code> support). I ran that using <a href="https://github.com/astral-sh/uv">uv</a> like this:</p>
+<div class="highlight highlight-source-shell"><pre>uv run \
+  --with <span class="pl-s"><span class="pl-pds">'</span>https://github.com/ml-explore/mlx-lm/archive/489e63376b963ac02b3b7223f778dbecc164716b.zip<span class="pl-pds">'</span></span> \
+  python</pre></div>
+<p>Then in that Python interpreter I used the standard recipe for running MLX models:</p>
+<pre><span class="pl-k">from</span> <span class="pl-s1">mlx_lm</span> <span class="pl-k">import</span> <span class="pl-s1">load</span>, <span class="pl-s1">generate</span>
+<span class="pl-s1">model</span>, <span class="pl-s1">tokenizer</span> <span class="pl-c1">=</span> <span class="pl-en">load</span>(<span class="pl-s">"mlx-community/GLM-4.5-Air-3bit"</span>)</pre>
+<p>That downloaded 44GB of model weights to my  <code>~/.cache/huggingface/hub/models--mlx-community--GLM-4.5-Air-3bit</code> folder.</p>
+<p>Then:</p>
+<pre><span class="pl-s1">prompt</span> <span class="pl-c1">=</span> <span class="pl-s">"Write an HTML and JavaScript page implementing space invaders"</span>
+<span class="pl-s1">messages</span> <span class="pl-c1">=</span> [{<span class="pl-s">"role"</span>: <span class="pl-s">"user"</span>, <span class="pl-s">"content"</span>: <span class="pl-s1">prompt</span>}]
+<span class="pl-s1">prompt</span> <span class="pl-c1">=</span> <span class="pl-s1">tokenizer</span>.<span class="pl-c1">apply_chat_template</span>(
+    <span class="pl-s1">messages</span>,
+    <span class="pl-s1">add_generation_prompt</span><span class="pl-c1">=</span><span class="pl-c1">True</span>
+)
+<span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-en">generate</span>(
+    <span class="pl-s1">model</span>, <span class="pl-s1">tokenizer</span>,
+    <span class="pl-s1">prompt</span><span class="pl-c1">=</span><span class="pl-s1">prompt</span>,
+    <span class="pl-s1">verbose</span><span class="pl-c1">=</span><span class="pl-c1">True</span>,
+    <span class="pl-s1">max_tokens</span><span class="pl-c1">=</span><span class="pl-c1">8192</span>
+)</pre>
+<p>The response started like this:</p>
+<blockquote>
+<p><code>&lt;think&gt;</code>The user wants me to create a Space Invaders game using HTML, CSS, and JavaScript. I need to create a complete, functional game with the following features:</p>
+<ol>
+<li>Player spaceship that can move left/right and shoot</li>
+<li>Enemy invaders that move in formation and shoot back</li>
+<li>Score tracking</li>
+<li>Lives/health system</li>
+<li>Game over conditions [...]</li>
+</ol>
+</blockquote>
+<p>Followed by the HTML and this debugging output:</p>
+<pre><code>Prompt: 14 tokens, 14.095 tokens-per-sec
+Generation: 4193 tokens, 25.564 tokens-per-sec
+Peak memory: 47.687 GB
+</code></pre>
+<p>You can see <a href="https://gist.github.com/simonw/9f515c8e32fb791549aeb88304550893#file-space_invaders-txt-L61">the full transcript here</a>, or view <a href="https://github.com/simonw/tools/blob/9e04fd9895fae1aa9ac78b8e62d2833831fe0544/space-invaders-GLM-4.5-Air-3bit.html">the source on GitHub</a>, or <a href="https://tools.simonwillison.net/space-invaders-GLM-4.5-Air-3bit">try it out in your browser</a>.</p>
+
+<h4 id="pelican">A pelican for good measure</h4>
+
+<p>I ran <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle/">my pelican benchmark</a> against the full sized models <a href="https://simonwillison.net/2025/Jul/28/glm-45/">yesterday</a>, but I couldn't resist trying it against this smaller 3bit model. Here's what I got for <code>"Generate an SVG of a pelican riding a bicycle"</code>:</p>
+
+<p><img src="https://static.simonwillison.net/static/2025/glm-4.5-air-3b-pelican.png" alt="Blue background, pelican looks like a cloud with an orange bike, bicycle is recognizable as a bicycle if not quite the right geometry." /></p>
+
+<p>Here's the <a href="https://gist.github.com/simonw/fe428f7cead72ad754f965a81117f5df">transcript for that</a>.</p>
+
+<p>In both cases the model used around 48GB of RAM at peak, leaving me with just 16GB for everything else - I had to quit quite a few apps in order to get the model to run but the speed was pretty good once it got going.</p>
+
+<h4 id="local-coding-models">Local coding models are really good now</h4>
+
+<p>It's interesting how almost every model released in 2025 has specifically targeting coding. That focus has clearly been paying off: these coding models are getting <em>really good</em> now.</p>
+
+<p>Two years ago when I <a href="https://simonwillison.net/2023/Mar/11/llama/">first tried LLaMA</a> I never <em>dreamed</em> that the same laptop I was using then would one day be able to run models with capabilities as strong as what I'm seeing from GLM 4.5 Air - and Mistral 3.2 Small, and Gemma 3, and Qwen 3, and a host of other high quality models that have emerged over the past six months.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Anthropic]]></title>
+        <id>https://simonwillison.net/2025/Jul/28/anthropic/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/28/anthropic/#atom-everything"/>
+        <updated>2025-07-28T23:59:11.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://x.com/anthropicai/status/1949898511287226425"><p>We’re rolling out new weekly rate limits for Claude Pro and Max in late August. We estimate they’ll apply to less than 5% of subscribers based on current usage. [...]</p>
+<p>Some of the biggest Claude Code fans are running it continuously in the background, 24/7.</p>
+<p>These uses are remarkable and we want to enable them. But a few outlying cases are very costly to support. For example, one user consumed tens of thousands in model usage on a $200 plan.</p></blockquote>
+<p class="cite">&mdash; <a href="https://x.com/anthropicai/status/1949898511287226425">Anthropic</a></p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/claude">claude</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[GLM-4.5: Reasoning, Coding, and Agentic Abililties]]></title>
         <id>https://simonwillison.net/2025/Jul/28/glm-45/#atom-everything</id>
@@ -3731,80 +3828,6 @@ Alex Gaynor maintains <a href="https://github.com/alex/rust-asn1">rust-asn1</a>,
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/alex-gaynor">alex-gaynor</a>, <a href="https://simonwillison.net/tags/compilers">compilers</a>, <a href="https://simonwillison.net/tags/llvm">llvm</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Agentic Coding: The Future of Software Development with Agents]]></title>
-        <id>https://simonwillison.net/2025/Jun/29/agentic-coding/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/29/agentic-coding/#atom-everything"/>
-        <updated>2025-06-29T23:59:31.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.youtube.com/watch?v=nfOVgz_omlU">Agentic Coding: The Future of Software Development with Agents</a></strong></p>
-Armin Ronacher delivers a 37 minute YouTube talk describing his adventures so far with Claude Code and agentic coding methods.</p>
-<blockquote>
-<p>A friend called Claude Code catnip for programmers and it really feels like this. I haven't felt so energized and confused and just so willing to try so many new things... it is really incredibly addicting.</p>
-</blockquote>
-<p>I picked up a bunch of useful tips from this video:</p>
-<ul>
-<li>Armin runs Claude Code with the <code>--dangerously-skip-permissions</code> option, and says this unlocks a huge amount of productivity. I haven't been brave enough to do this yet but I'm going to start using that option while running in a Docker container to ensure nothing too bad can happen.</li>
-<li>When your agentic coding tool can run commands in a terminal you can mostly avoid MCP - instead of adding a new MCP tool, write a script or add a Makefile command and tell the agent to use that instead. The only MCP Armin uses is <a href="https://github.com/microsoft/playwright-mcp">the Playwright one</a>.</li>
-<li>Combined logs are a really good idea: have everything log to the same place and give the agent an easy tool to read the most recent N log lines.</li>
-<li>While running Claude Code, use Gemini CLI to run sub-agents, to perform additional tasks without using up Claude Code's own context</li>
-<li>Designing additional tools that provide very clear errors, so the agents can recover when something goes wrong.</li>
-<li>Thanks to Playwright, Armin has Claude Code perform all sorts of automated operations via a signed in browser instance as well. "Claude can debug your CI... it can sign into a browser, click around, debug..." - he also has it use the <code>gh</code> GitHub CLI tool to interact with things like <a href="https://cli.github.com/manual/gh_workflow">GitHub Actions workflows</a>.</li>
-</ul>
-<p><img alt="&quot;Tip 1: Unified Logging&quot; at top, followed by title &quot;Forward Everything Into One Log File&quot; and bullet points: &quot;Combine console.log + server logs + everything else&quot;, &quot;patch console.log in the browser -&gt; forward to server via API call&quot;, &quot;All output streams flow to a single, tailable log file&quot;, &quot;Give it a way to log out SQL too!&quot;, &quot;Provide a make tail-logs command for easy access&quot;. Bottom shows example: &quot;# Example&quot; and &quot;make tail-logs  # Shows last 50 lines, follows new output&quot;." src="https://static.simonwillison.net/static/2025/armin-logging.jpg" />
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/armin-ronacher">armin-ronacher</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Tip: Use keyword-only arguments in Python dataclasses]]></title>
-        <id>https://simonwillison.net/2025/Jun/29/keyword-only-arguments/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/29/keyword-only-arguments/#atom-everything"/>
-        <updated>2025-06-29T20:51:43.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://chipx86.blog/2025/06/29/tip-use-keyword-only-arguments-in-python-dataclasses/">Tip: Use keyword-only arguments in Python dataclasses</a></strong></p>
-Useful tip from Christian Hammond: if you create a Python dataclass using <code>@dataclass(kw_only=True)</code> its constructor will require keyword arguments, making it easier to add additional properties in the future, including in subclasses, without risking breaking existing code.
-
-    <p><small></small>Via <a href="https://bsky.app/profile/chipx86.bsky.social/post/3lsrjodkfgs2h">@chipx86.bsky.social</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[How to Fix Your Context]]></title>
-        <id>https://simonwillison.net/2025/Jun/29/how-to-fix-your-context/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jun/29/how-to-fix-your-context/#atom-everything"/>
-        <updated>2025-06-29T20:15:41.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html">How to Fix Your Context</a></strong></p>
-Drew Breunig has been publishing some very detailed notes on <a href="https://simonwillison.net/2025/Jun/27/context-engineering/">context engineering</a> recently. In <a href="https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html">How Long Contexts Fail</a> he described four common patterns for <a href="https://simonwillison.net/2025/Jun/18/context-rot/">context rot</a>, which he summarizes like so:</p>
-<blockquote>
-<ul>
-<li><strong>Context Poisoning</strong>: When a hallucination or other error makes it into the context, where it is repeatedly referenced.</li>
-<li><strong>Context Distraction</strong>: When a context grows so long that the model over-focuses on the context, neglecting what it learned during training.</li>
-<li><strong>Context Confusion</strong>: When superfluous information in the context is used by the model to generate a low-quality response.</li>
-<li><strong>Context Clash</strong>: When you accrue new information and tools in your context that conflicts with other information in the prompt.</li>
-</ul>
-</blockquote>
-<p>In <a href="https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html">this follow-up</a> he introduces neat ideas (and more new terminology) for addressing those problems.</p>
-<p><strong>Tool Loadout</strong> describes selecting a subset of tools to enable for a prompt, based on research that shows anything beyond 20 can confuse some models. </p>
-<p><strong>Context Quarantine</strong> is "the act of isolating contexts in their own dedicated threads" - I've called rhis sub-agents in the past, it's the pattern <a href="https://simonwillison.net/2025/Jun/2/claude-trace/">used by Claude Code</a> and explored in depth in <a href="https://simonwillison.net/2025/Jun/14/multi-agent-research-system/">Anthropic's multi-agent research paper</a>.</p>
-<p><strong>Context Pruning</strong> is "removing irrelevant or otherwise unneeded information from the context", and <strong>Context Summarization</strong> is the act of boiling down an accrued context into a condensed summary. These techniques become particularly important as conversations get longer and run closer to the model's token limits.</p>
-<p><strong>Context Offloading</strong> is "the act of storing information outside the LLM’s context". I've seen several systems implement their own "memory" tool for saving and then revisiting notes as they work, but an even more interesting example recently is how various coding agents create and update <code>plan.md</code> files as they work through larger problems.</p>
-<p>Drew's conclusion:</p>
-<blockquote>
-<p>The key insight across all the above tactics is that <em>context is not free</em>. Every token in the context influences the model’s behavior, for better or worse. The massive context windows of modern LLMs are a powerful capability, but they’re not an excuse to be sloppy with information management.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/drew-breunig">drew-breunig</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
