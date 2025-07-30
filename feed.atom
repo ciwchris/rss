@@ -2,10 +2,72 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-07-30T14:13:21.035Z</updated>
+    <updated>2025-07-30T21:11:00.913Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[The best available open weight LLMs now come from China]]></title>
+        <id>https://simonwillison.net/2025/Jul/30/chinese-models/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/30/chinese-models/#atom-everything"/>
+        <updated>2025-07-30T16:18:38.000Z</updated>
+        <summary type="html"><![CDATA[<p>Something that has become undeniable this month is that the best available open weight models now come from the Chinese AI labs.</p>
+<p>I continue to have a lot of love for Mistral, Gemma and Llama but my feeling is that Qwen, Moonshot and Z.ai have positively <em>smoked them</em> over the course of July.</p>
+<p>Here's what came out this month, with links to my notes on each one:</p>
+<ul>
+<li>Moonshot <a href="https://simonwillison.net/2025/Jul/11/kimi-k2/">Kimi-K2-Instruct</a> - 11th July, 1 trillion parameters</li>
+<li>Qwen <a href="https://simonwillison.net/2025/Jul/22/qwen3-235b-a22b-instruct-2507/">Qwen3-235B-A22B-Instruct-2507</a> - 21st July, 235 billion</li>
+<li>Qwen <a href="https://simonwillison.net/2025/Jul/22/qwen3-coder/">Qwen3-Coder-480B-A35B-Instruct</a> - 22nd July, 480 billion</li>
+<li>Qwen <a href="https://simonwillison.net/2025/Jul/25/qwen3-235b-a22b-thinking-2507/">Qwen3-235B-A22B-Thinking-2507</a> - 25th July, 235 billion</li>
+<li>Z.ai <a href="https://simonwillison.net/2025/Jul/28/glm-45/">GLM-4.5 and GLM-4.5 Air</a> - 28th July, 355 and 106 billion</li>
+<li>Qwen <a href="https://simonwillison.net/2025/Jul/29/qwen3-30b-a3b-instruct-2507/">Qwen3-30B-A3B-Instruct-2507</a> - 29th July, 30 billion</li>
+<li>Qwen <a href="https://simonwillison.net/2025/Jul/30/qwen3-30b-a3b-thinking-2507/">Qwen3-30B-A3B-Thinking-2507</a> - 30th July, 30 billion</li>
+</ul>
+<p><small>Notably absent from this list is DeepSeek, but that's only because their last model release was <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-0528">DeepSeek-R1-0528</a> back in April.</small></p>
+<p>The only janky license among them is Kimi K2, which uses a non-OSI-compliant modified MIT. Qwen's models are all Apache 2 and Z.ai's are MIT.</p>
+<p>The larger Chinese models all offer their own APIs and are increasingly available from other providers.  I've been able to run versions of the Qwen 30B and GLM-4.5 Air 106B models on my own laptop.</p>
+<p>I can't help but wonder if part of the reason for the delay in release of OpenAI's open weights model comes from a desire to be notably better than this truly impressive lineup of Chinese models.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Qwen3-30B-A3B-Thinking-2507]]></title>
+        <id>https://simonwillison.net/2025/Jul/30/qwen3-30b-a3b-thinking-2507/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Jul/30/qwen3-30b-a3b-thinking-2507/#atom-everything"/>
+        <updated>2025-07-30T15:36:54.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://huggingface.co/Qwen/Qwen3-30B-A3B-Thinking-2507">Qwen3-30B-A3B-Thinking-2507</a></strong></p>
+Yesterday was <a href="https://simonwillison.net/2025/Jul/29/qwen3-30b-a3b-instruct-2507/">Qwen3-30B-A3B-Instruct-2507</a>. Qwen are clearly committed to their new split between reasoning and non-reasoning models (a reversal from Qwen 3 in April), because today they released the new reasoning partner to yesterday's model: <strong>Qwen3-30B-A3B-Thinking-2507</strong>.</p>
+<p>I'm surprised at how poorly this reasoning mode performs at "Generate an SVG of a pelican riding a bicycle" compared to its non-reasoning partner. The <a href="https://gist.github.com/simonw/b523c029152f646ce4efb3c4dd5e1d01#reasoning">reasoning trace</a> appears to carefully consider each component and how it should be positioned... and then <a href="https://gist.github.com/simonw/b523c029152f646ce4efb3c4dd5e1d01#response">the final result</a> looks like this:</p>
+<p><img alt="A line with two dots, over a rhombus, with two circles and a pelican that looks like a grey snowman. They are not arranged in a sensible layout." src="https://static.simonwillison.net/static/2025/qwen3-30b-a3b-thinking-2507.png" /></p>
+<p>I ran this using <a href="https://chat.qwen.ai/?model=Qwen3-30B-A3B-2507">chat.qwen.ai/?model=Qwen3-30B-A3B-2507</a> with the "reasoning" option selected.</p>
+<p>I also tried the "Write an HTML and JavaScript page implementing space invaders" prompt I <a href="https://simonwillison.net/2025/Jul/29/qwen3-30b-a3b-instruct-2507/#space-invaders">ran against the non-reasoning model</a>. It did a better job in that <a href="https://tools.simonwillison.net/space-invaders-qwen3-30b-a3b-thinking-2507">the game works</a>:</p>
+<div style="max-width: 100%; margin-bottom: 0.4em">
+    <video controls="controls" preload="none" aria-label="Space Invaders" poster="https://static.simonwillison.net/static/2025/qwen3-30b-a3b-thinking-2507-space-invaders.jpg" loop="loop" style="width: 100%; height: auto;" muted="muted">
+        <source src="https://static.simonwillison.net/static/2025/qwen3-30b-a3b-thinking-2507-space-invaders.mp4" type="video/mp4" />
+    </video>
+</div>
+
+<p>It's not as playable as the on <a href="https://simonwillison.net/2025/Jul/29/space-invaders/">I got from GLM-4.5 Air</a> though - the invaders fire their bullets infrequently enough that the game isn't very challenging.</p>
+<p>This model is part of a flurry of releases from Qwen over the past two 9 days. Here's my coverage of each of those:</p>
+<ul>
+<li><a href="https://simonwillison.net/2025/Jul/22/qwen3-235b-a22b-instruct-2507/">Qwen3-235B-A22B-Instruct-2507</a> - 21st July</li>
+<li><a href="https://simonwillison.net/2025/Jul/22/qwen3-coder/">Qwen3-Coder-480B-A35B-Instruct</a> - 22nd July</li>
+<li><a href="https://simonwillison.net/2025/Jul/25/qwen3-235b-a22b-thinking-2507/">Qwen3-235B-A22B-Thinking-2507</a> - 25th July</li>
+<li><a href="https://simonwillison.net/2025/Jul/29/qwen3-30b-a3b-instruct-2507/">Qwen3-30B-A3B-Instruct-2507</a> - 29th July</li>
+<li>Qwen3-30B-A3B-Thinking-2507 - today</li>
+</ul>
+
+    <p><small></small>Via <a href="https://x.com/Alibaba_Qwen/status/1950570969036361799">@Alibaba_Qwen</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[qwen3]]></title>
         <id>https://ollama.com/library/qwen3</id>
@@ -3843,51 +3905,6 @@ The post Single pull request for Dependabot (multi-ecosystem support) appeared f
 The post Dependabot supports configuration of a minimum package age appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[CodeQL support for Rust now in public preview]]></title>
-        <id>https://github.blog/changelog/2025-06-30-codeql-support-for-rust-now-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-06-30-codeql-support-for-rust-now-in-public-preview"/>
-        <updated>2025-07-01T09:06:47.000Z</updated>
-        <summary type="html"><![CDATA[Today, we’re extending CodeQL code scanning support to Rust. Developers working on Rust libraries and apps can now benefit from our best-in-class code security analysis. We currently identify issues such…
-The post CodeQL support for Rust now in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[June newsletter for sponsors has been sent]]></title>
-        <id>https://simonwillison.net/2025/Jul/1/monthly/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jul/1/monthly/#atom-everything"/>
-        <updated>2025-07-01T03:52:53.000Z</updated>
-        <summary type="html"><![CDATA[<p>I just sent out the second edition of my <a href="https://simonwillison.net/2025/May/25/sponsors-only-newsletter/">sponsors only monthly newsletter</a>. Anyone who sponsors me for <a href="https://github.com/sponsors/simonw/">$10/month or more on GitHub</a> gets this carefully hand-curated summary of the last month in AI/LLMs/my projects designed to be readable in ten minutes or less.</p>
-<p>My <a href="https://simonw.substack.com/">regular newsletter</a> remains free - the monthly one is the only paywalled content I produce, the idea being that you can <strong>pay me to send you less</strong>.</p>
-<p>Here's <a href="https://gist.github.com/simonw/07eb3f32bad5b9f21b4e65f86327e302">the first edition for May 2025</a> as a preview of what you can expect. You'll get access to the June digest and the full archive automatically if you decide to start sponsoring.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/newsletter">newsletter</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Using Claude Code to build a GitHub Actions workflow]]></title>
-        <id>https://simonwillison.net/2025/Jul/1/claude-code-github-actions/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jul/1/claude-code-github-actions/#atom-everything"/>
-        <updated>2025-07-01T03:44:25.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.youtube.com/watch?v=VC6dmPcin2E">Using Claude Code to build a GitHub Actions workflow</a></strong></p>
-I wanted to add a small feature to one of my GitHub repos - an automatically updated README index listing other files in the repo - so I decided to use <a href="https://www.descript.com/">Descript</a> to record my process using Claude Code. Here's a 7 minute video showing what I did.</p>
-<p><lite-youtube videoid="VC6dmPcin2E" js-api="js-api"
-  title=" Using Claude Code to build a GitHub Actions workflow"
-  playlabel="Play:  Using Claude Code to build a GitHub Actions workflow"
-> </lite-youtube></p>
-
-<p>I've been wanting to start producing more video content for a while - this felt like a good low-stakes opportunity to put in some reps.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/screencast">screencast</a>, <a href="https://simonwillison.net/tags/youtube">youtube</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/github-actions">github-actions</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
