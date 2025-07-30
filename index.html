@@ -31,6 +31,57 @@
       <article>
           <details>
             <summary>
+              qwen3
+              <span class="post-metadata">(9 min | 2634 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwen3>Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Updated IP addresses for GitHub Enterprise Importer – July 2025
+              <span class="post-metadata">(5 min | 1426 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-29-updated-ip-addresses-for-github-enterprise-importer-july-2025>On July 28, 2025 21:41 UTC, GitHub Enterprise Importer (GEI) was identified as being in a degraded state with migrations stalled. An incident was declared to restore the service to…
+The post Updated IP addresses for GitHub Enterprise Importer – July 2025 appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Managing Dependabot alerts with batched updates is now generally available
+              <span class="post-metadata">(4 min | 1299 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-29-managing-dependabot-alerts-with-batched-updates-is-now-generally-available>What’s new You can now dismiss or reopen multiple Dependabot alerts at once across your entire organization, making alert management more efficient for security and development teams. Previously, organization-level alert…
+The post Managing Dependabot alerts with batched updates is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependabot: Expanded cooldown and package manager support
+              <span class="post-metadata">(4 min | 1262 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-29-dependabot-expanded-cooldown-and-package-manager-support>We’re investing in keeping Dependabot relevant for modern development teams, whether you’re experimenting with a new language or relying on the latest version of your favorite package manager. We’ve expanded…
+The post Dependabot: Expanded cooldown and package manager support appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               OpenAI: Introducing study mode
               <span class="post-metadata">(2 min | 691 words)</span> 
             </summary>
@@ -4624,133 +4675,6 @@ I&#x27;ve been wanting to start producing more video content for a while - this 
 
     
 Tags: screencast, youtube, ai, github-actions, llms, ai-assisted-programming, anthropic, claude, coding-agents, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-06-30</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              microsoft/vscode-copilot-chat
-              <span class="post-metadata">(3 min | 961 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/30/vscode-copilot-chat/#atom-everything>microsoft/vscode-copilot-chat
-promised at Build 2025 in May, Microsoft have released the GitHub Copilot Chat client for VS Code under an open source (MIT) license.
-So far this is just the extension that provides the chat component of Copilot, but the launch announcement promises that Copilot autocomplete will be coming in the near future:
-Next, we will carefully refactor the relevant components of the extension into VS Code core. The original GitHub Copilot extension that provides inline completions remains closed source -- but in the following months we plan to have that functionality be provided by the open sourced GitHub Copilot Chat extension.
-I&#x27;ve started spelunking around looking for the all-important prompts. So far the most interesting I&#x27;ve found are in prompts/node/agent/agentInstructions.tsx, with a &lt;Tag name&#x3D;&#x27;instructions&#x27;&gt; block that starts like this:
-You are a highly sophisticated automated coding agent with expert-level knowledge across many different programming languages and frameworks. The user will ask a question, or ask you to perform a task, and it may require lots of research to answer correctly. There is a selection of tools that let you perform actions or retrieve helpful context to answer the user&#x27;s question.
-There are tool use instructions - some edited highlights from those:
-When using the ReadFile tool, prefer reading a large section over calling the ReadFile tool many times in sequence. You can also think of all the pieces you may be interested in and read them in parallel. Read large enough context to ensure you get what you need.
-You can use the FindTextInFiles to get an overview of a file by searching for a string within that one file, instead of using ReadFile many times.
-Don&#x27;t call the RunInTerminal tool multiple times in parallel. Instead, run one command and wait for the output before running the next command.
-After you have performed the user&#x27;s task, if the user corrected something you did, expressed a coding preference, or communicated a fact that you need to remember, use the UpdateUserPreferences tool to save their preferences.
-NEVER try to edit a file by running terminal commands unless the user specifically asks for it.
-Use the ReplaceString tool to replace a string in a file, but only if you are sure that the string is unique enough to not cause any issues. You can use this tool multiple times per file.
-That file also has separate CodesearchModeInstructions, as well as a SweBenchAgentPrompt class with a comment saying that it is &quot;used for some evals with swebench&quot;.
-Elsewhere in the code, prompt/node/summarizer.ts illustrates one of their approaches to Context Summarization, with a prompt that looks like this:
-You are an expert at summarizing chat conversations.
-
-You will be provided:
-
-- A series of user/assistant message pairs in chronological order
-- A final user message indicating the user&#x27;s intent.
-
-[...]
-
-Structure your summary using the following format:
-
-TITLE: A brief title for the summary
-USER INTENT: The user&#x27;s goal or intent for the conversation
-TASK DESCRIPTION: Main technical goals and user requirements
-EXISTING: What has already been accomplished. Include file paths and other direct references.
-PENDING: What still needs to be done. Include file paths and other direct references.
-CODE STATE: A list of all files discussed or modified. Provide code snippets or diffs that illustrate important context.
-RELEVANT CODE/DOCUMENTATION SNIPPETS: Key code or documentation snippets from referenced files or discussions.
-OTHER NOTES: Any additional context or information that may be relevant.
-
-
-prompts/node/panel/terminalQuickFix.tsx looks interesting too, with prompts to help user&#x27;s fix problems they are having in the terminal:
-You are a programmer who specializes in using the command line. Your task is to help the user fix a command that was run in the terminal by providing a list of fixed command suggestions. Carefully consider the command line, output and current working directory in your response. [...]
-That file also has a PythonModuleError prompt:
-Follow these guidelines for python:
-- NEVER recommend using &quot;pip install&quot; directly, always recommend &quot;python -m pip install&quot;
-- The following are pypi modules: ruff, pylint, black, autopep8, etc
-- If the error is module not found, recommend installing the module using &quot;python -m pip install&quot; command.
-- If activate is not available create an environment using &quot;python -m venv .venv&quot;.
-
-
-There&#x27;s so much more to explore in here. xtab/common/promptCrafting.ts looks like it may be part of the code that&#x27;s intended to replace Copilot autocomplete, for example.
-
-    
-Via @ashtom
-Tags: github, microsoft, open-source, ai, prompt-engineering, generative-ai, github-copilot, llms, vs-code, llm-tool-use, coding-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Managing cost centers via API is now available
-              <span class="post-metadata">(6 min | 1772 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-06-30-managing-cost-center-via-api-is-now-available>Enterprise customers can now manage cost centers and assign resources via API
-The post Managing cost centers via API is now available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot search now on GitHub Docs
-              <span class="post-metadata">(6 min | 1796 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-06-30-copilot-search-now-on-github-docs>Have you ever wondered how to do something on GitHub? 🤔 Spend less time searching and get answers faster with the new Copilot search experience on GitHub Docs. Copilot search…
-The post Copilot search now on GitHub Docs appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llvm: InstCombine: improve optimizations for ceiling division with no overflow - a PR by Alex Gaynor and Claude Code
-              <span class="post-metadata">(3 min | 828 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jun/30/llvm/#atom-everything>llvm: InstCombine: improve optimizations for ceiling division with no overflow - a PR by Alex Gaynor and Claude Code
-rust-asn1, and recently spotted a missing LLVM compiler optimization while hacking on it, with the assistance of Claude (Alex works for Anthropic).
-He describes how he confirmed that optimization in So you want to serialize some DER?, taking advantage of a tool called Alive2 to automatically verify that the potential optimization resulted in the same behavior.
-Alex filed a bug, and then... 
-Obviously the next move is to see if I can send a PR to LLVM, but it’s been years since I was doing compiler development or was familiar with the LLVM internals and I wasn’t really prepared to invest the time and energy necessary to get back up to speed. But as a friend pointed out… what about Claude?
-At this point my instinct was, &quot;Claude is great, but I&#x27;m not sure if I&#x27;ll be able to effectively code review any changes it proposes, and I&#x27;m not going to be the asshole who submits an untested and unreviewed PR that wastes a bunch of maintainer time&quot;. But excitement got the better of me, and I asked claude-code to see if it could implement the necessary optimization, based on nothing more than the test cases.
-Alex reviewed the resulting code very carefully to ensure he wasn&#x27;t wasting anyone&#x27;s time, then submitted the PR and had Claude Code help implement the various changes requested by the reviewers. The optimization landed two weeks ago.
-Alex&#x27;s conclusion (emphasis mine):
-I am incredibly leery about over-generalizing how to understand the capacity of the models, but at a minimum it seems safe to conclude that sometimes you should just let the model have a shot at a problem and you may be surprised -- particularly when the problem has very clear success criteria. This only works if you have the capacity to review what it produces, of course. [...]
-This echoes Ethan Mollick&#x27;s advice to &quot;always invite AI to the table&quot;. For programming tasks the &quot;very clear success criteria&quot; is extremely important, as it helps fit the tools-in-a-loop pattern implemented by coding agents such as Claude Code.
-LLVM have a policy on AI-assisted contributions which is compatible with Alex&#x27;s work here:
-[...] the LLVM policy is that contributors are permitted to use artificial intelligence tools to produce contributions, provided that they have the right to license that code under the project license. Contributions found to violate this policy will be removed just like any other offending contribution.
-While the LLVM project has a liberal policy on AI tool use, contributors are considered responsible for their contributions. We encourage contributors to review all generated code before sending it for review to verify its correctness and to understand it so that they can answer questions during code review.
-Back in April Ben Evans put out a call for concrete evidence that LLM tools were being used to solve non-trivial problems in mature open source projects:
-I keep hearing #AI boosters / talking heads claiming that #LLMs have transformed software development [...] Share some AI-derived pull requests that deal with non-obvious corner cases or non-trivial bugs from mature #opensource  projects.
-I think this LLVM optimization definitely counts!
-(I also like how this story supports the idea that AI tools amplify existing human expertise rather than replacing it. Alex had previous experience with LLVM, albeit rusty, and could lean on that knowledge to help direct and evaluate Claude&#x27;s work.)
-
-
-    
-Tags: alex-gaynor, compilers, llvm, open-source, ai-assisted-programming, anthropic, claude, coding-agents, claude-code</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
