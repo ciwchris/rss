@@ -31,6 +31,243 @@
       <article>
           <details>
             <summary>
+              Trying out Qwen3 Coder Flash using LM Studio and Open WebUI and LLM
+              <span class="post-metadata">(5 min | 1496 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Jul/31/qwen3-coder-flash/#atom-everything>Qwen just released their sixth model(!) of this July called Qwen3-Coder-30B-A3B-Instruct - listed as Qwen3-Coder-Flash in their chat.qwen.ai interface.
+
+It&#x27;s 30.5B total parameters with 3.3B active at any one time. This means it will fit on a 64GB Mac - and even a 32GB Mac if you quantize it - and can run really fast thanks to that smaller set of active parameters.
+
+It&#x27;s a non-thinking model that is specially trained for coding tasks.
+
+This is an exciting combination of properties: optimized for coding performance and speed and small enough to run on a mid-tier developer laptop.
+
+Trying it out with LM Studio and Open WebUI
+
+I like running models like this using Apple&#x27;s MLX framework. I ran GLM-4.5 Air the other day using the mlx-lm Python library directly, but this time I decided to try out the combination of LM Studio and Open WebUI.
+
+(LM Studio has a decent interface built in, but I like the Open WebUI one slightly more.)
+
+I installed the model  by clicking the &quot;Use model in LM Studio&quot; button on LM Studio&#x27;s qwen/qwen3-coder-30b page. It gave me a bunch of options:
+
+
+
+I chose the 6bit MLX model, which is a 24.82GB download. Other options include 4bit (17.19GB) and 8bit (32.46GB). The download sizes are roughly the same as the amount of RAM required to run the model - picking that 24GB one leaves 40GB free on my 64GB machine for other applications.
+
+Then I opened the developer settings in LM Studio (the green folder icon) and turned on &quot;Enable CORS&quot; so I could access it from a separate Open WebUI instance.
+
+
+
+Now I switched over to Open WebUI. I installed and ran it using uv like this:
+
+
+uvx --python 3.11 open-webui serve
+
+Then navigated to http://localhost:8080/ to access the interface. I opened their settings and configured a new &quot;Connection&quot; to LM Studio:
+
+
+
+That needs a base URL of http://localhost:1234/v1 and a key of anything you like. I also set the optional prefix to lm just in case my Ollama installation - which Open WebUI detects automatically - ended up with any duplicate model names.
+
+Having done all of that, I could select any of my LM Studio models in the Open WebUI interface and start running prompts.
+
+A neat feature of Open WebUI is that it includes an automatic preview panel, which kicks in for fenced code blocks that include SVG or HTML:
+
+
+
+Here&#x27;s the exported transcript for &quot;Generate an SVG of a pelican riding a bicycle&quot;. It ran at almost 60 tokens a second!
+
+Implementing Space Invaders
+
+I tried my other recent simple benchmark prompt as well:
+
+
+Write an HTML and JavaScript page implementing space invaders
+
+
+I like this one because it&#x27;s a very short prompt that acts as shorthand for quite a complex set of features. There&#x27;s likely plenty of material in the training data to help the model achieve that goal but it&#x27;s still interesting to see if they manage to spit out something that works first time.
+
+The first version it gave me worked out of the box, but was a little too hard - the enemy bullets move so fast that it&#x27;s almost impossible to avoid them:
+
+
+    
+        
+    
+
+You can try that out here.
+
+I tried a follow-up prompt of &quot;Make the enemy bullets a little slower&quot;. A system like Claude Artifacts or Claude Code implements tool calls for modifying files in place, but the Open WebUI system I was using didn&#x27;t have a default equivalent which means the model had to output the full file a second time.
+
+It did that, and slowed down the bullets, but it made a bunch of other changes as well, shown in this diff. I&#x27;m not too surprised by this - asking a 25GB local model to output a lengthy file with just a single change is quite a stretch.
+
+Here&#x27;s the exported transcript for those two prompts.
+
+Running LM Studio models with mlx-lm
+
+LM Studio stores its models in the ~/.cache/lm-studio/models directory. This means you can use the mlx-lm Python library to run prompts through the same model like this:
+
+
+uv run --isolated --with mlx-lm mlx_lm.generate \
+  --model ~/.cache/lm-studio/models/lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-6bit \
+  --prompt &quot;Write an HTML and JavaScript page implementing space invaders&quot; \
+  -m 8192 --top-k 20 --top-p 0.8 --temp 0.7
+
+Be aware that this will load a duplicate copy of the model into memory so you may want to quit LM Studio before running this command!
+
+Accessing the model via my LLM tool
+
+My LLM project provides a command-line tool and Python library for accessing large language models.
+
+Since LM Studio offers an OpenAI-compatible API, you can configure LLM to access models through that API by creating or editing the ~/Library/Application\ Support/io.datasette.llm/extra-openai-models.yaml file:
+
+
+zed ~/Library/Application\ Support/io.datasette.llm/extra-openai-models.yaml
+
+I added the following YAML configuration:
+
+
+- model_id: qwen3-coder-30b
+  model_name: qwen/qwen3-coder-30b
+  api_base: http://localhost:1234/v1
+  supports_tools: true
+
+Provided LM Studio is running I can execute prompts from my terminal like this:
+
+
+llm -m qwen3-coder-30b &#x27;A joke about a pelican and a cheesecake&#x27;
+
+
+Why did the pelican refuse to eat the cheesecake?
+
+Because it had a beak for dessert! 🥧🦜
+
+(Or if you prefer: Because it was afraid of getting beak-sick from all that creamy goodness!)
+
+
+(25GB clearly isn&#x27;t enough space for a functional sense of humor.)
+
+More interestingly though, we can start exercising the Qwen model&#x27;s support for tool calling:
+
+
+llm -m qwen3-coder-30b \
+  -T llm_version -T llm_time --td \
+  &#x27;tell the time then show the version&#x27;
+
+Here we are enabling LLM&#x27;s two default tools - one for telling the time and one for seeing the version of LLM that&#x27;s currently installed. The --td flag stands for --tools-debug.
+
+The output looks like this, debug output included:
+
+Tool call: llm_time({})
+  {
+    &quot;utc_time&quot;: &quot;2025-07-31 19:20:29 UTC&quot;,
+    &quot;utc_time_iso&quot;: &quot;2025-07-31T19:20:29.498635+00:00&quot;,
+    &quot;local_timezone&quot;: &quot;PDT&quot;,
+    &quot;local_time&quot;: &quot;2025-07-31 12:20:29&quot;,
+    &quot;timezone_offset&quot;: &quot;UTC-7:00&quot;,
+    &quot;is_dst&quot;: true
+  }
+
+Tool call: llm_version({})
+  0.26
+
+The current time is:
+- Local Time (PDT): 2025-07-31 12:20:29
+- UTC Time: 2025-07-31 19:20:29
+
+The installed version of the LLM is 0.26.
+
+
+Pretty good! It managed two tool calls from a single prompt.
+
+Sadly I couldn&#x27;t get it to work with some of my more complex plugins such as llm-tools-sqlite. I&#x27;m trying to figure out if that&#x27;s a bug in the model, the LM Studio layer or my own code for running tool prompts against OpenAI-compatible endpoints.
+
+The month of Qwen
+
+July has absolutely been the month of Qwen. The models they have released this month are outstanding, packing some extremely useful capabilities even into models I can run in 25GB of RAM or less on my own laptop.
+
+If you&#x27;re looking for a competent coding model you can run locally Qwen3-Coder-30B-A3B is a very solid choice.
+Tags: ai, generative-ai, llms, ai-assisted-programming, llm, uv, qwen, pelican-riding-a-bicycle, llm-release, lm-studio, space-invaders</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Pull request “Files changed” public preview experience – July 31 updates
+              <span class="post-metadata">(5 min | 1601 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-31-pull-request-files-changed-public-preview-experience-july-31-updates>Check out the latest updates to the new pull request “Files changed” page public preview, including rich diffs, improved tree ordering, and more! 🖼️ Rich image and markdown diffs Rich…
+The post Pull request “Files changed” public preview experience – July 31 updates appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Expanded public preview for improved repository creation experience
+              <span class="post-metadata">(4 min | 1227 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-31-expanded-public-preview-for-improved-repository-creation-experience>The improved repository creation experience is expanding and moving to an opt-out preview. We’ve introduced a number of tweaks during the preview based on community feedback, like ensuring repository visibility…
+The post Expanded public preview for improved repository creation experience appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              npm trusted publishing with OIDC is generally available
+              <span class="post-metadata">(6 min | 1709 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available>As of today, npm trusted publishing with OpenID Connect (OIDC) is now generally available. This feature enables you to securely publish npm packages directly from CI/CD workflows using OpenID Connect…
+The post npm trusted publishing with OIDC is generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              July 31st, 2025 - Kagi Assistant gets tags, bulk actions, and much more
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://kagifeedback.org/d/7859-july-31st-2025-kagi-assistant-gets-tags-bulk-actions-and-much-more/1>Kagi Assistant
+This week&#x27;s release brings several big updates to Kagi Assistant, laying the groundwork to exciting new chapters ahead.
+Introducing tags
+You can use the Temporary tag to mark any thread as temporary, and it will auto-delete 24h after its last update.
+If you use Kagi Assistant in 24h mode, all new threads will be tagged as Temporary by default. When you remove the Temporary tag, that thread will be saved.
+When you create a thread while viewing a specific tag, the new thread will automatically inherit that tag.
+Threads without a custom tag, such as all your currently saved threads, appear in the All folder.
+
+
+Learn more on our help page.
+
+Bulk managing threads
+
+
+
+
+Model picker
+in-house benchmarking.
+
+
+
+Define your default Assistant
+define your default Kagi Assistant model, as …</a>
+            </div>
+            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Ollama&#x27;s new app
               <span class="post-metadata">(1 min | 388 words)</span> 
             </summary>
@@ -4480,54 +4717,6 @@ The post Copilot code review: Better handling of large pull requests appeared fi
 
 — Charles Babbage, Passages from the Life of a Philosopher, 1864
 Tags: charles-babbage</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              deepseek-r1
-              <span class="post-metadata">(9 min | 2776 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/deepseek-r1>DeepSeek-R1 is a family of open reasoning models with performance approaching that of leading models, such as O3 and Gemini 2.5 Pro.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Mandelbrot in x86 assembly by Claude
-              <span class="post-metadata">(2 min | 518 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/2/mandelbrot-in-x86-assembly-by-claude/#atom-everything>Mandelbrot in x86 assembly by Claude
-a tweet asking if Claude knew x86 assembly, I decided to run a bit of an experiment.
-I prompted Claude Sonnet 4:
-Write me an ascii art mandelbrot fractal generator in x86 assembly
-And got back code that looked... like assembly code I guess?
-So I copied some jargon out of that response and asked:
-I have some code written for x86-64 assembly using NASM syntax, targeting Linux (using system calls for output).
-How can I run that on my Mac?
-That gave me a Dockerfile.
-I tried running it on my Mac and... it failed to compile.
-So I fired up Claude Code (with the --dangerously-skip-permissions option) in that directory and told it what to run:
-Run this: docker build -t myasm .
-It started crunching. It read the errors, inspected the assembly code, made changes, tried running it again in a loop, added more comments...
-
-...and eventually produced an ASCII art image of a fractal! Claude Code proudly declared:
-Success! The Docker container ran and generated a Mandelbrot set visualization using ASCII characters. The output shows all @ symbols, which indicates the algorithm is working but all points are inside the set (high iteration count). The program compiled and executed successfully on x86_64 architecture via emulation.
-Yeah... I was not satisfied with an image that was entirely @ symbols! I said:
-That is a bad result - it is just @ signs, I cannot see the fractal
-Claude made a few more changes and gave me the result I wanted:
-
-Here&#x27;s the finished assembly code, the Dockerfile to run it on a Mac and the full transcript of the Claude Code session that got it there.
-
-
-    
-Tags: mandelbrot, ai, generative-ai, llms, ai-assisted-programming, anthropic, claude, vibe-coding, claude-code</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
