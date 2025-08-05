@@ -25,9 +25,248 @@
 
   <ul>
     <li>
+      <time>2025-08-05</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting greyduet on r/teachers
+              <span class="post-metadata">(1 min | 432 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/5/greyduet-on-rteachers/#atom-everything>I teach HS Science in the south. I can only speak for my district, but a few teacher work days in the wave of enthusiasm I&#x27;m seeing for AI tools is overwhelming. We&#x27;re getting district approved ads for AI tools by email, Admin and ICs are pushing it on us, and at least half of the teaching staff seems all in at this point.
+I was just in a meeting with my team and one of the older teachers brought out a powerpoint for our first lesson and almost everyone agreed to use it after a quick scan - but it was missing important tested material, repetitive, and just totally airy and meaningless. Just slide after slide of the same handful of sentences rephrased with random loosely related stock photos. When I asked him if it was AI generated, he said &#x27;of course&#x27;, like it was a strange question. [...]
+We don&#x27;t have a leg to stand on to teach them anything about originality, academic integrity/intellectual honesty, or the importance of doing things for themselves when they catch us indulging in it just to save time at work.
+
+— greyduet on r/teachers, Unpopular Opinion: Teacher AI use is already out of control and it&#x27;s not ok
+Tags: ai-ethics, slop, generative-ai, education, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A Friendly Introduction to SVG
+              <span class="post-metadata">(1 min | 307 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/5/a-friendly-introduction-to-svg/#atom-everything>A Friendly Introduction to SVG
+I finally understand what all four numbers in the viewport&#x3D;&quot;...&quot; attribute are for!
+
+    
+Via Lobste.rs
+Tags: svg, explorables, josh-comeau</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-08-04</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              ChatGPT agent&#x27;s user-agent
+              <span class="post-metadata">(4 min | 1282 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/4/chatgpt-agents-user-agent/#atom-everything>I was exploring how ChatGPT agent works today. I learned some interesting things about how it exposes its identity through HTTP headers, then made a huge blunder in thinking it was leaking its URLs to Bingbot and Yandex... but it turned out that was a Cloudflare feature that had nothing to do with ChatGPT.
+
+
+ChatGPT agent is the recently released (and confusingly named) ChatGPT feature that provides browser automation combined with terminal access as a feature of ChatGPT - replacing their previous Operator research preview which is scheduled for deprecation on August 31st.
+
+
+Investigating ChatGPT agent&#x27;s user-agent
+
+I decided to dig into how it works by creating a logged web URL endpoint using django-http-debug. Then I told ChatGPT agent mode to explore that new page:
+
+
+
+My logging captured these request headers:
+
+Via: 1.1 heroku-router
+Host: simonwillison.net
+Accept: text/html,application/xhtml+xml,application/xml;q&#x3D;0.9,image/avif,image/webp,image/apng,*/*;q&#x3D;0.8,application/signed-exchange;v&#x3D;b3;q&#x3D;0.7
+Cf-Ray: 96a0f289adcb8e8e-SEA
+Cookie: cf_clearance&#x3D;zzV8W...
+Server: Heroku
+Cdn-Loop: cloudflare; loops&#x3D;1
+Priority: u&#x3D;0, i
+Sec-Ch-Ua: &quot;Not)A;Brand&quot;;v&#x3D;&quot;8&quot;, &quot;Chromium&quot;;v&#x3D;&quot;138&quot;
+Signature: sig1&#x3D;:1AxfqHocTf693inKKMQ7NRoHoWAZ9d/vY4D/FO0+MqdFBy0HEH3ZIRv1c3hyiTrzCvquqDC8eYl1ojcPYOSpCQ&#x3D;&#x3D;:
+Cf-Visitor: {&quot;scheme&quot;:&quot;https&quot;}
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+Cf-Ipcountry: US
+X-Request-Id: 45ef5be4-ead3-99d5-f018-13c4a55864d3
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Accept-Encoding: gzip, br
+Accept-Language: en-US,en;q&#x3D;0.9
+Signature-Agent: &quot;https://chatgpt.com&quot;
+Signature-Input: sig1&#x3D;(&quot;@authority&quot; &quot;@method&quot; &quot;@path&quot; &quot;signature-agent&quot;);created&#x3D;1754340838;keyid&#x3D;&quot;otMqcjr17mGyruktGvJU8oojQTSMHlVm7uO-lrcqbdg&quot;;expires&#x3D;1754344438;nonce&#x3D;&quot;_8jbGwfLcgt_vUeiZQdWvfyIeh9FmlthEXElL-O2Rq5zydBYWivw4R3sV9PV-zGwZ2OEGr3T2Pmeo2NzmboMeQ&quot;;tag&#x3D;&quot;web-bot-auth&quot;;alg&#x3D;&quot;ed25519&quot;
+X-Forwarded-For: 2a09:bac5:665f:1541::21e:154, 172.71.147.183
+X-Request-Start: 1754340840059
+Cf-Connecting-Ip: 2a09:bac5:665f:1541::21e:154
+Sec-Ch-Ua-Mobile: ?0
+X-Forwarded-Port: 80
+X-Forwarded-Proto: http
+Sec-Ch-Ua-Platform: &quot;Linux&quot;
+Upgrade-Insecure-Requests: 1
+
+
+That Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 user-agent header is the one used by the most recent Chrome on macOS - which is a little odd here as the Sec-Ch-Ua-Platform : &quot;Linux&quot; indicates that the agent browser runs on Linux.
+
+At first glance it looks like ChatGPT is being dishonest here by not including its bot identity in the user-agent header. I thought for a moment it might be reflecting my own user-agent, but I&#x27;m using Firefox on macOS and it identified itself as Chrome.
+
+Then I spotted this header:
+
+Signature-Agent: &quot;https://chatgpt.com&quot;
+
+
+Which is accompanied by a much more complex header called Signature-Input:
+
+Signature-Input: sig1&#x3D;(&quot;@authority&quot; &quot;@method&quot; &quot;@path&quot; &quot;signature-agent&quot;);created&#x3D;1754340838;keyid&#x3D;&quot;otMqcjr17mGyruktGvJU8oojQTSMHlVm7uO-lrcqbdg&quot;;expires&#x3D;1754344438;nonce&#x3D;&quot;_8jbGwfLcgt_vUeiZQdWvfyIeh9FmlthEXElL-O2Rq5zydBYWivw4R3sV9PV-zGwZ2OEGr3T2Pmeo2NzmboMeQ&quot;;tag&#x3D;&quot;web-bot-auth&quot;;alg&#x3D;&quot;ed25519&quot;
+
+
+And a Signature header too.
+
+These turn out to come from a relatively new web standard: RFC 9421 HTTP Message Signatures&#x27; published February 2024.
+
+The purpose of HTTP Message Signatures is to allow clients to include signed data about their request in a way that cannot be tampered with by intermediaries. The signature uses a public key that&#x27;s provided by the following well-known endpoint:
+
+https://chatgpt.com/.well-known/http-message-signatures-directory
+
+
+Add it all together and we now have a rock-solid way to identify traffic from ChatGPT agent: look for the Signature-Agent: &quot;https://chatgpt.com&quot; header and confirm its value by checking the signature in the Signature-Input and Signature headers.
+
+And then came Bingbot and Yandex
+
+Just over a minute after it captured that request, my logging endpoint got another request:
+
+Via: 1.1 heroku-router
+From: bingbot(at)microsoft.com
+Host: simonwillison.net
+Accept: */*
+Cf-Ray: 96a0f4671d1fc3c6-SEA
+Server: Heroku
+Cdn-Loop: cloudflare; loops&#x3D;1
+Cf-Visitor: {&quot;scheme&quot;:&quot;https&quot;}
+User-Agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36
+Cf-Ipcountry: US
+X-Request-Id: 6214f5dc-a4ea-5390-1beb-f2d26eac5d01
+Accept-Encoding: gzip, br
+X-Forwarded-For: 207.46.13.9, 172.71.150.252
+X-Request-Start: 1754340916429
+Cf-Connecting-Ip: 207.46.13.9
+X-Forwarded-Port: 80
+X-Forwarded-Proto: http
+
+
+I pasted 207.46.13.9 into Microsoft&#x27;s Verify Bingbot tool (after solving a particularly taxing CAPTCHA) and it confirmed that this was indeed a request from Bingbot.
+
+I set up a second URL to confirm... and this time got a visit from Yandex!
+
+Via: 1.1 heroku-router
+From: support@search.yandex.ru
+Host: simonwillison.net
+Accept: text/html,application/xhtml+xml,application/xml;q&#x3D;0.9,*/*;q&#x3D;0.8
+Cf-Ray: 96a16390d8f6f3a7-DME
+Server: Heroku
+Cdn-Loop: cloudflare; loops&#x3D;1
+Cf-Visitor: {&quot;scheme&quot;:&quot;https&quot;}
+User-Agent: Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)
+Cf-Ipcountry: RU
+X-Request-Id: 3cdcbdba-f629-0d29-b453-61644da43c6c
+Accept-Encoding: gzip, br
+X-Forwarded-For: 213.180.203.138, 172.71.184.65
+X-Request-Start: 1754345469921
+Cf-Connecting-Ip: 213.180.203.138
+X-Forwarded-Port: 80
+X-Forwarded-Proto: http
+
+
+Yandex suggest a reverse DNS lookup to verify, so I ran this command:
+
+dig -x 213.180.203.138 +short
+
+
+And got back:
+
+213-180-203-138.spider.yandex.com.
+
+
+Which confirms that this is indeed a Yandex crawler.
+
+
+I tried a third experiment to be sure... and got hits from both Bingbot and YandexBot.
+
+
+It was Cloudflare Crawler Hints, not ChatGPT
+
+
+So I wrote up and posted about my discovery... and Jatan Loya asked:
+
+
+
+do you have crawler hints enabled in cf?
+
+
+And yeah, it turned out I did. I spotted this in my caching configuration page (and it looks like I must have turned it on myself at some point in the past):
+
+
+
+
+
+Here&#x27;s the Cloudflare documentation for that feature.
+
+
+I deleted my posts on Twitter and Bluesky (since you can&#x27;t edit those and I didn&#x27;t want the misinformation to continue to spread) and edited my post on Mastodon, then updated this entry with the real reason this had happened.
+
+
+I also changed the URL of this entry as it turned out Twitter and Bluesky were caching my social media preview for the previous one, which included the incorrect information in the title.
+
+
+Original &quot;So what&#x27;s going on here?&quot; section from my post
+
+Here&#x27;s a section of my original post with my theories about what was going on before learning about Cloudflare Crawler Hints.
+
+
+So what&#x27;s going on here?
+
+There are quite a few different moving parts here.
+
+
+I&#x27;m using Firefox on macOS with the 1Password and Readwise Highlighter extensions installed and active. Since I didn&#x27;t visit the debug pages at all with my own browser I don&#x27;t think any of these are relevant to these results.
+
+ChatGPT agent makes just a single request to my debug URL ...
+
+... which is proxied through both Cloudflare and Heroku.
+
+Within about a minute, I get hits from one or both of Bingbot and Yandex.
+
+
+Presumably ChatGPT agent itself is running behind at least one proxy - I would expect OpenAI to keep a close eye on that traffic to ensure it doesn&#x27;t get abused.
+
+I&#x27;m guessing that infrastructure is hosted by Microsoft Azure. The OpenAI Sub-processor List - though that lists Microsoft Corporation, CoreWeave Inc, Oracle Cloud Platform and Google Cloud Platform under the &quot;Cloud infrastructure&quot; section so it could be any of those.
+
+Since the page is served over HTTPS my guess is that any intermediary proxies should be unable to see the path component of the URL, making the mystery of how Bingbot and Yandex saw the URL even more intriguing.
+
+
+    
+        
+Tags: bing, privacy, search-engines, user-agents, ai, cloudflare, generative-ai, chatgpt, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5003,56 +5242,6 @@ Tags: adrian-holovaty, ai, openai, generative-ai, chatgpt, llms, ai-ethics, hall
 The post Reviewing Visual Studio license assignments just got easier appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-07-06</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              I Shipped a macOS App Built Entirely by Claude Code
-              <span class="post-metadata">(2 min | 574 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/6/macos-app-built-entirely-by-claude-code/#atom-everything>I Shipped a macOS App Built Entirely by Claude Code
-Context, a native Mac app for debugging MCP servers:
-There is still skill and iteration involved in helping Claude build software, but of the 20,000 lines of code in this project, I estimate that I wrote less than 1,000 lines by hand.
-It&#x27;s a good looking native app:
-
-This is a useful, detailed write-up. A few notes on things I picked up:
-Claude is great at SwiftUI and mostly good at Swift, but gets confused by the newer Swift Concurrency mechanisms.
-Claude occasionally triggers “The compiler is unable to type-check this expression in reasonable time” errors, but is able to recover by refactoring view bodies into smaller expressions.
-Telling Claude to make native macOS interfaces “more beautiful/elegant/usable” works surprisingly well. I’ve seen the same with web frontend code.
-Claude Code’s build/test/debug agentic coding loop works great for Swift apps, but there isn’t a good equivalent to Playwright yet so you need to manually take over to interact with the UI and drop in screenshots of any problems.
-Claude is great at creating mock data:
-The first screenshots of the app that I shared with friends as I dialed in the UI were backed by mock data, but it looked real enough that you could get a good sense of how the app would look when rendering data from real MCP servers.
-Indragie’s focus throughout this piece is on using LLM tools to help close that last 20% of a side project that usually prevents it from being shipped.
-The most exciting thing about this entire journey for me is not the app I built, but that I am now able to scratch my coding itch and ship polished side projects again. It&#x27;s like I found an extra 5 hours every day, and all it cost me was $200 a month.
-Via Hacker News
-Tags: macos, ai, generative-ai, llms, ai-assisted-programming, anthropic, claude, model-context-protocol, coding-agents, swift, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Nineteen Eighty-Four
-              <span class="post-metadata">(1 min | 299 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/6/nineteen-eighty-four/#atom-everything>There was a whole chain of separate departments dealing with proletarian literature, music, drama, and entertainment generally. Here were produced rubbishy newspapers containing almost nothing except sport, crime and astrology, sensational five-cent novelettes, films oozing with sex, and sentimental songs which were composed entirely by mechanical means on a special kind of kaleidoscope known as a versificator. [...]
-It was one of countless similar songs published for the benefit of the proles by a sub-section of the Music Department. The words of these songs were composed without any human intervention whatever on an instrument known as a versificator.
-
-— Nineteen Eighty-Four, George Orwell predicts generative AI, published 1949
-Tags: ai-ethics, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 

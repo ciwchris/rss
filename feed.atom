@@ -2,10 +2,188 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-08-04T21:11:26.333Z</updated>
+    <updated>2025-08-05T14:16:55.720Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting greyduet on r/teachers]]></title>
+        <id>https://simonwillison.net/2025/Aug/5/greyduet-on-rteachers/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/5/greyduet-on-rteachers/#atom-everything"/>
+        <updated>2025-08-05T11:53:07.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.reddit.com/r/Teachers/comments/1mhntjh/unpopular_opinion_teacher_ai_use_is_already_out/"><p>I teach HS Science in the south. I can only speak for my district, but a few teacher work days in the wave of enthusiasm I'm seeing for AI tools is overwhelming. We're getting district approved ads for AI tools by email, Admin and ICs are pushing it on us, and at least half of the teaching staff seems all in at this point.</p>
+<p>I was just in a meeting with my team and one of the older teachers brought out a powerpoint for our first lesson and almost everyone agreed to use it after a quick scan - but it was missing important tested material, repetitive, and just totally airy and meaningless. Just slide after slide of the same handful of sentences rephrased with random loosely related stock photos. When I asked him if it was AI generated, he said 'of course', like it was a strange question. [...]</p>
+<p>We don't have a leg to stand on to teach them anything about originality, academic integrity/intellectual honesty, or the importance of doing things for themselves when they catch us indulging in it just to save time at work.</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.reddit.com/r/Teachers/comments/1mhntjh/unpopular_opinion_teacher_ai_use_is_already_out/">greyduet on r/teachers</a>, Unpopular Opinion: Teacher AI use is already out of control and it's not ok</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/education">education</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[A Friendly Introduction to SVG]]></title>
+        <id>https://simonwillison.net/2025/Aug/5/a-friendly-introduction-to-svg/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/5/a-friendly-introduction-to-svg/#atom-everything"/>
+        <updated>2025-08-05T05:20:18.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.joshwcomeau.com/svg/friendly-introduction-to-svg/">A Friendly Introduction to SVG</a></strong></p>
+This SVG tutorial by Josh Comeau is fantastic. It's filled with neat interactive illustrations - with a pleasing subtly "click" audio effect as you adjust their sliders - and provides a useful introduction to a bunch of well chosen SVG fundamentals.</p>
+<p>I finally understand what all four numbers in the <code>viewport="..."</code> attribute are for!
+
+    <p><small></small>Via <a href="https://lobste.rs/s/ome2lo/friendly_introduction_svg">Lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/svg">svg</a>, <a href="https://simonwillison.net/tags/explorables">explorables</a>, <a href="https://simonwillison.net/tags/josh-comeau">josh-comeau</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ChatGPT agent's user-agent]]></title>
+        <id>https://simonwillison.net/2025/Aug/4/chatgpt-agents-user-agent/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/4/chatgpt-agents-user-agent/#atom-everything"/>
+        <updated>2025-08-04T22:49:25.000Z</updated>
+        <summary type="html"><![CDATA[<p>I was exploring how ChatGPT agent works today. I learned some interesting things about how it exposes its identity through HTTP headers, then made a huge blunder in thinking it was leaking its URLs to Bingbot and Yandex... but it turned out <a href="https://simonwillison.net/2025/Aug/4/chatgpt-agents-agent/#cloudflare-crawler-hints">that was a Cloudflare feature</a> that had nothing to do with ChatGPT.</p>
+
+<p>ChatGPT agent is the <a href="https://openai.com/index/introducing-chatgpt-agent/">recently released</a> (and confusingly named) ChatGPT feature that provides browser automation combined with terminal access as a feature of ChatGPT - replacing their previous <a href="https://help.openai.com/en/articles/10421097-operator">Operator research preview</a> which is scheduled for deprecation on August 31st.</p>
+
+<h4 id="investigating-chatgpt-agent-s-user-agent">Investigating ChatGPT agent's user-agent</h4>
+<p>I decided to dig into how it works by creating a logged web URL endpoint using <a href="https://simonwillison.net/2024/Aug/8/django-http-debug/">django-http-debug</a>. Then I told ChatGPT agent mode to explore that new page:</p>
+<p><img src="https://static.simonwillison.net/static/2025/chatgpt-agent-url.jpg" alt="ChatGPT screenshot. My prompt was &quot;Visit https://simonwillison.net/test-url-context and tell me what you see there&quot; - it said &quot;Worked for 15 seconds&quot; with an arrow, then a screnshot of the webpage content showing &quot;simonwillison.net&quot; with a favicon, heading &quot;This is a heading&quot;, text &quot;Text and text and more text.&quot; and &quot;this came from javascript&quot;. The bot then responds with: The webpage displays a simple layout with a large heading at the top that reads “This is a heading.” Below it, there's a short paragraph that says “Text and text and more text.” A final line appears underneath saying “this came from javascript,” indicating that this last line was inserted via a script. The page contains no interactive elements or instructions—just these lines of plain text displayed on a white background." style="max-width: 100%;" /></p>
+<p>My logging captured these request headers:</p>
+<pre><code>Via: 1.1 heroku-router
+Host: simonwillison.net
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Cf-Ray: 96a0f289adcb8e8e-SEA
+Cookie: cf_clearance=zzV8W...
+Server: Heroku
+Cdn-Loop: cloudflare; loops=1
+Priority: u=0, i
+Sec-Ch-Ua: "Not)A;Brand";v="8", "Chromium";v="138"
+Signature: sig1=:1AxfqHocTf693inKKMQ7NRoHoWAZ9d/vY4D/FO0+MqdFBy0HEH3ZIRv1c3hyiTrzCvquqDC8eYl1ojcPYOSpCQ==:
+Cf-Visitor: {"scheme":"https"}
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+Cf-Ipcountry: US
+X-Request-Id: 45ef5be4-ead3-99d5-f018-13c4a55864d3
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Accept-Encoding: gzip, br
+Accept-Language: en-US,en;q=0.9
+Signature-Agent: "https://chatgpt.com"
+Signature-Input: sig1=("@authority" "@method" "@path" "signature-agent");created=1754340838;keyid="otMqcjr17mGyruktGvJU8oojQTSMHlVm7uO-lrcqbdg";expires=1754344438;nonce="_8jbGwfLcgt_vUeiZQdWvfyIeh9FmlthEXElL-O2Rq5zydBYWivw4R3sV9PV-zGwZ2OEGr3T2Pmeo2NzmboMeQ";tag="web-bot-auth";alg="ed25519"
+X-Forwarded-For: 2a09:bac5:665f:1541::21e:154, 172.71.147.183
+X-Request-Start: 1754340840059
+Cf-Connecting-Ip: 2a09:bac5:665f:1541::21e:154
+Sec-Ch-Ua-Mobile: ?0
+X-Forwarded-Port: 80
+X-Forwarded-Proto: http
+Sec-Ch-Ua-Platform: "Linux"
+Upgrade-Insecure-Requests: 1
+</code></pre>
+<p>That <strong>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36</strong> user-agent header is the one used by the most recent Chrome on macOS - which is a little odd here as the <strong>Sec-Ch-Ua-Platform : "Linux"</strong> indicates that the agent browser runs on Linux.</p>
+<p>At first glance it looks like ChatGPT is being dishonest here by not including its bot identity in the user-agent header. I thought for a moment it might be reflecting my own user-agent, but I'm using Firefox on macOS and it identified itself as Chrome.</p>
+<p>Then I spotted this header:</p>
+<pre><code>Signature-Agent: "https://chatgpt.com"
+</code></pre>
+<p>Which is accompanied by a much more complex header called <strong>Signature-Input</strong>:</p>
+<pre><code>Signature-Input: sig1=("@authority" "@method" "@path" "signature-agent");created=1754340838;keyid="otMqcjr17mGyruktGvJU8oojQTSMHlVm7uO-lrcqbdg";expires=1754344438;nonce="_8jbGwfLcgt_vUeiZQdWvfyIeh9FmlthEXElL-O2Rq5zydBYWivw4R3sV9PV-zGwZ2OEGr3T2Pmeo2NzmboMeQ";tag="web-bot-auth";alg="ed25519"
+</code></pre>
+<p>And a <code>Signature</code> header too.</p>
+<p>These turn out to come from a relatively new web standard: <a href="https://www.rfc-editor.org/rfc/rfc9421.html">RFC 9421 HTTP Message Signatures</a>' published February 2024.</p>
+<p>The purpose of HTTP Message Signatures is to allow clients to include signed data about their request in a way that cannot be tampered with by intermediaries. The signature uses a public key that's provided by the following well-known endpoint:</p>
+<pre><code>https://chatgpt.com/.well-known/http-message-signatures-directory
+</code></pre>
+<p>Add it all together and we now have a rock-solid way to identify traffic from ChatGPT agent: look for the <code>Signature-Agent: "https://chatgpt.com"</code> header and confirm its value by checking the signature in the <code>Signature-Input</code> and <code>Signature</code> headers.</p>
+<h4 id="and-then-came-the-crawlers">And then came Bingbot and Yandex</h4>
+<p>Just over a minute after it captured that request, my logging endpoint got another request:</p>
+<pre><code>Via: 1.1 heroku-router
+From: bingbot(at)microsoft.com
+Host: simonwillison.net
+Accept: */*
+Cf-Ray: 96a0f4671d1fc3c6-SEA
+Server: Heroku
+Cdn-Loop: cloudflare; loops=1
+Cf-Visitor: {"scheme":"https"}
+User-Agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36
+Cf-Ipcountry: US
+X-Request-Id: 6214f5dc-a4ea-5390-1beb-f2d26eac5d01
+Accept-Encoding: gzip, br
+X-Forwarded-For: 207.46.13.9, 172.71.150.252
+X-Request-Start: 1754340916429
+Cf-Connecting-Ip: 207.46.13.9
+X-Forwarded-Port: 80
+X-Forwarded-Proto: http
+</code></pre>
+<p>I pasted <code>207.46.13.9</code> into Microsoft's <a href="https://www.bing.com/toolbox/verify-bingbot-verdict">Verify Bingbot</a> tool (after solving a particularly taxing CAPTCHA) and it confirmed that this was indeed a request from Bingbot.</p>
+<p>I set up a second URL to confirm... and this time got a visit from Yandex!</p>
+<pre><code>Via: 1.1 heroku-router
+From: support@search.yandex.ru
+Host: simonwillison.net
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Cf-Ray: 96a16390d8f6f3a7-DME
+Server: Heroku
+Cdn-Loop: cloudflare; loops=1
+Cf-Visitor: {"scheme":"https"}
+User-Agent: Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)
+Cf-Ipcountry: RU
+X-Request-Id: 3cdcbdba-f629-0d29-b453-61644da43c6c
+Accept-Encoding: gzip, br
+X-Forwarded-For: 213.180.203.138, 172.71.184.65
+X-Request-Start: 1754345469921
+Cf-Connecting-Ip: 213.180.203.138
+X-Forwarded-Port: 80
+X-Forwarded-Proto: http
+</code></pre>
+<p>Yandex <a href="https://yandex.com/support/webmaster/en/robot-workings/check-yandex-robots.html?lang=en">suggest a reverse DNS lookup</a> to verify, so I ran this command:</p>
+<pre><code>dig -x 213.180.203.138 +short
+</code></pre>
+<p>And got back:</p>
+<pre><code>213-180-203-138.spider.yandex.com.
+</code></pre>
+<p>Which confirms that this is indeed a Yandex crawler.</p>
+
+<p>I tried a third experiment to be sure... and got hits from both Bingbot and YandexBot.</p>
+
+<h4 id="cloudflare-crawler-hints">It was Cloudflare Crawler Hints, not ChatGPT</h4>
+
+<p>So I wrote up and posted about my discovery... and <a href="https://x.com/jatan_loya/status/1952506398270767499">Jatan Loya asked:</a></p>
+
+<blockquote><p>do you have crawler hints enabled in cf?</p></blockquote>
+
+<p>And yeah, it turned out I did. I spotted this in my caching configuration page (and it looks like I must have turned it on myself at some point in the past):</p>
+
+<p><img src="https://static.simonwillison.net/static/2025/cloudflare-crawler-hints.jpg" alt="Screenshot of Cloudflare settings panel showing &quot;Crawler Hints Beta&quot; with description text explaining that Crawler Hints provide high quality data to search engines and other crawlers when sites using Cloudflare change their content. This allows crawlers to precisely time crawling, avoid wasteful crawls, and generally reduce resource consumption on origins and other Internet infrastructure. Below states &quot;By enabling this service, you agree to share website information required for feature functionality and agree to the Supplemental Terms for Crawler Hints.&quot; There is a toggle switch in the on position on the right side and a &quot;Help&quot; link in the bottom right corner." style="max-width: 100%" /></p>
+
+<p>Here's <a href="https://developers.cloudflare.com/cache/advanced-configuration/crawler-hints/">the Cloudflare documentation for that feature</a>.</p>
+
+<p>I deleted my posts on Twitter and Bluesky (since you can't edit those and I didn't want the misinformation to continue to spread) and edited <a href="https://fedi.simonwillison.net/@simon/114972968822349077">my post on Mastodon</a>, then updated this entry with the real reason this had happened.</p>
+
+<p>I also changed the URL of this entry as it turned out Twitter and Bluesky were caching my social media preview for the previous one, which included the incorrect information in the title.</p>
+
+<details><summary>Original "So what's going on here?" section from my post</summary>
+
+<p><em>Here's a section of my original post with my theories about what was going on before learning about Cloudflare Crawler Hints.</em></p>
+
+<h4 id="so-what-s-going-on-here-">So what's going on here?</h4>
+<p>There are quite a few different moving parts here.</p>
+<ol>
+<li>I'm using Firefox on macOS with the 1Password and Readwise Highlighter extensions installed and active. Since I didn't visit the debug pages at all with my own browser I don't think any of these are relevant to these results.</li>
+<li>ChatGPT agent makes just a single request to my debug URL ...</li>
+<li>... which is proxied through both Cloudflare and Heroku.</li>
+<li>Within about a minute, I get hits from one or both of Bingbot and Yandex.</li>
+</ol>
+<p>Presumably ChatGPT agent itself is running behind at least one proxy - I would expect OpenAI to keep a close eye on that traffic to ensure it doesn't get abused.</p>
+<p>I'm guessing that infrastructure is hosted by Microsoft Azure. The <a href="https://openai.com/policies/sub-processor-list/">OpenAI Sub-processor List</a> - though that lists Microsoft Corporation, CoreWeave Inc, Oracle Cloud Platform and Google Cloud Platform under the "Cloud infrastructure" section so it could be any of those.</p>
+<p>Since the page is served over HTTPS my guess is that any intermediary proxies should be unable to see the path component of the URL, making the mystery of how Bingbot and Yandex saw the URL even more intriguing.</p>
+</details>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/bing">bing</a>, <a href="https://simonwillison.net/tags/privacy">privacy</a>, <a href="https://simonwillison.net/tags/search-engines">search-engines</a>, <a href="https://simonwillison.net/tags/user-agents">user-agents</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/cloudflare">cloudflare</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Usage charts for my LLM tool against OpenRouter]]></title>
         <id>https://simonwillison.net/2025/Aug/4/llm-openrouter-usage/#atom-everything</id>
@@ -4051,56 +4229,6 @@ it from hallucinating a feature that doesn't exist.</p>
 The post Reviewing Visual Studio license assignments just got easier appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[I Shipped a macOS App Built Entirely by Claude Code]]></title>
-        <id>https://simonwillison.net/2025/Jul/6/macos-app-built-entirely-by-claude-code/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jul/6/macos-app-built-entirely-by-claude-code/#atom-everything"/>
-        <updated>2025-07-06T22:47:51.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.indragie.com/blog/i-shipped-a-macos-app-built-entirely-by-claude-code">I Shipped a macOS App Built Entirely by Claude Code</a></strong></p>
-Indragie Karunaratne has "been building software for the Mac since 2008", but recently decided to try Claude Code to build a side project: <a href="https://github.com/indragiek/Context">Context</a>, a native Mac app for debugging MCP servers:</p>
-<blockquote>
-<p>There is still skill and iteration involved in helping Claude build software, but of the 20,000 lines of code in this project, I estimate that I wrote less than 1,000 lines by hand.</p>
-</blockquote>
-<p>It's a good looking native app:</p>
-<p><img alt="Screenshot of a native macOS app for debugging MCP servers. Left sidebar shows connected servers including sentry, github, linear and others with green status indicators. Main panel displays get_issue_details API function with parameters for retrieving Swift app crash data. Right side shows detailed Sentry example - an error information for an EXC_BREAKPOINT crash in ContextCore/StdioTransport.swift, including timestamps, occurrence count, affected users, and event details. Clean modern interface with blue accent colors and organized navigation tabs." src="https://static.simonwillison.net/static/2025/claude-code-context.jpg" /></p>
-<p>This is a useful, detailed write-up. A few notes on things I picked up:</p>
-<ul>
-<li>Claude is great at SwiftUI and mostly good at Swift, but gets confused by the newer Swift Concurrency mechanisms.</li>
-<li>Claude occasionally triggers “The compiler is unable to type-check this expression in reasonable time” errors, but is able to recover by refactoring view bodies into smaller expressions.</li>
-<li>Telling Claude to make native macOS interfaces “more beautiful/elegant/usable” works surprisingly well. I’ve seen the same with web frontend code.</li>
-<li>Claude Code’s build/test/debug agentic coding loop works great for Swift apps, but there isn’t a good equivalent to Playwright yet so you need to manually take over to interact with the UI and drop in screenshots of any problems.</li>
-<li>Claude is <em>great</em> at creating mock data:<blockquote>
-<p>The first screenshots of the app that I shared with friends as I dialed in the UI were backed by mock data, but it looked real enough that you could get a good sense of how the app would look when rendering data from real MCP servers.</p>
-</blockquote>
-</li>
-</ul>
-<p>Indragie’s focus throughout this piece is on using LLM tools to help close that last 20% of a side project that usually prevents it from being shipped.</p>
-<blockquote>
-<p>The most exciting thing about this entire journey for me is not the app I built, but that I am now able to scratch my coding itch and ship polished side projects again. It's like I found an extra 5 hours every day, and all it cost me was $200 a month.</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=44481286">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/macos">macos</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/swift">swift</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Nineteen Eighty-Four]]></title>
-        <id>https://simonwillison.net/2025/Jul/6/nineteen-eighty-four/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jul/6/nineteen-eighty-four/#atom-everything"/>
-        <updated>2025-07-06T09:39:09.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://en.wikipedia.org/wiki/Nineteen_Eighty-Four"><p>There was a whole chain of separate departments dealing with proletarian literature, music, drama, and entertainment generally. Here were produced rubbishy newspapers containing almost nothing except sport, crime and astrology, sensational five-cent novelettes, films oozing with sex, and sentimental songs which were <strong>composed entirely by mechanical means on a special kind of kaleidoscope known as a versificator</strong>. [...]</p>
-<p>It was one of countless similar songs published for the benefit of the proles by a sub-section of the Music Department. The words of these songs <strong>were composed without any human intervention whatever</strong> on an instrument known as a versificator.</p></blockquote>
-<p class="cite">&mdash; <a href="https://en.wikipedia.org/wiki/Nineteen_Eighty-Four">Nineteen Eighty-Four</a>, George Orwell predicts generative AI, published 1949</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
