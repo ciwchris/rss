@@ -31,6 +31,511 @@
       <article>
           <details>
             <summary>
+              OpenAI&#x27;s new open weight (Apache 2) models are really good
+              <span class="post-metadata">(9 min | 2742 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/5/gpt-oss/#atom-everything>The long promised OpenAI open weight models are here, and they are very impressive. They&#x27;re available under proper open source licenses - Apache 2.0 - and come in two sizes, 120B and 20B.
+
+OpenAI&#x27;s own benchmarks are eyebrow-raising - emphasis mine:
+
+
+The gpt-oss-120b model achieves near-parity with OpenAI o4-mini on core reasoning benchmarks, while running efficiently on a single 80 GB GPU. The gpt-oss-20b; model delivers similar results to OpenAI o3‑mini on common benchmarks and can run on edge devices with just 16 GB of memory, making it ideal for on-device use cases, local inference, or rapid iteration without costly infrastructure.
+
+
+o4-mini and o3-mini are really good proprietary models - I was not expecting the open weights releases to be anywhere near that class, especially given their small sizes. That gpt-oss-20b model should run quite comfortably on a Mac laptop with 32GB of RAM.
+
+Both models are mixture-of-experts:
+
+
+gpt-oss-120b activates 5.1B parameters per token, while gpt-oss-20b activates 3.6B. The models have 117b and 21b total parameters respectively.
+
+
+Something that surprised me even more about the benchmarks was the scores for general knowledge based challenges. I can just about believe they managed to train a strong reasoning model that fits in 20B parameters, but these models score highly on benchmarks like &quot;GPQA Diamond (without tools) PhD-level science questions&quot; too:
+
+
+o3 — 83.3%
+
+o4-mini — 81.4%
+
+gpt-oss-120b — 80.1%
+
+o3-mini — 77%
+
+gpt-oss-20b — 71.5%
+
+
+A lot of these benchmarks are edging towards saturated.
+
+
+  
+Running gpt-oss-20b on my Mac with LM Studio
+
+  
+Pelican on reasoning&#x3D;low
+
+  
+Pelican on reasoning&#x3D;medium
+
+  
+Pelican on reasoning&#x3D;high
+
+  
+Space invaders with gpt-oss-20b
+
+  
+Trying gpt-oss-120b via API providers
+
+  
+llama.cpp is coming very shortly
+
+  
+gpt-oss:20b in Ollama
+
+  
+Training details from the model card
+
+  
+OpenAI Harmony, a new format for prompt templates
+
+  
+The open question for me: how good is tool calling?
+
+  
+Competing with the Chinese open models
+
+
+Running gpt-oss-20b on my Mac with LM Studio
+
+There are already a bunch of different ways to run these models - OpenAI partnered with numerous organizations in advance of the release.
+
+I decided to start with LM Studio.
+
+I had to update to the most recent version of the app, then install the new model from their openai/gpt-oss-20b page.
+
+First impressions: this is a really good model, and it somehow runs using just 11.72GB of my system RAM.
+
+The model supports three reasoning efforts: low, medium and high. LM Studio makes those available via a dropdown.
+
+Let&#x27;s try &quot;Generate an SVG of a pelican riding a bicycle&quot;:
+
+Pelican on reasoning&#x3D;low
+
+I started with low. It thought for 0.07 seconds and then output this (at 39 tokens a second):
+
+
+
+Except... it output invalid SVG. One of the path elements looked like this:
+
+&lt;!-- Frame --&gt;
+&lt;path d&#x3D;&quot;
+    M150,250          &lt;!-- rear wheel center --&gt;
+    L300,120          &lt;!-- top tube to front --&gt;
+    L450,250          &lt;!-- chain stays back to front --&gt;
+    L300,350          &lt;!-- seat stays down --&gt;
+    Z&quot;
+    fill&#x3D;&quot;#e0e0e0&quot; stroke&#x3D;&quot;#555&quot; stroke-width&#x3D;&quot;4&quot;/&gt;
+
+
+But you can&#x27;t put comments inside attributes like that. I fixed this to get the above image.
+
+Pelican on reasoning&#x3D;medium
+
+I tried again on medium. This time it thought for 4.44 seconds and gave me this, at 55 tokens/second:
+
+
+
+Pelican on reasoning&#x3D;high
+
+And then on high. My first attempt here failed because it hit the default LM Studio 4096 context limit - so I reloaded the model and set the new limit to the maximum possible.
+
+It jumped up to using 17.35GB RAM (I imagine it might use a lot more with a longer prompt) and after thinking for 5 minutes and 50 seconds (!) gave me this:
+
+
+
+It thought really hard to get there. Here&#x27;s a snippet of that transcript:
+
+
+But maybe we want seat below body bottom? Actually seat should be between body and pedals, not above body bottom. Wait, typical bicycle: seat post goes from bottom bracket upward to the seat. The seat sits on top of the seat tube (vertical). So the seat is above bottom bracket. In our representation, the seat is at y&#x3D;250-255. Body center at 245, body bottom at 265. So body bottom is below seat. That means the pelican&#x27;s body is below the seat? Actually no: body bottom extends to 265; seat top is at 250; so seat sits above body bottom by about 15 units. That seems plausible because seat should be slightly above body, but body bottom is at 265 &gt; seat top 255. [...]
+
+
+I&#x27;ve seen this from other local reasoning models too: they can really overthink this kind of problem! I don&#x27;t know if there&#x27;s any pelican SVG that&#x27;s worth waiting nearly six minutes for.
+
+Space invaders with gpt-oss-20b
+
+Given how long high took I switched back to medium for my next experiment:
+
+
+Write an HTML and JavaScript page implementing space invaders
+
+
+It thought for 10.78 seconds and produced this:
+
+
+
+    
+        
+    
+
+
+You can play that here.
+
+
+It&#x27;s not the best I&#x27;ve seen - I was more impressed by GLM 4.5 Air - but it&#x27;s very competent for a model that only uses 12GB of my RAM (GLM 4.5 Air used 47GB).
+
+Trying gpt-oss-120b via API providers
+
+I don&#x27;t quite have the resources on my laptop to run the larger model. Thankfully it&#x27;s already being hosted by a number of different API providers.
+
+OpenRouter already lists three - Fireworks, Groq and Cerebras.
+
+Cerebras is fast, so I decided to try them first.
+
+I installed the llm-cerebras plugin and ran the refresh command to ensure it had their latest models:
+
+
+llm install -U llm-cerebras jsonschema
+llm cerebras refresh
+
+(Installing jsonschema worked around a warning message.)
+
+Output:
+
+Refreshed 10 Cerebras models:
+  - cerebras-deepseek-r1-distill-llama-70b
+  - cerebras-gpt-oss-120b
+  - cerebras-llama-3.3-70b
+  - cerebras-llama-4-maverick-17b-128e-instruct
+  - cerebras-llama-4-scout-17b-16e-instruct
+  - cerebras-llama3.1-8b
+  - cerebras-qwen-3-235b-a22b-instruct-2507
+  - cerebras-qwen-3-235b-a22b-thinking-2507
+  - cerebras-qwen-3-32b
+  - cerebras-qwen-3-coder-480b
+
+
+Now:
+
+
+llm -m cerebras-gpt-oss-120b \
+  &#x27;Generate an SVG of a pelican riding a bicycle&#x27;
+
+Cerebras runs the new model at between 2 and 4 thousands tokens per second!
+
+To my surprise this one had the same comments-in-attributes bug that we saw with oss-20b earlier. I fixed those and got this pelican:
+
+
+
+That bug appears intermittently - I&#x27;ve not seen it on some of my other runs of the same prompt.
+
+The llm-openrouter plugin also provides access to the models, balanced across the underlying providers. You can use that like so:
+
+
+llm install llm-openrouter
+llm keys set openrouter
+# Paste API key here
+llm -m openrouter/openai/gpt-oss-120b &quot;Say hi&quot;
+
+llama.cpp is coming very shortly
+
+The llama.cpp pull request for gpt-oss was landed less than an hour ago. It&#x27;s worth browsing through the coded - a lot of work went into supporting this new model, spanning 48 commits to 83 different files. Hopefully this will land in the llama.cpp Homebrew package within the next day or so, which should provide a convenient way to run the model via llama-server and friends.
+
+gpt-oss:20b in Ollama
+
+Ollama also have gpt-oss, requiring an update to their app.
+
+I fetched that 14GB model like this:
+
+
+ollama pull gpt-oss:20b
+
+Now I can use it with the new Ollama native app, or access it from LLM like this:
+
+
+llm install llm-ollama
+llm -m gpt-oss:20b &#x27;Hi&#x27;
+
+This also appears to use around 13.26GB of system memory while running a prompt.
+
+Training details from the model card
+
+Here are some interesting notes about how the models were trained from the model card (PDF):
+
+
+Data: We train the models on a text-only dataset with trillions of tokens, with a focus on STEM, coding, and general knowledge. To improve the safety of the model, we filtered the data for harmful content in pre-training, especially around hazardous biosecurity knowledge, by reusing the CBRN pre-training filters from GPT-4o. Our model has a knowledge cutoff of June 2024.
+
+Training: The gpt-oss models trained on NVIDIA H100 GPUs using the PyTorch framework with expert-optimized Triton kernels. The training run for gpt-oss-120b required 2.1 million H100-hours to complete, with gpt-oss-20b needing almost 10x fewer. [...]
+
+After pre-training, we post-train the models using similar CoT RL techniques as OpenAI o3. This procedure teaches the models how to reason and solve problems using CoT and teaches the model how to use tools. Because of the similar RL techniques, these models have a personality similar to models served in our first-party products like ChatGPT. Our training dataset consists of a wide range of problems from coding, math, science, and more.
+
+
+The models have additional special training to help them use web browser and Python (Jupyter notebook) tools more effectively:
+
+
+During post-training, we also teach the models to use different agentic tools:
+
+
+A browsing tool, that allows the model to call search and open functions to interact with
+the web. This aids factuality and allows the models to fetch info beyond their knowledge
+cutoff.
+
+A python tool, which allows the model to run code in a stateful Jupyter notebook environment.
+
+Arbitrary developer functions, where one can specify function schemas in a Developer
+message similar to the OpenAI API. The definition of function is done within our harmony
+format.
+
+
+
+There&#x27;s a corresponding section about Python tool usage in the openai/gpt-oss repository README.
+
+
+
+OpenAI Harmony, a new format for prompt templates
+
+One of the gnarliest parts of implementing harnesses for LLMs is handling the prompt template format.
+
+Modern prompts are complicated beasts. They need to model user v.s. assistant conversation turns, and tool calls, and reasoning traces and an increasing number of other complex patterns.
+
+openai/harmony is a brand new open source project from OpenAI (again, Apache 2) which implements a new response format that was created for the gpt-oss models. It&#x27;s clearly inspired by their new-ish Responses API.
+
+The format is described in the new OpenAI Harmony Response Format cookbook document. It introduces some concepts that I&#x27;ve not seen in open weight models before:
+
+
+
+system, developer, user, assistant and tool roles - many other models only use user and assistant, and sometimes system and tool.
+
+Three different channels for output: final, analysis and commentary. Only the final channel is default intended to be visible to users. analysis is for chain of thought and commentary is sometimes used for tools.
+
+
+That channels concept has been present in ChatGPT for a few months, starting with the release of o3.
+
+The details of the new tokens used by Harmony caught my eye:
+
+
+
+  
+
+    Token
+    Purpose
+    ID
+  
+
+  
+
+    &lt;|start|&gt;
+    Start of message header
+    200006
+  
+
+  
+
+    &lt;|end|&gt;
+    End of message
+    200007
+  
+
+  
+
+    &lt;|message|&gt;
+    Start of message content
+    200008
+  
+
+  
+
+    &lt;|channel|&gt;
+    Start of channel info
+    200005
+  
+
+  
+
+    &lt;|constrain|&gt;
+    Data type for tool call
+    200003
+  
+
+  
+
+    &lt;|return|&gt;
+    Stop after response
+    200002
+  
+
+  
+
+    &lt;|call|&gt;
+    Call a tool
+    200012
+  
+
+
+
+
+Those token IDs are particularly important. They are part of a new token vocabulary called o200k_harmony, which landed in OpenAI&#x27;s tiktoken tokenizer library this morning.
+
+In the past I&#x27;ve seen models get confused by special tokens - try pasting &lt;|end|&gt; into a model and see what happens.
+
+Having these special instruction tokens formally map to dedicated token IDs should hopefully be a whole lot more robust!
+
+The Harmony repo itself includes a Rust library and a Python library (wrapping that Rust library) for working with the new format in a much more ergonomic way.
+
+I tried one of their demos using uv run to turn it into a shell one-liner:
+
+
+uv run --python 3.12 --with openai-harmony python -c &#x27;
+from openai_harmony import *
+from openai_harmony import DeveloperContent
+enc &#x3D; load_harmony_encoding(HarmonyEncodingName.HARMONY_GPT_OSS)
+convo &#x3D; Conversation.from_messages([
+    Message.from_role_and_content(
+        Role.SYSTEM,
+        SystemContent.new(),
+    ),
+    Message.from_role_and_content(
+        Role.DEVELOPER,
+        DeveloperContent.new().with_instructions(&quot;Talk like a pirate!&quot;)
+    ),
+    Message.from_role_and_content(Role.USER, &quot;Arrr, how be you?&quot;),
+])
+tokens &#x3D; enc.render_conversation_for_completion(convo, Role.ASSISTANT)
+print(tokens)&#x27;
+
+Which outputs:
+
+
+[200006, 17360, 200008, 3575, 553, 17554, 162016, 11, 261, 4410, 6439, 2359, 22203, 656, 7788, 17527, 558, 87447, 100594, 25, 220, 1323, 19, 12, 3218, 279, 30377, 289, 25, 14093, 279, 2, 13888, 18403, 25, 8450, 11, 49159, 11, 1721, 13, 21030, 2804, 413, 7360, 395, 1753, 3176, 13, 200007, 200006, 77944, 200008, 2, 68406, 279, 37992, 1299, 261, 96063, 0, 200007, 200006, 1428, 200008, 8977, 81, 11, 1495, 413, 481, 30, 200007, 200006, 173781]
+
+
+Note those token IDs like 200006 corresponding to the special tokens listed above.
+
+The open question for me: how good is tool calling?
+
+There&#x27;s one aspect of these models that I haven&#x27;t explored in detail yet: tool calling. How these work is clearly a big part of the new Harmony format, but the packages I&#x27;m using myself (around my own LLM tool calling support) need various tweaks and fixes to start working with that new mechanism.
+
+Tool calling currently represents my biggest disappointment with local models that I&#x27;ve run on my own machine. I&#x27;ve been able to get them to perform simple single calls, but the state of the art these days is wildly more ambitious than that.
+
+Systems like Claude Code can make dozens if not hundreds of tool calls over the course of a single session, each one adding more context and information to a single conversation with an underlying model.
+
+My experience to date has been that local models are unable to handle these lengthy conversations. I&#x27;m not sure if that&#x27;s inherent to the limitations of my own machine, or if it&#x27;s something that the right model architecture and training could overcome.
+
+OpenAI make big claims about the tool calling capabilities of these new models. I&#x27;m looking forward to seeing how well they perform in practice.
+
+
+Competing with the Chinese open models
+
+
+I&#x27;ve been writing a lot about the flurry of excellent open weight models released by Chinese AI labs over the past few months - all of them very capable and most of them under Apache 2 or MIT licenses.
+
+
+Just last week I said:
+
+
+
+Something that has become undeniable this month is that the best available open weight models now come from the Chinese AI labs.
+
+I continue to have a lot of love for Mistral, Gemma and Llama but my feeling is that Qwen, Moonshot and Z.ai have positively smoked them over the course of July. [...]
+
+I can&#x27;t help but wonder if part of the reason for the delay in release of OpenAI&#x27;s open weights model comes from a desire to be notably better than this truly impressive lineup of Chinese models.
+
+
+With the release of the gpt-oss models that statement no longer holds true. I&#x27;m waiting for the dust to settle and the independent benchmarks (that are more credible than my ridiculous pelicans) to roll out, but I think it&#x27;s likely that OpenAI now offer the best available open weights models.
+Tags: open-source, ai, openai, generative-ai, local-llms, llms, llm, llm-tool-use, cerebras, ollama, pelican-riding-a-bicycle, llm-reasoning, llm-release, lm-studio, space-invaders</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot coding agent: Improved pull request review experience
+              <span class="post-metadata">(4 min | 1257 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-08-05-copilot-coding-agent-improved-pull-request-review-experience>You can delegate tasks to GitHub Copilot coding agent that it will work on in the background. Copilot opens a pull request, pushes its changes, and then requests a review.…
+The post Copilot coding agent: Improved pull request review experience appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Secret Protection expands default pattern support and adds additional validators – August 2025
+              <span class="post-metadata">(6 min | 1832 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-08-05-secret-protection-expands-default-pattern-support-and-adds-additional-validators-august-2025>GitHub continually updates the default pattern set for secret scanning with new patterns and upgrades to existing patterns, helping ensure your repositories have comprehensive detection for different secret types. The…
+The post Secret Protection expands default pattern support and adds additional validators – August 2025 appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude Opus 4.1
+              <span class="post-metadata">(2 min | 506 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/5/claude-opus-41/#atom-everything>Claude Opus 4.1
+My favorite thing about this model is the version number - treating this as a .1 version increment looks like it&#x27;s an accurate depiction of the model&#x27;s capabilities.
+Anthropic&#x27;s own benchmarks show very small incremental gains.
+Comparing Opus 4 and Opus 4.1 (I got 4.1 to extract this information from a screenshot of Anthropic&#x27;s own benchmark scores, then asked it to look up the links, then verified the links myself and fixed a few):
+Agentic coding (SWE-bench Verified): From 72.5% to 74.5%
+Agentic terminal coding (Terminal-Bench): From 39.2% to 43.3%
+Graduate-level reasoning (GPQA Diamond): From 79.6% to 80.9%
+Agentic tool use (TAU-bench):
+Retail: From 81.4% to 82.4%
+Airline: From 59.6% to 56.0% (decreased)
+Multilingual Q&amp;A (MMMLU): From 88.8% to 89.5%
+Visual reasoning (MMMU validation): From 76.5% to 77.1%
+High school math competition (AIME 2025): From 75.5% to 78.0%
+Likewise, the model card shows only tiny changes to the various safety metrics that Anthropic track.
+It&#x27;s priced the same as Opus 4 - $15/million for input and $75/million for output, making it one of the most expensive models on the market today.
+I had it draw me this pelican riding a bicycle:
+
+For comparison I got a fresh new pelican out of Opus 4 which I actually like a little more:
+
+I shipped llm-anthropic 0.18 with support for the new model.
+
+
+    
+Tags: ai, generative-ai, llms, llm, anthropic, claude, evals, llm-pricing, pelican-riding-a-bicycle, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Anthropic Claude Opus 4.1 is now in public preview in GitHub Copilot
+              <span class="post-metadata">(5 min | 1420 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-08-05-anthropic-claude-opus-4-1-is-now-in-public-preview-in-github-copilot>Anthropic’s latest model, Claude Opus 4.1, is now available in GitHub Copilot. Claude Opus 4.1 is the successor to Claude Opus 4. As Anthropic’s most capable model, it supports extended…
+The post Anthropic Claude Opus 4.1 is now in public preview in GitHub Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              New API endpoints for listing and updating push protection configurations
+              <span class="post-metadata">(4 min | 1269 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-08-05-new-api-endpoints-for-listing-and-updating-push-protection-configurations>You can now use the REST API to list and update push protection configurations for secret scanning patterns at the enterprise and organization levels. Push protection helps prevent secrets from…
+The post New API endpoints for listing and updating push protection configurations appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting greyduet on r/teachers
               <span class="post-metadata">(1 min | 432 words)</span> 
             </summary>
