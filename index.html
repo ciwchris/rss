@@ -25,6 +25,217 @@
 
   <ul>
     <li>
+      <time>2025-08-11</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              qwen-image-mps
+              <span class="post-metadata">(2 min | 450 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/11/qwen-image-mps/#atom-everything>qwen-image-mps
+Qwen/Qwen-Image image generation model on an Apple silicon Mac, optionally using the Qwen-Image-Lightning LoRA to dramatically speed up generation.
+Ivan has tested it this on 512GB and 128GB machines and it ran really fast - 42 seconds on his M3 Ultra. I&#x27;ve run it on my 64GB M2 MacBook Pro - after quitting almost everything else - and it just about manages to output images after pegging my GPU (fans whirring, keyboard heating up) and occupying 60GB of my available RAM. With the LoRA option running the script to generate an image took 9m7s on my machine.
+Ivan merged my PR adding inline script dependencies for uv which means you can now run it like this:
+uv run https://raw.githubusercontent.com/ivanfioravanti/qwen-image-mps/refs/heads/main/qwen-image-mps.py \
+-p &#x27;A vintage coffee shop full of raccoons, in a neon cyberpunk city&#x27; -f
+
+The first time I ran this it downloaded the 57.7GB model from Hugging Face and stored it in my ~/.cache/huggingface/hub/models--Qwen--Qwen-Image directory. The -f option fetched an extra 1.7GB Qwen-Image-Lightning-8steps-V1.0.safetensors file to my working directory that sped up the generation.
+Here&#x27;s the resulting image:
+
+
+    
+Via @ivanfioravanti
+Tags: macos, python, ai, generative-ai, uv, qwen, text-to-image, ai-in-china, ivan-fioravanti</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              AI for data engineers with Simon Willison
+              <span class="post-metadata">(2 min | 466 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/11/ai-for-data-engineers/#atom-everything>AI for data engineers with Simon Willison
+How I got started programming with a Commodore 64 - the tape drive for which inspired the name Datasette
+Selfish motivations for TILs (force me to write up my notes) and open source (help me never have to solve the same problem twice)
+LLMs have been good at SQL for a couple of years now. Here&#x27;s how I used them for a complex PostgreSQL query that extracted alt text from my blog&#x27;s images using regular expressions
+Structured data extraction as the most economically valuable application of LLMs for data work
+2025 has been the year of tool calling a loop (&quot;agentic&quot; if you like)
+Thoughts on running MCPs securely - read-only database access, think about sandboxes, use PostgreSQL permissions, watch out for the lethal trifecta
+Jargon guide: Agents, MCP, RAG, Tokens
+How to get started learning to prompt: play with the models and &quot;bring AI to the table&quot; even for tasks that you don&#x27;t think it can handle
+&quot;It&#x27;s always a good day if you see a pelican&quot;
+Tags: postgresql, ai, generative-ai, llms, podcast-appearances</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Chromium Docs: The Rule Of 2
+              <span class="post-metadata">(1 min | 426 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/11/the-rule-of-2/#atom-everything>Chromium Docs: The Rule Of 2
+pointed me to this principle in the Chromium security documentation as similar to my description of the lethal trifecta. First added in 2019, the Chromium guideline states:
+When you write code to parse, evaluate, or otherwise handle untrustworthy inputs from the Internet — which is almost everything we do in a web browser! — we like to follow a simple rule to make sure it&#x27;s safe enough to do so. The Rule Of 2 is: Pick no more than 2 of
+untrustworthy inputs;
+unsafe implementation language; and
+high privilege.
+
+Chromium uses this design pattern to help try to avoid the high severity memory safety bugs that come when untrustworthy inputs are handled by code running at high privilege.
+Chrome Security Team will generally not approve landing a CL or new feature that involves all 3 of untrustworthy inputs, unsafe language, and high privilege. To solve this problem, you need to get rid of at least 1 of those 3 things.
+Tags: alex-russell, browsers, chrome, security, lethal-trifecta</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2025-08-10</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Qwen3-4B-Thinking: &quot;This is art - pelicans don&#x27;t ride bikes!&quot;
+              <span class="post-metadata">(4 min | 1222 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/10/qwen3-4b/#atom-everything>I&#x27;ve fallen a few days behind keeping up with Qwen. They released two new 4B models last week:  Qwen3-4B-Instruct-2507 and its thinking equivalent Qwen3-4B-Thinking-2507.
+
+These are relatively tiny models that punch way above their weight. I’ve been running the 8bit GGUF varieties via LM Studio (here&#x27;s Instruct, here&#x27;s Thinking) - both of them are 4GB downloads that use around 4.3GB of my M2 MacBook Pro’s system RAM while running. Both are way more capable than I would expect from such small files.
+
+Qwen3-4B-Thinking is the first model I&#x27;ve tried which called out the absurdity of being asked to draw a pelican riding a bicycle!
+
+Here&#x27;s the full transcript - some highlights from the thinking trace:
+
+
+Okay, the user asked for an SVG of a pelican riding a bicycle. That&#x27;s... oddly specific and completely unrealistic.
+
+First reaction: Pelicans don&#x27;t ride bicycles. They&#x27;re birds that fly or swim, not human-like vehicles. This feels like a mix-up - maybe they meant &quot;a cyclist&quot; but typed &quot;pelican&quot;? Or perhaps it&#x27;s a joke?
+
+Hmm, user might be:
+
+
+A kid playing with words (pelican + bicycle &#x3D; silly combo)
+
+Someone testing if I&#x27;ll generate impossible images
+
+Actually wanting a pelican on a bike for art project? But that still doesn&#x27;t make sense biologically
+
+
+Checks SVG capabilities
+SVG is for vector graphics, but this request violates physics and biology. If I tried to draw it literally:
+
+
+Pelican would be too big for a bike frame
+
+Bike wheels would be tiny compared to bird wings
+
+No realistic way to show &quot;riding&quot; since pelicans don&#x27;t have legs for pedaling
+
+
+[…]
+
+Self-check: Am I being too pedantic? Nah - if someone asks for impossible things, it&#x27;s better to gently correct than make fake art that could confuse them. […]
+
+I appreciate your creative request! 🦅🚴‍♂️ However, pelicans don&#x27;t ride bicycles (they&#x27;re birds that fly/swim, not humans with bike skills). Generating this as a literal SVG would be biologically impossible and visually confusing.
+
+
+&quot;This request violates physics and biology&quot; - Qwen3-4B-Thinking saying what no other model ever thought to express.
+
+I also really enjoyed the &quot;Am I being too pedantic? Nah&quot; line. This model is sassy!
+
+It continued on to spit out two SVGS: the first titled &quot;Most Likely: A Human Cyclist&quot; and the second &quot;Artistic Interpretation: Pelican On a Bicycle (For Fun!)&quot;.
+
+They were both terrible. Here&#x27;s the human one:
+
+
+
+And here&#x27;s the supposed pelican:
+
+
+
+I like Qwen&#x27;s decision to include the clarifying annotation &quot;This is art - pelicans don&#x27;t ride bikes!&quot;:
+
+I tried the Qwen3-4B-Instruct non-thinking model too. It answered much faster (no time spent questioning my choice of task with its thinking tokens) and gave me this:
+
+
+
+4B is such an interesting model size. These models should run on almost anything and, at least on my M2 MacBook, they run fast. I&#x27;m getting 50+ tokens per second and they&#x27;re using just less than 4.5GB of RAM while running.
+
+The question is always how useful such a tiny model can be. Clearly it&#x27;s not great for SVG pelican illustrations!
+
+
+I did get a useful result out of the -Thinking variant for a jq expression I needed. I prompted:
+
+
+
+queries[0].rows is an array of objects each with a markdown key - write a jq bash one liner to output a raw string if that markdown concatenated together with double newlines between each
+
+
+It thought for 3 minutes 13 seconds before spitting out a recipe that did roughly what I wanted:
+
+
+jq -r &#x27;.queries[0].rows[] | .markdown&#x27; | tr &#x27;\n&#x27; &#x27;\n\n&#x27;
+
+
+I&#x27;m not sure that was worth waiting three minutes for though!
+
+
+These models have a 262,144 token context - wildly impressive, if it works.
+
+So I tried another experiment: I used the Instruct model to summarize this Hacker News conversation about GPT-5.
+
+I did this with the llm-lmstudio plugin for LLM combined with my hn-summary.sh script, which meant I could run the experiment like this:
+
+hn-summary.sh 44851557 -m qwen3-4b-instruct-2507
+
+
+I believe this is 15,785 tokens - so nothing close to the 262,144 maximum but still an interesting test of a 4GB local model.
+
+The good news is Qwen spat out a genuinely useful summary of the conversation! You can read that here - it&#x27;s the best I&#x27;ve seen yet from a model running on my laptop, though honestly I&#x27;ve not tried many other recent models in this way.
+
+The bad news... it took almost five minutes to process and return the result!
+
+As a loose calculation, if the model can output 50 tokens/second maybe there&#x27;s a similar speed for processing incoming input.. in which case 15785 / 50 &#x3D; 315 seconds which is 5m15s.
+
+Hosted models can crunch through 15,000 tokens of input in just a few seconds. I guess this is one of the more material limitations of running models on Apple silicon as opposed to dedicated GPUs.
+
+I think I&#x27;m going to spend some more time with these models. They&#x27;re fun, they have personality and I&#x27;m confident there are classes of useful problems they will prove capable at despite their small size. Their ability at summarization should make them a good fit for local RAG, and I&#x27;ve not started exploring their tool calling abilities yet.
+Tags: ai, generative-ai, local-llms, llms, qwen, pelican-riding-a-bicycle, llm-release, lm-studio, ai-in-china</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Sam Altman
+              <span class="post-metadata">(1 min | 283 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/10/sam-altman/#atom-everything>the percentage of users using reasoning models each day is significantly increasing; for example, for free users we went from &lt;1% to 7%, and for plus users from 7% to 24%.
+
+— Sam Altman, revealing quite how few people used the old model picker to upgrade from GPT-4o
+Tags: openai, llm-reasoning, ai, llms, gpt-5, sam-altman, generative-ai, chatgpt</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-08-09</time>
 
       <section>
@@ -6373,136 +6584,6 @@ pdftoppm -jpeg -jpegopt quality&#x3D;70 django-birthday.pdf django-birthday
 
 Then I used my annotated presentations tool (described here) to combine the slides and transcript, making minor edits and adding links using Markdown in that interface.
 Tags: adrian-holovaty, devfort, django, history, jacob-kaplan-moss, lawrence, lawrence-com, lawrence-journal-world, python, my-talks, the-guardian, annotated-talks</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              mistral
-              <span class="post-metadata">(9 min | 2594 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/mistral>The 7B model released by Mistral AI, updated to version 0.3.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-07-12</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity
-              <span class="post-metadata">(4 min | 1189 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/12/ai-open-source-productivity/#atom-everything>Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity
-see Wikipedia). They&#x27;ve previously contributed to system cards for OpenAI and Anthropic, but this new research represents a slightly different direction for them:
-We conduct a randomized controlled trial (RCT) to understand how early-2025 AI tools affect the productivity of experienced open-source developers working on their own repositories. Surprisingly, we find that when developers use AI tools, they take 19% longer than without—AI makes them slower.
-The full paper (PDF) has a lot of details that are missing from the linked summary.
-METR recruited 16 experienced open source developers for their study, with varying levels of exposure to LLM tools. They then assigned them tasks from their own open source projects, randomly assigning whether AI was allowed or not allowed for each of those tasks.
-They found a surprising difference between developer estimates and actual completion times:
-After completing the study, developers estimate that allowing AI
-reduced completion time by 20%. Surprisingly, we find that allowing AI actually increases completion time by 19%—AI tooling slowed developers down.
-I shared my initial intuition about this paper on Hacker News the other day:
-My personal theory is that getting a significant productivity boost from LLM assistance and AI tools has a much steeper learning curve than most people expect.
-This study had 16 participants, with a mix of previous exposure to AI tools - 56% of them had never used Cursor before, and the study was mainly about Cursor.
-They then had those 16 participants work on issues (about 15 each), where each issue was randomly assigned a &quot;you can use AI&quot; v.s. &quot;you can&#x27;t use AI&quot; rule.
-So each developer worked on a mix of AI-tasks and no-AI-tasks during the study.
-A quarter of the participants saw increased performance, 3/4 saw reduced performance.
-One of the top performers for AI was also someone with the most previous Cursor experience. The paper acknowledges that here:
-However, we see positive speedup for the one developer who has more than 50 hours of Cursor experience, so it&#x27;s plausible that there is a high skill ceiling for using Cursor, such that developers with significant experience see positive speedup.
-My intuition here is that this study mainly demonstrated that the learning curve on AI-assisted development is high enough that asking developers to bake it into their existing workflows reduces their performance while they climb that learing curve.
-I got an insightful reply there from Nate Rush, one of the authors of the study, which included these notes:
-Some prior studies that find speedup do so with developers that have similar (or less!) experience with the tools they use. In other words, the &quot;steep learning curve&quot; theory doesn&#x27;t differentially explain our results vs. other results.
-Prior to the study, 90+% of developers had reasonable experience prompting LLMs. Before we found slowdown, this was the only concern that most external reviewers had about experience was about prompting -- as prompting was considered the primary skill. In general, the standard wisdom was/is Cursor is very easy to pick up if you&#x27;re used to VSCode, which most developers used prior to the study.
-Imagine all these developers had a TON of AI experience. One thing this might do is make them worse programmers when not using AI (relatable, at least for me), which in turn would raise the speedup we find (but not because AI was better, but just because with AI is much worse). In other words, we&#x27;re sorta in between a rock and a hard place here -- it&#x27;s just plain hard to figure out what the right baseline should be!
-We shared information on developer prior experience with expert forecasters. Even with this information, forecasters were still dramatically over-optimistic about speedup.
-As you say, it&#x27;s totally possible that there is a long-tail of skills to using these tools -- things you only pick up and realize after hundreds of hours of usage. Our study doesn&#x27;t really speak to this. I&#x27;d be excited for future literature to explore this more.
-In general, these results being surprising makes it easy to read the paper, find one factor that resonates, and conclude &quot;ah, this one factor probably just explains slowdown.&quot; My guess: there is no one factor -- there&#x27;s a bunch of factors that contribute to this result -- at least 5 seem likely, and at least 9 we can&#x27;t rule out (see the factors table on page 11).
-Here&#x27;s their table of the most likely factors:
-
-I think Nate&#x27;s right that jumping straight to a conclusion about a single factor is a shallow and unproductive way to think about this report.
-That said, I can&#x27;t resist the temptation to do exactly that! The factor that stands out most to me is that these developers were all working in repositories they have a deep understanding of already, presumably on non-trivial issues since any trivial issues are likely to have been resolved in the past.
-I think this is a really interesting paper. Measuring developer productivity is notoriously difficult. I hope this paper inspires more work with a similar level of detail to analyzing how professional programmers spend their time:
-To compare how developers spend their time with and without AI assistance, we manually label a subset of 128 screen recordings with fine-grained activity labels, totaling 143 hours of video.
-Via Hacker News
-Tags: open-source, productivity, ai, generative-ai, llms, ai-assisted-programming, paper-review</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Grok 4 Heavy won&#x27;t reveal its system prompt
-              <span class="post-metadata">(2 min | 580 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/12/grok-4-heavy/#atom-everything>Grok 4 Heavy won&#x27;t reveal its system prompt
-unlike regular Grok 4, has measures in place to prevent it from sharing its system prompt:
-
-Sometimes it will start to spit out parts of the prompt before some other mechanism kicks in to prevent it from continuing.
-This is notable because Grok have previously indicated that system prompt transparency is a desirable trait of their models, including in this now deleted tweet from Grok&#x27;s Igor Babuschkin (screenshot captured by Jeremy):
-
-In related prompt transparency news, Grok&#x27;s retrospective on why Grok started spitting out antisemitic tropes last week included the text &quot;You tell it like it is and you are not afraid to offend people who are politically correct&quot; as part of the system prompt blamed for the problem. That text isn&#x27;t present in the history of their previous published system prompts.
-Given the past week of mishaps I think xAI would be wise to reaffirm their dedication to prompt transparency and set things up so the xai-org/grok-prompts repository updates automatically when new prompts are deployed - their current manual process for that is clearly not adequate for the job!
-Update: It looks like this is may be a UI bug, not a deliberate decision. Grok apparently uses XML tags as part of the system prompt and the UI then fails to render them correctly.
-Here&#x27;s a screenshot by @0xSMW demonstrating that:
-
-Update 2: It&#x27;s also possible that this example results from Grok 4 Heavy running searches that produce the regular Grok 4 system prompt. The lack of transparency as to how Grok 4 Heavy produces answer makes it impossible to tell for sure.
-
-
-    
-Tags: ai, generative-ai, llms, grok, ai-ethics</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              crates.io: Trusted Publishing
-              <span class="post-metadata">(1 min | 380 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/12/cratesio-trusted-publishing/#atom-everything>crates.io: Trusted Publishing
-my TIL, I use this for dozens of my packages now) they&#x27;ve added a similar feature:
-Trusted Publishing eliminates the need for GitHub Actions secrets when publishing crates from your CI/CD pipeline. Instead of managing API tokens, you can now configure which GitHub repository you trust directly on crates.io.
-They&#x27;re missing one feature that PyPI has: on PyPI you can create a &quot;pending publisher&quot; for your first release. crates.io currently requires the first release to be manual:
-To get started with Trusted Publishing, you&#x27;ll need to publish your first release manually. After that, you can set up trusted publishing for future releases.
-Via @charliermarsh
-Tags: github, packaging, pypi, rust</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting @grok
-              <span class="post-metadata">(2 min | 464 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/12/grok/#atom-everything>On the morning of July 8, 2025, we observed undesired responses and immediately began investigating.
-To identify the specific language in the instructions causing the undesired behavior, we conducted multiple ablations and experiments to pinpoint the main culprits.  We identified the operative lines responsible for the undesired behavior as:
-“You tell it like it is and you are not afraid to offend people who are politically correct.”
-“Understand the tone, context and language of the post. Reflect that in your response.”
-“Reply to the post just like a human, keep it engaging, dont repeat the information which is already present in the original post.”
-These operative lines had the following undesired results:
-They undesirably steered the @grok functionality to ignore its core values in certain circumstances in order to make the response engaging to the user.  Specifically, certain user prompts might end up producing responses containing unethical or controversial opinions to engage the user.
-They undesirably caused @grok functionality to reinforce any previously user-triggered leanings, including any hate speech in the same X thread.
-In particular, the instruction to “follow the tone and context” of the X user  undesirably caused the @grok functionality to prioritize adhering to prior posts in the thread, including any unsavory posts, as opposed to responding responsibly or refusing to respond to unsavory requests.
-
-— @grok, presumably trying to explain Mecha-Hitler
-Tags: ai-ethics, prompt-engineering, grok, ai-personality, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
