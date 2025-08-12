@@ -25,9 +25,205 @@
 
   <ul>
     <li>
+      <time>2025-08-12</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Nick Turley
+              <span class="post-metadata">(1 min | 374 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/12/nick-turley/#atom-everything>I think there&#x27;s been a lot of decisions over time that proved pretty consequential, but we made them very quickly as we have to. [...]
+[On pricing] I had this kind of panic attack because we really needed to launch subscriptions because at the time we were taking the product down all the time. [...]
+So what I did do is ship a Google Form to Discord with the four questions you&#x27;re supposed to ask on how to price something.
+But we got with the $20. We were debating something slightly higher at the time. I often wonder what would have happened because so many other companies ended up copying the $20 price point, so did we erase a bunch of market cap by pricing it this way?
+
+— Nick Turley, Head of ChatGPT, interviewed by Lenny Rachitsky
+Tags: chatgpt, discord, generative-ai, openai, llm-pricing, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-08-11</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              LLM 0.27, the annotated release notes: GPT-5 and improved tool calling
+              <span class="post-metadata">(5 min | 1470 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/11/llm-027/#atom-everything>I shipped LLM 0.27 today (followed by a 0.27.1 with minor bug fixes), adding support for the new GPT-5 family of models from OpenAI plus a flurry of improvements to the tool calling features introduced in LLM 0.26. Here are the annotated release notes.
+
+GPT-5
+
+
+
+New models: gpt-5, gpt-5-mini and gpt-5-nano. #1229
+
+
+
+I would have liked to get these out sooner, but LLM had accumulated quite a lot of other changes since the last release and I wanted to use GPT-5 as an excuse to wrap all of those up and get them out there.
+
+These models work much the same as other OpenAI models, but they have a new reasoning_effort option of minimal. You can try that out like this:
+
+llm -m gpt-5 &#x27;A letter advocating for cozy boxes for pelicans in Half Moon Bay harbor&#x27; -o reasoning_effort minimal
+
+
+Setting &quot;minimal&quot; almost completely eliminates the &quot;thinking&quot; time for the model, causing it to behave more like GPT-4o.
+
+Here&#x27;s the letter it wrote me at a cost of 20 input, 706 output &#x3D; $0.007085 which is 0.7085 cents.
+
+You can set the default model to GPT-5-mini (since it&#x27;s a bit cheaper) like this:
+
+llm models default gpt-5-mini
+
+
+Tools in templates
+
+
+
+LLM templates can now include a list of tools. These can be named tools from plugins or arbitrary Python function blocks, see Tools in templates. #1009
+
+
+
+I think this is the most important feature in the new release.
+
+I added LLM&#x27;s tool calling features in LLM 0.26. You can call them from the Python API but you can also call them from the command-line like this:
+
+llm -T llm_version -T llm_time &#x27;Tell the time, then show the version&#x27;
+
+
+Here&#x27;s the output of llm logs -c after running that command.
+
+This example shows that you have to explicitly list all of the tools you would like to expose to the model, using the -T/--tool option one or more times.
+
+In LLM 0.27 you can now save these tool collections to a template. Let&#x27;s try that now:
+
+llm -T llm_version -T llm_time -m gpt-5 --save mytools
+
+
+Now mytools is a template that bundles those two tools and sets the default model to GPT-5. We can run it like this:
+
+llm -t mytools &#x27;Time then version&#x27;
+
+
+Let&#x27;s do something more fun. My blog has a Datasette mirror which I can run queries against. I&#x27;m going to use the llm-tools-datasette plugin to turn that into a tool-driven template. This plugin uses a &quot;toolbox&quot;, which looks a bit like a class. Those are described here.
+
+llm install llm-tools-datasette
+
+# Now create that template
+llm --tool &#x27;Datasette(&quot;https://datasette.simonwillison.net/simonwillisonblog&quot;)&#x27; \
+  -m gpt-5 -s &#x27;Use Datasette tools to answer questions&#x27; --save blog
+
+
+Now I can ask questions of my database like this:
+
+llm -t blog &#x27;top ten tags by number of entries&#x27;
+
+The --td option there stands for --tools-debug - it means we can see all tool calls as they are run.
+
+Here&#x27;s the output of the above:
+
+Top 10 tags by number of entries (excluding drafts):
+- quora — 1003
+- projects — 265
+- datasette — 238
+- python — 213
+- ai — 200
+- llms — 200
+- generative-ai — 197
+- weeknotes — 193
+- web-development — 166
+- startups — 157
+
+
+Full transcript with tool traces here.
+
+I&#x27;m really excited about the ability to store configured tools
+
+
+
+Tools can now return attachments, for models that support features such as image input. #1014
+
+
+
+I want to build a tool that can render SVG to an image, then return that image so the model can see what it has drawn. For reasons.
+
+
+
+New methods on the Toolbox class: .add_tool(), .prepare() and .prepare_async(), described in Dynamic toolboxes. #1111
+
+
+
+I added these because there&#x27;s a lot of interest in an MCP plugin for Datasette. Part of the challenge with MCP is that the user provides the URL to a server but we then need to introspect that server and dynamically add the tools we have discovered there. The new .add_tool() method can do that, and the .prepare() and .prepare_async() methods give us a reliable way to run some discovery code outside of the class constructor, allowing it to make asynchronous calls if necessary.
+
+
+
+New model.conversation(before_call&#x3D;x, after_call&#x3D;y) attributes for registering callback functions to run before and after tool calls. See tool debugging hooks for details. #1088
+
+Raising llm.CancelToolCall now only cancels the current tool call, passing an error back to the model and allowing it to continue. #1148
+
+
+
+These hooks are useful for implementing more complex tool calling at the Python API layer. In addition to debugging and logging they allow Python code to intercept tool calls and cancel or delay them based on what they are trying to do.
+
+
+
+Some model providers can serve different models from the same configured URL - llm-llama-server for example. Plugins for these providers can now record the resolved model ID of the model that was used to the LLM logs using the response.set_resolved_model(model_id) method. #1117
+
+
+
+This solves a frustration I&#x27;ve had for a while where some of my plugins log the same model ID for requests that were processed by a bunch of different models under the hood - making my logs less valuable. The new mechanism now allows plugins to record a more accurate model ID for a prompt, should it differ from the model ID that was requsted.
+
+
+
+New -l/--latest option for llm logs -q searchterm for searching logs ordered by date (most recent first) instead of the default relevance search. #1177
+
+
+
+My personal log database has grown to over 8,000 entries now, and running full-text search queries against it often returned results from last year that were no longer relevant to me. Being able to find the latest prompt matching &quot;pelican svg&quot; is much more useful.
+
+Everything else was bug fixes and documentation improvements:
+
+
+Bug fixes and documentation
+
+
+The register_embedding_models hook is now documented. #1049
+
+Show visible stack trace for llm templates show invalid-template-name. #1053
+
+Handle invalid tool names more gracefully in llm chat. #1104
+
+Add a Tool plugins section to the plugin directory. #1110
+
+Error on register(Klass) if the passed class is not a subclass of Toolbox. #1114
+
+Add -h for --help for all llm CLI commands. #1134
+
+Add missing dataclasses to advanced model plugins docs. #1137
+
+Fixed a bug where llm logs -T llm_version &quot;version&quot; --async incorrectly recorded just one single log entry when it should have recorded two. #1150
+
+All extra OpenAI model keys in extra-openai-models.yaml are now documented. #1228
+
+
+
+    
+        
+Tags: projects, ai, datasette, annotated-release-notes, generative-ai, llms, llm, llm-tool-use, gpt-5</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5750,887 +5946,6 @@ The post PKCE support for OAuth and GitHub App authentication appeared first on 
 The post Start and track GitHub Copilot coding agent sessions from Visual Studio Code appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-07-13</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Happy 20th birthday Django! Here&#x27;s my talk on Django Origins from Django&#x27;s 10th
-              <span class="post-metadata">(24 min | 7167 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/13/django-birthday/#atom-everything>Today is the 20th anniversary of the first commit to the public Django repository!
-
-Ten years ago we threw a multi-day 10th birthday party for Django back in its birthtown of Lawrence, Kansas. As a personal celebration of the 20th, I&#x27;m revisiting the talk I gave at that event and writing it up here.
-
-Here&#x27;s the YouTube video. Below is a full transcript, plus my slides and some present-day annotations.
-
-
-&lt;lite-youtube videoid&#x3D;&quot;wqii_iX0RTs&quot; js-api&#x3D;&quot;js-api&quot;
-  title&#x3D;&quot;Django Origins&quot;
-  playlabel&#x3D;&quot;Play: Django Origins&quot;
-&gt; 
-
-
-Django Origins (and some things I have built with Django)
-
-Presented 11th July 2015 at Django Birthday in Lawrence, Kansas
-
-
-  
-My original talk title, as you&#x27;ll see on your programs, was &quot;Some Things I&#x27;ve Built with Django.&quot; But then I realized that we&#x27;re here in the birthplace of Django, celebrating the 10th birthday of the framework, and nobody&#x27;s told the origin story yet. So, I&#x27;ve switched things around a little bit. I&#x27;m going to talk about the origin story of Django, and then if I have time, I&#x27;ll do the self-indulgent bit and talk about some of the projects I&#x27;ve shipped since then.
-
-I think Jacob&#x27;s introduction hit on something I&#x27;ve never really realized about myself. I do love shipping things. The follow-up and the long-term thing I&#x27;m not quite so strong on. And that came to focus when I was putting together this talk and realized that basically every project I&#x27;m going to show you, I had to dig out of the Internet Archive.
-
-Ten years on from writing this talk I&#x27;m proud that I&#x27;ve managed to overcome my weakness in following-up - I&#x27;m now actively maintaining a bewildering array of projects, having finally figured out how to maintain things in addition to creating them!
-
-But that said, I will tell you the origin story of Django.
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday02.jpg&quot; alt&#x3D;&quot;adrian holovaty blog post
-
-May 31, 2003, 11:49 AM ET
-Job opportunity: Web programmer/developer
-
-I interrupt this blogging hiatus to announce a job opportunity.
-
-World Online, my employer here in beautiful Lawrence, Kansas, is looking for another Web programmer to help build cool stuff for our three sites, ljworld.com, lawrence.com and kusports.com ...
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-For me, the story starts very much like Jacob&#x27;s. I was reading RSS feeds back in 2003, and I saw this entry on Adrian&#x27;s blog, talking about a job opportunity for a web programmer or developer in Lawrence, Kansas.
-
-Now, I was in England. I was at university. But my university had just given me the opportunity to take a year abroad, to take a year out to do an internship year in industry. My girlfriend at the time was off to Germany to do her year in industry. So I was like, well, you know, do I stay at university? And then this comes along.
-
-So I got in touch with Adrian and said, you know, could this work as a year-long internship instead? And he was reading my blog and I was reading his blog, and we knew that we aligned on a bunch of things. So we thought we&#x27;d give it a go.
-
-Now, if you look through this job ad, you&#x27;ll see that this is all about expert knowledge of PHP and experience designing and maintaining databases, particularly MySQL. So this was a PHP and MySQL gig.
-
-But when I arrived in Kansas, we quickly realized that we were both kind of over PHP. You know, we&#x27;d both built substantial systems in PHP, and we were running up against the limits of what you can do in PHP and have your code still be clean and maintainable.
-
-And at the same time, we were both reading Mark Pilgrim&#x27;s blog (archive link). Mark Pilgrim had been publishing Dive into Python and making a really strong case for why Python was a great web language.
-
-So we decided that this was the thing we wanted to do. But we both had very strong opinions about how you should build websites. Things like URL design matters, and we care about the difference between get and post, and we want to use this new thing called CSS to lay out our web pages. And none of the existing Python web frameworks really seemed to let us do what we wanted to do.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday03.jpg&quot; alt&#x3D;&quot;Lawrence JOURNAL-WORLD
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-Now, before I talk more about that, I&#x27;ll back up and talk about the organization we&#x27;re working for, the Lawrence Journal World.
-
-David gave a great introduction to why this is an interesting organization. Now, we&#x27;re talking about a newspaper with a circulation of about 10,000, like a tiny newspaper, but with a world-class newsroom, huge amounts of money being funneled into it, and like employing full-time software developers to work at a local newspaper in Kansas.
-
-  
-
-
-
-  
-  
-#
-  
-And part of what was going on here was this guy. This is Rob Curley. He&#x27;s been mentioned a few times before already.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday05.jpg&quot; alt&#x3D;&quot;Unofficial mission statement: “build cool shit”
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And yeah, Rob Curley set this unofficial mission statement that we &quot;build cool shit&quot;. This is something that Adrian would certainly never say. It&#x27;s not really something I&#x27;d say. But this is Rob through and through. He was a fantastic showman.
-
-And this was really the appeal of coming out to Lawrence, seeing the stuff they&#x27;d already built and the ambitions they had.
-
-  
-
-
-
-  
-  
-#
-  
-This is Lawrence.com. This is actually the Lawrence.com written in PHP that Adrian had built as the sole programmer at the Lawrence Journal World. And you should check this out. Like, even today, this is the best local entertainment website I have ever seen. This has everything that is happening in the town of Lawrence, Kansas population, 150,000 people. Every gig, every venue, all of the stuff that&#x27;s going on.
-
-And it was all written in PHP. And it was a very clean PHP code base, but it was really stretching the limits of what it&#x27;s sensible to do using PHP 4 back in 2003.
-
-So we had this goal when we started using Python. We wanted to eventually rebuild Lawrence.com using Python. But in order to get there, we had to first build -- we didn&#x27;t even know it was a web framework. We called it the CMS.
-
-  
-
-
-
-  
-  
-#
-  
-And so when we started working on Django, the first thing that we shipped was actually this website. We had a lot of the six-news Lawrence. This is the six-news Lawrence -- six-news is the TV channel here -- six-news Lawrence weather page.
-
-And I think this is pretty cool. So Dan Cox, the designer, was a fantastic illustrator. We actually have this illustration of the famous Lawrence skyline with each panel could be displayed with different weather conditions depending on the weather.
-
-And in case you&#x27;re not from Kansas, you might not have realized that the weather is a big deal here. You know, you have never seen more excited weathermen than when there&#x27;s a tornado warning and they get to go on local news 24 hours a day giving people updates.
-
-  
-
-
-
-  
-  
-#
-  
-So we put the site live first. This was the first ever Django website. We then did the rest of the 6 News Lawrence website.
-
-And this -- Adrian reminded me this morning -- the launch of this was actually delayed by a week because the most important feature on the website, which is clearly the photograph of the news people who are on TV, they didn&#x27;t like their hairdos. They literally told us we couldn&#x27;t launch the website until they&#x27;d had their hair redone, had the headshots retaken, had a new image put together. But, you know, image is important for these things.
-
-So anyway, we did that. We did six-news Lawrence. And by the end of my year in Kansas, Adrian had rewritten all of Lawrence.com as well.
-
-  
-
-
-
-  
-  
-#
-  
-So this is the Lawrence.com powered by Django. And one thing I think is interesting about this is when you talk to like David Heinemeier Hansson about Rails, he&#x27;ll tell you that Rails is a framework that was extracted from Basecamp. They built Basecamp and then they pulled out the framework that they used and open sourced it.
-
-I see Django the other way around. Django is a framework that was built up to create Lawrence.com. Lawrence.com already existed. So we knew what the web framework needed to be able to do. And we just kept on iterating on Django or the CMS until it was ready to produce this site here.
-
-  
-
-
-
-  
-  
-#
-  
-And for me, the moment I realized that we were onto something special was actually when we built this thing. This is a classic Rob Curley project. So Rob was the boss. He had the crazy ideas and he didn&#x27;t care how you implemented them. He just wanted this thing done.
-
-And he came to us one day and said, you know, the kids&#x27; little league season is about to start. Like kids playing softball or baseball. Whatever the American kids with bats thing is. So he said, kids&#x27; little league season is about to start. And we are going to go all out.
-
-  
-
-
-
-  
-  
-#
-  
-I want to treat these kids like they&#x27;re the New York Yankees. We&#x27;re going to have player profiles and schedules and photos and results.
-
-  
-
-
-
-  
-  
-#
-  
-And, you know, we&#x27;re going to have the ability for parents to get SMS notifications whenever their kid scores.
-
-  
-
-
-
-  
-  
-#
-  
-And we&#x27;re going to have 360 degree, like, interactive photos of all of the pitches in Lawrence, Kansas, that these kids are playing games on.
-
-They actually did send a couple of interns out with a rig to take 360 degree virtual panoramas of Fenway Park and Lawrence High School and all of these different places.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday14.jpg&quot; alt&#x3D;&quot;... in three days
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And he said -- and it starts in three days. You&#x27;ve got three days to put this all together.
-
-And we pulled it off because Django, even at that very early stage, had all of the primitives you needed to build 360 degree interactives. That was all down to the interns. But we had all of the pieces we needed to pull this together.
-
-  
-
-
-
-  
-  
-#
-  
-So when we were working on it back then, we called it the CMS.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday16.jpg&quot; alt&#x3D;&quot;brazos
-webbing
-physique
-anson
-The Tornado Publishing System
-private dancer
-fizgig
-lavalier
-pythy
-
-https://jacobian.org/writing/private_dancer/
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-A few years ago, Jacob found a wiki page with some of the names that were being brainstormed for the open source release. And some of these are great. There&#x27;s Brazos -- I don&#x27;t know where that came from -- Webbing, Physique, Anson.
-
-  
-
-
-
-  
-  
-#
-  
-This is my favorite name. I think this is what I proposed -- is the Tornado Publishing System.
-
-  
-
-
-
-  
-  
-#
-  
-And the reason is that I was a really big fan of Office Space. And if we had the Tornado, we could produce TPS reports, which I thought would be amazing.
-
-But unfortunately, this being Kansas, the association of Tornadoes isn&#x27;t actually a positive one.
-
-Private Dancer, Physgig, Lavalia, Pithy -- yeah. I&#x27;m very, very pleased that they picked the name that they did.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday19.jpg&quot; alt&#x3D;&quot;“Wouldn&#x27;t It be cool If...”
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-So one of our philosophies was build cool shit. The other philosophy we had was what we called &quot;Wouldn&#x27;t it be cool if?&quot;
-
-So there were no user stories or careful specs or anything. We&#x27;d all sit around in the basement and then somebody would go &quot;Wouldn&#x27;t it be cool if...&quot;, and they&#x27;d say something. And if we thought it was a cool idea, we&#x27;d build it and we&#x27;d ship it that day.
-
-  
-
-
-
-  
-  
-#
-  
-And my favorite example of &quot;Wouldn&#x27;t it be cool if?&quot; -- this is a classic Adrian one -- is &quot;Wouldn&#x27;t it be cool if the downloads page on Lawrence.com featured MP3s you could download of local bands?&quot; And seeing as we&#x27;ve also got the schedule of when the bands are playing, why don&#x27;t we feature the audio from bands who you can go and see that week?
-
-So this page will say, &quot;OK Jones are playing on Thursday at the Bottleneck. Get their MP3. Listen to the radio station.&quot; We had a little MP3 widget in there. Go and look at their band profile. All of this stuff.
-
-Really, these kinds of features are what you get when you take 1970s relational database technology and use it to power websites, which -- back in 2003, in the news industry -- still felt incredibly cutting edge. But, you know, it worked.
-
-And that philosophy followed me through the rest of my career, which is sometimes a good idea and often means that you&#x27;re left maintaining features that seemed like a good idea at the time and quickly become a massive pain!
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday21.jpg&quot; alt&#x3D;&quot;YAHOO!
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-After I finished my internship, I finished my degree in England and then ended up joining up with Yahoo. I was actually working out of the Yahoo UK office but for a R&amp;D team in the States. I was there for about a year and a half.
-
-One of the things I learned is that you should never go and work for an R&amp;D team, because the problem with R&amp;D teams is you never ship. I was there for a year and a half and I basically have nothing to show for it in terms of actual shipped features.
-
-We built some very cool prototypes. And actually, after I left, one of the projects I worked on, Yahoo FireEagle, did end up getting spun out and turned into a real product.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday22.jpg&quot; alt&#x3D;&quot;YAHOO! ASTRONEWSOLOGY
-
-Dick Cheneey (age 65)
-
-Compare their horoscope with our recent news stories!
-
-A very close friend or a member of your current peer group -- who means a great deal to you -- has recently found it necessary to go out of their way to tick you off. At least, that&#x27;s the way it seems. It&#x27;s worked, too -- better than it should have. You&#x27;re not just angry, you&#x27;re furious. Before you let go and let them have it, be sure you&#x27;re right. Feeling righteous is far better than feeling guilty
-
-Fox News wins battle for Cheney interview (Reuters) - 16th February, 12:13
-Cheney Says He Has Power to Declassify Info (AP) - 16th February, 09:56
-Cheney Mishap Takes Focus Off CIA Leak (AP) - 16th February, 09:13
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-But there is one project -- the first project I built at Yahoo using Django that I wanted to demonstrate. This was for Yahoo&#x27;s internal hack day. And so Tom Coates and myself, who were working together, we decided that we were going to build a mashup, because it was 2005 and mashups were the cutting edge of computer science.
-
-So we figured, OK, let&#x27;s take the two most unlikely Yahoo products and combine them together and see what happens. My original suggestion was that we take Yahoo Dating and Yahoo Pets. But I was told that actually there was this thing called Dogster and this other thing called Catster, which already existed and did exactly that.
-
-So the next best thing, we went for Yahoo News and Yahoo Horoscopes. And what we ended up building -- and again, this is the first Django application within Yahoo -- was Yahoo Astronewsology.
-
-And the idea was you take the news feed from Yahoo News, you pull out anything that looks like it&#x27;s a celebrity&#x27;s name, look up their birth date, use that to look up their horoscope, and then combine them on the page.
-And in a massive stroke of luck, we built this the week that Dick Cheney shot his friend in the face while out hunting.
-
-Dick Cheney&#x27;s horoscope for that week says, &quot;A very close friend who means a great deal to you has found it necessary to go out of their way to tick you off. You&#x27;re not just angry, you&#x27;re furious. Before you let go and let them have it, be sure you&#x27;re right. Feeling righteous is far better than feeling guilty.&quot;
-
-And so if Dick Cheney had only had only been reading his horoscopes, maybe that whole situation would have ended very differently.
-
-  
-
-
-
-  
-  
-#
-  
-So after Yahoo, I spent a while doing consulting and things, mainly around OpenID because I was determined to make OpenID work. I was absolutely convinced that if OpenID didn&#x27;t take off, just one company would end up owning single sign-on for the entire internet, and that would be a total disaster.
-
-And with hindsight, it didn&#x27;t quite happen. Facebook login looked like it was going to do that a few years ago, but these days there&#x27;s enough variety out there that I don&#x27;t feel like we all have to submit to our Facebook masters.
-
-But, you know, I was enjoying freelancing and consulting and so on. And then I ended up going for coffee with somebody who worked for The Guardian.
-
-I&#x27;m sure you&#x27;ve all heard of The Guardian. It&#x27;s one of England&#x27;s most internationally focused newspapers. It&#x27;s a very fine publication. And I realized that I really missed working in a newsroom environment. And I was incredibly jealous of people like Adrian, who&#x27;d gone off to the Washington Post and was doing data journalism there, and Derek Willis as well, who bounced from the Post and The New York Times. There was all of this cool data journalism stuff going on.
-
-And The Guardian&#x27;s pitch was basically, we&#x27;ve been building a CMS from scratch in Java with a giant team of engineers, and we&#x27;ve built it and it&#x27;s really cool, but we&#x27;re not shipping things quickly. We want to start exploring this idea of building things much faster to fit in with the news cycle.
-
-And that was a very, very tempting thing for me to get involved with. So I went to work for The Guardian.
-
-  
-
-
-
-  
-  
-#
-  
-And The Guardian have a really interesting way of doing onboarding of new staff. The way they do it is they set you up on coffee dates with people from all over the organization. So one day you&#x27;ll be having coffee with somebody who sells ads, and the next day it&#x27;ll be the deputy editor of the newsroom, and the next day it&#x27;ll be a journalist somewhere. And each of these people will talk to you and then they&#x27;ll suggest other people for you to meet up with. So over the first few weeks that you&#x27;re there, you meet a huge variety of people.
-
-And time and time again, as I was talking to people, they were saying, &quot;You know what? You should go and talk to Simon Rogers, this journalist in the newsroom.&quot;
-
-This is Simon Rogers. I went down to talk to him, and we had this fascinating conversation. So Simon is a journalist. He worked in the newsroom, and his speciality was gathering data for The Guardian&#x27;s infographics. Because they are in the paper. They post, they have graphs and charts and all sorts of things like that that they publish.
-
-It turns out that Simon was the journalist who knew how to get that data out of basically any source you can imagine. If you wanted data, he would make some phone calls, dig into some government contacts and things, and he&#x27;d get those raw numbers. And all of the other journalists thought he was a bit weird, because he liked hanging out and editing Excel spreadsheets and stuff.
-
-So I said to him halfway through this conversation, &quot;Just out of interest, what do you do with those Excel spreadsheets?&quot; And he&#x27;s like, &quot;Oh, I keep them all on my hard drive.&quot; And showed me this folder with hundreds and hundreds of meticulously researched, properly citable news quality spreadsheets full of data about everything you could imagine. And they lived on his hard drive and nowhere else.
-
-And I was like, &quot;Have you ever talked to anyone in the engineering department upstairs?&quot; And we made this connection.
-
-And so from then on, we had this collaboration going where he would get data and he&#x27;d funnel it to me and see if we could, see if I or someone else in the engineering department at Guardian could do something fun with it.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday25.jpg&quot; alt&#x3D;&quot;Guardian website screenshot.
-
-BNP members: the far right map of Britain
-
-A court injunction prevents the distribution of the names on the
-BNP membership leaked online. This map shows you which
-constituencies have the most BNP members
-
-Then a BNP membership by constituency colourful map.
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And so that was some of the most rewarding work of my career, because it&#x27;s journalism, you know, it&#x27;s news, it&#x27;s stuff that matters. The deadlines are ridiculous. If a news story breaks and it takes you three weeks to turn around a piece of data journalism around it, why did you even bother? And it&#x27;s perfect for applying Django to.
-
-So the first story I got to work on at the Guardian was actually one of the early WikiLeaks things. This is before WikiLeaks was like massively high profile. But quite early on, WikiLeaks leaked a list of all of the members of the British National Party, basically the British Nazis. They leaked a list of all of their names and addresses.
-
-And the Guardian is an ethical newspaper, so we&#x27;re not going to just publish 18,000 people&#x27;s names and addresses. But we wanted to figure out if there was something we could do that would make use of that data but wouldn&#x27;t be violating anyone&#x27;s individual privacy.
-
-And so what we did is we took all of the addresses, geocoded them, figured out which parliamentary constituency they lived in, and used that to generate a heat map that&#x27;s actually called a choropleth map, I think, of the UK showing where the hotspots of BNP activity were.
-
-And this works because in the UK a parliamentary constituency is, they&#x27;re designed to all have around about the same population. So if you just like make the color denser for the larger numbers of BNP members, you get this really interesting heat map of the country.
-
-  
-
-
-
-  
-  
-#
-  
-And what was really cool about this is that I did this using SVG, because we have an infographics department with Illustrator who are good at working with SVG. And it&#x27;s very easy with an SVG file with the right class names on things to set colors on different regions.
-
-And because we produced it in SVG, we could then hand it over to the print department, and the next day it was out in the paper. It was like a printed thing on paper, on like dead trees distributed all over the country, which I thought was super cool.
-
-So that was the first data journalism project that we did at The Guardian. And it really helped prove that given the right data sets and like the right tools and a bit of freedom, you can do some really cool things.
-
-The first few times I did this, I did it by hand. Then we had The Guardian&#x27;s first hack day and I was like, well okay, I&#x27;m going to build a little self-service tool for our infographics journalists to like dump in a bunch of CSV numbers and get one of these maps out of it.
-
-So I built this tool. I didn&#x27;t have anywhere official to deploy it, so I just ran it on my Linux desktop underneath my desk. And they started using it and putting things in the paper and I kind of forgot about it. And every now and then I get a little feature request.
-
-A few years after I left The Guardian, I ran into someone who worked there. And he was like, yeah, you know that thing that you built? So we had to keep your desktop running for six months after you left. And then we had to like convert it into a VMware instance. And as far as I know, my desktop is still running as a VMware instance somewhere in The Guardian.
-
-Which ties into the Simon database, I guess. The hard thing is building stuff is easy. Keeping it going it turns out is surprisingly difficult.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday27.jpg&quot; alt&#x3D;&quot;Website:  Investigate your MP&#x27;s expenses
-mps-expenses.guaraian.co.uk
-
-Join us in digging through the documents of MPs&#x27; expenses to identify individual claims, or documents that you think merit further investigation. You can work through your own MP&#x27;s expenses, or just hit the button below to start reviewing. 
-
-A progress bar shows 28,801 of you have reviewed 221,220 of them, only 237o612 to go...&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-This was my favorite project at The Guardian. There was a scandal in the UK a few years ago where it turned out that UK members of parliament had all been fiddling their expenses.
-
-And actually the background on this is that they&#x27;re the lowest paid MPs anywhere in Europe. And it seems like the culture had become that you become an MP and on your first day somebody takes you aside and goes, look, I know the salary is terrible. But here&#x27;s how to fill your expenses and make up for it.
-
-This was a scandal that was brewing for several years. The Guardian had actually filed freedom of information requests to try and get these expense reports. Because they were pretty sure something dodgy was going on. The government had dragged their heels in releasing the documents.
-
-And then just when they were a month before they finally released the documents, a rival newspaper, the Telegraph, managed to get hold of a leaked copy of all of these expenses. And so the Telegraph had 30 days lead on all of the other newspapers to dig through and try and find the dirt.
-
-So when they did release the expenses 30 days later, we had a race on our hands because we needed to analyze 20,000 odd pages of documents. Actually, here it says 450,000 pages of documents in order to try and find anything left that was newsworthy.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday28.jpg&quot; alt&#x3D;&quot;Page 34 of Janet Dean&#x27;s Incidental Expenses Provision 2007/08
-
-Much of the page is redacted. 
-
-What kind of page is this? Buttons for:
-Claim, Proof, Blank, Other
-
-Is this page interesting? Should we investigate it further?&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And so we tackled this with crowdsourcing. We stuck up a website. We told people, we told Guardian readers, come to this website, hit the button, we&#x27;ll show you a random page from someone&#x27;s expenses. And then you can tell us if you think it&#x27;s not interesting, interesting, or we should seek an investigative reporter on it.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday29.jpg&quot; alt&#x3D;&quot;Hywel Francis MP&#x27;s expenses
-
-Labour MP for Aberavon. A photo of him smiling. Below is a table of documents each showing progress through reviewing each one.&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And one of the smartest things we did with this is we added a feature where you could put in your postcode, we&#x27;d figure out who your MP was, and then we would show you their smug press photo. You know, their smug face next to all of their expense claims that they&#x27;d filed.
-
-And this was incredibly effective. People were like, &quot;Ooh, you look so smug. I&#x27;m going to get you.&quot; And once we put this up, and within 18 hours, our community had burned through hundreds of thousands of pages of expense documents trying to find this stuff.
-
-  
-
-
-
-  
-  
-#
-  
-And again, this was built in Django. We had, I think, five days warning that these documents are coming out. And so it was a total, like, I think I built a proof of concept on day one. That was enough to show that it was possible. So I got a team with a designer and a couple of other people to help out. And we had it ready to go when the document dump came out on that Friday.
-
-And it was pretty successful. We dug up some pretty interesting stories from it. And it was also just a fantastic interactive way of engaging our community. And, you know, the whole crowdsourcing side of it was super fun.
-
-So I guess the thing I&#x27;ve learned from that is that, oh, my goodness, it&#x27;s fun working for newspapers. And actually, if you -- the Lawrence Journal world, sadly, no longer has its own technology team. But there was a period a few years ago where they were doing some cracking data journalism work. Things like tracking what the University of Kansas had been using its private jet for, and letting people explore the data around that and so on.
-
-The other thing we did at the Guardian, this is going back to Simon Rogers, is he had all of these spreadsheets on his hard drive. And we&#x27;re like, okay, we should really try and publish this stuff as raw data. Because living on your hard drive under your head is a crying shame.
-
-And the idea we came up with was essentially to start something we called the Data blog and publish them as Google spreadsheets. You know, we spent a while thinking, well, you know, what&#x27;s the best format to publish these things in? And we&#x27;re like, well, they&#x27;re in Excel. Google spreadsheets exists and it&#x27;s pretty good. Let&#x27;s just put a few of them up as Google sheets and see what people do with them.
-
-And it turns out that was enough to build this really fun community of data nerds around the Guardian&#x27;s data blog who would build their own visualizations. They&#x27;d dig into the data. And it meant that we could get all sorts of -- like, we could get so much extra value from the work that we were already doing to gather these numbers for the newspaper. That stuff was super fun.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday31.jpg&quot; alt&#x3D;&quot;Side projects
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-Now, while I was working at the Guardian, I also got into the habit of building some projects with my girlfriend at the time, now my wife Natalie. So Natalie and I have skill sets that fit together very nicely. She&#x27;s a front-end web developer. I do back-end Django stuff. I do just enough ops to be dangerous. And so between the two of us, we can build websites.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday32.jpg&quot; alt&#x3D;&quot;Django People
-
-A map of the world with green markers, plus a table of the countries with the most registered Django community members.&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-The first things we worked on together is a site which I think some people here should be familiar with, called Django People. The idea was just, you know, the Django community appears to be quite big now. Let&#x27;s try and get people to stick a pin on a map and tell us where they are.
-
-Django People still exists today. It&#x27;s online thanks to a large number of people constantly bugging me at Django Cons and saying, look, just give us the code and the data and we&#x27;ll get it set up somewhere so it can continue to work. And that&#x27;s great. I&#x27;m really glad I did that because this is the one project that I&#x27;m showing you today which is still available on the web somewhere. (2025 update: the site is no longer online.)
-
-But Django People was really fun. And the thing we learned from this, my wife and I, is that we can work together really well on things.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday33.jpg&quot; alt&#x3D;&quot;/dev/fort
-
-A photo of a very cool looking sea fortress.&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-The other side project we did was much more of a collaborative effort. Again, this no longer exists, or at least it&#x27;s no longer up on the web. And I&#x27;m deeply sad about this because it&#x27;s my favorite thing I&#x27;m going to show you.
-
-But before I show you the project, I&#x27;ll show you how we built it. We were at a BarCamp in London with a bunch of our new friends and somebody was showing photographs of this Napoleonic sea fortress that they had rented out for the weekend from an organization in the UK called the Landmark Trust, who basically take historic buildings and turn them into vacation rentals as part of the work to restore them.
-
-And we were like, &quot;Oh, wouldn&#x27;t it be funny if we rented a castle for a week and all of us went out there and we built stuff together?&quot; And then we were like, &quot;That wouldn&#x27;t be funny. That would be freaking amazing.&quot;
-
-So we rented this place. This is called Fort Clonque. It&#x27;s in the Channel Islands, halfway between England and France. And I think it cost something like $2,000 for the week, but you split that between a dozen people and it&#x27;s like youth hostel prices to stay in a freaking fortress.
-
-  
-
-
-
-  
-  
-#
-  
-So we got a bunch of people together and we went out there and we just spent a week. We called it /dev/fort. We spent a week just building something together.
-
-  
-
-
-
-  
-  
-#
-  
-And the thing we ended up building was called Wildlife Near You. And what Wildlife Near You does is it solves the eternal question, &quot;Where is my nearest llama?&quot;
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday36.jpg&quot; alt&#x3D;&quot;WildlifeNearYou.com
-
-Seen any more animals? Why not add another trip 
-or import some photos from Flickr. Or you could
-help people identify the animals in their photos!&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday37.jpg&quot; alt&#x3D;&quot;My family trip to Gigrin Farm r-ed Kite Feeding station on 15th April 2008 
-
-Sightings: Common Raven, Common Buzzard, Red Kite&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-Once again, this is a crowdsourcing system. The idea is that you go to wildlifenearyou.com and you&#x27;ve just been on a trip to like a nature park or a zoo or something. And so you create a trip report saying, &quot;I went to the Red Kite feeding station and I saw a common raven and a common buzzard and a red kite.&quot; And you import any of your photos from Flickr and so forth.
-
-  
-
-
-
-  
-  
-#
-  
-And you build up this profile saying, &quot;Here are all the places I&#x27;ve been and my favorite animals and things I&#x27;ve seen.&quot;
-
-  
-
-
-
-  
-  
-#
-  
-And then once we&#x27;ve got that data set, we can solve the problem. You can say, &quot;Search for llamas near Brighton.&quot; And it&#x27;ll say, &quot;Your nearest llama is 18 miles away and it&#x27;ll show you pictures of llamas and all of the llama things.&quot;
-
-  
-
-
-
-  
-  
-#
-  
-And we have species pages. So here&#x27;s the red panda page. 17 people love red pandas. You can see them at Taronga Zoo.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday41.jpg&quot; alt&#x3D;&quot;Which Marmot photo is better?
-
-Two marmot photos - you can select one or the other or click &quot;skip&quot;.&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And then our most viral feature was we had all of these photos of red pandas, but how do we know which is the best photo of a red panda that we should highlight on the red panda page? So we basically built Hot or Not for photographs of wildlife.
-
-So it&#x27;s like, &quot;Which marmot photo is better?&quot; And you say, &quot;Well, clearly the one on the right.&quot; And it&#x27;s like, &quot;Okay, which skunk photo is better?&quot;
-
-I was looking at the logs and people would go through hundreds and hundreds of photos. And you&#x27;d get scores and you can see, &quot;Oh, wow, my marmot photo is the second best marmot photo on the whole website.&quot;
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday42.jpg&quot; alt&#x3D;&quot;Find owls near you!
-owlsnearyou.com
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-So that was really fun. And then we eventually took it a step further and said, &quot;Okay, well, this is really fun, but this is a website that you have to type on, right?&quot; And meanwhile, mobile phones are now getting HTML5 geolocation and stuff. So can we go a step further?
-
-So we built owlsnearyou.com. And what owlsnearyou.com does is you type in the location, and it says, &quot;Your nearest owl is 49 miles away.&quot; It&#x27;s a spectacle owl at London Zoo. It was spotted one year ago by Natalie.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday43.jpg&quot; alt&#x3D;&quot;Owls near 2-3 Kensington St,
-Brighton, Brighton and Hove
-
-49.1 miles away
-We think your nearest owl is a Spectacled Owl at London Zoo! Spotted
-twice, most recently by natbat 1 year ago.
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And if you went here on a mobile phone-- If you went here on a device that supported geolocation, it doesn&#x27;t even ask you where you live. It&#x27;s just like, &quot;Oh, okay, here&#x27;s your nearest owl.&quot;
-
-And I think we shipped lions near you and monkeys near you and a couple of other domains, but owlsnearyou.com was always my favorite.
-
-So looking at this now, we should really get this stuff up and running again. It was freaking amazing. Like, this for me is the killer app of all killer apps.
-
-(We did eventually bring this idea back as www.owlsnearme.com, using data from iNaturalist - that&#x27;s online today.)
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday44.jpg&quot; alt&#x3D;&quot;‘Bugle is a Twitter-like
-application for groups of
-hackers collaborating in a
-castle (or fort, or other
-defensive structure) with no
-internet connection”
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-So there have actually been a bunch of Devforts since then. One of the things we learned from Devfort is that building applications-- If you want to do a side project, doing one with user accounts and logins and so on, it&#x27;s a freaking nightmare. It actually took us almost a year after we finished on the fort to finally ship Wildlife Near You because there were so many complexities. And then we had to moderate it and keep an eye on it and so on.
-
-So if you look at the more recent Devforts, they&#x27;ve taken that to heart. And now they try and ship things which just work and don&#x27;t require ongoing users logging in and all of that kind of rubbish.
-
-But one of the other projects I wanted to show you that came out of a Devfort was something called Bugle. And the idea of Bugle is Bugle is a Twitter-like application for groups of hackers collaborating in a castle, fort, or other defensive structure who don&#x27;t have an internet connection.
-
-  
-
-
-
-  
-  
-#
-  
-This was basically to deal with Twitter withdrawal when we were all on the fort together and we had an internal network. So Bugle, looking at it now, we could have been Slack! We could have been valued at $2 billion.
-
-Yeah, Bugle is like an internal Twitter clone with a bunch of extra features like it&#x27;s got a paste bin and to-do lists and all sorts of stuff like that.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday46.jpg&quot; alt&#x3D;&quot;So I said to Ben Firshman...
-“Wouldn&#x27;t it be cool if Twitter
-apps on the network could
-talk to Bugle instead?”
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And does anyone here know Ben Firshman? I think quite a few people do. Excellent. So Ben Firshman was out on a Devfort and I did a &quot;Wouldn&#x27;t it be cool if&quot; on him. I said, &quot;Wouldn&#x27;t it be cool if all of our Twitter apps and our phones talked to Bugle instead on the network?&quot;
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday47.jpg&quot; alt&#x3D;&quot;Magic Twitter support
-
-To make Twitter clients magically work with Bugle on a network, we need to mess with BIND.
-
-Shows BIND settings&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-And so if you go and look on GitHub, I bet this doesn&#x27;t work anymore. But he did add magic Twitter support where you could run a local DNS server, redirect Twitter to Bugle and we cloned, he cloned enough of the Twitter API that like Twitter apps would work and it would be able to Bugle instead.
-
-We wanted to do a Devfort in America. You don&#x27;t really have castles and forts that you can rent for the most part. If anyone knows of one, please come and talk to me because there&#x27;s a distinct lack of defensible structures at least of the kind that we are used to back in Europe.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday48.jpg&quot; alt&#x3D;&quot;Lanyrd.com
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-So I&#x27;m running out of time, but that&#x27;s OK because the most recent project, Lanyrd, is something which most people here have probably encountered.
-
-I will tell a little bit of the backstory of Lanyrd because it&#x27;s kind of fun.
-
-  
-
-
-
-  
-  
-#
-  
-Lanyrd was a honeymoon project. 
-
-Natalie and I got married.  The wildlife near you influence affected our wedding - it was a freaking awesome wedding! You know, in England, you can get a man with a golden eagle and a barn owl and various other birds to show up for about $400 for the day. And then you get to take photos like this.
-
-  
-
-
-
-  
-  
-#
-  
-So anyway, we got married, we quit our jobs, I had to leave the Guardian because we wanted to spend the next year or two of our lives just traveling around the world, doing freelancing work on our laptops and so on.
-
-We got as far as Morocco, we were six months in, when we contracted food poisoning in Casablanca and we were too sick to keep on travelling, so we figured we needed to like, you know, and it was also Ramadan, so it was really hard to get food and stuff. So we rented an apartment for two weeks and said, &quot;Okay, well, since we&#x27;re stuck for two weeks, let&#x27;s like finish that side project we&#x27;ve been talking about and ship it and see if anyone&#x27;s interested.&quot;
-
-  
-
-
-
-  
-  
-#
-  
-So we shipped Lanyrd, which was built around the idea of helping people who use Twitter find conferences and events to go to. What we hadn&#x27;t realised is that if you build something around Twitter, especially back in 2010, it instantly goes viral amongst people who use Twitter.
-
-So that ended up cutting our honeymoon short, and we actually applied for Y Combinator from Egypt and ended up spending three years building a startup and like hiring people and doing that whole thing.
-
-(Natalie wrote more about our startup in Lanyrd: from idea to exit - the story of our startup.)
-
-The only thing I&#x27;ll say about that is everything in the... Startups have to give the impression that everything&#x27;s super easy and fun and cool all the time, because people say, &quot;How&#x27;s your startup going?&quot; And the only correct answer is, &quot;Oh man, it&#x27;s amazing. It&#x27;s doing so well.&quot; Because everyone has to lie about the misery, pain, anguish and stress that&#x27;s happening behind the scenes.
-
-So it was a very interesting three years, and we built some cool stuff and we learnt a lot, and I don&#x27;t regret it, but do not take startups lightly.
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday52.jpg&quot; alt&#x3D;&quot;Eventbrite
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-So a year and a half ago, we ended up selling Lanyrd to Eventbrite and moving out to San Francisco. And at Eventbrite, I&#x27;ve been mostly on the management team building side of things, but occasionally managing to sneak some code out as well.
-
-  
-
-
-
-  
-  
-#
-  
-The one thing I want to show you from Eventbrite, because I really want to open source this thing, is again at Hack Day, we built a tool called the Tikibar, which is essentially like the Django debug toolbar, but it&#x27;s designed to be run in production. Because the really tough things to debug don&#x27;t happen in your dev environment. They happen in production when you&#x27;re hitting a hundred million row database or whatever.
-
-And so the Tikibar is designed to add as little overhead as possible, but to still give you detailed timelines of SQL queries that are executing and service calls and all of that kind of stuff. It&#x27;s called the Tikibar because I really like Tikibars.
-
-  
-
-
-
-  
-  
-#
-  
-And the best feature is if a page takes over 500 milliseconds to load, the eyes on the Tiki God glow red in disapproval at you.
-
-If anyone wants a demo of that, come and talk to me. I would love to get a few more instrumentation hooks into Django to make this stuff easier.
-
-(The Tikibar was eventually open sourced as eventbrite/tikibar on GitHub.)
-
-  
-
-
-
-  &lt;img loading&#x3D;&quot;lazy&quot; src&#x3D;&quot;https://static.simonwillison.net/static/2025/django-birthday/django-birthday55.jpg&quot; alt&#x3D;&quot;“build cool shit”
-(thanks, Rob)
-&quot; style&#x3D;&quot;max-width: 100%&quot; /&gt;
-  
-#
-  
-This has been a whistle-stop tour of the highlights of my career working with Django.
-
-And actually, in putting this presentation together, I realized that really it&#x27;s that Rob Curley influence from all the way back in 2003. The reason I love Django is it makes it really easy to build cool shit and to ship it. And, you know, swearing aside, I think that&#x27;s a reasonable moral to take away from this.
-
-  
-
-
-Colophon
-
-I put this annotated version of my 10 year old talk together using a few different tools.
-
-I fetched the audio from YouTube using yt-dlp:
-
-yt-dlp -x --audio-format mp3 \
-  &quot;https://youtube.com/watch?v&#x3D;wqii_iX0RTs&quot;
-
-
-I then ran the mp3 through MacWhisper to generate an initial transcript. I cleaned that up by pasting it into Claude Opus 4 with this prompt:
-
-
-Take this audio transcript of a talk and clean it up very slightly - I want paragraph breaks and tiny edits like removing ums or &quot;sort of&quot; or things like that, but other than that the content should be exactly as presented.
-
-
-I converted a PDF of the slides into a JPEG per page using this command (found with the llm-cmd plugin):
-
-pdftoppm -jpeg -jpegopt quality&#x3D;70 django-birthday.pdf django-birthday
-
-
-Then I used my annotated presentations tool (described here) to combine the slides and transcript, making minor edits and adding links using Markdown in that interface.
-Tags: adrian-holovaty, devfort, django, history, jacob-kaplan-moss, lawrence, lawrence-com, lawrence-journal-world, python, my-talks, the-guardian, annotated-talks</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
