@@ -25,6 +25,126 @@
 
   <ul>
     <li>
+      <time>2025-08-15</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Meta’s AI rules have let bots hold ‘sensual’ chats with kids, offer false medical info
+              <span class="post-metadata">(1 min | 385 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/15/metas-ai-rules/#atom-everything>Meta’s AI rules have let bots hold ‘sensual’ chats with kids, offer false medical info
+Running to more than 200 pages, the document defines what Meta staff and contractors should treat as acceptable chatbot behaviors when building and training the company’s generative AI products.
+Read the full story -  there was some really nasty stuff in there.
+It&#x27;s understandable why this document was confidential, but also frustrating because documents like this are genuinely some of the best documentation out there in terms of how these systems can be expected to behave.
+I&#x27;d love to see more transparency from AI labs around these kinds of decisions.
+
+
+    
+Tags: ai, meta, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Open weight LLMs exhibit inconsistent performance across providers
+              <span class="post-metadata">(3 min | 857 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/15/inconsistent-performance/#atom-everything>Artificial Analysis published a new benchmark the other day, this time focusing on how an individual model - OpenAI’s gpt-oss-120b - performs across different hosted providers.
+
+The results showed some surprising differences. Here&#x27;s the one with the greatest variance, a run of the 2025 AIME (American Invitational Mathematics Examination) averaging 32 runs against each model, using gpt-oss-120b with a reasoning effort of &quot;high&quot;:
+
+
+
+These are some varied results!
+
+
+93.3%: Cerebras, Nebius Base, Fireworks, Deepinfra, Novita, Together.ai, vLLM 0.1.0
+
+90.0%: Parasail
+
+86.7%: Groq
+
+83.3%: Amazon
+
+80.0%: Azure
+
+36.7%: CompactifAI
+
+
+It looks like most of the providers that scored 93.3% were running models using the latest vLLM (with the exception of Cerebras who I believe have their own custom serving stack).
+
+I hadn&#x27;t heard of CompactifAI before - I found this June 12th 2025 press release which says that &quot;CompactifAI models are highly-compressed versions of leading open source LLMs that retain original accuracy, are 4x-12x faster and yield a 50%-80% reduction in inference costs&quot; which helps explain their notably lower score!
+
+Microsoft Azure&#x27;s Lucas Pickup confirmed that Azure&#x27;s 80% score was caused by running an older vLLM, now fixed:
+
+
+This is exactly it, it’s been fixed as of yesterday afternoon across all serving instances (of the hosted 120b service). Old vLLM commits that didn’t respect reasoning_effort, so all requests defaulted to medium.
+
+
+No news yet on what went wrong with the AWS Bedrock version.
+
+The challenge for customers of open weight models
+
+As a customer of open weight model providers, this really isn&#x27;t something I wanted to have to think about!
+
+It&#x27;s not really a surprise though. When running models myself I inevitably have to make choices - about which serving framework to use (I&#x27;m usually picking between GGPF/llama.cpp and MLX on my own Mac laptop) and the quantization size to use.
+
+I know that quantization has an impact, but it&#x27;s difficult for me to quantify that effect.
+
+It looks like with hosted models even knowing the quantization they are using isn&#x27;t necessarily enough information to be able to predict that model&#x27;s performance.
+
+I see this situation as a general challenge for open weight models. They tend to be released as an opaque set of model weights plus loose instructions for running them on a single platform - if we are lucky! Most AI labs leave quantization and format conversions to the community and third-party providers.
+
+There&#x27;s a lot that can go wrong. Tool calling is particularly vulnerable to these differences - models have been trained on specific tool-calling conventions, and if a provider doesn&#x27;t get these exactly right the results can be unpredictable but difficult to diagnose.
+
+What would help enormously here would be some kind of conformance suite. If models were reliably deterministic this would be easy: publish a set of test cases and let providers (or their customers) run those to check the model&#x27;s implementation.
+
+Models aren&#x27;t deterministic though, even at a temperature of 0. Maybe this new effort from Artificial Analysis is exactly what we need here, especially since running a full benchmark suite against a provider can be quite expensive in terms of token spend.
+
+Update: Via OpenAI&#x27;s Dominik Kundel I learned that OpenAI now include a compatibility test in the gpt-oss GitHub repository to help providers verify that they have implemented things like tool calling templates correctly, described in more detail in their Verifying gpt-oss implementations cookbook.
+Tags: ai, openai, generative-ai, local-llms, llms, evals, gpt-oss, artificial-analysis</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Steve Wozniak
+              <span class="post-metadata">(1 min | 379 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/15/steve-wozniak/#atom-everything>I gave all my Apple wealth away because wealth and power are not what I live for. I have a lot of fun and happiness. I funded a lot of important museums and arts groups in San Jose, the city of my birth, and they named a street after me for being good. I now speak publicly and have risen to the top. I have no idea how much I have but after speaking for 20 years it might be $10M plus a couple of homes. I never look for any type of tax dodge. I earn money from my labor and pay something like 55% combined tax on it. I am the happiest person ever. Life to me was never about accomplishment, but about Happiness, which is Smiles minus Frowns. I developed these philosophies when I was 18-20 years old and I never sold out.
+
+— Steve Wozniak, in a comment on Slashdot
+Tags: apple, careers, slashdot</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Actions policy now supports blocking and SHA pinning actions
+              <span class="post-metadata">(5 min | 1639 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-08-15-github-actions-policy-now-supports-blocking-and-sha-pinning-actions>GitHub Actions is powered by a diverse ecosystem of first-party and community contributed actions. If one of these actions has a vulnerability or is compromised by a malicious actor, it…
+The post GitHub Actions policy now supports blocking and SHA pinning actions appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-08-14</time>
 
       <section>
