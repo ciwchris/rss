@@ -25,6 +25,60 @@
 
   <ul>
     <li>
+      <time>2025-08-17</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              TIL: Running a gpt-oss eval suite against LM Studio on a Mac
+              <span class="post-metadata">(2 min | 451 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/17/gpt-oss-eval-suite/#atom-everything>TIL: Running a gpt-oss eval suite against LM Studio on a Mac
+I learned that OpenAI published a set of evals as part of their gpt-oss model release, described in their cookbook on Verifying gpt-oss implementations.
+I decided to try and run that eval suite on my own MacBook Pro, against gpt-oss-20b running inside of LM Studio.
+TLDR: once I had the model running inside LM Studio with a longer than default context limit, the following incantation ran an eval suite in around 3.5 hours:
+mkdir /tmp/aime25_openai
+OPENAI_API_KEY&#x3D;x \
+  uv run --python 3.13 --with &#x27;gpt-oss[eval]&#x27; \
+  python -m gpt_oss.evals \
+  --base-url http://localhost:1234/v1 \
+  --eval aime25 \
+  --sampler chat_completions \
+  --model openai/gpt-oss-20b \
+  --reasoning-effort low \
+  --n-threads 2
+
+My new TIL breaks that command down in detail and walks through the underlying eval - AIME 2025, which asks 30 questions (8 times each) that are defined using the following format:
+{&quot;question&quot;: &quot;Find the sum of all integer bases $b&gt;9$ for which $17_{b}$ is a divisor of $97_{b}$.&quot;, &quot;answer&quot;: &quot;70&quot;}
+
+
+    
+Tags: python, ai, til, openai, generative-ai, local-llms, llms, evals, uv, lm-studio, gpt-oss</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Sam Altman
+              <span class="post-metadata">(1 min | 274 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/17/sam-altman/#atom-everything>Most of what we&#x27;re building out at this point is the inference [...] We&#x27;re profitable on inference. If we didn&#x27;t pay for training, we&#x27;d be a very profitable company.
+
+— Sam Altman, during a &quot;wide-ranging dinner with a small group of reporters in San Francisco&quot;
+Tags: openai, sam-altman, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-08-16</time>
 
       <section>
@@ -5913,105 +5967,6 @@ Also this model thinks for a long time. o1 thought for seconds. Deep Research fo
 It’s worth reflecting on just how fast AI progress has been, especially in math. In 2024, AI labs were using grade school math (GSM8K) as an eval in their model releases. Since then, we’ve saturated the (high school) MATH benchmark, then AIME, and now are at IMO gold. [...]
 When you work at a frontier lab, you usually know where frontier capabilities are months before anyone else. But this result is brand new, using recently developed techniques. It was a surprise even to many researchers at OpenAI. Today, everyone gets to see where the frontier is.
 Tags: mathematics, ai, openai, generative-ai, llms, llm-reasoning</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New tags
-              <span class="post-metadata">(1 min | 399 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/19/new-tags/#atom-everything>A few months ago I added a tool to my blog for bulk-applying tags to old content. It works as an extension to my existing search interface, letting me run searches and then quickly apply a tag to relevant results.
-Since adding this I&#x27;ve been much more aggressive in categorizing my older content, including adding new tags when I spot an interesting trend that warrants its own page.
-Today I added system-prompts and applied it to 41 existing posts that talk about system prompts for LLM systems, including a bunch that directly quote system prompts that have been deliberately published or leaked.
-Other tags I&#x27;ve added recently include press-quotes for times I&#x27;ve been quoted in the press, agent-definitions for my ongoing collection of different ways people define &quot;agents&quot; and 
-paper-review for posts where I review an academic paper.
-Tags: blogging, tagging</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Steve Yegge
-              <span class="post-metadata">(1 min | 375 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/19/steve-yegge/#atom-everything>So one of my favorite things to do is give my coding agents more and more permissions and freedom, just to see how far I can push their productivity without going too far off the rails. It&#x27;s a delicate balance. I haven&#x27;t given them direct access to my bank account yet. But I did give one access to my Google Cloud production instances and systems. And it promptly wiped a production database password and locked my network. [...]
-The thing is, autonomous coding agents are extremely powerful tools that can easily go down very wrong paths. Running them with permission checks disabled is dangerous and stupid, and you should only do it if you are willing to take dangerous and stupid risks with your code and/or production systems.
-
-— Steve Yegge
-Tags: vibe-coding, steve-yegge, generative-ai, ai-agents, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Paul Kedrosky
-              <span class="post-metadata">(1 min | 361 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/19/paul-kedrosky/#atom-everything>One analyst recently speculated (via Ed Conard) that, based on Nvidia&#x27;s latest datacenter sales figures, AI capex may be ~2% of US GDP in 2025, given a standard multiplier. [...]
-Capital expenditures on AI data centers is likely around 20% of the peak spending on railroads, as a percentage of GDP, and it is still rising quickly. [...]
-Regardless of what one thinks about the merits of AI or explosive datacenter expansion, the scale and pace of capital deployment into a rapidly depreciating technology is remarkable. These are not railroads—we aren’t building century-long infrastructure. AI datacenters are short-lived, asset-intensive facilities riding declining-cost technology curves, requiring frequent hardware replacement to preserve margins.
-
-— Paul Kedrosky, Honey, AI Capex is Eating the Economy
-Tags: ai-ethics, economics, ai, paul-kedrosky</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-07-18</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              New GitHub Copilot activity report with enhanced authentication and usage insights
-              <span class="post-metadata">(5 min | 1440 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-07-18-new-github-copilot-activity-report-with-enhanced-authentication-and-usage-insights>Enterprise and organization administrators can now download a new GitHub Copilot activity report that provides enhanced visibility into user authentication and feature adoption. This report improves upon the legacy usage…
-The post New GitHub Copilot activity report with enhanced authentication and usage insights appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Upcoming deprecations and changes to Copilot code review
-              <span class="post-metadata">(5 min | 1620 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-07-18-upcoming-deprecations-and-changes-to-copilot-code-review>We’re streamlining and enhancing Copilot code review! Upcoming features include moving from coding guidelines to copilot-instructions.md, making the Request pull request review from Copilot checkbox easier to find, and introducing…
-The post Upcoming deprecations and changes to Copilot code review appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How to run an LLM on your laptop
-              <span class="post-metadata">(2 min | 463 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/18/how-to-run-an-llm-on-your-laptop/#atom-everything>How to run an LLM on your laptop
-Simon Willison has a plan for the end of the world. It’s a USB stick, onto which he has loaded a couple of his favorite open-weight LLMs—models that have been shared publicly by their creators and that can, in principle, be downloaded and run with local hardware. If human civilization should ever collapse, Willison plans to use all the knowledge encoded in their billions of parameters for help. “It’s like having a weird, condensed, faulty version of Wikipedia, so I can help reboot society with the help of my little USB stick,” he says.
-The article suggests Ollama or LM Studio for laptops, and new-to-me LLM Farm for the iPhone:
-My beat-up iPhone 12 was able to run Meta’s Llama 3.2 1B using an app called LLM Farm. It’s not a particularly good model—it very quickly goes off into bizarre tangents and hallucinates constantly—but trying to coax something so chaotic toward usability can be entertaining.
-Tags: ai, generative-ai, local-llms, llms, ollama, lm-studio, press-quotes</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
