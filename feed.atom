@@ -2,10 +2,70 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-08-18T21:09:32.096Z</updated>
+    <updated>2025-08-19T14:10:45.030Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[r/ChatGPTPro: What is the most profitable thing you have done with ChatGPT?]]></title>
+        <id>https://simonwillison.net/2025/Aug/19/rchatgptpro/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/19/rchatgptpro/#atom-everything"/>
+        <updated>2025-08-19T04:40:20.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.reddit.com/r/ChatGPTPro/comments/1mt5igj/what_is_the_most_profitable_thing_you_have_done/">r/ChatGPTPro: What is the most profitable thing you have done with ChatGPT?</a></strong></p>
+This Reddit thread - with 279 replies - offers a neat targeted insight into the kinds of things people are using ChatGPT for.</p>
+<p>Lots of variety here but two themes that stood out for me were ChatGPT for written negotiation - insurance claims, breaking rental leases - and ChatGPT for career and business advice.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/reddit">reddit</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Google Gemini URL Context]]></title>
+        <id>https://simonwillison.net/2025/Aug/18/google-gemini-url-context/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/18/google-gemini-url-context/#atom-everything"/>
+        <updated>2025-08-18T23:59:37.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://ai.google.dev/gemini-api/docs/url-context">Google Gemini URL Context</a></strong></p>
+New feature in the Gemini API: you can now enable a <code>url_context</code> tool which the models can use to request the contents of URLs as part of replying to a prompt.</p>
+<p>I released <a href="https://github.com/simonw/llm-gemini/releases/tag/0.25">llm-gemini 0.25</a> with a new <code>-o url_context 1</code> option adding support for this feature. You can try it out like this:</p>
+<pre><code>llm install -U llm-gemini
+llm keys set gemini # If you need to set an API key
+llm -m gemini-2.5-flash -o url_context 1 \
+  'Latest headline on simonwillison.net'
+</code></pre>
+<p>Tokens from the fetched content are charged as input tokens. Use <code>llm logs -c --usage</code> to see that token count:</p>
+<pre><code># 2025-08-18T23:52:46    conversation: 01k2zsk86pyp8p5v7py38pg3ge id: 01k2zsk17k1d03veax49532zs2
+
+Model: **gemini/gemini-2.5-flash**
+
+## Prompt
+
+Latest headline on simonwillison.net
+
+## Response
+
+The latest headline on simonwillison.net as of August 17, 2025, is "TIL: Running a gpt-oss eval suite against LM Studio on a Mac.".
+
+## Token usage
+
+9,613 input, 87 output, {"candidatesTokenCount": 57, "promptTokensDetails": [{"modality": "TEXT", "tokenCount": 10}], "toolUsePromptTokenCount": 9603, "toolUsePromptTokensDetails": [{"modality": "TEXT", "tokenCount": 9603}], "thoughtsTokenCount": 30}
+</code></pre>
+<p>I intercepted a request from it using <a href="https://simonwillison.net/2024/Aug/8/django-http-debug/">django-http-debug</a> and saw the following request headers:</p>
+<pre><code>Accept: */*
+User-Agent: Google
+Accept-Encoding: gzip, br
+</code></pre>
+<p>The request came from 192.178.9.35, a <a href="https://ipinfo.io/ips/192.178.9.0/24">Google IP</a>. It did not appear to execute JavaScript on the page, instead feeding the original raw HTML to the model.
+
+    <p><small></small>Via <a href="https://twitter.com/OfficialLoganK/status/1957551260053225548">@OfficialLoganK</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Migrate repositories with GitHub-owned blob storage]]></title>
         <id>https://github.blog/changelog/2025-08-18-migrate-repositories-with-github-owned-blob-storage</id>
@@ -4730,19 +4790,6 @@ Salvatore Sanfilippo describes his current AI-assisted development workflow. He'
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/salvatore-sanfilippo">salvatore-sanfilippo</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Armin Ronacher]]></title>
-        <id>https://simonwillison.net/2025/Jul/20/armin-ronacher/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jul/20/armin-ronacher/#atom-everything"/>
-        <updated>2025-07-20T10:54:45.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://lucumr.pocoo.org/2025/7/20/the-next-generation/"><p>Every day someone becomes a programmer because they figured out how to make ChatGPT build something. Lucky for us: in many of those cases the AI picks Python. We should treat this as an opportunity and anticipate an expansion in the kinds of people who might want to attend a Python conference. Yet many of these new programmers are not even aware that programming communities and conferences exist. It’s in the Python community’s interest to find ways to pull them in.</p></blockquote>
-<p class="cite">&mdash; <a href="https://lucumr.pocoo.org/2025/7/20/the-next-generation/">Armin Ronacher</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/pycon">pycon</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/armin-ronacher">armin-ronacher</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
