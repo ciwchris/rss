@@ -31,6 +31,50 @@
       <article>
           <details>
             <summary>
+              Qwen-Image-Edit: Image Editing with Higher Quality and Efficiency
+              <span class="post-metadata">(2 min | 519 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/19/qwen-image-edit/#atom-everything>Qwen-Image-Edit: Image Editing with Higher Quality and Efficiency
+August 4th release of the Qwen image generation model, Qwen have now followed it up with a separate model, Qwen-Image-Edit, which can take an image and a prompt and return an edited version of that image.
+Ivan Fioravanti upgraded his macOS qwen-image-mps tool (previously) to run the new model via a new edit command. Since it&#x27;s now on PyPI you can run it directly using uvx like this:
+uvx qwen-image-mps edit -i pelicans.jpg \
+  -p &#x27;Give the pelicans rainbow colored plumage&#x27; -s 10
+
+Be warned... it downloads a 54GB model file (to ~/.cache/huggingface/hub/models--Qwen--Qwen-Image-Edit) and appears to use all 64GB of my system memory - if you have less than 64GB it likely won&#x27;t work, and I had to quit almost everything else on my system to give it space to run. A larger machine is almost required to use this.
+I fed it this image:
+
+The following prompt:
+Give the pelicans rainbow colored plumage
+And told it to use just 10 inference steps - the default is 50, but I didn&#x27;t want to wait that long.
+It still took nearly 25 minutes (on a 64GB M2 MacBook Pro) to produce this result:
+
+To get a feel for how much dropping the inference steps affected things I tried the same prompt with the new &quot;Image Edit&quot; mode of Qwen&#x27;s chat.qwen.ai, which I believe uses the same model. It gave me a result much faster that looked like this:
+
+
+
+    
+Tags: macos, python, ai, generative-ai, uv, qwen, text-to-image, ivan-fioravanti</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Secret scanning: Configuring patterns in push protection is now generally available
+              <span class="post-metadata">(5 min | 1352 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-08-19-secret-scanning-configuring-patterns-in-push-protection-is-now-generally-available>Now generally available, GitHub Secret Protection users have the ability to configure which secret scanning patterns are included in push protection. This customization helps you to better meet your organization’s…
+The post Secret scanning: Configuring patterns in push protection is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               XSLT on congress.gov
               <span class="post-metadata">(1 min | 417 words)</span> 
             </summary>
@@ -5988,124 +6032,6 @@ The post Code scanning will stop combining multiple SARIF runs uploaded in the s
 The post GitHub Copilot app modernization for .NET enters public preview appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Textual v4.0.0: The Streaming Release
-              <span class="post-metadata">(1 min | 405 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/22/textual-v4/#atom-everything>Textual v4.0.0: The Streaming Release
-no longer be running a commercial company around Textual, but that hasn&#x27;t stopped his progress on the open source project.
-He recently released v4 of his Python framework for building TUI command-line apps, and the signature feature is streaming Markdown support - super relevant in our current age of LLMs, most of which default to outputting a stream of Markdown via their APIs.
-I took an example from one of his tests, spliced in my async LLM Python library and got some help from o3 to turn it into a streaming script for talking to models, which can be run like this:
-uv run http://tools.simonwillison.net/python/streaming_textual_markdown.py \
-&#x27;Markdown headers and tables comparing pelicans and wolves&#x27; \
--m gpt-4.1-mini
-
-
-
-
-    
-Tags: async, python, markdown, ai, will-mcgugan, generative-ai, llms, textual, llm, uv</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-07-21</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              tidwall/pogocache
-              <span class="post-metadata">(1 min | 446 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/21/pogocache/#atom-everything>tidwall/pogocache
-tg C geospatial libarry (covered previously) and various other interesting projects:
-Pogocache is fast caching software built from scratch with a focus on low latency and cpu efficency.
-Faster: Pogocache is faster than Memcache, Valkey, Redis, Dragonfly, and Garnet. It has the lowest latency per request, providing the quickest response times. It&#x27;s optimized to scale from one to many cores, giving you the best single-threaded and multithreaded performance.
-Faster than Memcache and Redis is a big claim! The README includes a design details section that explains how the system achieves that performance, using a sharded hashmap inspired by Josh&#x27;s shardmap project and clever application of threads.
-Performance aside, the most interesting thing about Pogocache is the server interface it provides: it emulates the APIs for Redis and Memcached, provides a simple HTTP API and lets you talk to it over the PostgreSQL wire protocol as well!
-psql -h localhost -p 9401
-&#x3D;&gt; SET first Tom;
-&#x3D;&gt; SET last Anderson;
-&#x3D;&gt; SET age 37;
-
-$ curl http://localhost:9401/last
-Anderson
-
-Via Show HN
-Tags: c, caching, http, memcached, postgresql, redis</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Including timeouts in primary rate limits
-              <span class="post-metadata">(4 min | 1315 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-07-21-including-timeouts-in-primary-rate-limits>At GitHub, we’re always working to make our GraphQL API more reliable for everyone. With that in mind, we’ve made a recent change: request timeouts will now count against your…
-The post Including timeouts in primary rate limits appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Advanced version of Gemini with Deep Think officially achieves gold-medal standard at the International Mathematical Olympiad
-              <span class="post-metadata">(2 min | 733 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/21/gemini-imo/#atom-everything>Advanced version of Gemini with Deep Think officially achieves gold-medal standard at the International Mathematical Olympiad
-publishing their results on Saturday, but a team from Google Gemini achieved an equally impressive result on this year&#x27;s International Mathematics Olympiad scoring a gold medal performance with their custom research model.
-(I saw an unconfirmed rumor that the Gemini team had to wait until Monday for approval from Google PR.)
-It&#x27;s interesting that Gemini achieved the exact same score as OpenAI, 35/42, and were able to solve the same set of questions - 1 through 5, failing only to answer 6, which is designed to be the hardest question.
-Each question is worth seven points, so 35/42 cents corresponds to full marks on five out of the six problems.
-Only 6 of the 630 human contestants this year scored all 7 points for question 6 this year, and just 55 more had greater than 0 points for that question.
-OpenAI claimed their model had not been optimized for IMO questions. Gemini&#x27;s model was different - emphasis mine:
-We achieved this year’s result using an advanced version of Gemini Deep Think – an enhanced reasoning mode for complex problems that incorporates some of our latest research techniques, including parallel thinking. This setup enables the model to simultaneously explore and combine multiple possible solutions before giving a final answer, rather than pursuing a single, linear chain of thought.
-To make the most of the reasoning capabilities of Deep Think, we additionally trained this version of Gemini on novel reinforcement learning techniques that can leverage more multi-step reasoning, problem-solving and theorem-proving data. We also provided Gemini with access to a curated corpus of high-quality solutions to mathematics problems, and added some general hints and tips on how to approach IMO problems to its instructions.
-The Gemini team, like the OpenAI team, achieved this result with no tool use or internet access for the model.
-Gemini&#x27;s solutions are listed in this PDF. If you are mathematically inclined you can compare them with OpenAI&#x27;s solutions on GitHub.
-Last year Google DeepMind achieved a silver medal in IMO, solving four of the six problems using custom models called AlphaProof and AlphaGeometry 2:
-First, the problems were manually translated into formal mathematical language for our systems to understand. In the official competition, students submit answers in two sessions of 4.5 hours each. Our systems solved one problem within minutes and took up to three days to solve the others.
-This year&#x27;s result, scoring gold with a single model, within the allotted time and with no manual step to translate the problems first, is much more impressive.
-
-    
-Via Hacker News
-Tags: mathematics, ai, openai, generative-ai, llms, gemini, llm-reasoning</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Daniel Litt
-              <span class="post-metadata">(1 min | 387 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/21/daniel-litt/#atom-everything>An AI tool that gets gold on the IMO is obviously immensely impressive. Does it mean math is “solved”? Is an AI-generated proof of the Riemann hypothesis clearly on the horizon? Obviously not.
-Worth keeping timescales in mind here: IMO competitors spend an average of 1.5 hrs on each problem. High-quality math research, by contrast, takes month or years.
-What are the obstructions to AI performing high-quality autonomous math research? I don’t claim to know for sure, but I think they include many of the same obstructions that prevent it from doing many jobs: Long context, long-term planning, consistency, unclear rewards, lack of training data, etc.
-It’s possible that some or all of these will be solved soon (or have been solved) but I think it’s worth being cautious about over-indexing on recent (amazing) progress.
-
-— Daniel Litt, Assistant Professor of mathematics, University of Toronto
-Tags: mathematics, llms, ai, generative-ai, daniel-litt</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
