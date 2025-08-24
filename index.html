@@ -25,6 +25,84 @@
 
   <ul>
     <li>
+      <time>2025-08-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Static Sites with Python, uv, Caddy, and Docker
+              <span class="post-metadata">(2 min | 481 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/24/uv-caddy-and-docker/#atom-everything>Static Sites with Python, uv, Caddy, and Docker
+I found this really useful. The Dockerfile itself without comments is just 8 lines long:
+FROM ghcr.io/astral-sh/uv:debian AS build
+WORKDIR /src
+COPY . .
+RUN uv python install 3.13
+RUN uv run --no-dev sus
+FROM caddy:alpine
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY --from&#x3D;build /src/output /srv/
+
+He also includes a Caddyfile that shows how to proxy a subset of requests to the Plausible analytics service.
+The static site is built using his sus package for creating static URL redirecting sites, but would work equally well for another static site generator you can install and run with uv run.
+Nik deploys his sites using Coolify, a new-to-me take on the self-hosting alternative to Heroku/Vercel pattern which helps run multiple sites on a collection of hosts using Docker containers.
+A bunch of the Hacker News comments dismissed this as over-engineering. I don&#x27;t think that criticism is justified - given Nik&#x27;s existing deployment environment I think this is a lightweight way to deploy static sites in a way that&#x27;s consistent with how everything else he runs works already.
+More importantly, the world needs more articles like this that break down configuration files and explain what every single line of them does.
+
+    
+Via Hacker News
+Tags: python, docker, uv</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2025-08-23</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Spatial Joins in DuckDB
+              <span class="post-metadata">(2 min | 539 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything>Spatial Joins in DuckDB
+Consider the following query, which counts the number of NYC Citi Bike Trips for each of the neighborhoods defined by the NYC Neighborhood Tabulation Areas polygons and returns the top three:
+SELECT neighborhood,
+  count(*) AS num_rides
+FROM rides
+JOIN hoods ON ST_Intersects(
+  rides.start_geom, hoods.geom
+)
+GROUP BY neighborhood
+ORDER BY num_rides DESC
+LIMIT 3;
+The rides table contains 58,033,724 rows. The hoods table has polygons for 310 neighborhoods.
+Without an optimized spatial joins this query requires a nested loop join, executing that expensive ST_Intersects() operation 58m * 310 ~&#x3D; 18 billion times. This took around 30 minutes on the 36GB MacBook M3 Pro used for the benchmark.
+The first optimization described - implemented from DuckDB 1.2.0 onwards - uses a &quot;piecewise merge join&quot;. This takes advantage of the fact that a bounding box intersection is a whole lot faster to calculate, especially if you pre-cache the bounding box (aka the minimum bounding rectangle or MBR) in the stored binary GEOMETRY representation.
+Rewriting the query to use a fast bounding box intersection and then only running the more expensive ST_Intersects() filters on those matches drops the runtime from 1800 seconds to 107 seconds.
+The second optimization, added in DuckDB 1.3.0 in May 2025 using the new SPATIAL_JOIN operator, is significantly more sophisticated.
+DuckDB can now identify when a spatial join is working against large volumes of data and automatically build an in-memory R-Tree of bounding boxes for the larger of the two tables being joined.
+This new R-Tree further accelerates the bounding box intersection part of the join, and drops the runtime down to just 30 seconds.
+
+    
+Via @mackaszechno.bsky.social
+Tags: geospatial, sql, duckdb</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-08-22</time>
 
       <section>
@@ -5411,42 +5489,6 @@ During our early stages of development some legacy content was not migrated into
 Also worth noting is that they stopped requesting photos of ID back in 2023:
 During our early stages of development, we required selfies and IDs as an added layer of safety to ensure that only women were signing up for the app. In 2023, we removed the ID requirement.
 Tags: privacy, security, ai, generative-ai, llms, vibe-coding</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-07-25</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Qwen3-235B-A22B-Thinking-2507
-              <span class="post-metadata">(2 min | 491 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/25/qwen3-235b-a22b-thinking-2507/#atom-everything>Qwen3-235B-A22B-Thinking-2507
-Qwen3-235B-A22B-Instruct-2507 on Monday 21st and Qwen3-Coder-480B-A35B-Instruct on Tuesday 22nd.
-Those two were both non-reasoning models - a change from the previous models in the Qwen 3 family which combined reasoning and non-reasoning in the same model, controlled by /think and /no_think tokens.
-Today&#x27;s model, Qwen3-235B-A22B-Thinking-2507 (also released as an FP8 variant), is their new thinking variant.
-Qwen claim &quot;state-of-the-art results among open-source thinking models&quot; and have increased the context length to 262,144 tokens - a big jump from April&#x27;s Qwen3-235B-A22B which was &quot;32,768 natively and 131,072 tokens with YaRN&quot;.
-Their own published benchmarks show comparable scores to DeepSeek-R1-0528, OpenAI&#x27;s o3 and o4-mini, Gemini 2.5 Pro and Claude Opus 4 in thinking mode.
-The new model is already available via OpenRouter.
-But how good is its pelican?
-I tried it with &quot;Generate an SVG of a pelican riding a bicycle&quot; via OpenRouter, and it thought for 166 seconds - nearly three minutes! I have never seen a model think for that long. No wonder the documentation includes the following:
-However, since the model may require longer token sequences for reasoning, we strongly recommend using a context length greater than 131,072 when possible.
-Here&#x27;s a copy of that thinking trace. It was really fun to scan through:
-
-The finished pelican? Not so great! I like the beak though:
-
-
-    
-Via @Alibaba_Qwen
-Tags: ai, generative-ai, llms, qwen, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>

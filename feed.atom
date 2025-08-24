@@ -2,10 +2,75 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-08-23T21:08:42.409Z</updated>
+    <updated>2025-08-24T14:08:39.227Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Static Sites with Python, uv, Caddy, and Docker]]></title>
+        <id>https://simonwillison.net/2025/Aug/24/uv-caddy-and-docker/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/24/uv-caddy-and-docker/#atom-everything"/>
+        <updated>2025-08-24T08:51:30.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://nkantar.com/blog/2025/08/static-python-uv-caddy-docker/">Static Sites with Python, uv, Caddy, and Docker</a></strong></p>
+Nik Kantar documents his Docker-based setup for building and deploying mostly static web sites in line-by-line detail.</p>
+<p>I found this really useful. The Dockerfile itself without comments is just 8 lines long:</p>
+<pre><code>FROM ghcr.io/astral-sh/uv:debian AS build
+WORKDIR /src
+COPY . .
+RUN uv python install 3.13
+RUN uv run --no-dev sus
+FROM caddy:alpine
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY --from=build /src/output /srv/
+</code></pre>
+<p>He also includes a Caddyfile that shows how to proxy a subset of requests to the Plausible analytics service.</p>
+<p>The static site is built using his <a href="https://github.com/nkantar/sus">sus</a> package for creating static URL redirecting sites, but would work equally well for another static site generator you can install and run with <code>uv run</code>.</p>
+<p>Nik deploys his sites using <a href="https://coolify.io/">Coolify</a>, a new-to-me take on the self-hosting alternative to Heroku/Vercel pattern which helps run multiple sites on a collection of hosts using Docker containers.</p>
+<p>A bunch of the <a href="https://news.ycombinator.com/item?id=44985653">Hacker News comments</a> dismissed this as over-engineering. I don't think that criticism is justified - given Nik's existing deployment environment I think this is a lightweight way to deploy static sites in a way that's consistent with how everything else he runs works already.</p>
+<p>More importantly, the world needs more articles like this that break down configuration files and explain what every single line of them does.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=44985653">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/docker">docker</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spatial Joins in DuckDB]]></title>
+        <id>https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything"/>
+        <updated>2025-08-23T21:21:02.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://duckdb.org/2025/08/08/spatial-joins">Spatial Joins in DuckDB</a></strong></p>
+Extremely detailed overview by Max Gabrielsson of DuckDB's new spatial join optimizations.</p>
+<p>Consider the following query, which counts the number of <a href="https://citibikenyc.com/system-data">NYC Citi Bike Trips</a> for each of the neighborhoods defined by the <a href="https://www.nyc.gov/content/planning/pages/resources/datasets/neighborhood-tabulation">NYC Neighborhood Tabulation Areas polygons</a> and returns the top three:</p>
+<pre><span class="pl-k">SELECT</span> neighborhood,
+  <span class="pl-c1">count</span>(<span class="pl-k">*</span>) <span class="pl-k">AS</span> num_rides
+<span class="pl-k">FROM</span> rides
+<span class="pl-k">JOIN</span> hoods <span class="pl-k">ON</span> ST_Intersects(
+  <span class="pl-c1">rides</span>.<span class="pl-c1">start_geom</span>, <span class="pl-c1">hoods</span>.<span class="pl-c1">geom</span>
+)
+<span class="pl-k">GROUP BY</span> neighborhood
+<span class="pl-k">ORDER BY</span> num_rides <span class="pl-k">DESC</span>
+<span class="pl-k">LIMIT</span> <span class="pl-c1">3</span>;</pre>
+
+<p>The rides table contains 58,033,724 rows. The hoods table has polygons for 310 neighborhoods.</p>
+<p>Without an optimized spatial joins this query requires a nested loop join, executing that expensive <code>ST_Intersects()</code> operation 58m * 310 ~= 18 billion times. This took around 30 minutes on the 36GB MacBook M3 Pro used for the benchmark.</p>
+<p>The first optimization described - implemented from DuckDB 1.2.0 onwards - uses a "piecewise merge join". This takes advantage of the fact that a bounding box intersection is a whole lot faster to calculate, especially if you pre-cache the bounding box (aka the minimum bounding rectangle or MBR) in the stored binary <code>GEOMETRY</code> representation.</p>
+<p>Rewriting the query to use a fast bounding box intersection and then only running the more expensive <code>ST_Intersects()</code> filters on those matches drops the runtime from 1800 seconds to 107 seconds.</p>
+<p>The second optimization, added in <a href="https://duckdb.org/2025/05/21/announcing-duckdb-130.html">DuckDB 1.3.0</a> in May 2025 using the new SPATIAL_JOIN operator, is significantly more sophisticated.</p>
+<p>DuckDB can now identify when a spatial join is working against large volumes of data and automatically build an in-memory R-Tree of bounding boxes for the larger of the two tables being joined.</p>
+<p>This new R-Tree further accelerates the bounding box intersection part of the join, and drops the runtime down to just 30 seconds.
+
+    <p><small></small>Via <a href="https://bsky.app/profile/mackaszechno.bsky.social/post/3lx3lnagg7s2t">@mackaszechno.bsky.social</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/geospatial">geospatial</a>, <a href="https://simonwillison.net/tags/sql">sql</a>, <a href="https://simonwillison.net/tags/duckdb">duckdb</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ChatGPT release notes: Project-only memory]]></title>
         <id>https://simonwillison.net/2025/Aug/22/project-memory/#atom-everything</id>
@@ -4323,36 +4388,6 @@ Tea is a dating safety app for women that lets them share notes about potential 
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/privacy">privacy</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Qwen3-235B-A22B-Thinking-2507]]></title>
-        <id>https://simonwillison.net/2025/Jul/25/qwen3-235b-a22b-thinking-2507/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jul/25/qwen3-235b-a22b-thinking-2507/#atom-everything"/>
-        <updated>2025-07-25T22:52:14.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507">Qwen3-235B-A22B-Thinking-2507</a></strong></p>
-The third Qwen model release week, following <a href="https://simonwillison.net/2025/Jul/22/qwen3-235b-a22b-instruct-2507/">Qwen3-235B-A22B-Instruct-2507</a> on Monday 21st and <a href="https://simonwillison.net/2025/Jul/22/qwen3-coder/">Qwen3-Coder-480B-A35B-Instruct</a> on Tuesday 22nd.</p>
-<p>Those two were both non-reasoning models - a change from the previous models in the Qwen 3 family which combined reasoning and non-reasoning in the same model, controlled by <code>/think</code> and <code>/no_think</code> tokens.</p>
-<p>Today's model, Qwen3-235B-A22B-Thinking-2507 (also released as an <a href="https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507-FP8">FP8 variant</a>), is their new thinking variant.</p>
-<p>Qwen claim "state-of-the-art results among open-source thinking models" and have increased the context length to 262,144 tokens - a big jump from April's <a href="https://huggingface.co/Qwen/Qwen3-235B-A22B">Qwen3-235B-A22B</a> which was "32,768 natively and 131,072 tokens with YaRN".</p>
-<p>Their own published benchmarks show comparable scores to DeepSeek-R1-0528, OpenAI's o3 and o4-mini, Gemini 2.5 Pro and Claude Opus 4 in thinking mode.</p>
-<p>The new model is already <a href="https://openrouter.ai/qwen/qwen3-235b-a22b-thinking-2507">available via OpenRouter</a>.</p>
-<p>But how good is <a href="https://simonwillison.net/tags/pelican-on-a-bicycle/">its pelican</a>?</p>
-<p>I tried it with "Generate an SVG of a pelican riding a bicycle" via OpenRouter, and it thought for 166 seconds - nearly three minutes! I have <em>never</em> seen a model think for that long. No wonder the documentation includes the following:</p>
-<blockquote>
-<p>However, since the model may require longer token sequences for reasoning, we strongly recommend using a context length greater than 131,072 when possible.</p>
-</blockquote>
-<p>Here's <a href="https://gist.github.com/simonw/057170c1d1e0843ca7e9547962d0c23e">a copy of that thinking trace</a>. It was really fun to scan through:</p>
-<p><img alt="Qwen3 235B A22B Thinking 2507 Seat at (200,200). The pelican's body will be: - The main body: a rounded shape starting at (200,200) and going to about (250, 250) [but note: the pelican is sitting, so the body might be more upright?] - Head: at (200, 180) [above the seat] and the beak extending forward to (280, 180) or so. We'll design the pelican as: - Head: a circle at (180, 170) with radius 15. - Beak: a long triangle from (180,170) to (250,170) and then down to (250,180) and back? Actually, the beak is a long flat-bottomed triangle." src="https://static.simonwillison.net/static/2025/qwen-details.jpg" /></p>
-<p>The <a href="https://gist.github.com/simonw/f013772544fabba02fca9e28fd54cdee">finished pelican</a>? Not so great! I like the beak though:</p>
-<p><img alt="Description by Claude Sonnet 4: Minimalist flat illustration featuring a white bird character with orange beak, a purple rectangular tablet or device, gray cloud-like shapes, two black &quot;T&quot; letters, colorful geometric elements including orange and teal triangular shapes, scattered orange and green dots across a light background, and a thin black line at the bottom" src="https://static.simonwillison.net/static/2025/qwen-thinking-pelican.png" />
-
-    <p><small></small>Via <a href="https://x.com/Alibaba_Qwen/status/1948688466386280706">@Alibaba_Qwen</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
