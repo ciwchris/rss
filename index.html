@@ -25,6 +25,37 @@
 
   <ul>
     <li>
+      <time>2025-08-25</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Agentic Browser Security: Indirect Prompt Injection in Perplexity Comet
+              <span class="post-metadata">(2 min | 697 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Aug/25/agentic-browser-security/#atom-everything>Agentic Browser Security: Indirect Prompt Injection in Perplexity Comet
+The vulnerability we’re discussing in this post lies in how Comet processes webpage content: when users ask it to “Summarize this webpage,” Comet feeds a part of the webpage directly to its LLM without distinguishing between the user’s instructions and untrusted content from the webpage. This allows attackers to embed indirect prompt injection payloads that the AI will execute as commands. For instance, an attacker could gain access to a user’s emails from a prepared piece of text in a page in another tab.
+Visit a Reddit post with Comet and ask it to summarize the thread, and malicious instructions in a post there can trick Comet into accessing web pages in another tab to extract the user&#x27;s email address, then perform all sorts of actions like triggering an account recovery flow and grabbing the resulting code from a logged in Gmail session.
+Perplexity attempted to mitigate the issues reported by Brave... but an update to the Brave post later confirms that those fixes were later defeated and the vulnerability remains. 
+Here&#x27;s where things get difficult: Brave themselves are developing an agentic browser feature called Leo. Brave&#x27;s security team describe the following as a &quot;potential mitigation&quot; to the issue with Comet:
+The browser should clearly separate the user’s instructions from the website’s contents when sending them as context to the model. The contents of the page should always be treated as untrusted.
+If only it were that easy! This is the core problem at the heart of prompt injection which we&#x27;ve been talking about for nearly three years - to an LLM the trusted instructions and untrusted content are concatenated together into the same stream of tokens, and to date (despite many attempts) nobody has demonstrated a convincing and effective way of distinguishing between the two.
+There&#x27;s an element of &quot;those in glass houses shouldn&#x27;t throw stones here&quot; - I strongly expect that the entire concept of an agentic browser extension is fatally flawed and cannot be built safely.
+One piece of good news: this Hacker News conversation about this issue was almost entirely populated by people who already understand how serious this issue is and why the proposed solutions were unlikely to work. That&#x27;s new: I&#x27;m used to seeing people misjudge and underestimate the severity of this problem, but it looks like the tide is finally turning there.
+
+
+    
+Tags: browsers, security, ai, prompt-injection, generative-ai, llms, perplexity, ai-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-08-24</time>
 
       <section>
@@ -5462,33 +5493,6 @@ Plenty of people have expressed interest in LLM-backed interfaces that go beyond
 
     
 Tags: design, design-patterns, ai, generative-ai, llms, geoffrey-litt</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-07-26</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Official statement from Tea on their data leak
-              <span class="post-metadata">(2 min | 604 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Jul/26/official-statement-from-tea/#atom-everything>Official statement from Tea on their data leak
-A legacy data storage system was compromised, resulting in unauthorized access to a dataset from prior to February 2024. This dataset includes approximately 72,000 images, including approximately 13,000 selfies and photo identification submitted by users during account verification and approximately 59,000 images publicly viewable in the app from posts, comments and direct messages.
-Storing and then failing to secure photos of driving licenses is an incredible breach of trust. Many of those photos included EXIF location information too, so there are maps of Tea users floating around the darker corners of the web now.
-I&#x27;ve seen a bunch of commentary using this incident as an example of the dangers of vibe coding. I&#x27;m confident vibe coding was not to blame in this particular case, even while I share the larger concern of irresponsible vibe coding leading to more incidents of this nature.
-The announcement from Tea makes it clear that the underlying issue relates to code written prior to February 2024, long before vibe coding was close to viable for building systems of this nature:
-During our early stages of development some legacy content was not migrated into our new fortified system. Hackers broke into our identifier link where data was stored before February 24, 2024. As we grew our community, we migrated to a more robust and secure solution which has rendered that any new users from February 2024 until now were not part of the cybersecurity incident.
-Also worth noting is that they stopped requesting photos of ID back in 2023:
-During our early stages of development, we required selfies and IDs as an added layer of safety to ensure that only women were signing up for the app. In 2023, we removed the ID requirement.
-Tags: privacy, security, ai, generative-ai, llms, vibe-coding</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>

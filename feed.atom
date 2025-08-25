@@ -2,10 +2,36 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-08-24T21:08:50.659Z</updated>
+    <updated>2025-08-25T14:10:59.916Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Agentic Browser Security: Indirect Prompt Injection in Perplexity Comet]]></title>
+        <id>https://simonwillison.net/2025/Aug/25/agentic-browser-security/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Aug/25/agentic-browser-security/#atom-everything"/>
+        <updated>2025-08-25T09:39:15.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://brave.com/blog/comet-prompt-injection/">Agentic Browser Security: Indirect Prompt Injection in Perplexity Comet</a></strong></p>
+The security team from Brave took a look at Comet, the LLM-powered "agentic browser" extension from Perplexity, and unsurprisingly found security holes you can drive a truck through.</p>
+<blockquote>
+<p>The vulnerability we’re discussing in this post lies in how Comet processes webpage content: when users ask it to “Summarize this webpage,” Comet feeds a part of the webpage directly to its LLM without distinguishing between the user’s instructions and untrusted content from the webpage. This allows attackers to embed indirect prompt injection payloads that the AI will execute as commands. For instance, an attacker could gain access to a user’s emails from a prepared piece of text in a page in another tab.</p>
+</blockquote>
+<p>Visit a Reddit post with Comet and ask it to summarize the thread, and malicious instructions in a post there can trick Comet into accessing web pages in another tab to extract the user's email address, then perform all sorts of actions like triggering an account recovery flow and grabbing the resulting code from a logged in Gmail session.</p>
+<p>Perplexity attempted to mitigate the issues reported by Brave... but an update to the Brave post later confirms that those fixes were later defeated and the vulnerability remains. </p>
+<p>Here's where things get difficult: Brave themselves are developing an agentic browser feature called Leo. Brave's security team describe the following as a "potential mitigation" to the issue with Comet:</p>
+<blockquote>
+<p>The browser should clearly separate the user’s instructions from the website’s contents when sending them as context to the model. The contents of the page should always be treated as untrusted.</p>
+</blockquote>
+<p>If only it were that easy! This is the core problem at the heart of prompt injection which we've been talking about for <a href="https://simonwillison.net/series/prompt-injection/">nearly three years</a> - to an LLM the trusted instructions and untrusted content are concatenated together into the same stream of tokens, and to date (despite many attempts) nobody has demonstrated a convincing and effective way of distinguishing between the two.</p>
+<p>There's an element of "those in glass houses shouldn't throw stones here" - I strongly expect that the <em>entire concept</em> of an agentic browser extension is fatally flawed and cannot be built safely.</p>
+<p>One piece of good news: this <a href="https://news.ycombinator.com/item?id=45004846">Hacker News conversation</a> about this issue was almost entirely populated by people who already understand how serious this issue is and why the proposed solutions were unlikely to work. That's new: I'm used to seeing people misjudge and underestimate the severity of this problem, but it looks like the tide is finally turning there.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/browsers">browsers</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-injection">prompt-injection</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/perplexity">perplexity</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Static Sites with Python, uv, Caddy, and Docker]]></title>
         <id>https://simonwillison.net/2025/Aug/24/uv-caddy-and-docker/#atom-everything</id>
@@ -4361,33 +4387,6 @@ Geoffrey Litt compares Copilots - AI assistants that you engage in dialog with a
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/design">design</a>, <a href="https://simonwillison.net/tags/design-patterns">design-patterns</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/geoffrey-litt">geoffrey-litt</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Official statement from Tea on their data leak]]></title>
-        <id>https://simonwillison.net/2025/Jul/26/official-statement-from-tea/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Jul/26/official-statement-from-tea/#atom-everything"/>
-        <updated>2025-07-26T16:20:12.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.teaforwomen.com/cyberincident">Official statement from Tea on their data leak</a></strong></p>
-Tea is a dating safety app for women that lets them share notes about potential dates. The other day it was subject to a truly egregious data leak caused by a legacy unprotected Firebase cloud storage bucket:</p>
-<blockquote>
-<p>A legacy data storage system was compromised, resulting in unauthorized access to a dataset from prior to February 2024. This dataset includes approximately 72,000 images, including approximately 13,000 selfies and photo identification submitted by users during account verification and approximately 59,000 images publicly viewable in the app from posts, comments and direct messages.</p>
-</blockquote>
-<p>Storing and then failing to secure photos of driving licenses is an incredible breach of trust. Many of those photos included EXIF location information too, so there are maps of Tea users floating around the darker corners of the web now.</p>
-<p>I've seen a bunch of commentary using this incident as an example of the dangers of vibe coding. <strong>I'm confident vibe coding was not to blame</strong> in this particular case, even while I <a href="https://simonwillison.net/2025/Mar/19/vibe-coding/#when-is-it-ok-to-vibe-code-">share the larger concern</a> of irresponsible vibe coding leading to more incidents of this nature.</p>
-<p>The announcement from Tea makes it clear that the underlying issue relates to code written prior to February 2024, long before vibe coding was close to viable for building systems of this nature:</p>
-<blockquote>
-<p>During our early stages of development some legacy content was not migrated into our new fortified system. Hackers broke into our identifier link where data was stored before February 24, 2024. As we grew our community, we migrated to a more robust and secure solution which has rendered that any new users from February 2024 until now were not part of the cybersecurity incident.</p>
-</blockquote>
-<p>Also worth noting is that they stopped requesting photos of ID back in 2023:</p>
-<blockquote>
-<p>During our early stages of development, we required selfies and IDs as an added layer of safety to ensure that only women were signing up for the app. In 2023, we removed the ID requirement.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/privacy">privacy</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
