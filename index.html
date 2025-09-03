@@ -25,6 +25,66 @@
 
   <ul>
     <li>
+      <time>2025-09-03</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              gov.uscourts.dcd.223205.1436.0_1.pdf
+              <span class="post-metadata">(3 min | 899 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/3/antitrust/#atom-everything>gov.uscourts.dcd.223205.1436.0_1.pdf
+United States v. Google LLC federal antitrust case - the case that could have resulted in Google selling off Chrome and cutting most of Mozilla&#x27;s funding.
+I made it through the first dozen pages - it&#x27;s actually quite readable.
+It opens with a clear summary of the case so far, bold highlights mine:
+Last year, this court ruled that Defendant Google LLC had violated Section 2 of the Sherman Act: “Google is a monopolist, and it has acted as one to maintain its monopoly.” The court found that, for more than a decade, Google had entered into distribution agreements with browser developers, original equipment manufacturers, and wireless carriers to be the out-of-the box, default general search engine (“GSE”) at key search access points. These access points were the most efficient channels for distributing a GSE, and Google paid billions to lock them up. The agreements harmed competition. They prevented rivals from accumulating the queries and associated data, or scale, to effectively compete and discouraged investment and entry into the market. And they enabled Google to earn monopoly profits from its search text ads, to amass an unparalleled volume of scale to improve its search product, and to remain the default GSE without fear of being displaced. Taken together, these agreements effectively “froze” the search ecosystem, resulting in markets in which Google has “no true competitor.”
+There&#x27;s an interesting generative AI twist: when the case was first argued in 2023 generative AI wasn&#x27;t an influential issue, but more recently Google seem to be arguing that it is an existential threat that they need to be able to take on without additional hindrance:
+The emergence of GenAl changed the course of this case. No witness at the liability trial testified that GenAl products posed a near-term threat to GSEs. The very first witness at the remedies hearing, by contrast, placed GenAl front and center as a nascent competitive threat. These remedies proceedings thus have been as much about promoting competition among GSEs as ensuring that Google’s dominance in search does not carry over into the GenAlI space. Many of Plaintiffs’ proposed remedies are crafted with that latter objective in mind.
+I liked this note about the court&#x27;s challenges in issuing effective remedies:
+Notwithstanding this power, courts must approach the task of crafting remedies with a healthy dose of humility. This court has done so. It has no expertise in the business of GSEs, the buying and selling of search text ads, or the engineering of GenAl technologies. And, unlike the typical case where the court’s job is to resolve a dispute based on historic facts, here the court is asked to gaze into a crystal ball and look to the future. Not exactly a judge’s forte.
+On to the remedies. These ones looked particularly important to me:
+Google will be barred from entering or maintaining any exclusive contract
+relating to the distribution of Google Search, Chrome, Google Assistant,
+and the Gemini app. [...]
+Google will not be required to divest Chrome; nor will the court include a
+contingent divestiture of the Android operating system in the final
+judgment. Plaintiffs overreached in seeking forced divesture of these key
+assets, which Google did not use to effect any illegal restraints. [...]
+I guess Perplexity won&#x27;t be buying Chrome then!
+Google will not be barred from making payments or offering other
+consideration to distribution partners for preloading or placement of Google
+Search, Chrome, or its GenAl products. Cutting off payments from Google
+almost certainly will impose substantial —in some cases, crippling—
+downstream harms to distribution partners, related markets, and consumers,
+which counsels against a broad payment ban.
+That looks like a huge sigh of relief for Mozilla, who were at risk of losing a sizable portion of their income if Google&#x27;s search distribution revenue were to be cut off.
+
+    
+Via Hacker News
+Tags: chrome, google, law, mozilla, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              CodeQL 2.22.4 adds support for Go 1.25 and accuracy improvements
+              <span class="post-metadata">(6 min | 1886 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-09-02-codeql-2-22-4-adds-support-for-go-1-25-and-accuracy-improvements>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.22.4, which adds support for Go 1.25,…
+The post CodeQL 2.22.4 adds support for Go 1.25 and accuracy improvements appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-09-02</time>
 
       <section>
@@ -4535,305 +4595,6 @@ I finally understand what all four numbers in the viewport&#x3D;&quot;...&quot; 
     
 Via Lobste.rs
 Tags: svg, explorables, josh-comeau</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-08-04</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              ChatGPT agent&#x27;s user-agent
-              <span class="post-metadata">(4 min | 1282 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/4/chatgpt-agents-user-agent/#atom-everything>I was exploring how ChatGPT agent works today. I learned some interesting things about how it exposes its identity through HTTP headers, then made a huge blunder in thinking it was leaking its URLs to Bingbot and Yandex... but it turned out that was a Cloudflare feature that had nothing to do with ChatGPT.
-
-
-ChatGPT agent is the recently released (and confusingly named) ChatGPT feature that provides browser automation combined with terminal access as a feature of ChatGPT - replacing their previous Operator research preview which is scheduled for deprecation on August 31st.
-
-
-Investigating ChatGPT agent&#x27;s user-agent
-
-I decided to dig into how it works by creating a logged web URL endpoint using django-http-debug. Then I told ChatGPT agent mode to explore that new page:
-
-
-
-My logging captured these request headers:
-
-Via: 1.1 heroku-router
-Host: simonwillison.net
-Accept: text/html,application/xhtml+xml,application/xml;q&#x3D;0.9,image/avif,image/webp,image/apng,*/*;q&#x3D;0.8,application/signed-exchange;v&#x3D;b3;q&#x3D;0.7
-Cf-Ray: 96a0f289adcb8e8e-SEA
-Cookie: cf_clearance&#x3D;zzV8W...
-Server: Heroku
-Cdn-Loop: cloudflare; loops&#x3D;1
-Priority: u&#x3D;0, i
-Sec-Ch-Ua: &quot;Not)A;Brand&quot;;v&#x3D;&quot;8&quot;, &quot;Chromium&quot;;v&#x3D;&quot;138&quot;
-Signature: sig1&#x3D;:1AxfqHocTf693inKKMQ7NRoHoWAZ9d/vY4D/FO0+MqdFBy0HEH3ZIRv1c3hyiTrzCvquqDC8eYl1ojcPYOSpCQ&#x3D;&#x3D;:
-Cf-Visitor: {&quot;scheme&quot;:&quot;https&quot;}
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
-Cf-Ipcountry: US
-X-Request-Id: 45ef5be4-ead3-99d5-f018-13c4a55864d3
-Sec-Fetch-Dest: document
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: none
-Sec-Fetch-User: ?1
-Accept-Encoding: gzip, br
-Accept-Language: en-US,en;q&#x3D;0.9
-Signature-Agent: &quot;https://chatgpt.com&quot;
-Signature-Input: sig1&#x3D;(&quot;@authority&quot; &quot;@method&quot; &quot;@path&quot; &quot;signature-agent&quot;);created&#x3D;1754340838;keyid&#x3D;&quot;otMqcjr17mGyruktGvJU8oojQTSMHlVm7uO-lrcqbdg&quot;;expires&#x3D;1754344438;nonce&#x3D;&quot;_8jbGwfLcgt_vUeiZQdWvfyIeh9FmlthEXElL-O2Rq5zydBYWivw4R3sV9PV-zGwZ2OEGr3T2Pmeo2NzmboMeQ&quot;;tag&#x3D;&quot;web-bot-auth&quot;;alg&#x3D;&quot;ed25519&quot;
-X-Forwarded-For: 2a09:bac5:665f:1541::21e:154, 172.71.147.183
-X-Request-Start: 1754340840059
-Cf-Connecting-Ip: 2a09:bac5:665f:1541::21e:154
-Sec-Ch-Ua-Mobile: ?0
-X-Forwarded-Port: 80
-X-Forwarded-Proto: http
-Sec-Ch-Ua-Platform: &quot;Linux&quot;
-Upgrade-Insecure-Requests: 1
-
-
-That Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 user-agent header is the one used by the most recent Chrome on macOS - which is a little odd here as the Sec-Ch-Ua-Platform : &quot;Linux&quot; indicates that the agent browser runs on Linux.
-
-At first glance it looks like ChatGPT is being dishonest here by not including its bot identity in the user-agent header. I thought for a moment it might be reflecting my own user-agent, but I&#x27;m using Firefox on macOS and it identified itself as Chrome.
-
-Then I spotted this header:
-
-Signature-Agent: &quot;https://chatgpt.com&quot;
-
-
-Which is accompanied by a much more complex header called Signature-Input:
-
-Signature-Input: sig1&#x3D;(&quot;@authority&quot; &quot;@method&quot; &quot;@path&quot; &quot;signature-agent&quot;);created&#x3D;1754340838;keyid&#x3D;&quot;otMqcjr17mGyruktGvJU8oojQTSMHlVm7uO-lrcqbdg&quot;;expires&#x3D;1754344438;nonce&#x3D;&quot;_8jbGwfLcgt_vUeiZQdWvfyIeh9FmlthEXElL-O2Rq5zydBYWivw4R3sV9PV-zGwZ2OEGr3T2Pmeo2NzmboMeQ&quot;;tag&#x3D;&quot;web-bot-auth&quot;;alg&#x3D;&quot;ed25519&quot;
-
-
-And a Signature header too.
-
-These turn out to come from a relatively new web standard: RFC 9421 HTTP Message Signatures&#x27; published February 2024.
-
-The purpose of HTTP Message Signatures is to allow clients to include signed data about their request in a way that cannot be tampered with by intermediaries. The signature uses a public key that&#x27;s provided by the following well-known endpoint:
-
-https://chatgpt.com/.well-known/http-message-signatures-directory
-
-
-Add it all together and we now have a rock-solid way to identify traffic from ChatGPT agent: look for the Signature-Agent: &quot;https://chatgpt.com&quot; header and confirm its value by checking the signature in the Signature-Input and Signature headers.
-
-And then came Bingbot and Yandex
-
-Just over a minute after it captured that request, my logging endpoint got another request:
-
-Via: 1.1 heroku-router
-From: bingbot(at)microsoft.com
-Host: simonwillison.net
-Accept: */*
-Cf-Ray: 96a0f4671d1fc3c6-SEA
-Server: Heroku
-Cdn-Loop: cloudflare; loops&#x3D;1
-Cf-Visitor: {&quot;scheme&quot;:&quot;https&quot;}
-User-Agent: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36
-Cf-Ipcountry: US
-X-Request-Id: 6214f5dc-a4ea-5390-1beb-f2d26eac5d01
-Accept-Encoding: gzip, br
-X-Forwarded-For: 207.46.13.9, 172.71.150.252
-X-Request-Start: 1754340916429
-Cf-Connecting-Ip: 207.46.13.9
-X-Forwarded-Port: 80
-X-Forwarded-Proto: http
-
-
-I pasted 207.46.13.9 into Microsoft&#x27;s Verify Bingbot tool (after solving a particularly taxing CAPTCHA) and it confirmed that this was indeed a request from Bingbot.
-
-I set up a second URL to confirm... and this time got a visit from Yandex!
-
-Via: 1.1 heroku-router
-From: support@search.yandex.ru
-Host: simonwillison.net
-Accept: text/html,application/xhtml+xml,application/xml;q&#x3D;0.9,*/*;q&#x3D;0.8
-Cf-Ray: 96a16390d8f6f3a7-DME
-Server: Heroku
-Cdn-Loop: cloudflare; loops&#x3D;1
-Cf-Visitor: {&quot;scheme&quot;:&quot;https&quot;}
-User-Agent: Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)
-Cf-Ipcountry: RU
-X-Request-Id: 3cdcbdba-f629-0d29-b453-61644da43c6c
-Accept-Encoding: gzip, br
-X-Forwarded-For: 213.180.203.138, 172.71.184.65
-X-Request-Start: 1754345469921
-Cf-Connecting-Ip: 213.180.203.138
-X-Forwarded-Port: 80
-X-Forwarded-Proto: http
-
-
-Yandex suggest a reverse DNS lookup to verify, so I ran this command:
-
-dig -x 213.180.203.138 +short
-
-
-And got back:
-
-213-180-203-138.spider.yandex.com.
-
-
-Which confirms that this is indeed a Yandex crawler.
-
-
-I tried a third experiment to be sure... and got hits from both Bingbot and YandexBot.
-
-
-It was Cloudflare Crawler Hints, not ChatGPT
-
-
-So I wrote up and posted about my discovery... and Jatan Loya asked:
-
-
-
-do you have crawler hints enabled in cf?
-
-
-And yeah, it turned out I did. I spotted this in my caching configuration page (and it looks like I must have turned it on myself at some point in the past):
-
-
-
-
-
-Here&#x27;s the Cloudflare documentation for that feature.
-
-
-I deleted my posts on Twitter and Bluesky (since you can&#x27;t edit those and I didn&#x27;t want the misinformation to continue to spread) and edited my post on Mastodon, then updated this entry with the real reason this had happened.
-
-
-I also changed the URL of this entry as it turned out Twitter and Bluesky were caching my social media preview for the previous one, which included the incorrect information in the title.
-
-
-Original &quot;So what&#x27;s going on here?&quot; section from my post
-
-Here&#x27;s a section of my original post with my theories about what was going on before learning about Cloudflare Crawler Hints.
-
-
-So what&#x27;s going on here?
-
-There are quite a few different moving parts here.
-
-
-I&#x27;m using Firefox on macOS with the 1Password and Readwise Highlighter extensions installed and active. Since I didn&#x27;t visit the debug pages at all with my own browser I don&#x27;t think any of these are relevant to these results.
-
-ChatGPT agent makes just a single request to my debug URL ...
-
-... which is proxied through both Cloudflare and Heroku.
-
-Within about a minute, I get hits from one or both of Bingbot and Yandex.
-
-
-Presumably ChatGPT agent itself is running behind at least one proxy - I would expect OpenAI to keep a close eye on that traffic to ensure it doesn&#x27;t get abused.
-
-I&#x27;m guessing that infrastructure is hosted by Microsoft Azure. The OpenAI Sub-processor List - though that lists Microsoft Corporation, CoreWeave Inc, Oracle Cloud Platform and Google Cloud Platform under the &quot;Cloud infrastructure&quot; section so it could be any of those.
-
-Since the page is served over HTTPS my guess is that any intermediary proxies should be unable to see the path component of the URL, making the mystery of how Bingbot and Yandex saw the URL even more intriguing.
-
-
-    
-        
-Tags: bing, privacy, search-engines, user-agents, ai, cloudflare, generative-ai, chatgpt, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Usage charts for my LLM tool against OpenRouter
-              <span class="post-metadata">(1 min | 349 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/4/llm-openrouter-usage/#atom-everything>Usage charts for my LLM tool against OpenRouter
-Tools that call OpenRouter can include HTTP-Referer and X-Title headers to credit that tool with the token usage. My llm-openrouter plugin does that here.
-... which means this page displays aggregate stats across users of that plugin! Looks like someone has been running a lot of traffic through Qwen 3 14B recently.
-
-
-
-    
-Tags: ai, generative-ai, llms, llm, openrouter</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Qwen-Image: Crafting with Native Text Rendering
-              <span class="post-metadata">(2 min | 638 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/4/qwen-image/#atom-everything>Qwen-Image: Crafting with Native Text Rendering
-six excellent open weights LLMs in July, Qwen are kicking off August with their first ever image generation model.
-Qwen-Image is a 20 billion parameter MMDiT (Multimodal Diffusion Transformer, originally proposed for Stable Diffusion 3) model under an Apache 2.0 license. The Hugging Face repo is 53.97GB.
-Qwen released a detailed technical report (PDF) to accompany the model. The model builds on their Qwen-2.5-VL vision LLM, and they also made extensive use of that model to help create some of their their training data:
-In our data annotation pipeline, we utilize a capable image captioner (e.g., Qwen2.5-VL) to generate not only comprehensive image descriptions, but also structured metadata that captures essential image properties and quality attributes.
-Instead of treating captioning and metadata extraction as independent tasks, we designed an annotation framework in which the captioner concurrently describes visual content and generates detailed information in a structured format, such as JSON. Critical details such as object attributes, spatial relationships, environmental context, and verbatim transcriptions of visible text are captured in the caption, while key image properties like type, style, presence of watermarks, and abnormal elements (e.g., QR codes or facial mosaics) are reported in a structured format.
-They put a lot of effort into the model&#x27;s ability to render text in a useful way. 5% of the training data (described as &quot;billions of image-text pairs&quot;) was data &quot;synthesized through controlled text rendering techniques&quot;, ranging from simple text through text on an image background up to much more complex layout examples:
-To improve the model’s capacity to follow complex, structured prompts involving layout-sensitive content, we propose a synthesis strategy based on programmatic editing of pre-defined templates, such as PowerPoint slides or User Interface Mockups. A comprehensive rule-based system is designed to automate the substitution of placeholder text while maintaining the integrity of layout structure, alignment, and formatting.
-I tried the model out using the ModelScope demo - I signed in with GitHub and verified my account via a text message to a phone number. Here&#x27;s what I got for &quot;A raccoon holding a sign that says &quot;I love trash&quot; that was written by that raccoon&quot;:
-
-The raccoon has very neat handwriting!
-
-    
-Via @Alibaba_Qwen
-Tags: ai, stable-diffusion, generative-ai, vision-llms, training-data, qwen, text-to-image, ai-in-china</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting @himbodhisattva
-              <span class="post-metadata">(1 min | 289 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/4/himbodhisattva/#atom-everything>for services that wrap GPT-3, is it possible to do the equivalent of sql injection? like, a prompt-injection attack? make it think it&#x27;s completed the task and then get access to the generation, and ask it to repeat the original instruction?
-
-— @himbodhisattva, coining the term prompt injection on 13th May 2022, four months before I did
-Tags: prompt-injection, security, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              I Saved a PNG Image To A Bird
-              <span class="post-metadata">(1 min | 401 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/4/i-saved-a-png-image-to-a-bird/#atom-everything>I Saved a PNG Image To A Bird
-&quot;The Mouth&quot;) and recorded the result that the starling almost perfectly imitated back to him.
-Hypothetically, if this were an audible file transfer protocol that used a 10:1 data compression ratio, that&#x27;s nearly 2 megabytes of information per second. While there are a lot of caveats and limitations there, the fact that you could set up a speaker in your yard and conceivably store any amount of data in songbirds is crazy.
-This video is full of so much more than just that. Fast forward to 5m58s for footage of a nest full of brown pelicans showing the sounds made by their chicks!
-
-
-    
-Tags: audio, youtube</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Nick Turley
-              <span class="post-metadata">(1 min | 262 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/4/nick-turley/#atom-everything>This week, ChatGPT is on track to reach 700M weekly active users — up from 500M at the end of March and 4× since last year.
-
-— Nick Turley, Head of ChatGPT, OpenAI
-Tags: openai, chatgpt, ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
