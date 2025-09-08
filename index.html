@@ -25,6 +25,63 @@
 
   <ul>
     <li>
+      <time>2025-09-08</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Load Llama-3.2 WebGPU in your browser from a local folder
+              <span class="post-metadata">(2 min | 639 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/8/webgpu-local-folder/#atom-everything>Load Llama-3.2 WebGPU in your browser from a local folder
+a comment on Hacker News I decided to see if it was possible to modify the transformers.js-examples/tree/main/llama-3.2-webgpu Llama 3.2 chat demo (online here, I wrote about it last November) to add an option to open a local model file directly from a folder on disk, rather than waiting for it to download over the network.
+I posed the problem to OpenAI&#x27;s GPT-5-enabled Codex CLI like this:
+git clone https://github.com/huggingface/transformers.js-examples
+cd transformers.js-examples/llama-3.2-webgpu
+codex
+
+Then this prompt:
+Modify this application such that it offers the user a file browse button for selecting their own local copy of the model file instead of loading it over the network. Provide a &quot;download model&quot; option too.
+Codex churned away for several minutes, even running commands like curl -sL https://raw.githubusercontent.com/huggingface/transformers.js/main/src/models.js | sed -n &#x27;1,200p&#x27; to inspect the source code of the underlying Transformers.js library.
+After four prompts total (shown here) it built something which worked!
+To try it out you&#x27;ll need your own local copy of the Llama 3.2 ONNX model. You can get that (a ~1.2GB) download) like so:
+git lfs install
+git clone https://huggingface.co/onnx-community/Llama-3.2-1B-Instruct-q4f16
+
+Then visit my llama-3.2-webgpu page in Chrome or Firefox Nightly (since WebGPU is required), click &quot;Browse folder&quot;, select that folder you just cloned, agree to the &quot;Upload&quot; confirmation (confusing since nothing is uploaded from your browser, the model file is opened locally on your machine) and click &quot;Load local model&quot;.
+Here&#x27;s an animated demo.
+
+I pushed a branch with those changes here. The next step would be to modify this to support other models in addition to the Llama 3.2 demo, but I&#x27;m pleased to have got to this proof of concept with so little work beyond throwing some prompts at Codex to see if it could figure it out.
+According to the Codex /status command this used 169,818 input tokens, 17,112 output tokens and 1,176,320 cached input tokens. At current GPT-5 token pricing ($1.25/million input, $0.125/million cached input, $10/million output) that would cost 53.942 cents, but Codex CLI hooks into my existing $20/month ChatGPT Plus plan so this was bundled into that.
+
+    
+Via My Hacker News comment
+Tags: javascript, ai, generative-ai, llama, local-llms, llms, ai-assisted-programming, transformers-js, webgpu, llm-pricing, vibe-coding, gpt-5, codex-cli</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting James Luan
+              <span class="post-metadata">(1 min | 286 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/8/james-luan/#atom-everything>I recently spoke with the CTO of a popular AI note-taking app who told me something surprising: they spend twice as much on vector search as they do on OpenAI API calls. Think about that for a second. Running the retrieval layer costs them more than paying for the LLM itself.
+
+— James Luan, Engineering architect of Milvus
+Tags: vector-search, embeddings</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-09-07</time>
 
       <section>
