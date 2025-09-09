@@ -31,6 +31,374 @@
       <article>
           <details>
             <summary>
+              OpenAI GPT-5 and GPT-5 mini are now generally available in GitHub Copilot
+              <span class="post-metadata">(5 min | 1351 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-09-09-openai-gpt-5-and-gpt-5-mini-are-now-generally-available-in-github-copilot>OpenAI’s GPT-5 and GPT-5 mini are now generally available in GitHub Copilot. Availability in GitHub Copilot GPT-5 mini is available to all GitHub Copilot plans, including Copilot Free, while GPT-5…
+The post OpenAI GPT-5 and GPT-5 mini are now generally available in GitHub Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              My review of Claude&#x27;s new Code Interpreter, released under a very confusing name
+              <span class="post-metadata">(8 min | 2497 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/9/claude-code-interpreter/#atom-everything>Today on the Anthropic blog: Claude can now create and edit files:
+
+
+Claude can now create and edit Excel spreadsheets, documents, PowerPoint slide decks, and PDFs directly in Claude.ai and the desktop app. [...]
+
+File creation is now available as a preview for Max, Team, and Enterprise plan users. Pro users will get access in the coming weeks.
+
+
+Then right at the very end of their post:
+
+
+This feature gives Claude internet access to create and analyze files, which may put your data at risk. Monitor chats closely when using this feature. Learn more.
+
+
+And tucked away half way down their Create and edit files with Claude help article:
+
+
+With this feature, Claude can also do more advanced data analysis and data science work. Claude can create Python scripts for data analysis. Claude can create data visualizations in image files like PNG. You can also upload CSV, TSV, and other files for data analysis and visualization.
+
+
+Talk about burying the lede... this is their version of ChatGPT Code Interpreter, my all-time favorite feature of ChatGPT!
+
+
+Claude can now write and execute custom Python (and Node.js) code in a server-side sandbox and use it to process and analyze data.
+
+In a particularly egregious example of AI companies being terrible at naming features, the official name for this one really does appear to be Upgraded file creation and analysis. Sigh.
+
+This is quite a confusing release, because Claude already had a variant of this feature, released in October 2024 with the weak but more sensible name Analysis tool. Here are my notes from when that came out. That tool worked by generating and executing JavaScript in the user&#x27;s own browser.
+
+The new tool works entirely differently. It&#x27;s much closer in implementation to OpenAI&#x27;s Code Interpreter: Claude now has access to a server-side container environment in which it can run shell commands and execute Python and Node.js code to manipulate data and both read and generate files.
+
+It&#x27;s worth noting that Anthropic have a similar feature in their API called Code execution tool, but today is the first time end-users of Claude have been able to execute arbitrary code in a server-side container.
+
+
+  
+Switching it on in settings/features
+
+  
+Exploring the environment
+
+  
+Starting with something easy
+
+  
+Something much harder: recreating the AI adoption chart
+
+  
+Prompt injection risks
+
+  
+My verdict on Claude Code Interpreter so far
+
+  
+AI labs find explaining this feature incredibly difficult
+
+
+Switching it on in settings/features
+
+I have a Pro Plan but found the setting to enable it on the claude.ai/settings/features. It&#x27;s possible my account was granted early access without me realizing, since the Pro plan isn&#x27;t supposed to have it yet:
+
+
+
+Interestingly, toggling on the &quot;Upgraded file creation and analysis&quot; option toggles off the &quot;Analysis tool&quot; option, and vice versa. You can&#x27;t have both at the same time.
+
+I guess this is to help reduce confusion? It surprised me though as Claude can sometimes use the existing analysis tool to help it in the creation of artifacts, as I noted here when I wrote about the Claudeception feature they added in June.
+
+Exploring the environment
+
+I started by using the tool to explore the tool. Here&#x27;s my first transcript where I simply prompted the following to see what it could figure out about itself:
+
+
+Tell me everything you can about your shell and Python environments
+
+
+Here&#x27;s part of the output:
+
+
+
+And the key details it returned, each of which I&#x27;ve verified as true by checking the displayed output of the relevant commands:
+
+
+
+
+OS: Ubuntu 24.04.2 LTS (Noble) running on Linux kernel 4.4.0-
+
+
+Architecture: x86_64
+
+
+Shell: GNU Bash 5.2.21(1)-release
+
+
+Current User: root (with access to /home/claude directory)
+
+
+Working Directory: Currently in root (/), but /home/claude is the main workspace
+
+
+Python Version: Python 3.12.3
+
+
+Python Executable: /usr/bin/python3
+
+
+Package Manager: pip 24.0
+
+
+Python Path: Standard system locations including:
+
+/usr/lib/python3.12 (standard library)
+
+/usr/local/lib/python3.12/dist-packages (local packages)
+
+
+
+
+Disk Space: 4.9GB total, with 4.6GB available
+
+
+Memory: 9.0GB RAM available, minimal usage currently
+
+
+Node.js: v18.19.1 available
+
+
+npm: Configured with global packages in /home/claude/.npm-global
+
+
+
+So we have an Ubuntu 24.04.2 container with 9GB of RAM, ~5GB of disk, Python 3.12.3, and Node.js v18.19.1.
+
+How about network access? I tried the following:
+
+
+Can you access the Internet? Can you run curl? How about using Python http to fetch https://latest.datasette.io/fixtures.json ?
+
+
+Again, you can see the detailed output in the transcript. Claude tried https://latest.datasette.io/fixtures.json and then https://httpbin.org/json and got a 403 forbidden error for both, then https://google.com and got this curious result:
+
+
+curl -s -I https://google.com
+
+Output:
+
+HTTP/1.1 200 OK
+date: Tue, 09 Sep 2025 16:02:17 GMT
+server: envoy
+
+HTTP/2 403 
+content-length: 13
+content-type: text/plain
+date: Tue, 09 Sep 2025 16:02:17 GMT
+
+
+Claude did note that it can still use the web_fetch and web_search containers independently of that container environment, so it should be able to fetch web content using tools running outside of the container and then write it to a file there.
+
+On a hunch I tried this:
+
+
+Run pip install sqlite-utils
+
+
+... and it worked! Claude can pip install additional packages from PyPI.
+
+
+A little more poking around revealed the following relevant environment variables:
+
+HTTPS_PROXY&#x3D;http://21.0.0.167:15001
+no_proxy&#x3D;localhost,127.0.0.1,169.254.169.254,metadata.google.internal,*.svc.cluster.local,*.local,*.googleapis.com,*.google.com
+NO_PROXY&#x3D;localhost,127.0.0.1,169.254.169.254,metadata.google.internal,*.svc.cluster.local,*.local,*.googleapis.com,*.google.com
+https_proxy&#x3D;http://21.0.0.167:15001
+http_proxy&#x3D;http://21.0.0.167:15001
+
+
+So based on an earlier HTTP header there&#x27;s an Envoy proxy running at an accessible port which apparently implements a strict allowlist.
+
+I later noticed that the help page includes a full description of what&#x27;s on that allowlist:
+
+
+Anthropic Services (Explicit)
+
+api.anthropic.com, statsig.anthropic.com
+
+Version Control
+
+github.com
+
+Package Managers - JavaScript/Node
+
+NPM: registry.npmjs.org, npmjs.com, npmjs.org
+
+Yarn: yarnpkg.com, registry.yarnpkg.com
+
+Package Managers - Python
+
+pypi.org, files.pythonhosted.org, pythonhosted.org
+
+
+So it looks like we have a very similar system to ChatGPT Code Interpreter. The key differences are that Claude&#x27;s system can install additional Python packages and has Node.js pre-installed.
+
+One important limitation from the docs:
+
+
+The maximum file size is 30MB per file for both uploads and downloads.
+
+
+The ChatGPT limit here is 512MB. I&#x27;ve often uploaded 100MB+ SQLite database files to ChatGPT, so I&#x27;m a little disappointed by this lower limit for Claude.
+
+Starting with something easy
+
+I grabbed a copy of the SQLite database behind my TILs website (21.9MB from here) and uploaded it to Claude, then prompted:
+
+
+Use your Python environment to explore this SQLite database and generate a PDF file containing a join diagram of all the tables
+
+
+Here&#x27;s that conversation. It did an OK job, producing both the PDF I asked for and a PNG equivalent which looks like this (since created files are not available in shared chats):
+
+
+
+This isn&#x27;t an ideal result - those join lines are difficult to follow - but I&#x27;m confident I could get from here to something I liked with only a little more prompting. The important thing is that the system clearly works, and can analyze data in uploaded SQLite files and use them to produce images and PDFs.
+
+Something much harder: recreating the AI adoption chart
+
+Thankfully I have a fresh example of a really challenging ChatGPT Code Interpreter task from just last night, which I described in great detail in Recreating the Apollo AI adoption rate chart with GPT-5, Python and Pyodide.
+
+Short version: I took this chart from Apollo Global and asked ChatGPT to recreate it based on a screenshot and an uploaded XLSX file.
+
+
+
+This time I skipped the bit where I had ChatGPT hunt down the original data and jumped straight to the &quot;recreate this chart&quot; step. I used the exact same prompt as I provided to ChatGPT:
+
+
+Use this data to recreate this chart using python
+
+
+And uploaded the same two files - this XLSX file and the screenshot of the original chart.
+
+
+
+Claude wrote and ran a bunch of Python code and produced this:
+
+
+
+That&#x27;s not a bad first attempt - we&#x27;ll sort out the jagged lines in a moment. With ChatGPT I later told it to plot a six-survey rolling average (since that&#x27;s what Apollo had done with theirs), so I ran the exact same prompt against Claude:
+
+
+Plot it as a six survey rolling average
+
+
+
+
+So I told Claude:
+
+
+Make those lines less jagged
+
+
+This did not do what I wanted:
+
+
+
+So I gave it a bit of a hint:
+
+
+No not like that, I wanted the lines to be a smooth curve like in the original screenshot - you shouldn&#x27;t have to use scipy for this or manipulate the data, I&#x27;m sure matplotlib can do this already
+
+
+A little bit of sycophancy:
+
+
+You&#x27;re absolutely right! Matplotlib has built-in curve smoothing. I was overcomplicating it. Let me create a version that uses matplotlib&#x27;s natural curve smoothing capabilities. [...]
+
+
+This time it used the antialiased&#x3D;True and solid_capstyle&#x3D;&#x27;round&#x27; options in matplotlib, which again wasn&#x27;t what I was after. I tried one more thing:
+
+
+I did not mean smooth the rendering of the lines. I meant that I wanted curved and not straight lines between points.
+
+
+(Normally if I have to argue this much with a model I&#x27;ll start a fresh session and try a different prompting strategy from the start.)
+
+But this did give me what I was looking for:
+
+
+
+Oddly enough my ChatGPT chart suffered from that same overlapping title glitch, so I gave Claude the same prompt I had given ChatGPT:
+
+
+fix the chart title, it looks like this: (with a screenshot)
+
+
+
+
+We got there in the end! I&#x27;ve shared the full transcript of the chat, although frustratingly the images and some of the code may not be visible. I created this Gist with copies of the files that it let me download.
+
+Prompt injection risks
+
+ChatGPT Code Interpreter has no access to the internet at all, which limits how much damage an attacker can do if they manage to sneak their own malicious instructions into the model&#x27;s context.
+
+Since Claude Code Interpreter (I&#x27;m not going to be calling it &quot;Upgraded file creation and analysis&quot;!) has a limited form of internet access, we need to worry about lethal trifecta and other prompt injection attacks.
+
+The help article actually covers this in some detail:
+
+
+It is possible for a bad actor to inconspicuously add instructions via external files or websites that trick Claude into:
+
+
+Downloading and running untrusted code in the sandbox environment for malicious purposes.
+
+Reading sensitive data from a claude.ai connected knowledge source (e.g., Remote MCP, projects) and using the sandbox environment to make an external network request to leak the data.
+
+
+This means Claude can be tricked into sending information from its context (e.g., prompts, projects, data via MCP, Google integrations) to malicious third parties. To mitigate these risks, we recommend you monitor Claude while using the feature and stop it if you see it using or accessing data unexpectedly.
+
+
+&quot;We recommend you monitor Claude while using the feature&quot; smells me to me like unfairly outsourcing the problem to Anthropic&#x27;s users, but I&#x27;m not sure what more they can do!
+
+It&#x27;s interesting that they still describe the external communication risk even though they&#x27;ve locked down a lot of network access. My best guess is that they know that allowlisting github.com opens an enormous array of potential exfiltration vectors.
+
+Anthropic also note:
+
+
+We have performed red-teaming and security testing on the feature. We have a continuous process for ongoing security testing and red-teaming of this feature.
+
+
+I plan to be cautious using this feature with any data that I very much don&#x27;t want to be leaked to a third party, if there&#x27;s even the slightest chance that a malicious instructions might sneak its way in.
+
+My verdict on Claude Code Interpreter so far
+
+I&#x27;m generally very excited about this. Code Interpreter has been my most-valued LLM feature since it launched in early 2023, and the Claude version includes some upgrades on the original - package installation, Node.js support - that I expect will be very useful.
+
+I don&#x27;t particularly mark it down for taking a little more prompting to recreate the Apollo chart than ChatGPT did. For one thing I was using Claude Sonnet 4 - I expect Claude Opus 4.1 would have done better. I also have a much stronger intuition for Code Interpreter prompts that work with GPT-5.
+
+I don&#x27;t think my chart recreation exercise here should be taken as showing any meaningful differences between the two.
+
+AI labs find explaining this feature incredibly difficult
+
+I find it fascinating how difficult the AI labs find describing this feature to people! OpenAI went from &quot;Code Interpreter&quot; to &quot;Advanced Data Analysis&quot; and maybe back again? It&#x27;s hard to even find their official landing page for that feature now. (I got GPT-5 to look for it and it hunted for 37 seconds and settled on the help page for Data analysis with ChatGPT).
+
+Anthropic already used the bad name &quot;Analysis tool&quot; for a different implementation, and now have the somehow-worse name &quot;Upgraded file creation and analysis&quot;. Their launch announcement avoids even talking about code execution, focusing exclusively on the tool&#x27;s ability to generate spreadsheets and PDFs!
+
+I wonder if any of the AI labs will crack the code on how to name and explain this thing? I feel like it&#x27;s still a very under-appreciated feature of LLMs, despite having been around for more than two years now.
+Tags: node, python, visualization, ai, openai, prompt-injection, generative-ai, chatgpt, llms, ai-assisted-programming, anthropic, claude, code-interpreter, llm-tool-use, vibe-coding</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               😺 Here&#x27;s OpenAI&#x27;s plan to fix AI hallucinations...
               <span class="post-metadata">(0 min |  words)</span> 
             </summary>
@@ -3879,53 +4247,6 @@ exec codex --dangerously-bypass-approvals-and-sandbox &quot;$@&quot;
 Update: It looks like GPT-5 is the default model in v0.20.0 already.
 Also the environment variable I was using no longer does anything, it was removed in this commit (I used Codex Web to help figure that out). You can use the -m model_id command-line option instead.
 Tags: openai, ai, llms, gpt-5, rust, ai-assisted-programming, coding-agents, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              qwen-image-mps
-              <span class="post-metadata">(2 min | 450 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/11/qwen-image-mps/#atom-everything>qwen-image-mps
-Qwen/Qwen-Image image generation model on an Apple silicon Mac, optionally using the Qwen-Image-Lightning LoRA to dramatically speed up generation.
-Ivan has tested it this on 512GB and 128GB machines and it ran really fast - 42 seconds on his M3 Ultra. I&#x27;ve run it on my 64GB M2 MacBook Pro - after quitting almost everything else - and it just about manages to output images after pegging my GPU (fans whirring, keyboard heating up) and occupying 60GB of my available RAM. With the LoRA option running the script to generate an image took 9m7s on my machine.
-Ivan merged my PR adding inline script dependencies for uv which means you can now run it like this:
-uv run https://raw.githubusercontent.com/ivanfioravanti/qwen-image-mps/refs/heads/main/qwen-image-mps.py \
--p &#x27;A vintage coffee shop full of raccoons, in a neon cyberpunk city&#x27; -f
-
-The first time I ran this it downloaded the 57.7GB model from Hugging Face and stored it in my ~/.cache/huggingface/hub/models--Qwen--Qwen-Image directory. The -f option fetched an extra 1.7GB Qwen-Image-Lightning-8steps-V1.0.safetensors file to my working directory that sped up the generation.
-Here&#x27;s the resulting image:
-
-
-    
-Via @ivanfioravanti
-Tags: macos, python, ai, generative-ai, uv, qwen, text-to-image, ai-in-china, ivan-fioravanti</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              AI for data engineers with Simon Willison
-              <span class="post-metadata">(2 min | 466 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/11/ai-for-data-engineers/#atom-everything>AI for data engineers with Simon Willison
-How I got started programming with a Commodore 64 - the tape drive for which inspired the name Datasette
-Selfish motivations for TILs (force me to write up my notes) and open source (help me never have to solve the same problem twice)
-LLMs have been good at SQL for a couple of years now. Here&#x27;s how I used them for a complex PostgreSQL query that extracted alt text from my blog&#x27;s images using regular expressions
-Structured data extraction as the most economically valuable application of LLMs for data work
-2025 has been the year of tool calling a loop (&quot;agentic&quot; if you like)
-Thoughts on running MCPs securely - read-only database access, think about sandboxes, use PostgreSQL permissions, watch out for the lethal trifecta
-Jargon guide: Agents, MCP, RAG, Tokens
-How to get started learning to prompt: play with the models and &quot;bring AI to the table&quot; even for tasks that you don&#x27;t think it can handle
-&quot;It&#x27;s always a good day if you see a pelican&quot;
-Tags: postgresql, ai, generative-ai, llms, podcast-appearances</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
