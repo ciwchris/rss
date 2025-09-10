@@ -6,6 +6,46 @@
       "siteUrl": "https://github.blog/changelog/",
       "articles": [
         {
+          "id": "https://github.blog/changelog/2025-09-10-copilot-code-review-independent-repository-rule-for-automatic-reviews",
+          "author": "Allison",
+          "description": "You can now enable automatic Copilot code review with its own standalone repository rule. It’s generally available for Copilot users today ✨. Previously, triggering an automatic Copilot code review on…\nThe post Copilot code review: Independent repository rule for automatic reviews appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2025-09-10-copilot-code-review-independent-repository-rule-for-automatic-reviews",
+          "publishedOn": "2025-09-10T20:08:07.000Z",
+          "wordCount": 1489,
+          "title": "Copilot code review: Independent repository rule for automatic reviews",
+          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
+        },
+        {
+          "id": "https://github.blog/changelog/2025-09-10-codeql-2-23-0-adds-support-for-rust-log-injection-and-other-security-detection-improvements",
+          "author": "Allison",
+          "description": "CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.23.0, which introduces a new Rust security…\nThe post CodeQL 2.23.0 adds support for Rust log injection and other security detection improvements appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2025-09-10-codeql-2-23-0-adds-support-for-rust-log-injection-and-other-security-detection-improvements",
+          "publishedOn": "2025-09-10T18:04:45.000Z",
+          "wordCount": 1665,
+          "title": "CodeQL 2.23.0 adds support for Rust log injection and other security detection improvements",
+          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
+        },
+        {
+          "id": "https://github.blog/changelog/2025-09-10-github-ruleset-exemptions-and-repository-insights-updates",
+          "author": "Allison",
+          "description": "New ruleset bypass type GitHub repository rulesets now let you exempt specific actors (users, teams, or GitHub Apps) from all enforced rules with a new exempt bypass type. Unlike a…\nThe post GitHub ruleset exemptions and repository insights updates appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2025-09-10-github-ruleset-exemptions-and-repository-insights-updates",
+          "publishedOn": "2025-09-10T17:25:36.000Z",
+          "wordCount": 1967,
+          "title": "GitHub ruleset exemptions and repository insights updates",
+          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
+        },
+        {
+          "id": "https://github.blog/changelog/2025-09-09-dependabot-alerts-now-support-production-context-prioritization-in-public-preview",
+          "author": "Allison",
+          "description": "Dependabot alerts can now be filtered and prioritized using production context from external artifact registries, including JFrog Artifactory, and your own CI/CD workflows. This feature is available in public preview.…\nThe post Dependabot alerts now support production context prioritization in public preview appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2025-09-09-dependabot-alerts-now-support-production-context-prioritization-in-public-preview",
+          "publishedOn": "2025-09-10T12:44:15.000Z",
+          "wordCount": 1876,
+          "title": "Dependabot alerts now support production context prioritization in public preview",
+          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg"
+        },
+        {
           "id": "https://github.blog/changelog/2025-09-09-openai-gpt-5-and-gpt-5-mini-are-now-generally-available-in-github-copilot",
           "author": "Allison",
           "description": "OpenAI’s GPT-5 and GPT-5 mini are now generally available in GitHub Copilot. Availability in GitHub Copilot GPT-5 mini is available to all GitHub Copilot plans, including Copilot Free, while GPT-5…\nThe post OpenAI GPT-5 and GPT-5 mini are now generally available in GitHub Copilot appeared first on The GitHub Blog.",
@@ -889,6 +929,16 @@
       "siteUrl": "http://simonwillison.net/",
       "articles": [
         {
+          "id": "https://simonwillison.net/2025/Sep/10/claude-web-fetch-tool/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-fetch-tool\">Claude API: Web fetch tool</a></strong></p>\nNew in the Claude API: if you pass the <code>web-fetch-2025-09-10</code> beta header you can add <code>{\"type\": \"web_fetch_20250910\",  \"name\": \"web_fetch\", \"max_uses\": 5}</code> to your <code>\"tools\"</code> list and Claude will gain the ability to fetch content from URLs as part of responding to your prompt.</p>\n<p>What's particularly interesting here is their approach to safety for this feature:</p>\n<blockquote>\n<p>Enabling the web fetch tool in environments where Claude processes untrusted input alongside sensitive data poses data exfiltration risks. We recommend only using this tool in trusted environments or when handling non-sensitive data.</p>\n<p>To minimize exfiltration risks, Claude is not allowed to dynamically construct URLs. Claude can only fetch URLs that have been explicitly provided by the user or that come from previous web search or web fetch results. However, there is still residual risk that should be carefully considered when using this tool.</p>\n</blockquote>\n<p>My first impression was that this looked like an interesting new twist on this kind of tool. Prompt injection exfiltration attacks are a risk with something like this because malicious instructions that sneak into the context might cause the LLM to send private data off to an arbitrary attacker's URL, as described by <a href=\"https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/\">the lethal trifecta</a>. But what if you could enforce, in the LLM harness itself, that only URLs from user prompts could be accessed in this way?</p>\n<p>Unfortunately this isn't quite that smart. From later in that document:</p>\n<blockquote>\n<p>For security reasons, the web fetch tool can only fetch URLs that have previously appeared in the conversation context. This includes:</p>\n<ul>\n<li>URLs in user messages</li>\n<li>URLs in client-side tool results</li>\n<li>URLs from previous web search or web fetch results</li>\n</ul>\n<p>The tool cannot fetch arbitrary URLs that Claude generates or URLs from container-based server tools (Code Execution, Bash, etc.).</p>\n</blockquote>\n<p>Note that URLs in \"user messages\" are obeyed. That's a problem, because in many prompt-injection vulnerable applications it's those user messages (the JSON in the <code>{\"role\": \"user\", \"content\": \"...\"}</code> block) that often have untrusted content concatenated into them - or sometimes in the client-side tool results which are <em>also</em> allowed by this system!</p>\n<p>Anthropic do provide a much stronger mechanism here: you can allow-list domains using the <code>\"allowed_domains\": [\"docs.example.com\"]</code> parameter.</p>\n<p>Provided you use <code>allowed_domains</code> and restrict them to domains which absolutely cannot be used for exfiltrating data (which turns out to be a <a href=\"https://simonwillison.net/2025/Jun/11/echoleak/\">tricky proposition</a>) it should be possible to safely build some really neat things on top of this new tool.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/apis\">apis</a>, <a href=\"https://simonwillison.net/tags/security\">security</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/prompt-injection\">prompt-injection</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/claude\">claude</a>, <a href=\"https://simonwillison.net/tags/exfiltration-attacks\">exfiltration-attacks</a>, <a href=\"https://simonwillison.net/tags/llm-tool-use\">llm-tool-use</a>, <a href=\"https://simonwillison.net/tags/lethal-trifecta\">lethal-trifecta</a></p>",
+          "link": "https://simonwillison.net/2025/Sep/10/claude-web-fetch-tool/#atom-everything",
+          "publishedOn": "2025-09-10T17:24:51.000Z",
+          "wordCount": 680,
+          "title": "Claude API: Web fetch tool",
+          "imageUrl": null
+        },
+        {
           "id": "https://simonwillison.net/2025/Sep/10/animal-crossing-llm/#atom-everything",
           "author": null,
           "description": "<p><strong><a href=\"https://joshfonseca.com/blogs/animal-crossing-llm\">I Replaced Animal Crossing&#x27;s Dialogue with a Live LLM by Hacking GameCube Memory</a></strong></p>\nBrilliant retro-gaming project by Josh Fonseca, who figured out how to run 2002 Game Cube Animal Crossing in the <a href=\"https://dolphin-emu.org/\">Dolphin Emulator</a> such that dialog with the characters was instead generated by an LLM.</p>\n<p>The key trick was running Python code that scanned the Game Cube memory every 10th of a second looking for instances of dialogue, then updated the memory in-place to inject new dialog.</p>\n<p>The source code is in <a href=\"https://github.com/vuciv/animal-crossing-llm-mod\">vuciv/animal-crossing-llm-mod</a> on GitHub. I dumped it (via <a href=\"https://gitingest.com/vuciv/animal-crossing-llm-mod\">gitingest</a>, ~40,000 tokens) into Claude Opus 4.1 and <a href=\"https://claude.ai/share/66c52dc8-9ebd-4db7-8159-8f694e06b381\">asked the following</a>:</p>\n<blockquote>\n<p><code>This interacts with Animal Crossing on the Game Cube. It uses an LLM to replace dialog in the game, but since an LLM takes a few seconds to run how does it spot when it should run a prompt and then pause the game while the prompt is running?</code></p>\n</blockquote>\n<p>Claude pointed me to the <a href=\"https://github.com/vuciv/animal-crossing-llm-mod/blob/cc9b6b571da1be062d979d50aa86e2ac1dce7a44/ac_parser_encoder.py#L496\">watch_dialogue() function</a> which implements the polling loop. </p>\n<p>When it catches the dialogue screen opening it writes out this message instead:</p>\n<pre><code>loading_text = \".&lt;Pause [0A]&gt;.&lt;Pause [0A]&gt;.&lt;Pause [0A]&gt;&lt;Press A&gt;&lt;Clear Text&gt;\"\n</code></pre>\n<p>Those <code>&lt;Pause [0A]&gt;</code> tokens cause the came to pause for a few moments before giving the user the option to <code>&lt;Press A&gt;</code> to continue. This gives time for the LLM prompt to execute and return new text which can then be written to the correct memory area for display.</p>\n<p>Hacker News commenters spotted some fun prompts in the source code, including <a href=\"https://github.com/vuciv/animal-crossing-llm-mod/blob/cc9b6b571da1be062d979d50aa86e2ac1dce7a44/dialogue_prompt.py#L143-L184\">this prompt to set the scene</a>:</p>\n<blockquote>\n<p><code>You are a resident of a town run by Tom Nook. You are beginning to realize your mortgage is exploitative and the economy is unfair. Discuss this with the player and other villagers when appropriate.</code></p>\n</blockquote>\n<p>And <a href=\"https://github.com/vuciv/animal-crossing-llm-mod/blob/cc9b6b571da1be062d979d50aa86e2ac1dce7a44/dialogue_prompt.py#L165-L184\">this sequence of prompts</a> that slowly raise the agitation of the villagers about their economic situation over time.</p>\n<p>The system actually uses two separate prompts - one to generate responses from characters and another which <a href=\"https://github.com/vuciv/animal-crossing-llm-mod/blob/cc9b6b571da1be062d979d50aa86e2ac1dce7a44/dialogue_prompt.py#L495-L543\">takes those responses</a> and decorates them with Animal Crossing specific control codes to add pauses, character animations and other neat effects.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=45192655\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/python\">python</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/prompt-engineering\">prompt-engineering</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/anthropic\">anthropic</a>, <a href=\"https://simonwillison.net/tags/claude\">claude</a>, <a href=\"https://simonwillison.net/tags/claude-4\">claude-4</a></p>",
@@ -1616,16 +1666,6 @@
           "publishedOn": "2025-08-12T18:14:30.000Z",
           "wordCount": 497,
           "title": "Claude Sonnet 4 now supports 1M tokens of context",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Aug/12/nick-turley/#atom-everything",
-          "author": null,
-          "description": "<blockquote cite=\"https://www.youtube.com/watch?v=ixY2PvQJ0To&amp;t=2322s\"><p>I think there's been a lot of decisions over time that proved pretty consequential, but we made them very quickly as we have to. [...]</p>\n<p>[On pricing] I had this kind of panic attack because we really needed to launch subscriptions because at the time we were taking the product down all the time. [...]</p>\n<p>So what I did do is ship a Google Form to Discord with <a href=\"https://en.wikipedia.org/wiki/Van_Westendorp%27s_Price_Sensitivity_Meter\">the four questions you're supposed to ask</a> on how to price something.</p>\n<p>But we got with the $20. We were debating something slightly higher at the time. I often wonder what would have happened because so many other companies ended up copying the $20 price point, so did we erase a bunch of market cap by pricing it this way?</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://www.youtube.com/watch?v=ixY2PvQJ0To&amp;t=2322s\">Nick Turley</a>, Head of ChatGPT, interviewed by Lenny Rachitsky</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/chatgpt\">chatgpt</a>, <a href=\"https://simonwillison.net/tags/discord\">discord</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/openai\">openai</a>, <a href=\"https://simonwillison.net/tags/llm-pricing\">llm-pricing</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
-          "link": "https://simonwillison.net/2025/Aug/12/nick-turley/#atom-everything",
-          "publishedOn": "2025-08-12T03:32:04.000Z",
-          "wordCount": 374,
-          "title": "Quoting Nick Turley",
           "imageUrl": null
         }
       ]

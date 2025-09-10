@@ -2,10 +2,87 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-09-10T14:10:10.514Z</updated>
+    <updated>2025-09-10T21:08:42.459Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Copilot code review: Independent repository rule for automatic reviews]]></title>
+        <id>https://github.blog/changelog/2025-09-10-copilot-code-review-independent-repository-rule-for-automatic-reviews</id>
+        <link href="https://github.blog/changelog/2025-09-10-copilot-code-review-independent-repository-rule-for-automatic-reviews"/>
+        <updated>2025-09-10T20:08:07.000Z</updated>
+        <summary type="html"><![CDATA[You can now enable automatic Copilot code review with its own standalone repository rule. It’s generally available for Copilot users today ✨. Previously, triggering an automatic Copilot code review on…
+The post Copilot code review: Independent repository rule for automatic reviews appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[CodeQL 2.23.0 adds support for Rust log injection and other security detection improvements]]></title>
+        <id>https://github.blog/changelog/2025-09-10-codeql-2-23-0-adds-support-for-rust-log-injection-and-other-security-detection-improvements</id>
+        <link href="https://github.blog/changelog/2025-09-10-codeql-2-23-0-adds-support-for-rust-log-injection-and-other-security-detection-improvements"/>
+        <updated>2025-09-10T18:04:45.000Z</updated>
+        <summary type="html"><![CDATA[CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.23.0, which introduces a new Rust security…
+The post CodeQL 2.23.0 adds support for Rust log injection and other security detection improvements appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub ruleset exemptions and repository insights updates]]></title>
+        <id>https://github.blog/changelog/2025-09-10-github-ruleset-exemptions-and-repository-insights-updates</id>
+        <link href="https://github.blog/changelog/2025-09-10-github-ruleset-exemptions-and-repository-insights-updates"/>
+        <updated>2025-09-10T17:25:36.000Z</updated>
+        <summary type="html"><![CDATA[New ruleset bypass type GitHub repository rulesets now let you exempt specific actors (users, teams, or GitHub Apps) from all enforced rules with a new exempt bypass type. Unlike a…
+The post GitHub ruleset exemptions and repository insights updates appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude API: Web fetch tool]]></title>
+        <id>https://simonwillison.net/2025/Sep/10/claude-web-fetch-tool/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Sep/10/claude-web-fetch-tool/#atom-everything"/>
+        <updated>2025-09-10T17:24:51.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-fetch-tool">Claude API: Web fetch tool</a></strong></p>
+New in the Claude API: if you pass the <code>web-fetch-2025-09-10</code> beta header you can add <code>{"type": "web_fetch_20250910",  "name": "web_fetch", "max_uses": 5}</code> to your <code>"tools"</code> list and Claude will gain the ability to fetch content from URLs as part of responding to your prompt.</p>
+<p>What's particularly interesting here is their approach to safety for this feature:</p>
+<blockquote>
+<p>Enabling the web fetch tool in environments where Claude processes untrusted input alongside sensitive data poses data exfiltration risks. We recommend only using this tool in trusted environments or when handling non-sensitive data.</p>
+<p>To minimize exfiltration risks, Claude is not allowed to dynamically construct URLs. Claude can only fetch URLs that have been explicitly provided by the user or that come from previous web search or web fetch results. However, there is still residual risk that should be carefully considered when using this tool.</p>
+</blockquote>
+<p>My first impression was that this looked like an interesting new twist on this kind of tool. Prompt injection exfiltration attacks are a risk with something like this because malicious instructions that sneak into the context might cause the LLM to send private data off to an arbitrary attacker's URL, as described by <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">the lethal trifecta</a>. But what if you could enforce, in the LLM harness itself, that only URLs from user prompts could be accessed in this way?</p>
+<p>Unfortunately this isn't quite that smart. From later in that document:</p>
+<blockquote>
+<p>For security reasons, the web fetch tool can only fetch URLs that have previously appeared in the conversation context. This includes:</p>
+<ul>
+<li>URLs in user messages</li>
+<li>URLs in client-side tool results</li>
+<li>URLs from previous web search or web fetch results</li>
+</ul>
+<p>The tool cannot fetch arbitrary URLs that Claude generates or URLs from container-based server tools (Code Execution, Bash, etc.).</p>
+</blockquote>
+<p>Note that URLs in "user messages" are obeyed. That's a problem, because in many prompt-injection vulnerable applications it's those user messages (the JSON in the <code>{"role": "user", "content": "..."}</code> block) that often have untrusted content concatenated into them - or sometimes in the client-side tool results which are <em>also</em> allowed by this system!</p>
+<p>Anthropic do provide a much stronger mechanism here: you can allow-list domains using the <code>"allowed_domains": ["docs.example.com"]</code> parameter.</p>
+<p>Provided you use <code>allowed_domains</code> and restrict them to domains which absolutely cannot be used for exfiltrating data (which turns out to be a <a href="https://simonwillison.net/2025/Jun/11/echoleak/">tricky proposition</a>) it should be possible to safely build some really neat things on top of this new tool.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/apis">apis</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-injection">prompt-injection</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/exfiltration-attacks">exfiltration-attacks</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/lethal-trifecta">lethal-trifecta</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dependabot alerts now support production context prioritization in public preview]]></title>
+        <id>https://github.blog/changelog/2025-09-09-dependabot-alerts-now-support-production-context-prioritization-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-09-09-dependabot-alerts-now-support-production-context-prioritization-in-public-preview"/>
+        <updated>2025-09-10T12:44:15.000Z</updated>
+        <summary type="html"><![CDATA[Dependabot alerts can now be filtered and prioritized using production context from external artifact registries, including JFrog Artifactory, and your own CI/CD workflows. This feature is available in public preview.…
+The post Dependabot alerts now support production context prioritization in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[I Replaced Animal Crossing's Dialogue with a Live LLM by Hacking GameCube Memory]]></title>
         <id>https://simonwillison.net/2025/Sep/10/animal-crossing-llm/#atom-everything</id>
@@ -3320,22 +3397,6 @@ The post OpenAI GPT-5 is now available in public preview in Visual Studio, JetBr
 The post Dependabot version updates now support vcpkg appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Nick Turley]]></title>
-        <id>https://simonwillison.net/2025/Aug/12/nick-turley/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Aug/12/nick-turley/#atom-everything"/>
-        <updated>2025-08-12T03:32:04.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://www.youtube.com/watch?v=ixY2PvQJ0To&amp;t=2322s"><p>I think there's been a lot of decisions over time that proved pretty consequential, but we made them very quickly as we have to. [...]</p>
-<p>[On pricing] I had this kind of panic attack because we really needed to launch subscriptions because at the time we were taking the product down all the time. [...]</p>
-<p>So what I did do is ship a Google Form to Discord with <a href="https://en.wikipedia.org/wiki/Van_Westendorp%27s_Price_Sensitivity_Meter">the four questions you're supposed to ask</a> on how to price something.</p>
-<p>But we got with the $20. We were debating something slightly higher at the time. I often wonder what would have happened because so many other companies ended up copying the $20 price point, so did we erase a bunch of market cap by pricing it this way?</p></blockquote>
-<p class="cite">&mdash; <a href="https://www.youtube.com/watch?v=ixY2PvQJ0To&amp;t=2322s">Nick Turley</a>, Head of ChatGPT, interviewed by Lenny Rachitsky</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/discord">discord</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
