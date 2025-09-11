@@ -2,10 +2,72 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-09-10T21:08:42.459Z</updated>
+    <updated>2025-09-11T14:10:49.515Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[😺 Did Ex-OpenAI CTO Mira's $12B startup just solve AI's biggest bug??]]></title>
+        <id>https://www.theneurondaily.com/p/did-ex-openai-cto-mira-s-12b-startup-just-solve-ai-s-biggest-bug</id>
+        <link href="https://www.theneurondaily.com/p/did-ex-openai-cto-mira-s-12b-startup-just-solve-ai-s-biggest-bug"/>
+        <updated>2025-09-11T09:30:00.000Z</updated>
+        <summary type="html"><![CDATA[PLUS: $300B OpenAI-Oracle deal = peak AI hype??]]></summary>
+        <author>
+            <name>Grant Harvey</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Defeating Nondeterminism in LLM Inference]]></title>
+        <id>https://simonwillison.net/2025/Sep/11/defeating-nondeterminism/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Sep/11/defeating-nondeterminism/#atom-everything"/>
+        <updated>2025-09-11T06:53:42.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/">Defeating Nondeterminism in LLM Inference</a></strong></p>
+A very common question I see about LLMs concerns why they can't be made to deliver the same response to the same prompt by setting a fixed random number seed.</p>
+<p>Like many others I had been lead to believe this was due to the non-associative nature of floating point arithmetic, where <code>(a + b) + c ≠ a + (b + c)</code>, combining with unpredictable calculation orders on concurrent GPUs. This new paper calls that the "concurrency + floating point hypothesis":</p>
+<blockquote>
+<p>One common hypothesis is that some combination of floating-point non-associativity and concurrent execution leads to nondeterminism based on which concurrent core finishes first. We will call this the “concurrency + floating point” hypothesis for LLM inference nondeterminism.</p>
+</blockquote>
+<p>It then convincingly argues that this is <em>not</em> the core of the problem, because "in the typical forward pass of an LLM, there is usually not a single atomic add present."</p>
+<p>Why are LLMs so often non-deterministic then?</p>
+<blockquote>
+<p>[...] <strong>the primary reason nearly all LLM inference endpoints are nondeterministic is that the load (and thus batch-size) nondeterministically varies!</strong> This nondeterminism is not unique to GPUs — LLM inference endpoints served from CPUs or TPUs will also have this source of nondeterminism.</p>
+</blockquote>
+<p>The <a href="https://github.com/thinking-machines-lab/batch_invariant_ops">thinking-machines-lab/batch_invariant_ops</a> code that accompanies this paper addresses this by providing a PyTorch implementation of invariant kernels and demonstrates them running Qwen3-8B deterministically under vLLM.</p>
+<p>This paper is the first public output from Thinking Machines,  the AI Lab founded in February 2025 by Mira Murati, OpenAI's former CTO (and interim CEO for <a href="https://openai.com/index/openai-announces-leadership-transition/">a few days</a>). It's unrelated to <a href="https://en.m.wikipedia.org/wiki/Thinking_Machines_Corporation">Thinking Machines Corporation</a>, the last employer of Richard Feynman (as described in this <a href="https://longnow.org/ideas/richard-feynman-and-the-connection-machine/">most excellent story by Danny Hillis</a>).
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45200925">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/pytorch">pytorch</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Kumar Aditya]]></title>
+        <id>https://simonwillison.net/2025/Sep/11/kumar-aditya/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Sep/11/kumar-aditya/#atom-everything"/>
+        <updated>2025-09-11T03:07:16.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://labs.quansight.org/blog/scaling-asyncio-on-free-threaded-python"><p>In Python 3.14, I have implemented several changes to fix thread safety of <code>asyncio</code> and enable it to scale effectively on the free-threaded build of CPython. It is now implemented using lock-free data structures and per-thread state, allowing for highly efficient task management and execution across multiple threads. In the general case of multiple event loops running in parallel, there is no lock contention and performance scales linearly with the number of threads. [...]</p>
+<p>For a deeper dive into the implementation, check out the <a href="https://github.com/python/cpython/blob/main/InternalDocs/asyncio.md#python-314-implementation">internal docs for asyncio</a>.</p></blockquote>
+<p class="cite">&mdash; <a href="https://labs.quansight.org/blog/scaling-asyncio-on-free-threaded-python">Kumar Aditya</a>, Scaling asyncio on Free-Threaded Python</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/async">async</a>, <a href="https://simonwillison.net/tags/scaling">scaling</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/gil">gil</a>, <a href="https://simonwillison.net/tags/threads">threads</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Secret scanning validity checks available for Enterprise Cloud with data residency]]></title>
+        <id>https://github.blog/changelog/2025-09-10-secret-scanning-validity-checks-available-for-proxima-new-validators-added</id>
+        <link href="https://github.blog/changelog/2025-09-10-secret-scanning-validity-checks-available-for-data-residency"/>
+        <updated>2025-09-10T20:59:55.000Z</updated>
+        <summary type="html"><![CDATA[Expanded platform support GitHub Enterprise Cloud with data residency and Enterprise Server Enterprise Cloud with data residency: Starting today, validity checks are now available for GitHub Secret Protection and GitHub…
+The post Secret scanning validity checks available for Enterprise Cloud with data residency appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Copilot code review: Independent repository rule for automatic reviews]]></title>
         <id>https://github.blog/changelog/2025-09-10-copilot-code-review-independent-repository-rule-for-automatic-reviews</id>
@@ -3333,70 +3395,6 @@ llm "Fun facts about pelicans"
     <p>Tags: <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/til">til</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/github-codespaces">github-codespaces</a>, <a href="https://simonwillison.net/tags/anthony-shaw">anthony-shaw</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Secret scanning adds 12 validators including Cockroach Labs, Polar, and Yandex]]></title>
-        <id>https://github.blog/changelog/2025-08-12-secret-scanning-adds-12-validators-including-cockroach-labs-polar-and-yandex</id>
-        <link href="https://github.blog/changelog/2025-08-12-secret-scanning-adds-12-validators-including-cockroach-labs-polar-and-yandex"/>
-        <updated>2025-08-12T21:20:14.000Z</updated>
-        <summary type="html"><![CDATA[Secret scanning is adding validity check support for 12 additional token types across 11 providers. In addition to previously announced token types, you will now see validity checks for the…
-The post Secret scanning adds 12 validators including Cockroach Labs, Polar, and Yandex appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Claude Sonnet 4 now supports 1M tokens of context]]></title>
-        <id>https://simonwillison.net/2025/Aug/12/claude-sonnet-4-1m/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Aug/12/claude-sonnet-4-1m/#atom-everything"/>
-        <updated>2025-08-12T18:14:30.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.anthropic.com/news/1m-context">Claude Sonnet 4 now supports 1M tokens of context</a></strong></p>
-Gemini and OpenAI both have million token models, so it's good to see Anthropic catching up. This is 5x the previous 200,000 context length limit of the various Claude Sonnet models.</p>
-<p>Anthropic have previously made 1 million tokens available to select customers. From <a href="https://www.anthropic.com/news/claude-3-family">the Claude 3 announcement</a> in March 2024:</p>
-<blockquote>
-<p>The Claude 3 family of models will initially offer a 200K context window upon launch. However, all three models are capable of accepting inputs exceeding 1 million tokens and we may make this available to select customers who need enhanced processing power.</p>
-</blockquote>
-<p>This is also the first time I've seen Anthropic use prices that vary depending on context length:</p>
-<ul>
-<li>Prompts ≤ 200K: $3/million input, $15/million output</li>
-<li>Prompts &gt; 200K: $6/million input, $22.50/million output</li>
-</ul>
-<p>Gemini have been doing this for a while: Gemini 2.5 Pro is $1.25/$10 below 200,000 tokens and $2.50/$15 above 200,000.</p>
-<p>Here's <a href="https://docs.anthropic.com/en/docs/build-with-claude/context-windows#1m-token-context-window">Anthropic's full documentation on the 1m token context window</a>. You need to send a <code>context-1m-2025-08-07</code> beta header in your request to enable it.</p>
-<p>Note that this is currently restricted to "tier 4" users who have purchased at least $400 in API credits:</p>
-<blockquote>
-<p>Long context support for Sonnet 4 is now in public beta on the Anthropic API for customers with Tier 4 and custom rate limits, with broader availability rolling out over the coming weeks.</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://x.com/claudeai/status/1955299573620261343">@claudeai</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/long-context">long-context</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[OpenAI GPT-5 is now available in public preview in Visual Studio, JetBrains IDEs, Xcode, and Eclipse]]></title>
-        <id>https://github.blog/changelog/2025-08-11-openai-gpt-5-is-now-available-in-public-preview-in-visual-studio-jetbrains-ides-xcode-and-eclipse</id>
-        <link href="https://github.blog/changelog/2025-08-12-openai-gpt-5-is-now-available-in-public-preview-in-visual-studio-jetbrains-ides-xcode-and-eclipse"/>
-        <updated>2025-08-12T17:30:37.000Z</updated>
-        <summary type="html"><![CDATA[GPT-5, OpenAI’s latest frontier model, is rolling out in public preview to users of GitHub Copilot in Visual Studio, JetBrains IDEs, Xcode, and Eclipse. GPT-5 is OpenAI’s most advanced model…
-The post OpenAI GPT-5 is now available in public preview in Visual Studio, JetBrains IDEs, Xcode, and Eclipse appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Dependabot version updates now support vcpkg]]></title>
-        <id>https://github.blog/changelog/2025-08-12-dependabot-version-updates-now-support-vcpkg</id>
-        <link href="https://github.blog/changelog/2025-08-12-dependabot-version-updates-now-support-vcpkg"/>
-        <updated>2025-08-12T16:22:46.000Z</updated>
-        <summary type="html"><![CDATA[Dependabot now supports automatic dependency updates for vcpkg, the free C/C++ package manager from Microsoft. This enables teams using vcpkg to keep their C and C++ dependencies secure and up-to-date…
-The post Dependabot version updates now support vcpkg appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
     <entry>
