@@ -674,46 +674,6 @@
           "wordCount": 1425,
           "title": "GraphQL Explorer removal from API documentation on November 1, 2025",
           "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-deprecations.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-08-21-enterprises-can-create-organization-roles-for-use-across-their-enterprise-and-custom-role-limits-have-been-increased",
-          "author": "Allison",
-          "description": "Enterprise owners can now create a set of custom organization roles that are available across all their organizations. The core set of roles you use in your day-to-day work can…\nThe post Enterprises can create organization roles for use across their enterprise, and custom role limits have been increased appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-08-21-enterprises-can-create-organization-roles-for-use-across-their-enterprise-and-custom-role-limits-have-been-increased",
-          "publishedOn": "2025-08-21T22:36:21.000Z",
-          "wordCount": 1490,
-          "title": "Enterprises can create organization roles for use across their enterprise, and custom role limits have been increased",
-          "imageUrl": "https://github.blog/wp-content/uploads/2025/08/477754555-e0784402-77f8-49d3-85ae-41c2457ff5fd-e1755816241291.png"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-08-21-pull-request-files-changed-public-preview-experience-august-21-updates",
-          "author": "Allison",
-          "description": "Check out the latest updates to the new pull request “Files changed” page public preview, including submodule support, improvements to the review submission panel, and lots of fixes. ✨ Improved…\nThe post Pull request “Files changed” public preview experience – August 21 updates appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-08-21-pull-request-files-changed-public-preview-experience-august-21-updates",
-          "publishedOn": "2025-08-21T19:44:25.000Z",
-          "wordCount": 1653,
-          "title": "Pull request “Files changed” public preview experience – August 21 updates",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-08-21-dependencies-on-issues",
-          "author": "Allison",
-          "description": "Dependencies on issues are now generally available! You can now specify which issues are blocked by or blocking others, making it easy for teams to define work that must be…\nThe post Dependencies on issues appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-08-21-dependencies-on-issues",
-          "publishedOn": "2025-08-21T16:32:58.000Z",
-          "wordCount": 1489,
-          "title": "Dependencies on issues",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-08-20-copilot-generated-commit-messages-on-github-com-is-in-public-preview",
-          "author": "Allison",
-          "description": "GitHub Copilot now offers contextual commit message suggestions for github.com file changes, making documentation an effortless part of your workflow. With this enhancement, Copilot automatically suggests a concise summary of…\nThe post Copilot generated commit messages on github.com is in public preview appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-08-21-copilot-generated-commit-messages-on-github-com-is-in-public-preview",
-          "publishedOn": "2025-08-21T15:10:53.000Z",
-          "wordCount": 1347,
-          "title": "Copilot generated commit messages on github.com is in public preview",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg"
         }
       ]
     },
@@ -1014,6 +974,16 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2025/Sep/19/httpjail/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://github.com/coder/httpjail\">httpjail</a></strong></p>\nHere's a promising new (experimental) project in the sandboxing space from Ammar Bandukwala at <a href=\"https://coder.com/\">Coder</a>. <code>httpjail</code> provides a Rust CLI tool for running an individual process against a custom configured HTTP proxy.</p>\n<p>The initial goal is to help run coding agents like Claude Code and Codex CLI with extra rules governing how they interact with outside services. From Ammar's blog post that introduces the new tool, <a href=\"https://ammar.io/blog/httpjail\">Fine-grained HTTP filtering for Claude Code</a>:</p>\n<blockquote>\n<p><code>httpjail</code> implements an HTTP(S) interceptor alongside process-level network isolation. Under default configuration, all DNS (udp:53) is permitted and all other non-HTTP(S) traffic is blocked.</p>\n<p><code>httpjail</code> rules are either JavaScript expressions or custom programs. This approach makes them far more flexible than traditional rule-oriented firewalls and avoids the learning curve of a DSL.</p>\n<p>Block all HTTP requests other than the LLM API traffic itself:</p>\n<pre><code>$ httpjail --js \"r.host === 'api.anthropic.com'\" -- claude \"build something great\"\n</code></pre>\n</blockquote>\n<p>I tried it out using OpenAI's Codex CLI instead and found this recipe worked:</p>\n<pre><code>brew upgrade rust\ncargo install httpjail # Drops it in `~/.cargo/bin`\nhttpjail --js \"r.host === 'chatgpt.com'\" -- codex\n</code></pre>\n<p>Within that Codex instance the model ran fine but any attempts to access other URLs (e.g. telling it \"<code>Use curl to fetch simonwillison.net</code>)\" failed at the proxy layer.</p>\n<p>This is still at a really early stage but there's a lot I like about this project. Being able to use JavaScript to filter requests via the <code>--js</code> option is neat (it's using V8 under the hood), and there's also a <code>--sh shellscript</code> option which instead runs a shell program passing environment variables that can be used to determine if the request should be allowed.</p>\n<p>At a basic level it works by running a proxy server and setting <code>HTTP_PROXY</code> and <code>HTTPS_PROXY</code> environment variables so well-behaving software knows how to route requests.</p>\n<p>It can also add a bunch of other layers. On Linux it sets up <a href=\"https://en.wikipedia.org/wiki/Nftables\">nftables</a> rules to explicitly deny additional network access. There's also a <code>--docker-run</code> option which can launch a Docker container with the specified image but first locks that container down to only have network access to the <code>httpjail</code> proxy server.</p>\n<p>It can intercept, filter and log HTTPS requests too by generating its own certificate and making that available to the underlying process.</p>\n<p>I'm always interested in new approaches to sandboxing, and fine-grained network access is a particularly tricky problem to solve. This looks like a very promising step in that direction - I'm looking forward to seeing how this project continues to evolve.\n\n    <p><small></small>Via <a href=\"https://ammar.io/blog/httpjail\">Fine-grained HTTP filtering for Claude Code</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/http\">http</a>, <a href=\"https://simonwillison.net/tags/javascript\">javascript</a>, <a href=\"https://simonwillison.net/tags/proxies\">proxies</a>, <a href=\"https://simonwillison.net/tags/sandboxing\">sandboxing</a>, <a href=\"https://simonwillison.net/tags/security\">security</a>, <a href=\"https://simonwillison.net/tags/v8\">v8</a>, <a href=\"https://simonwillison.net/tags/rust\">rust</a>, <a href=\"https://simonwillison.net/tags/claude-code\">claude-code</a>, <a href=\"https://simonwillison.net/tags/codex-cli\">codex-cli</a></p>",
+          "link": "https://simonwillison.net/2025/Sep/19/httpjail/#atom-everything",
+          "publishedOn": "2025-09-19T21:57:29.000Z",
+          "wordCount": 689,
+          "title": "httpjail",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2025/Sep/19/magistral/#atom-everything",
           "author": null,
@@ -1653,36 +1623,6 @@
           "wordCount": 490,
           "title": "too many model context protocol servers and LLM allocations on the dance floor",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Aug/21/potatolicious/#atom-everything",
-          "author": null,
-          "description": "<blockquote cite=\"https://news.ycombinator.com/item?id=44976929#44978319\"><p>Most classical engineering fields deal with probabilistic system components all of the time. In fact I'd go as far as to say that <em>inability</em> to deal with probabilistic components is disqualifying from many engineering endeavors.</p>\n<p>Process engineers for example have to account for human error rates. On a given production line with humans in a loop, the operators will sometimes screw up. Designing systems to detect these errors (which are <em>highly probabilistic</em>!), mitigate them, and reduce the occurrence rates of such errors is a huge part of the job. [...]</p>\n<p>Software engineering is <em>unlike</em> traditional engineering disciplines in that for most of its lifetime it's had the luxury of purely deterministic expectations. This is not true in nearly every other type of engineering.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://news.ycombinator.com/item?id=44976929#44978319\">potatolicious</a>, in a conversation about AI engineering</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/hacker-news\">hacker-news</a>, <a href=\"https://simonwillison.net/tags/software-engineering\">software-engineering</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a></p>",
-          "link": "https://simonwillison.net/2025/Aug/21/potatolicious/#atom-everything",
-          "publishedOn": "2025-08-21T21:44:19.000Z",
-          "wordCount": 361,
-          "title": "Quoting potatolicious",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Aug/21/matt-garman/#atom-everything",
-          "author": null,
-          "description": "<blockquote cite=\"https://www.youtube.com/watch?v=nfocTxMzOP4&amp;t=12m08s\"><p>I was at a leadership group and people were telling me \"We think that with AI we can replace all of our junior people in our company.\" I was like, \"That's the dumbest thing I've ever heard. They're probably the least expensive employees you have, they're the most leaned into your AI tools, and how's that going to work when you go 10 years in the future and you have no one that has built up or learned anything?</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://www.youtube.com/watch?v=nfocTxMzOP4&amp;t=12m08s\">Matt Garman</a>, CEO, Amazon Web Services</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai-ethics\">ai-ethics</a>, <a href=\"https://simonwillison.net/tags/careers\">careers</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/aws\">aws</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a></p>",
-          "link": "https://simonwillison.net/2025/Aug/21/matt-garman/#atom-everything",
-          "publishedOn": "2025-08-21T16:49:14.000Z",
-          "wordCount": 319,
-          "title": "Quoting Matt Garman",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Aug/21/mustafa-suleyman/#atom-everything",
-          "author": null,
-          "description": "<blockquote cite=\"https://mustafa-suleyman.ai/seemingly-conscious-ai-is-coming\"><p>Simply put, my central worry is that many people will start to believe in the illusion of AIs as conscious entities so strongly that they’ll soon advocate for AI rights, <a href=\"https://arxiv.org/abs/2411.00986\">model welfare</a> and even AI citizenship. This development will be a dangerous turn in AI progress and deserves our immediate attention.</p>\n<p>We must build AI for people; not to be a digital person.</p>\n<p><strong>[...] we should build AI that only ever presents itself as an AI, that maximizes utility while minimizing markers of consciousness.</strong></p>\n<p>Rather than a simulation of consciousness, we must focus on creating an AI that avoids those traits - that doesn’t claim to have experiences, feelings or emotions like shame, guilt, jealousy, desire to compete, and so on. It must not trigger human empathy circuits by claiming it suffers or that it wishes to live autonomously, beyond us.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://mustafa-suleyman.ai/seemingly-conscious-ai-is-coming\">Mustafa Suleyman</a>, on SCAI - Seemingly Conscious AI</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/ai-ethics\">ai-ethics</a>, <a href=\"https://simonwillison.net/tags/ai-personality\">ai-personality</a></p>",
-          "link": "https://simonwillison.net/2025/Aug/21/mustafa-suleyman/#atom-everything",
-          "publishedOn": "2025-08-21T09:38:03.000Z",
-          "wordCount": 379,
-          "title": "Quoting Mustafa Suleyman",
-          "imageUrl": null
         }
       ]
     },
@@ -1691,6 +1631,26 @@
       "feedUrl": "https://simonw.github.io/ollama-models-atom-feed/atom.xml",
       "siteUrl": "https://ollama.com/search?o=newest",
       "articles": [
+        {
+          "id": "https://ollama.com/library/qwen3-coder",
+          "author": null,
+          "description": "Alibaba's performant long context models for agentic and coding tasks.",
+          "link": "https://ollama.com/library/qwen3-coder",
+          "publishedOn": "2025-09-20T01:17:00.000Z",
+          "wordCount": 2310,
+          "title": "qwen3-coder",
+          "imageUrl": "https://ollama.com/public/og.png"
+        },
+        {
+          "id": "https://ollama.com/library/gpt-oss",
+          "author": null,
+          "description": "OpenAI’s open-weight models designed for powerful reasoning, agentic tasks, and versatile developer use cases.",
+          "link": "https://ollama.com/library/gpt-oss",
+          "publishedOn": "2025-09-19T19:18:00.000Z",
+          "wordCount": 2808,
+          "title": "gpt-oss",
+          "imageUrl": "https://ollama.com/public/og.png"
+        },
         {
           "id": "https://ollama.com/library/embeddinggemma",
           "author": null,
@@ -2122,21 +2082,6 @@
             "type": "image/png"
           },
           "imageUrl": "https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/f9c8148d-cc65-40ac-819d-307e521f081d/The_Neuron_Header_-_8.22.2025__1_.png"
-        },
-        {
-          "id": "https://www.theneurondaily.com/p/are-we-about-to-enter-ai-winter",
-          "author": "Grant Harvey",
-          "description": "PLUS: New Boston Dynamics demo, AI Pixel 10, and more...",
-          "link": "https://www.theneurondaily.com/p/are-we-about-to-enter-ai-winter",
-          "publishedOn": "2025-08-21T09:30:00.000Z",
-          "wordCount": null,
-          "title": "😺 Are we about to enter \"AI Winter??\"",
-          "enclosure": {
-            "url": "https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/7954de64-20bf-4e77-a14e-6abbd53e7630/The_Neuron_-_8.21.2025.png",
-            "length": "210128",
-            "type": "image/png"
-          },
-          "imageUrl": "https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/7954de64-20bf-4e77-a14e-6abbd53e7630/The_Neuron_-_8.21.2025.png"
         }
       ]
     }
