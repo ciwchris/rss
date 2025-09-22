@@ -955,6 +955,16 @@
       "siteUrl": "http://simonwillison.net/",
       "articles": [
         {
+          "id": "https://simonwillison.net/2025/Sep/21/locally-ai/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://apps.apple.com/us/app/locally-ai-local-ai-chat/id6741426692\">Locally AI</a></strong></p>\nHandy new iOS app by Adrien Grondin for running local LLMs on your phone. It just added support for the new iOS 26 Apple Foundation model, so you can install this app and instantly start a conversation with that model without any additional download.</p>\n<p>The app can also run a variety of other models using MLX, including members of the Gemma, Llama 3.2, and and Qwen families.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/apple\">apple</a>, <a href=\"https://simonwillison.net/tags/ios\">ios</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/mlx\">mlx</a></p>",
+          "link": "https://simonwillison.net/2025/Sep/21/locally-ai/#atom-everything",
+          "publishedOn": "2025-09-21T23:56:14.000Z",
+          "wordCount": 340,
+          "title": "Locally AI",
+          "imageUrl": null
+        },
+        {
           "id": "https://simonwillison.net/2025/Sep/21/llm-openrouter/#atom-everything",
           "author": null,
           "description": "<p><strong><a href=\"https://github.com/simonw/llm-openrouter/releases/tag/0.5\">llm-openrouter 0.5</a></strong></p>\nNew release of my <a href=\"https://llm.datasette.io/\">LLM</a> plugin for accessing models made available via <a href=\"https://openrouter.ai/\">OpenRouter</a>. The release notes in full:</p>\n<blockquote>\n<ul>\n<li>Support for <a href=\"https://llm.datasette.io/en/stable/tools.html\">tool calling</a>. Thanks, <a href=\"https://github.com/jamessanford\">James Sanford</a>. <a href=\"https://github.com/simonw/llm-openrouter/pull/43\">#43</a></li>\n<li>Support for reasoning options, for example <code>llm -m openrouter/openai/gpt-5 'prove dogs exist' -o reasoning_effort medium</code>. <a href=\"https://github.com/simonw/llm-openrouter/issues/45\">#45</a></li>\n</ul>\n</blockquote>\n<p>Tool calling is a really big deal, as it means you can now use the plugin to try out tools (and <a href=\"https://simonwillison.net/2025/Sep/18/agents/\">build agents, if you like</a>) against any of the 179 tool-enabled models on that platform:</p>\n<pre><code>llm install llm-openrouter\nllm keys set openrouter\n# Paste key here\nllm models --tools | grep 'OpenRouter:' | wc -l\n# Outputs 179\n</code></pre>\n<p>Quite a few of the models hosted on OpenRouter can be accessed for free. Here's a tool-usage example using the <a href=\"https://github.com/simonw/llm-tools-datasette\">llm-tools-datasette plugin</a> against the new <a href=\"https://simonwillison.net/2025/Sep/20/grok-4-fast/\">Grok 4 Fast model</a>:</p>\n<pre><code>llm install llm-tools-datasette\nllm -m openrouter/x-ai/grok-4-fast:free -T 'Datasette(\"https://datasette.io/content\")' 'Count available plugins'\n</code></pre>\n<p>Outputs:</p>\n<blockquote>\n<p>There are 154 available plugins.</p>\n</blockquote>\n<p><a href=\"https://gist.github.com/simonw/43c56203887dd0d07351443a2ba18f29\">The output</a> of <code>llm logs -cu</code> shows the tool calls and SQL queries it executed to get that result.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/projects\">projects</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/datasette\">datasette</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/llm-tool-use\">llm-tool-use</a>, <a href=\"https://simonwillison.net/tags/llm-reasoning\">llm-reasoning</a>, <a href=\"https://simonwillison.net/tags/openrouter\">openrouter</a></p>",
@@ -1573,16 +1583,6 @@
           "wordCount": 481,
           "title": "Static Sites with Python, uv, Caddy, and Docker",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://duckdb.org/2025/08/08/spatial-joins\">Spatial Joins in DuckDB</a></strong></p>\nExtremely detailed overview by Max Gabrielsson of DuckDB's new spatial join optimizations.</p>\n<p>Consider the following query, which counts the number of <a href=\"https://citibikenyc.com/system-data\">NYC Citi Bike Trips</a> for each of the neighborhoods defined by the <a href=\"https://www.nyc.gov/content/planning/pages/resources/datasets/neighborhood-tabulation\">NYC Neighborhood Tabulation Areas polygons</a> and returns the top three:</p>\n<pre><span class=\"pl-k\">SELECT</span> neighborhood,\n  <span class=\"pl-c1\">count</span>(<span class=\"pl-k\">*</span>) <span class=\"pl-k\">AS</span> num_rides\n<span class=\"pl-k\">FROM</span> rides\n<span class=\"pl-k\">JOIN</span> hoods <span class=\"pl-k\">ON</span> ST_Intersects(\n  <span class=\"pl-c1\">rides</span>.<span class=\"pl-c1\">start_geom</span>, <span class=\"pl-c1\">hoods</span>.<span class=\"pl-c1\">geom</span>\n)\n<span class=\"pl-k\">GROUP BY</span> neighborhood\n<span class=\"pl-k\">ORDER BY</span> num_rides <span class=\"pl-k\">DESC</span>\n<span class=\"pl-k\">LIMIT</span> <span class=\"pl-c1\">3</span>;</pre>\n\n<p>The rides table contains 58,033,724 rows. The hoods table has polygons for 310 neighborhoods.</p>\n<p>Without an optimized spatial joins this query requires a nested loop join, executing that expensive <code>ST_Intersects()</code> operation 58m * 310 ~= 18 billion times. This took around 30 minutes on the 36GB MacBook M3 Pro used for the benchmark.</p>\n<p>The first optimization described - implemented from DuckDB 1.2.0 onwards - uses a \"piecewise merge join\". This takes advantage of the fact that a bounding box intersection is a whole lot faster to calculate, especially if you pre-cache the bounding box (aka the minimum bounding rectangle or MBR) in the stored binary <code>GEOMETRY</code> representation.</p>\n<p>Rewriting the query to use a fast bounding box intersection and then only running the more expensive <code>ST_Intersects()</code> filters on those matches drops the runtime from 1800 seconds to 107 seconds.</p>\n<p>The second optimization, added in <a href=\"https://duckdb.org/2025/05/21/announcing-duckdb-130.html\">DuckDB 1.3.0</a> in May 2025 using the new SPATIAL_JOIN operator, is significantly more sophisticated.</p>\n<p>DuckDB can now identify when a spatial join is working against large volumes of data and automatically build an in-memory R-Tree of bounding boxes for the larger of the two tables being joined.</p>\n<p>This new R-Tree further accelerates the bounding box intersection part of the join, and drops the runtime down to just 30 seconds.\n\n    <p><small></small>Via <a href=\"https://bsky.app/profile/mackaszechno.bsky.social/post/3lx3lnagg7s2t\">@mackaszechno.bsky.social</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/geospatial\">geospatial</a>, <a href=\"https://simonwillison.net/tags/sql\">sql</a>, <a href=\"https://simonwillison.net/tags/duckdb\">duckdb</a></p>",
-          "link": "https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything",
-          "publishedOn": "2025-08-23T21:21:02.000Z",
-          "wordCount": 539,
-          "title": "Spatial Joins in DuckDB",
-          "imageUrl": null
         }
       ]
     },
@@ -1638,6 +1638,21 @@
       "feedUrl": "https://rss.beehiiv.com/feeds/N4eCstxvgX.xml",
       "siteUrl": "https://www.theneurondaily.com/",
       "articles": [
+        {
+          "id": "https://www.theneurondaily.com/p/waymo-just-keeps-on-winning",
+          "author": "Grant Harvey",
+          "description": "PLUS: GPT-5 tops charts, Waymo cuts injuries 85%, AI comedy fails",
+          "link": "https://www.theneurondaily.com/p/waymo-just-keeps-on-winning",
+          "publishedOn": "2025-09-22T09:30:00.000Z",
+          "wordCount": null,
+          "title": "😺 Waymo just keeps on winning...",
+          "enclosure": {
+            "url": "https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/996805c0-eeb0-4c0c-a8e3-38b10a9432be/The_Neuron_Header_-_9.22.2025.png",
+            "length": "196966",
+            "type": "image/png"
+          },
+          "imageUrl": "https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/996805c0-eeb0-4c0c-a8e3-38b10a9432be/The_Neuron_Header_-_9.22.2025.png"
+        },
         {
           "id": "https://www.theneurondaily.com/p/elon-thinks-grok-5-agi",
           "author": "Grant Harvey",

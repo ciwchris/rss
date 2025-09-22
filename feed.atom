@@ -2,10 +2,35 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-09-21T21:08:23.524Z</updated>
+    <updated>2025-09-22T14:11:21.064Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[😺 Waymo just keeps on winning...]]></title>
+        <id>https://www.theneurondaily.com/p/waymo-just-keeps-on-winning</id>
+        <link href="https://www.theneurondaily.com/p/waymo-just-keeps-on-winning"/>
+        <updated>2025-09-22T09:30:00.000Z</updated>
+        <summary type="html"><![CDATA[PLUS: GPT-5 tops charts, Waymo cuts injuries 85%, AI comedy fails]]></summary>
+        <author>
+            <name>Grant Harvey</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Locally AI]]></title>
+        <id>https://simonwillison.net/2025/Sep/21/locally-ai/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Sep/21/locally-ai/#atom-everything"/>
+        <updated>2025-09-21T23:56:14.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://apps.apple.com/us/app/locally-ai-local-ai-chat/id6741426692">Locally AI</a></strong></p>
+Handy new iOS app by Adrien Grondin for running local LLMs on your phone. It just added support for the new iOS 26 Apple Foundation model, so you can install this app and instantly start a conversation with that model without any additional download.</p>
+<p>The app can also run a variety of other models using MLX, including members of the Gemma, Llama 3.2, and and Qwen families.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/apple">apple</a>, <a href="https://simonwillison.net/tags/ios">ios</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[😸 Elon thinks Grok 5 = AGI]]></title>
         <id>https://www.theneurondaily.com/p/elon-thinks-grok-5-agi</id>
@@ -3199,40 +3224,6 @@ COPY --from=build /src/output /srv/
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/docker">docker</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spatial Joins in DuckDB]]></title>
-        <id>https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything"/>
-        <updated>2025-08-23T21:21:02.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://duckdb.org/2025/08/08/spatial-joins">Spatial Joins in DuckDB</a></strong></p>
-Extremely detailed overview by Max Gabrielsson of DuckDB's new spatial join optimizations.</p>
-<p>Consider the following query, which counts the number of <a href="https://citibikenyc.com/system-data">NYC Citi Bike Trips</a> for each of the neighborhoods defined by the <a href="https://www.nyc.gov/content/planning/pages/resources/datasets/neighborhood-tabulation">NYC Neighborhood Tabulation Areas polygons</a> and returns the top three:</p>
-<pre><span class="pl-k">SELECT</span> neighborhood,
-  <span class="pl-c1">count</span>(<span class="pl-k">*</span>) <span class="pl-k">AS</span> num_rides
-<span class="pl-k">FROM</span> rides
-<span class="pl-k">JOIN</span> hoods <span class="pl-k">ON</span> ST_Intersects(
-  <span class="pl-c1">rides</span>.<span class="pl-c1">start_geom</span>, <span class="pl-c1">hoods</span>.<span class="pl-c1">geom</span>
-)
-<span class="pl-k">GROUP BY</span> neighborhood
-<span class="pl-k">ORDER BY</span> num_rides <span class="pl-k">DESC</span>
-<span class="pl-k">LIMIT</span> <span class="pl-c1">3</span>;</pre>
-
-<p>The rides table contains 58,033,724 rows. The hoods table has polygons for 310 neighborhoods.</p>
-<p>Without an optimized spatial joins this query requires a nested loop join, executing that expensive <code>ST_Intersects()</code> operation 58m * 310 ~= 18 billion times. This took around 30 minutes on the 36GB MacBook M3 Pro used for the benchmark.</p>
-<p>The first optimization described - implemented from DuckDB 1.2.0 onwards - uses a "piecewise merge join". This takes advantage of the fact that a bounding box intersection is a whole lot faster to calculate, especially if you pre-cache the bounding box (aka the minimum bounding rectangle or MBR) in the stored binary <code>GEOMETRY</code> representation.</p>
-<p>Rewriting the query to use a fast bounding box intersection and then only running the more expensive <code>ST_Intersects()</code> filters on those matches drops the runtime from 1800 seconds to 107 seconds.</p>
-<p>The second optimization, added in <a href="https://duckdb.org/2025/05/21/announcing-duckdb-130.html">DuckDB 1.3.0</a> in May 2025 using the new SPATIAL_JOIN operator, is significantly more sophisticated.</p>
-<p>DuckDB can now identify when a spatial join is working against large volumes of data and automatically build an in-memory R-Tree of bounding boxes for the larger of the two tables being joined.</p>
-<p>This new R-Tree further accelerates the bounding box intersection part of the join, and drops the runtime down to just 30 seconds.
-
-    <p><small></small>Via <a href="https://bsky.app/profile/mackaszechno.bsky.social/post/3lx3lnagg7s2t">@mackaszechno.bsky.social</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/geospatial">geospatial</a>, <a href="https://simonwillison.net/tags/sql">sql</a>, <a href="https://simonwillison.net/tags/duckdb">duckdb</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

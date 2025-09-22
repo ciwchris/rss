@@ -25,9 +25,45 @@
 
   <ul>
     <li>
+      <time>2025-09-22</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              😺 Waymo just keeps on winning...
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://www.theneurondaily.com/p/waymo-just-keeps-on-winning>PLUS: GPT-5 tops charts, Waymo cuts injuries 85%, AI comedy fails</a>
+            </div>
+            <!-- <p class="post-source">The Neuron</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-09-21</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Locally AI
+              <span class="post-metadata">(1 min | 340 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/21/locally-ai/#atom-everything>Locally AI
+The app can also run a variety of other models using MLX, including members of the Gemma, Llama 3.2, and and Qwen families.
+
+
+    
+Tags: apple, ios, ai, generative-ai, local-llms, llms, mlx</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3893,46 +3929,6 @@ More importantly, the world needs more articles like this that break down config
     
 Via Hacker News
 Tags: python, docker, uv</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-08-23</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Spatial Joins in DuckDB
-              <span class="post-metadata">(2 min | 539 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/23/spatial-joins-in-duckdb/#atom-everything>Spatial Joins in DuckDB
-Consider the following query, which counts the number of NYC Citi Bike Trips for each of the neighborhoods defined by the NYC Neighborhood Tabulation Areas polygons and returns the top three:
-SELECT neighborhood,
-  count(*) AS num_rides
-FROM rides
-JOIN hoods ON ST_Intersects(
-  rides.start_geom, hoods.geom
-)
-GROUP BY neighborhood
-ORDER BY num_rides DESC
-LIMIT 3;
-The rides table contains 58,033,724 rows. The hoods table has polygons for 310 neighborhoods.
-Without an optimized spatial joins this query requires a nested loop join, executing that expensive ST_Intersects() operation 58m * 310 ~&#x3D; 18 billion times. This took around 30 minutes on the 36GB MacBook M3 Pro used for the benchmark.
-The first optimization described - implemented from DuckDB 1.2.0 onwards - uses a &quot;piecewise merge join&quot;. This takes advantage of the fact that a bounding box intersection is a whole lot faster to calculate, especially if you pre-cache the bounding box (aka the minimum bounding rectangle or MBR) in the stored binary GEOMETRY representation.
-Rewriting the query to use a fast bounding box intersection and then only running the more expensive ST_Intersects() filters on those matches drops the runtime from 1800 seconds to 107 seconds.
-The second optimization, added in DuckDB 1.3.0 in May 2025 using the new SPATIAL_JOIN operator, is significantly more sophisticated.
-DuckDB can now identify when a spatial join is working against large volumes of data and automatically build an in-memory R-Tree of bounding boxes for the larger of the two tables being joined.
-This new R-Tree further accelerates the bounding box intersection part of the join, and drops the runtime down to just 30 seconds.
-
-    
-Via @mackaszechno.bsky.social
-Tags: geospatial, sql, duckdb</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
