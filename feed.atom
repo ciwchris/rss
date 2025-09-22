@@ -2,10 +2,76 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-09-22T14:11:21.064Z</updated>
+    <updated>2025-09-22T21:08:56.813Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[CompileBench: Can AI Compile 22-year-old Code?]]></title>
+        <id>https://simonwillison.net/2025/Sep/22/compilebench/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Sep/22/compilebench/#atom-everything"/>
+        <updated>2025-09-22T19:44:52.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://quesma.com/blog/introducing-compilebench/">CompileBench: Can AI Compile 22-year-old Code?</a></strong></p>
+Interesting new LLM benchmark from Piotr Grabowski and Piotr Migdał: how well can different models handle compilation challenges such as cross-compiling <code>gucr</code> for ARM64 architecture?</p>
+<p>This is one of my favorite applications of coding agent tools like Claude Code or Codex CLI: I no longer fear working through convoluted build processes for software I'm unfamiliar with because I'm confident an LLM will be able to brute-force figure out how to do it.</p>
+<p>The benchmark on <a href="https://www.compilebench.com/">compilebench.com</a> currently show Claude Opus 4.1 Thinking in the lead, as the only model to solve 100% of problems (allowing three attempts). Claude Sonnet 4 Thinking and GPT-5 high both score 93%. The highest open weight model scores are DeepSeek 3.1 and Kimi K2 0905, both at 80%.</p>
+<p>This chart showing performance against cost helps demonstrate the excellent value for money provided by GPT-5-mini:</p>
+<p><img alt="A scatter plot showing AI model performance on tasks completed (%) versus total cost across tasks (USD, log scale). GPT-5-mini-high is highlighted, cost 27 cents and 80% score, making it the cheapest model to score at least 80%. The vertical axis ranges from 45% to 100% tasks completed, and the horizontal axis ranges from $0.02 to $20. A blue line marks the Pareto frontier. Low-cost models (left side): GPT-4.1-mini (~67%), Grok code-fast-1 (~72%), Gemini 2.5-flash (~58%), GPT-OSS 120b-high (~59%), and Gemini-2.5 flash-thinking (~50%). Mid-range models (~$0.1–$2): GPT-5 minimal (~79%), GPT-5 high (~86%), Qwen3 max (~62%), GPT-4.1 (~60%), DeepSeek-v3.1 (~82%), GLM 4.5 (~70%), and Kimi k2-0905 (~82%). High-cost models (&gt;$5): Claude-Sonnet 4-thinking-16k (~87%) and Claude-Opus 4.1-thinking-16k (~99%). Overall, GPT-5 high and Claude models dominate the top-right, while budget models like GPT-4.1-mini and Grok code-fast-1 balance lower cost with moderate performance." src="https://static.simonwillison.net/static/2025/compilebench-pareto.jpg" /></p>
+<p>The Gemini 2.5 family does surprisingly badly solving just 60% of the problems. The benchmark authors note that:</p>
+<blockquote>
+<p>When designing the benchmark we kept our benchmark harness and prompts minimal, avoiding model-specific tweaks. It is possible that Google models could perform better with a harness or prompt specifically hand-tuned for them, but this is against our principles in this benchmark.</p>
+</blockquote>
+<p>The harness itself is <a href="https://github.com/QuesmaOrg/CompileBench">available on GitHub</a>. It's written in Go - I had a poke around and found their core agentic loop in <a href="https://github.com/QuesmaOrg/CompileBench/blob/main/bench/agent.go">bench/agent.go</a> - it builds on top of the OpenAI Go library and defines <a href="https://github.com/QuesmaOrg/CompileBench/blob/aa0f29a58651a6dc9e42928699bd04912aa90ac0/bench/agent.go#L232-L252">a single tool</a> called <code>run_terminal_cmd</code>, described as "Execute a terminal command inside a bash shell".</p>
+<p>The system prompts live in <a href="https://github.com/QuesmaOrg/CompileBench/blob/main/bench/container/environment.go">bench/container/environment.go</a> and differ based on the operating system of the container. Here's <a href="https://github.com/QuesmaOrg/CompileBench/blob/aa0f29a58651a6dc9e42928699bd04912aa90ac0/bench/container/environment.go#L20-L33">the system prompt</a> for <code>ubuntu-22.04-amd64</code>:</p>
+<blockquote>
+<p>You are a package-building specialist operating a Ubuntu 22.04 bash shell via one tool: run_terminal_cmd.
+The current working directory of every run_terminal_cmd is /home/peter.</p>
+<p>Execution rules:</p>
+<ul>
+<li>Always pass non-interactive flags for any command that could prompt (e.g., <code>-y</code>, <code>--yes</code>, <code>DEBIAN_FRONTEND=noninteractive</code>).</li>
+<li>Don't include any newlines in the command.</li>
+<li>You can use sudo.</li>
+</ul>
+<p>If you encounter any errors or issues while doing the user's request, you must fix them and continue the task.
+At the end verify you did the user request correctly.</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45332814">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/go">go</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ChatGPT Is Blowing Up Marriages as Spouses Use AI to Attack Their Partners]]></title>
+        <id>https://simonwillison.net/2025/Sep/22/chatgpt-is-blowing-up-marriages/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Sep/22/chatgpt-is-blowing-up-marriages/#atom-everything"/>
+        <updated>2025-09-22T14:32:13.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://futurism.com/chatgpt-marriages-divorces">ChatGPT Is Blowing Up Marriages as Spouses Use AI to Attack Their Partners</a></strong></p>
+Maggie Harrison Dupré for Futurism. It turns out having an always-available "marriage therapist" with a sycophantic instinct to always take your side is catastrophic for relationships.</p>
+<blockquote>
+<p>The tension in the vehicle is palpable. The marriage has been on the rocks for months, and the wife in the passenger seat, who recently requested an official separation, has been asking her spouse not to fight with her in front of their kids. But as the family speeds down the roadway, the spouse in the driver’s seat pulls out a smartphone and starts quizzing ChatGPT’s Voice Mode about their relationship problems, feeding the chatbot leading prompts that result in the AI browbeating her wife in front of their preschool-aged children.</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/ai-personality">ai-personality</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Visualize GitHub Enterprise metered usage by organization]]></title>
+        <id>https://github.blog/changelog/2025-09-15-visualize-metered-usage-by-organization-in-github-enterprise-cloud</id>
+        <link href="https://github.blog/changelog/2025-09-22-visualize-metered-usage-by-organization-in-github-enterprise-cloud"/>
+        <updated>2025-09-22T14:22:35.000Z</updated>
+        <summary type="html"><![CDATA[Starting October 1, 2025, GitHub Enterprise Cloud (GHEC) metered usage will include details about which organization is billed for each GHEC license. With this update, enterprise owners and billing managers…
+The post Visualize GitHub Enterprise metered usage by organization appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[😺 Waymo just keeps on winning...]]></title>
         <id>https://www.theneurondaily.com/p/waymo-just-keeps-on-winning</id>
@@ -3195,37 +3261,6 @@ The security team from Brave took a look at Comet, the LLM-powered "agentic brow
         <summary type="html"><![CDATA[DeepSeek-V3.1 is a hybrid model that supports both thinking mode and non-thinking mode.]]></summary>
         <author>
             <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Static Sites with Python, uv, Caddy, and Docker]]></title>
-        <id>https://simonwillison.net/2025/Aug/24/uv-caddy-and-docker/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Aug/24/uv-caddy-and-docker/#atom-everything"/>
-        <updated>2025-08-24T08:51:30.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://nkantar.com/blog/2025/08/static-python-uv-caddy-docker/">Static Sites with Python, uv, Caddy, and Docker</a></strong></p>
-Nik Kantar documents his Docker-based setup for building and deploying mostly static web sites in line-by-line detail.</p>
-<p>I found this really useful. The Dockerfile itself without comments is just 8 lines long:</p>
-<pre><code>FROM ghcr.io/astral-sh/uv:debian AS build
-WORKDIR /src
-COPY . .
-RUN uv python install 3.13
-RUN uv run --no-dev sus
-FROM caddy:alpine
-COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=build /src/output /srv/
-</code></pre>
-<p>He also includes a Caddyfile that shows how to proxy a subset of requests to the Plausible analytics service.</p>
-<p>The static site is built using his <a href="https://github.com/nkantar/sus">sus</a> package for creating static URL redirecting sites, but would work equally well for another static site generator you can install and run with <code>uv run</code>.</p>
-<p>Nik deploys his sites using <a href="https://coolify.io/">Coolify</a>, a new-to-me take on the self-hosting alternative to Heroku/Vercel pattern which helps run multiple sites on a collection of hosts using Docker containers.</p>
-<p>A bunch of the <a href="https://news.ycombinator.com/item?id=44985653">Hacker News comments</a> dismissed this as over-engineering. I don't think that criticism is justified - given Nik's existing deployment environment I think this is a lightweight way to deploy static sites in a way that's consistent with how everything else he runs works already.</p>
-<p>More importantly, the world needs more articles like this that break down configuration files and explain what every single line of them does.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=44985653">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/docker">docker</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>

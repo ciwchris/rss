@@ -31,6 +31,64 @@
       <article>
           <details>
             <summary>
+              CompileBench: Can AI Compile 22-year-old Code?
+              <span class="post-metadata">(2 min | 638 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/22/compilebench/#atom-everything>CompileBench: Can AI Compile 22-year-old Code?
+gucr for ARM64 architecture?
+This is one of my favorite applications of coding agent tools like Claude Code or Codex CLI: I no longer fear working through convoluted build processes for software I&#x27;m unfamiliar with because I&#x27;m confident an LLM will be able to brute-force figure out how to do it.
+The benchmark on compilebench.com currently show Claude Opus 4.1 Thinking in the lead, as the only model to solve 100% of problems (allowing three attempts). Claude Sonnet 4 Thinking and GPT-5 high both score 93%. The highest open weight model scores are DeepSeek 3.1 and Kimi K2 0905, both at 80%.
+This chart showing performance against cost helps demonstrate the excellent value for money provided by GPT-5-mini:
+
+The Gemini 2.5 family does surprisingly badly solving just 60% of the problems. The benchmark authors note that:
+When designing the benchmark we kept our benchmark harness and prompts minimal, avoiding model-specific tweaks. It is possible that Google models could perform better with a harness or prompt specifically hand-tuned for them, but this is against our principles in this benchmark.
+The harness itself is available on GitHub. It&#x27;s written in Go - I had a poke around and found their core agentic loop in bench/agent.go - it builds on top of the OpenAI Go library and defines a single tool called run_terminal_cmd, described as &quot;Execute a terminal command inside a bash shell&quot;.
+The system prompts live in bench/container/environment.go and differ based on the operating system of the container. Here&#x27;s the system prompt for ubuntu-22.04-amd64:
+You are a package-building specialist operating a Ubuntu 22.04 bash shell via one tool: run_terminal_cmd.
+The current working directory of every run_terminal_cmd is /home/peter.
+Execution rules:
+Always pass non-interactive flags for any command that could prompt (e.g., -y, --yes, DEBIAN_FRONTEND&#x3D;noninteractive).
+Don&#x27;t include any newlines in the command.
+You can use sudo.
+If you encounter any errors or issues while doing the user&#x27;s request, you must fix them and continue the task.
+At the end verify you did the user request correctly.
+Via Hacker News
+Tags: go, ai, prompt-engineering, generative-ai, llms, ai-assisted-programming, evals, coding-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              ChatGPT Is Blowing Up Marriages as Spouses Use AI to Attack Their Partners
+              <span class="post-metadata">(1 min | 410 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/22/chatgpt-is-blowing-up-marriages/#atom-everything>ChatGPT Is Blowing Up Marriages as Spouses Use AI to Attack Their Partners
+The tension in the vehicle is palpable. The marriage has been on the rocks for months, and the wife in the passenger seat, who recently requested an official separation, has been asking her spouse not to fight with her in front of their kids. But as the family speeds down the roadway, the spouse in the driver’s seat pulls out a smartphone and starts quizzing ChatGPT’s Voice Mode about their relationship problems, feeding the chatbot leading prompts that result in the AI browbeating her wife in front of their preschool-aged children.
+Tags: ai, generative-ai, chatgpt, llms, ai-ethics, ai-personality</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Visualize GitHub Enterprise metered usage by organization
+              <span class="post-metadata">(5 min | 1473 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-09-22-visualize-metered-usage-by-organization-in-github-enterprise-cloud>Starting October 1, 2025, GitHub Enterprise Cloud (GHEC) metered usage will include details about which organization is billed for each GHEC license. With this update, enterprise owners and billing managers…
+The post Visualize GitHub Enterprise metered usage by organization appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               😺 Waymo just keeps on winning...
               <span class="post-metadata">(0 min |  words)</span> 
             </summary>
@@ -3893,44 +3951,6 @@ Tags: browsers, security, ai, prompt-injection, generative-ai, llms, perplexity,
               <a target="_blank" href=https://ollama.com/library/deepseek-v3.1>DeepSeek-V3.1 is a hybrid model that supports both thinking mode and non-thinking mode.</a>
             </div>
             <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-08-24</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Static Sites with Python, uv, Caddy, and Docker
-              <span class="post-metadata">(2 min | 481 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Aug/24/uv-caddy-and-docker/#atom-everything>Static Sites with Python, uv, Caddy, and Docker
-I found this really useful. The Dockerfile itself without comments is just 8 lines long:
-FROM ghcr.io/astral-sh/uv:debian AS build
-WORKDIR /src
-COPY . .
-RUN uv python install 3.13
-RUN uv run --no-dev sus
-FROM caddy:alpine
-COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from&#x3D;build /src/output /srv/
-
-He also includes a Caddyfile that shows how to proxy a subset of requests to the Plausible analytics service.
-The static site is built using his sus package for creating static URL redirecting sites, but would work equally well for another static site generator you can install and run with uv run.
-Nik deploys his sites using Coolify, a new-to-me take on the self-hosting alternative to Heroku/Vercel pattern which helps run multiple sites on a collection of hosts using Docker containers.
-A bunch of the Hacker News comments dismissed this as over-engineering. I don&#x27;t think that criticism is justified - given Nik&#x27;s existing deployment environment I think this is a lightweight way to deploy static sites in a way that&#x27;s consistent with how everything else he runs works already.
-More importantly, the world needs more articles like this that break down configuration files and explain what every single line of them does.
-
-    
-Via Hacker News
-Tags: python, docker, uv</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
