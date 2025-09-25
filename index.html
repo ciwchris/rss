@@ -31,6 +31,79 @@
       <article>
           <details>
             <summary>
+              Improved Gemini 2.5 Flash and Flash-Lite
+              <span class="post-metadata">(2 min | 711 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Sep/25/improved-gemini-25-flash-and-flash-lite/#atom-everything>Improved Gemini 2.5 Flash and Flash-Lite
+The latest version of Gemini 2.5 Flash-Lite was trained and built based on three key themes:
+Better instruction following: The model is significantly better at following complex instructions and system prompts.
+Reduced verbosity: It now produces more concise answers, a key factor in reducing token costs and latency for high-throughput applications (see charts above).
+Stronger multimodal &amp; translation capabilities: This update features more accurate audio transcription, better image understanding, and improved translation quality.
+[...]
+This latest 2.5 Flash model comes with improvements in two key areas we heard consistent feedback on:
+Better agentic tool use: We&#x27;ve improved how the model uses tools, leading to better performance in more complex, agentic and multi-step applications. This model shows noticeable improvements on key agentic benchmarks, including a 5% gain on SWE-Bench Verified, compared to our last release (48.9% → 54%).
+More efficient: With thinking on, the model is now significantly more cost-efficient—achieving higher quality outputs while using fewer tokens, reducing latency and cost (see charts above).
+They also added two new convenience model IDs: gemini-flash-latest and gemini-flash-lite-latest, which will always resolve to the most recent model in that family.
+I released llm-gemini 0.26 adding support for the new models and new aliases. I also used the response.set_resolved_model() method added in LLM 0.27 to ensure that the correct model ID would be recorded for those -latest uses.
+llm install -U llm-gemini
+
+Both of these models support optional reasoning tokens. I had them draw me pelicans riding bicycles in both thinking and non-thinking mode, using commands that looked like this:
+llm -m gemini-2.5-flash-preview-09-2025 -o thinking_budget 4000 &quot;Generate an SVG of a pelican riding a bicycle&quot;
+
+I then got each model to describe the image it had drawn using commands like this:
+llm -a https://static.simonwillison.net/static/2025/gemini-2.5-flash-preview-09-2025-thinking.png -m gemini-2.5-flash-preview-09-2025 -o thinking_budget 2000 &#x27;Detailed single line alt text for this image&#x27;
+
+gemini-2.5-flash-preview-09-2025-thinking
+
+A minimalist stick figure graphic depicts a person with a white oval body and a dot head cycling a gray bicycle, carrying a large, bright yellow rectangular box resting high on their back.
+gemini-2.5-flash-preview-09-2025
+
+A simple cartoon drawing of a pelican riding a bicycle, with the text &quot;A Pelican Riding a Bicycle&quot; above it.
+gemini-2.5-flash-lite-preview-09-2025-thinking
+
+A quirky, simplified cartoon illustration of a white bird with a round body, black eye, and bright yellow beak, sitting astride a dark gray, two-wheeled vehicle with its peach-colored feet dangling below.
+gemini-2.5-flash-lite-preview-09-2025
+
+A minimalist, side-profile illustration of a stylized yellow chick or bird character riding a dark-wheeled vehicle on a green strip against a white background.
+Artificial Analysis posted a detailed review, including these interesting notes about reasoning efficiency and speed:
+In reasoning mode, Gemini 2.5 Flash and Flash-Lite Preview 09-2025 are more token-efficient, using fewer output tokens than their predecessors to run the Artificial Analysis Intelligence Index. Gemini 2.5 Flash-Lite Preview 09-2025 uses 50% fewer output tokens than its predecessor, while Gemini 2.5 Flash Preview 09-2025 uses 24% fewer output tokens.
+Google Gemini 2.5 Flash-Lite Preview 09-2025 (Reasoning) is ~40% faster than the prior July release, delivering ~887 output tokens/s on Google AI Studio in our API endpoint performance benchmarking. This makes the new Gemini 2.5 Flash-Lite the fastest proprietary model we have benchmarked on the Artificial Analysis website
+Via Hacker News
+Tags: google, llms, llm, gemini, pelican-riding-a-bicycle, llm-reasoning, llm-release, artificial-analysis</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot CLI is now in public preview
+              <span class="post-metadata">(5 min | 1515 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-09-25-github-copilot-cli-is-now-in-public-preview>GitHub Copilot CLI is now in public preview We’re bringing the power of GitHub Copilot coding agent directly to your terminal. With GitHub Copilot CLI, you can work locally and…
+The post GitHub Copilot CLI is now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot coding agent is now generally available
+              <span class="post-metadata">(5 min | 1390 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-09-25-copilot-coding-agent-is-now-generally-available>Copilot coding agent, our asynchronous, autonomous developer agent, is now generally available for all paid Copilot subscribers. Delegate a task to Copilot, and Copilot will open a draft pull request…
+The post Copilot coding agent is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               😺 Microsoft + Claude &#x3D; Office-
               <span class="post-metadata">(0 min |  words)</span> 
             </summary>
@@ -4131,32 +4204,6 @@ The post Copilot coding agent is now available in GitHub Enterprise Cloud with d
               <a target="_blank" href=https://www.theneurondaily.com/p/google-s-new-image-model-is-bananas>PLUS: Young workers lose 13% of jobs to AI + Smith controversy</a>
             </div>
             <!-- <p class="post-source">The Neuron</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Encoding Changes for Template Arguments in Semantic Kernel
-              <span class="post-metadata">(24 min | 7294 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/encoding-changes-for-template-arguments-in-semantic-kernel/>In previous versions of the Semantic Kernel, the encoding of template arguments was performed automatically if the argument type was a string. The encoding was not applied for custom types, anonymous types, or collections. With the latest changes, we’ve introduced stricter rules: if automatic encoding is enabled (the default behavior), an exception will now be […]
-The post Encoding Changes for Template Arguments in Semantic Kernel appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Semantic Kernel - Category | Semantic Kernel</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Azure Authentication Changes in Semantic Kernel Python
-              <span class="post-metadata">(24 min | 7134 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/semantic-kernel/azure-authentication-changes-in-semantic-kernel-python/>In previous versions of the Semantic Kernel Python, the default fallback authentication mechanism for Azure services like AzureChatCompletion was DefaultAzureCredential from the Azure Identity library. This provided a convenient way to authenticate without explicitly passing credentials, especially during development. However, with the latest package version 1.36.0, this fallback is being removed to encourage more secure […]
-The post Azure Authentication Changes in Semantic Kernel Python appeared first on Semantic Kernel.</a>
-            </div>
-            <!-- <p class="post-source">Semantic Kernel - Category | Semantic Kernel</p> -->
           </details>
       </article>
 
