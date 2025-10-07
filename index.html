@@ -25,9 +25,135 @@
 
   <ul>
     <li>
+      <time>2025-10-07</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Upcoming changes to GitHub Dependabot pull request comment commands
+              <span class="post-metadata">(5 min | 1402 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-10-06-upcoming-changes-to-github-dependabot-pull-request-comment-commands>On November 11, 2025, several Dependabot-specific pull request comment commands will be deprecated in favor of GitHub’s native pull request features and functionality. This change is intended to reduce confusion,…
+The post Upcoming changes to GitHub Dependabot pull request comment commands appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-10-06</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Enterprise access restrictions now supports multiple enterprises
+              <span class="post-metadata">(5 min | 1594 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-10-06-enterprise-access-restrictions-now-supports-multiple-enterprises>GitHub Enterprise Cloud customers with multiple Enterprise Managed Users (EMU) accounts can now configure a single proxy header to restrict traffic to github.com outside any of these enterprises. Previously, enterprise…
+The post Enterprise access restrictions now supports multiple enterprises appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Deloitte to pay money back to Albanese government after using AI in $440,000 report
+              <span class="post-metadata">(1 min | 414 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/deloitte-to-pay-money-back/#atom-everything>Deloitte to pay money back to Albanese government after using AI in $440,000 report
+Deloitte will provide a partial refund to the federal government over a $440,000 report that contained several errors, after admitting it used generative artificial intelligence to help produce it.
+(I was initially confused by the &quot;Albanese government&quot; reference in the headline since this is a story about the Australian federal government. That&#x27;s because the current Australia Prime Minister is Anthony Albanese.)
+Here&#x27;s the page for the report. The PDF now includes this note:
+This Report was updated on 26 September 2025 and replaces the Report dated 4 July 2025. The Report has been updated to correct those citations and reference list entries which contained errors in the previously issued version, to amend the summary of the Amato proceeding which contained errors, and to make revisions to improve clarity and readability. The updates made in no way impact or affect the substantive content, findings and recommendations in the Report.
+Tags: ai, generative-ai, llms, ai-ethics, hallucinations</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              a system that can do work independently on behalf of the user
+              <span class="post-metadata">(1 min | 319 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/work-independently/#atom-everything>I&#x27;ve settled on agents as meaning &quot;LLMs calling tools in a loop to achieve a goal&quot; but OpenAI continue to muddy the waters with much more vague definitions. Swyx spotted this one in the press pack OpenAI sent out for their DevDay announcements today:
+How does OpenAl define an &quot;agent&quot;? An Al agent is a system that can do work independently on behalf of the user.
+Adding this one to my collection.
+Tags: ai-agents, openai, agent-definitions, swyx</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              gpt-image-1-mini
+              <span class="post-metadata">(2 min | 678 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/gpt-image-1-mini/#atom-everything>gpt-image-1-mini
+gpt-image-1-mini, which they describe as &quot;A smaller image generation model that’s 80% less expensive than the large model.&quot;
+They released it very quietly - I didn&#x27;t hear about this in the DevDay keynote but I later spotted it on the DevDay 2025 announcements page.
+It wasn&#x27;t instantly obvious to me how to use this via their API. I ended up vibe coding a Python CLI tool for it so I could try it out.
+I dumped the plain text diff version of the commit to the OpenAI Python library titled feat(api): dev day 2025 launches into ChatGPT GPT-5 Thinking and worked with it to figure out how to use the new image model and build a script for it. Here&#x27;s the transcript and the the openai_image.py script it wrote.
+I had it add inline script dependencies, so you can run it with uv like this:
+export OPENAI_API_KEY&#x3D;&quot;$(llm keys get openai)&quot;
+uv run https://tools.simonwillison.net/python/openai_image.py &quot;A pelican riding a bicycle&quot;
+
+It picked this illustration style without me specifying it:
+
+(This is a very different test from my normal &quot;Generate an SVG of a pelican riding a bicycle&quot; since it&#x27;s using a dedicated image generator, not having a text-based model try to generate SVG code.)
+My tool accepts a prompt, and optionally a filename (if you don&#x27;t provide one it saves to a filename like /tmp/image-621b29.png).
+It also accepts options for model and dimensions and output quality - the --help output lists those, you can see that here.
+OpenAI&#x27;s pricing is a little confusing. The model page claims low quality images should cost around half a cent and medium quality around a cent and a half. It also lists an image token price of $8/million tokens. It turns out there&#x27;s a default &quot;high&quot; quality setting - most of the images I&#x27;ve generated have reported between 4,000 and 6,000 output tokens, which costs between 3.2 and 4.8 cents.
+One last demo, this time using --quality low:
+ uv run https://tools.simonwillison.net/python/openai_image.py \
+  &#x27;racoon eating cheese wearing a top hat, realistic photo&#x27; \
+  /tmp/racoon-hat-photo.jpg \
+  --size 1024x1024 \
+  --output-format jpeg \
+  --quality low
+
+This saved the following:
+
+And reported this to standard error:
+{
+  &quot;background&quot;: &quot;opaque&quot;,
+  &quot;created&quot;: 1759790912,
+  &quot;generation_time_in_s&quot;: 20.87331541599997,
+  &quot;output_format&quot;: &quot;jpeg&quot;,
+  &quot;quality&quot;: &quot;low&quot;,
+  &quot;size&quot;: &quot;1024x1024&quot;,
+  &quot;usage&quot;: {
+    &quot;input_tokens&quot;: 17,
+    &quot;input_tokens_details&quot;: {
+      &quot;image_tokens&quot;: 0,
+      &quot;text_tokens&quot;: 17
+    },
+    &quot;output_tokens&quot;: 272,
+    &quot;total_tokens&quot;: 289
+  }
+}
+
+This took 21s, but I&#x27;m on an unreliable conference WiFi connection so I don&#x27;t trust that measurement very much.
+272 output tokens &#x3D; 0.2 cents so this is much closer to the expected pricing from the model page.
+
+
+    
+Tags: python, tools, ai, openai, generative-ai, uv, text-to-image, pelican-riding-a-bicycle, vibe-coding</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3998,99 +4124,6 @@ Tags: vector-search, embeddings</a>
 The post How to Correctly Build AI Features in .NET  first appeared on Roxeem.</a>
             </div>
             <!-- <p class="post-source">Roxeem</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-09-07</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Is the LLM response wrong, or have you just failed to iterate it?
-              <span class="post-metadata">(2 min | 617 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/7/is-the-llm-response-wrong-or-have-you-just-failed-to-iterate-it/#atom-everything>Is the LLM response wrong, or have you just failed to iterate it?
-the SIFT method). He starts with a fantastic example of Google&#x27;s AI mode usually correctly handling a common piece of misinformation but occasionally falling for it (the curse of non-deterministic systems), then shows an example if what he calls a &quot;sorting prompt&quot; as a follow-up:
-What is the evidence for and against this being a real photo of Shirley Slade?
-The response starts with a non-committal &quot;there is compelling evidence for and against...&quot;, then by the end has firmly convinced itself that the photo is indeed a fake. It reads like a fact-checking variant of &quot;think step by step&quot;.
-Mike neatly describes a problem I&#x27;ve also observed recently where &quot;hallucination&quot; is frequently mis-applied as meaning any time a model makes a mistake:
-The term hallucination has become nearly worthless in the LLM discourse. It initially described a very weird, mostly non-humanlike behavior where LLMs would make up things out of whole cloth that did not seem to exist as claims referenced any known source material or claims inferable from any known source material. Hallucinations as stuff made up out of nothing. Subsequently people began calling any error or imperfect summary a hallucination, rendering the term worthless.
-In this example is the initial incorrect answers were not hallucinations: they correctly summarized online content that contained misinformation. The trick then is to encourage the model to look further, using &quot;sorting prompts&quot; like these:
-Facts and misconceptions and hype about what I posted
-What is the evidence for and against the claim I posted
-Look at the most recent information on this issue, summarize how it shifts the analysis (if at all), and provide link to the latest info
-I appreciated this closing footnote:
-Should platforms have more features to nudge users to this sort of iteration? Yes. They should. Getting people to iterate investigation rather than argue with LLMs would be a good first step out of this mess that the chatbot model has created.
-Via @mikecaulfield.bsky.social
-Tags: ai, generative-ai, llms, ai-ethics, ai-assisted-search, hallucinations, digital-literacy</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Anil Dash
-              <span class="post-metadata">(1 min | 339 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/7/anil-dash/#atom-everything>I agree with the intellectual substance of virtually every common critique of AI. And it&#x27;s very clear that turning those critiques into a competition about who can frame them in the most scathing way online has done zero to slow down adoption, even if much of that is due to default bundling.
-At what point are folks going to try literally any other tactic than condescending rants? Does it matter that LLM apps are at the top of virtually every app store nearly every day because individual people are choosing to download them, and the criticism hasn&#x27;t been effective in slowing that?
-
-— Anil Dash
-Tags: ai-ethics, anil-dash, ai, generative-ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The SIFT method
-              <span class="post-metadata">(1 min | 444 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/7/the-sift-method/#atom-everything>The SIFT method
-This looks extremely useful as a framework for helping people more effectively consume information online (increasingly gathered with the help of LLMs).
-Stop. &quot;Be aware of your emotional response to the headline or information in the article&quot; to protect against clickbait, and don&#x27;t read further or share until you&#x27;ve applied the other three steps.
-Investigate the Source. Apply lateral reading, checking what others say about the source rather than just trusting their &quot;about&quot; page.
-Find Better Coverage. &quot;Use lateral reading to see if you can find other sources corroborating the same information or disputing it&quot; and consult trusted fact checkers if necessary.
-Trace Claims, Quotes, and Media to their Original Context. Try to find the original report or referenced material to learn more and check it isn&#x27;t being represented out of context.
-This framework really resonates with me: it formally captures a bunch of informal procedures I&#x27;ve tried to apply in my own work.
-
-    
-Via @anildash.com
-Tags: blogging, research, ai-assisted-search</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              AI mode is good, actually
-              <span class="post-metadata">(2 min | 513 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/7/ai-mode/#atom-everything>When I wrote about how good ChatGPT with GPT-5 is at search yesterday I nearly added a note about how comparatively disappointing Google&#x27;s efforts around this are.
-I&#x27;m glad I left that out, because it turns out Google&#x27;s new &quot;AI mode&quot; is genuinely really good! It feels  very similar to GPT-5 search but returns results much faster.
-www.google.com/ai (not available in the EU, as I found out this morning since I&#x27;m staying in France for a few days.)
-Here&#x27;s what I got for the following question:
-Anthropic but lots of physical books and cut them up and scan them for training data. Do any other AI labs do the same thing?
-
-I&#x27;ll be honest: I hadn&#x27;t spent much time with AI mode for a couple of reasons:
-My expectations of &quot;AI mode&quot; were extremely low based on my terrible experience of &quot;AI overviews&quot;
-The name &quot;AI mode&quot; is so generic!
-Based on some initial experiments I&#x27;m impressed - Google finally seem to be taking full advantage of their search infrastructure for building out truly great AI-assisted search.
-I do have one disappointment: AI mode will tell you that it&#x27;s &quot;running 5 searches&quot; but it won&#x27;t tell you what those searches are! Seeing the searches that were run is really important for me in evaluating the likely quality of the end results. I&#x27;ve had the same problem with Google&#x27;s Gemini app in the past - the lack of transparency as to what it&#x27;s doing really damages my trust.
-Tags: gemini, google, generative-ai, search, ai, llms, ai-assisted-search</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
