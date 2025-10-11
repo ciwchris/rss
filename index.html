@@ -31,6 +31,37 @@
       <article>
           <details>
             <summary>
+              Vibing a Non-Trivial Ghostty Feature
+              <span class="post-metadata">(2 min | 721 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/11/vibing-a-non-trivial-ghostty-feature/#atom-everything>Vibing a Non-Trivial Ghostty Feature
+frequent demand for a detailed description of shipping a non-trivial production feature to an existing project using AI-assistance. In this case it&#x27;s a slick unobtrusive auto-update UI for his Ghostty terminal emulator, written in Swift.
+Mitchell shares full transcripts of the 16 coding sessions he carried out using Amp Code across 2 days and around 8 hours of computer time, at a token cost of $15.98.
+Amp has the nicest shared transcript feature of any of the coding agent tools, as seen in this example. I&#x27;d love to see Claude Code and Codex CLI and Gemini CLI and friends imitate this.
+There are plenty of useful tips in here. I like this note about the importance of a cleanup step:
+The cleanup step is really important. To cleanup effectively you have to have a pretty good understanding of the code, so this forces me to not blindly accept AI-written code. Subsequently, better organized and documented code helps future agentic sessions perform better.
+I sometimes tongue-in-cheek refer to this as the &quot;anti-slop session&quot;.
+And this on how sometimes you can write manual code in a way that puts the agent the right track:
+I spent some time manually restructured the view model. This involved switching to a tagged union rather than the struct with a bunch of optionals. I renamed some types, moved stuff around.
+I knew from experience that this small bit of manual work in the middle would set the agents up for success in future sessions for both the frontend and backend. After completing it, I continued with a marathon set of cleanup sessions.
+Here&#x27;s one of those refactoring prompts:
+Turn each @macos/Sources/Features/Update/UpdatePopoverView.swift case into a dedicated fileprivate Swift view that takes the typed value as its parameter so that we can remove the guards.
+Mitchell advises ending every session with a prompt like this one, asking the agent about any obvious omissions:
+Are there any other improvements you can see to be made with the @macos/Sources/Features/Update feature? Don&#x27;t write any code. Consult the oracle. Consider parts of the code that can also get more unit tests added.
+(&quot;Consult the oracle&quot; is an Amp-specific pattern for running a task through a more expensive, more capable model.)
+Is this all worthwhile? Mitchell thinks so:
+Many people on the internet argue whether AI enables you to work faster or not. In this case, I think I shipped this faster than I would have if I had done it all myself, in particular because iterating on minor SwiftUI styling is so tedious and time consuming for me personally and AI does it so well.
+I think the faster/slower argument for me personally is missing the thing I like the most: the AI can work for me while I step away to do other things.
+Via @mitchellh
+Tags: ai, generative-ai, llms, ai-assisted-programming, mitchell-hashimoto, coding-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Strategic Pagination Patterns for .NET APIs
               <span class="post-metadata">(18 min | 5490 words)</span> 
             </summary>
@@ -3672,130 +3703,6 @@ The post GitHub Copilot in VS Code August release (v1.104) appeared first on The
 The post Internal MCP registry and allowlist controls for VS Code Insiders appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              London Transport Museum Depot Open Days
-              <span class="post-metadata">(1 min | 443 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/12/transport-museum-depot/#atom-everything>London Transport Museum Depot Open Days
-thanks, ChatGPT) and I&#x27;m heart-broken to learn that I&#x27;m in London a week too early! If you are in London next week (Thursday 18th through Sunday 21st 2025) you should definitely know about it:
-The Museum Depot in Acton is our working museum store, and a treasure trove of over 320,000 objects.
-Three times a year, we throw open the doors and welcome thousands of visitors to explore. Discover rare road and rail vehicles spanning over 100 years, signs, ceramic tiles, original posters, ephemera, ticket machines, and more.
-And if you can go on Saturday 20th or Sunday 21st you can ride the small-scale railway there!
-The Depot is also home to the London Transport Miniature Railway, a working miniature railway based on real London Underground locomotives, carriages, signals and signs run by our volunteers.
-Note that this &quot;miniature railway&quot; is not the same thing as a model railway - it uses a 7¼ in gauge railway and you can sit on top of and ride the carriages.
-
-
-    
-Tags: london, museums, ai-assisted-search</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How to orchestrate multi-tool AI workflows in .NET
-              <span class="post-metadata">(16 min | 4720 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://roxeem.com/2025/09/12/how-to-orchestrate-multi-tool-ai-workflows-in-net/>Build robust AI multi-tool workflows in .NET. Chain tools, add telemetry, cache results, and orchestrate multi‑step tasks with DI.
-The post How to orchestrate multi-tool AI workflows in .NET first appeared on Roxeem.</a>
-            </div>
-            <!-- <p class="post-source">Roxeem</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Comparing the memory implementations of Claude and ChatGPT
-              <span class="post-metadata">(3 min | 901 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/12/claude-memory/#atom-everything>Claude Memory: A Different Philosophy
-Last week he wrote about ChatGPT memory. This week it&#x27;s Claude.
-Claude&#x27;s memory system has two fundamental characteristics. First, it starts every conversation with a blank slate, without any preloaded user profiles or conversation history. Memory only activates when you explicitly invoke it. Second, Claude recalls by only referring to your raw conversation history. There are no AI-generated summaries or compressed profiles—just real-time searches through your actual past chats.
-Claude&#x27;s memory is implemented as two new function tools that are made available for a Claude to call. I confirmed this myself with the prompt &quot;Show me a list of tools that you have available to you, duplicating their original names and descriptions&quot; which gave me back these:
-conversation_search: Search through past user conversations to find relevant context and information
-recent_chats:  Retrieve recent chat conversations with customizable sort order (chronological or reverse chronological), optional pagination using &#x27;before&#x27; and &#x27;after&#x27; datetime filters, and project filtering
-The good news here is transparency - Claude&#x27;s memory feature is implemented as visible tool calls, which means you can see exactly when and how it is accessing previous context.
-This helps address my big complaint about ChatGPT memory (see I really don’t like ChatGPT’s new memory dossier back in May) - I like to understand as much as possible about what&#x27;s going into my context so I can better anticipate how it is likely to affect the model.
-The OpenAI system is very different: rather than letting the model decide when to access memory via tools, OpenAI instead automatically include details of previous conversations at the start of every conversation.
-Shlok&#x27;s notes on ChatGPT&#x27;s memory did include one detail that I had previously missed that I find reassuring:
-Recent Conversation Content is a history of your latest conversations with ChatGPT, each timestamped with topic and selected messages. [...] Interestingly, only the user&#x27;s messages are surfaced, not the assistant&#x27;s responses.
-One of my big worries about memory was that it could harm my &quot;clean slate&quot; approach to chats: if I&#x27;m working on code and the model starts going down the wrong path (getting stuck in a bug loop for example) I&#x27;ll start a fresh chat to wipe that rotten context away. I had worried that ChatGPT memory would bring that bad context along to the next chat, but omitting the LLM responses makes that much less of a risk than I had anticipated.
-Update: Here&#x27;s a slightly confusing twist: yesterday in Bringing memory to teams at work Anthropic revealed an additional memory feature, currently only available to Team and Enterprise accounts, with a feature checkbox labeled &quot;Generate memory of chat history&quot; that looks much more similar to the OpenAI implementation:
-With memory, Claude focuses on learning your professional context and work patterns to maximize productivity. It remembers your team’s processes, client needs, project details, and priorities. [...]
-Claude uses a memory summary to capture all its memories in one place for you to view and edit. In your settings, you can see exactly what Claude remembers from your conversations, and update the summary at any time by chatting with Claude.
-I haven&#x27;t experienced this feature myself yet as it isn&#x27;t part of my Claude subscription. I&#x27;m glad to hear it&#x27;s fully transparent and can be edited by the user, resolving another of my complaints about the ChatGPT implementation.
-This version of Claude memory also takes Claude Projects into account:
-If you use projects, Claude creates a separate memory for each project. This ensures that your product launch planning stays separate from client work, and confidential discussions remain separate from general operations.
-I praised OpenAI for adding this a few weeks ago.
-
-    
-Via Hacker News
-Tags: ai, openai, generative-ai, chatgpt, llms, anthropic, claude, llm-tool-use, llm-memory</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Qwen3-Next-80B-A3B: 🐧🦩 Who needs legs?!
-              <span class="post-metadata">(2 min | 602 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/12/qwen3-next/#atom-everything>Qwen3-Next-80B-A3B
-their blog): Qwen3-Next-80B-A3B-Instruct and Qwen3-Next-80B-A3B-Thinking.
-They make some big claims on performance:
-Qwen3-Next-80B-A3B-Instruct approaches our 235B flagship.
-Qwen3-Next-80B-A3B-Thinking outperforms Gemini-2.5-Flash-Thinking.
-The name &quot;80B-A3B&quot; indicates 80 billion parameters of which only 3 billion are active at a time. You still need to have enough GPU-accessible RAM to hold all 80 billion in memory at once but only 3 billion will be used for each round of inference, which provides a significant speedup in responding to prompts.
-More details from their tweet:
-80B params, but only 3B activated per token → 10x cheaper training, 10x faster inference than Qwen3-32B.(esp. @ 32K+ context!)
-Hybrid Architecture: Gated DeltaNet + Gated Attention → best of speed &amp; recall
-Ultra-sparse MoE: 512 experts, 10 routed + 1 shared
-Multi-Token Prediction → turbo-charged speculative decoding
-Beats Qwen3-32B in perf, rivals Qwen3-235B in reasoning &amp; long-context
-The models on Hugging Face are around 150GB each so I decided to try them out via OpenRouter rather than on my own laptop (Thinking, Instruct).
-I&#x27;m used my llm-openrouter plugin. I installed it like this:
-llm install llm-openrouter
-llm keys set openrouter
-# paste key here
-
-Then found the model IDs with this command:
-llm models -q next
-
-Which output:
-OpenRouter: openrouter/qwen/qwen3-next-80b-a3b-thinking
-OpenRouter: openrouter/qwen/qwen3-next-80b-a3b-instruct
-
-I have an LLM prompt template saved called pelican-svg which I created like this:
-llm &quot;Generate an SVG of a pelican riding a bicycle&quot; --save pelican-svg
-
-This means I can run my pelican benchmark like this:
-llm -t pelican-svg -m openrouter/qwen/qwen3-next-80b-a3b-thinking
-
-Or like this:
-llm -t pelican-svg -m openrouter/qwen/qwen3-next-80b-a3b-instruct
-
-Here&#x27;s the thinking model output (exported with llm logs -c | pbcopy after I ran the prompt):
-
-I enjoyed the &quot;Whimsical style with smooth curves and friendly proportions (no anatomical accuracy needed for bicycle riding!)&quot; note in the transcript.
-The instruct (non-reasoning) model gave me this:
-
-&quot;🐧🦩 Who needs legs!?&quot; indeed! I like that penguin-flamingo emoji sequence it&#x27;s decided on for pelicans.
-
-
-    
-Tags: ai, generative-ai, llms, llm, qwen, pelican-riding-a-bicycle, llm-reasoning, llm-release, openrouter, ai-in-china</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
