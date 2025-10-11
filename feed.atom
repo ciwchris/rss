@@ -2,10 +2,213 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-10-10T21:08:26.181Z</updated>
+    <updated>2025-10-11T14:07:44.294Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Strategic Pagination Patterns for .NET APIs]]></title>
+        <id>https://roxeem.com/?p=405</id>
+        <link href="https://roxeem.com/2025/10/11/strategic-pagination-patterns-for-net-apis/"/>
+        <updated>2025-10-11T13:31:31.000Z</updated>
+        <summary type="html"><![CDATA[Master offset, cursor, keyset, paged, time-based, and hybrid pagination patterns in .NET APIs to balance performance, consistency, and client experience.
+The post Strategic Pagination Patterns for .NET APIs first appeared on Roxeem.]]></summary>
+        <author>
+            <name>Roxeem</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Note on 11th October 2025]]></title>
+        <id>https://simonwillison.net/2025/Oct/11/uncomfortable/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/11/uncomfortable/#atom-everything"/>
+        <updated>2025-10-11T12:31:09.000Z</updated>
+        <summary type="html"><![CDATA[<p>I'm beginning to suspect that a key skill in working effectively with coding agents is developing an intuition for when you <em>don't</em> need to closely review every line of code they produce. This feels deeply uncomfortable!</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[An MVCC-like columnar table on S3 with constant-time deletes]]></title>
+        <id>https://simonwillison.net/2025/Oct/11/mvcc-s3/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/11/mvcc-s3/#atom-everything"/>
+        <updated>2025-10-11T03:47:16.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.shayon.dev/post/2025/277/an-mvcc-like-columnar-table-on-s3-with-constant-time-deletes/">An MVCC-like columnar table on S3 with constant-time deletes</a></strong></p>
+s3's support for conditional writes (<a href="https://simonwillison.net/2024/Nov/26/s3-conditional-writes/">previously</a>) makes it an interesting, scalable and often inexpensive platform for all kinds of database patterns.</p>
+<p>Shayon Mukherjee presents an ingenious design for a Parquet-backed database in S3 which accepts concurrent writes, presents a single atomic view for readers and even supports reliable row deletion despite Parquet requiring a complete file rewrite in order to remove data.</p>
+<p>The key to the design is a <code>_latest_manifest</code> JSON file at the top of the bucket, containing an integer version number. Clients use compare-and-swap to increment that version - only one client can succeed at this, so the incremented version they get back is guaranteed unique to them.</p>
+<p>Having reserved a version number the client can write a unique manifest file for that version - <code>manifest/v00000123.json</code> - with a more complex data structure referencing the current versions of every persisted file, including the one they just uploaded.</p>
+<p>Deleted rows are written to tombstone files as either a list of primary keys or a list of of ranges. Clients consult these when executing reads, filtering out deleted rows as part of resolving a query.</p>
+<p>The pricing estimates are especially noteworthy:</p>
+<blockquote>
+<p>For a workload ingesting 6 TB/day with 2 TB of deletes and 50K queries/day:</p>
+<ul>
+<li>PUT requests: ~380K/day (≈4 req/s) = $1.88/day</li>
+<li>GET requests: highly variable, depends on partitioning effectiveness<ul>
+<li>Best case (good time-based partitioning): ~100K-200K/day = $0.04-$0.08/day</li>
+<li>Worst case (poor partitioning, scanning many files): ~2M/day = $0.80/day</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>~$3/day for ingesting 6TB of data is pretty fantastic!</p>
+<p>Watch out for storage costs though - each new TB of data at $0.023/GB/month adds $23.55 to the ongoing monthly bill.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45493158">Hacked News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/aws">aws</a>, <a href="https://simonwillison.net/tags/databases">databases</a>, <a href="https://simonwillison.net/tags/s3">s3</a>, <a href="https://simonwillison.net/tags/parquet">parquet</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[simonw/claude-skills]]></title>
+        <id>https://simonwillison.net/2025/Oct/10/claude-skills/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/10/claude-skills/#atom-everything"/>
+        <updated>2025-10-10T23:57:19.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/claude-skills">simonw/claude-skills</a></strong></p>
+One of the tips I picked up from <a href="">Jesse Vincent's Claude Code Superpowers post</a> (<a href="https://simonwillison.net/2025/Oct/10/superpowers/">previously</a>) was this:</p>
+<blockquote>
+<p>Skills are what give your agents Superpowers.</p>
+<p>The first time they really popped up on my radar was a few weeks ago when Anthropic rolled out improved Office document creation. When the feature rolled out, I went poking around a bit -- I asked Claude to tell me all about its new skills. And it was <a href="https://claude.ai/share/0fe5a9c0-4e5a-42a1-9df7-c5b7636dad92">only too happy to dish</a>.</p>
+</blockquote>
+<p>In that transcript Jesse asks how the skill system works and Claude replies:</p>
+<blockquote>
+<p>Looking at the skills system, here's how it works:</p>
+<p><strong>Current Skills</strong> (in <code>/mnt/skills/public/</code>):</p>
+<ul>
+<li><strong>docx</strong> - Word document handling</li>
+<li><strong>pdf</strong> - PDF processing and form filling</li>
+<li><strong>pptx</strong> - PowerPoint presentations</li>
+<li><strong>xlsx</strong> - Excel spreadsheets</li>
+</ul>
+</blockquote>
+<p>This looks like it's part of Claude's brand new Code Interpreter feature! I <a href="https://simonwillison.net/2025/Sep/9/claude-code-interpreter/">wrote about that extensively</a> last month, but I missed that there was a <code>/mnt/skills/public/</code> folder full of fascinating implementation details.</p>
+<p>So I fired up a fresh Claude instance (fun fact: Code Interpreter also works in the Claude iOS app now, which it didn't when they first launched) and prompted:</p>
+<blockquote>
+<p><code>Create a zip file of everything in your /mnt/skills folder</code></p>
+</blockquote>
+<p>This worked, and gave me a <code>.zip</code> to download. You can <a href="https://claude.ai/new?q=Create%20a%20zip%20file%20of%20everything%20in%20your%20%2Fmnt%2Fskills%20folder">run the prompt yourself here</a>, though you'll need to <a href="https://simonwillison.net/2025/Sep/9/claude-code-interpreter/#switching-it-on-in-settings-features">enable the new feature first</a>.</p>
+<p>I've pushed the contents of that zip to my <a href="https://github.com/simonw/claude-skills">new simonw/claude-skills GitHub repo</a>.</p>
+<p>So now you can see the prompts Anthropic wrote to enable the creation and manipulation of the following files in their Claude consumer applications:</p>
+<ul>
+<li><a href="https://github.com/simonw/claude-skills/blob/initial/mnt/skills/public/pdf/SKILL.md">pdf</a> - PDF files</li>
+<li><a href="https://github.com/simonw/claude-skills/blob/initial/mnt/skills/public/docx/SKILL.md">docx</a> - Microsoft Word</li>
+<li><a href="https://github.com/simonw/claude-skills/blob/initial/mnt/skills/public/pptx/SKILL.md">pptx</a> - Microsoft PowerPoint decks</li>
+<li><a href="https://github.com/simonw/claude-skills/blob/initial/mnt/skills/public/xlsx/SKILL.md">xlsx</a> - Microsoft Excel</li>
+</ul>
+<p>In each case the prompts spell out detailed instructions for manipulating those file types using Python, using libraries that come pre-installed on Claude's containers.</p>
+<p>Skills are more than just prompts though: the repository also includes dozens of pre-written Python scripts for performing common operations.</p>
+<p><a href="https://github.com/simonw/claude-skills/blob/initial/mnt/skills/public/pdf/scripts/fill_fillable_fields.py">pdf/scripts/fill_fillable_fields.py</a> for example is a custom CLI tool that uses <a href="https://pypi.org/project/pypdf/">pypdf</a> to find and then fill in a bunch of PDF form fields, specified as JSON, then render out the resulting combined PDF.</p>
+<p>This is a really sophisticated set of tools for document manipulation, and I love that Anthropic have made those visible - presumably deliberately - to users of Claude who know how to ask for them.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/pdf">pdf</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/code-interpreter">code-interpreter</a>, <a href="https://simonwillison.net/tags/jesse-vincent">jesse-vincent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Superpowers: How I'm using coding agents in October 2025]]></title>
+        <id>https://simonwillison.net/2025/Oct/10/superpowers/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/10/superpowers/#atom-everything"/>
+        <updated>2025-10-10T23:30:14.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://blog.fsck.com/2025/10/09/superpowers/">Superpowers: How I&#x27;m using coding agents in October 2025</a></strong></p>
+A follow-up to Jesse Vincent's post <a href="https://blog.fsck.com/2025/10/05/how-im-using-coding-agents-in-september-2025/">about September</a>, but this is a really significant piece in its own right.</p>
+<p>Jesse is one of the most creative users of coding agents (Claude Code in particular) that I know. He's put a great amount of work into evolving an effective process for working with them, encourage red/green TDD (watch the test fail first), planning steps, self-updating memory notes and even implementing a <a href="https://blog.fsck.com/2025/05/28/dear-diary-the-user-asked-me-if-im-alive/">feelings journal</a> ("I feel engaged and curious about this project" - Claude).</p>
+<p>Claude Code <a href="https://www.anthropic.com/news/claude-code-plugins">just launched plugins</a>, and Jesse is celebrating by wrapping up a whole host of his accumulated tricks as a new plugin called <a href="https://github.com/obra/superpowers">Superpowers</a>. You can add it to your Claude Code like this:</p>
+<pre><code>/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+</code></pre>
+<p>There's a lot in here! It's worth spending some time <a href="https://github.com/obra/superpowers">browsing the repository</a> - here's just one fun example, in <a href="https://github.com/obra/superpowers/blob/main/skills/debugging/root-cause-tracing/SKILL.md">skills/debugging/root-cause-tracing/SKILL.md</a>:</p>
+<blockquote>
+<pre><code>---
+name: Root Cause Tracing
+description: Systematically trace bugs backward through call stack to find original trigger
+when_to_use: Bug appears deep in call stack but you need to find where it originates
+version: 1.0.0
+languages: all
+---
+</code></pre>
+<p><strong>Overview</strong></p>
+<p>Bugs often manifest deep in the call stack (git init in wrong directory, file created in wrong location, database opened with wrong path). Your instinct is to fix where the error appears, but that's treating a symptom.</p>
+<p><strong>Core principle:</strong> Trace backward through the call chain until you find the original trigger, then fix at the source.</p>
+<p><strong>When to Use</strong></p>
+<pre><code>digraph when_to_use {
+    "Bug appears deep in stack?" [shape=diamond];
+    "Can trace backwards?" [shape=diamond];
+    "Fix at symptom point" [shape=box];
+    "Trace to original trigger" [shape=box];
+    "BETTER: Also add defense-in-depth" [shape=box];
+
+    "Bug appears deep in stack?" -&gt; "Can trace backwards?" [label="yes"];
+    "Can trace backwards?" -&gt; "Trace to original trigger" [label="yes"];
+    "Can trace backwards?" -&gt; "Fix at symptom point" [label="no - dead end"];
+    "Trace to original trigger" -&gt; "BETTER: Also add defense-in-depth";
+}
+</code></pre>
+<p>[...]</p>
+</blockquote>
+<p>This one is particularly fun because it then includes a <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">Graphviz DOT graph</a> illustrating the process - it turns out Claude can interpret those as workflow instructions just fine, and Jesse has been <a href="https://blog.fsck.com/2025/09/29/using-graphviz-for-claudemd/">wildly experimenting with them</a>.</p>
+<p>I <a href="https://claude.ai/share/2b78a93e-cdc3-4b1d-9b02-457eb62140a5">vibe-coded up</a> a quick URL-based DOT visualizer, <a href="https://tools.simonwillison.net/dot#digraph%20when_to_use%20%7B%0A%20%20%20%20%22Bug%20appears%20deep%20in%20stack%3F%22%20%5Bshape%3Ddiamond%5D%3B%0A%20%20%20%20%22Can%20trace%20backwards%3F%22%20%5Bshape%3Ddiamond%5D%3B%0A%20%20%20%20%22Fix%20at%20symptom%20point%22%20%5Bshape%3Dbox%5D%3B%0A%20%20%20%20%22Trace%20to%20original%20trigger%22%20%5Bshape%3Dbox%5D%3B%0A%20%20%20%20%22BETTER%3A%20Also%20add%20defense-in-depth%22%20%5Bshape%3Dbox%5D%3B%0A%0A%20%20%20%20%22Bug%20appears%20deep%20in%20stack%3F%22%20-%3E%20%22Can%20trace%20backwards%3F%22%20%5Blabel%3D%22yes%22%5D%3B%0A%20%20%20%20%22Can%20trace%20backwards%3F%22%20-%3E%20%22Trace%20to%20original%20trigger%22%20%5Blabel%3D%22yes%22%5D%3B%0A%20%20%20%20%22Can%20trace%20backwards%3F%22%20-%3E%20%22Fix%20at%20symptom%20point%22%20%5Blabel%3D%22no%20-%20dead%20end%22%5D%3B%0A%20%20%20%20%22Trace%20to%20original%20trigger%22%20-%3E%20%22BETTER%3A%20Also%20add%20defense-in-depth%22%3B%0A%7D">here's that one rendered</a>:</p>
+<p><img alt="The above DOT rendered as an image" src="https://static.simonwillison.net/static/2025/jesse-dot.jpg" /></p>
+<p>There is <em>so much</em> to learn about putting these tools to work in the most effective way possible. Jesse is way ahead of the curve, so it's absolutely worth spending some time exploring what he's shared so far.</p>
+<p>And if you're worried about filling up your context with a bunch of extra stuff, here's <a href="https://bsky.app/profile/s.ly/post/3m2srmkergc2p">a reassuring note from Jesse</a>:</p>
+<blockquote>
+<p>The core of it is VERY token light. It pulls in one doc of fewer than 2k tokens. As it needs bits of the process, it runs a shell script to search for them.  The long end to end chat for the planning and implementation process for that todo list app was 100k tokens.</p>
+<p>It uses subagents to manage token-heavy stuff, including all the actual implementation.</p>
+</blockquote>
+<p>(Jesse's post also tipped me off about Claude's <code>/mnt/skills/public</code> folder, see <a href="https://simonwillison.net/2025/Oct/10/claude-skills/">my notes here</a>.)
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/sub-agents">sub-agents</a>, <a href="https://simonwillison.net/tags/jesse-vincent">jesse-vincent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[A Retrospective Survey of 2024/2025 Open Source Supply Chain Compromises]]></title>
+        <id>https://simonwillison.net/2025/Oct/10/a-retrospective-survey/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/10/a-retrospective-survey/#atom-everything"/>
+        <updated>2025-10-10T23:00:52.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://words.filippo.io/compromise-survey/">A Retrospective Survey of 2024/2025 Open Source Supply Chain Compromises</a></strong></p>
+Filippo Valsorda surveyed 18 incidents from the past year of open source supply chain attacks, where package updates were infected with malware thanks to a compromise of the project itself.</p>
+<p>These are important lessons:</p>
+<blockquote>
+<p>I have the growing impression that software supply chain compromises have a few predominant causes which we might have a responsibility as a professional open source maintainers to robustly mitigate.</p>
+<p>To test this impression and figure out any such mitigations, I collected all 2024/2025 open source supply chain compromises I could find, and categorized their root cause.</p>
+</blockquote>
+<p>This is a fascinating piece of research. 5 were the result of phishing (maintainers should use passkeys/WebAuthn!), ~5 were stolen long-lived credentials, 3 were "control handoff" where a maintainer gave project access to someone who later turned out to be untrustworthy, 4 were caused by GitHub Actions workflows that triggered on pull requests or issue comments in a way that could leak credentials, and one (<a href="https://blog.oversecured.com/Introducing-MavenGate-a-supply-chain-attack-method-for-Java-and-Android-applications/">MavenGate</a>) was caused by <a href="https://blog.oversecured.com/Introducing-MavenGate-a-supply-chain-attack-method-for-Java-and-Android-applications/#method-of-attacks">an expired domain</a> being resurrected.
+
+    <p><small></small>Via <a href="https://lobste.rs/s/0ua1s5/retrospective_survey_2024_2025_open">lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/supply-chain">supply-chain</a>, <a href="https://simonwillison.net/tags/filippo-valsorda">filippo-valsorda</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video of GPT-OSS 20B running on a phone]]></title>
+        <id>https://simonwillison.net/2025/Oct/10/gpt-oss-20b-snapdragon/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/10/gpt-oss-20b-snapdragon/#atom-everything"/>
+        <updated>2025-10-10T22:37:21.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://twitter.com/nexa_ai/status/1975232300985291008">Video of GPT-OSS 20B running on a phone</a></strong></p>
+GPT-OSS 20B is a <a href="https://simonwillison.net/2025/Aug/5/gpt-oss/">very good model</a>. At launch OpenAI claimed:</p>
+<blockquote>
+<p>The gpt-oss-20b model delivers similar results to OpenAI o3‑mini on common benchmarks and can run on edge devices with just 16 GB of memory</p>
+</blockquote>
+<p><a href="https://nexa.ai/">Nexa AI</a> just posted a video on Twitter demonstrating exactly that: the full GPT-OSS 20B running on a Snapdragon Gen 5 phone in their <a href="https://play.google.com/store/apps/details?id=com.nexa.studio">Nexa Studio</a> Android app. It requires at least 16GB of RAM, and benefits from Snapdragon using a similar trick to Apple Silicon where the system RAM is available to both the CPU and the GPU.</p>
+<p>The latest iPhone 17 Pro Max is still stuck at 12GB of RAM, presumably not enough to run this same model.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/android">android</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/gpt-oss">gpt-oss</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[GitHub Copilot CLI: Faster, more concise, and prettier]]></title>
         <id>https://github.blog/changelog/2025-10-10-github-copilot-cli-faster-more-concise-and-prettier</id>
@@ -2989,93 +3192,6 @@ OpenRouter: openrouter/qwen/qwen3-next-80b-a3b-instruct
     <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/openrouter">openrouter</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Bring Your Own Key (BYOK) support for JetBrains IDEs and Xcode in public preview]]></title>
-        <id>https://github.blog/changelog/2025-09-11-bring-your-own-key-byok-support-for-jetbrains-ides-and-xcode-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-09-11-bring-your-own-key-byok-support-for-jetbrains-ides-and-xcode-in-public-preview"/>
-        <updated>2025-09-12T00:20:55.000Z</updated>
-        <summary type="html"><![CDATA[Bring Your Own Key (BYOK) support is now in public preview for GitHub Copilot Chat in JetBrains IDEs and Xcode! If you already have an API key from a supported…
-The post Bring Your Own Key (BYOK) support for JetBrains IDEs and Xcode in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Pull request “Files changed” public preview experience – September 11 updates]]></title>
-        <id>https://github.blog/changelog/2025-09-11-pull-request-files-changed-public-preview-experience-september-11-updates</id>
-        <link href="https://github.blog/changelog/2025-09-11-pull-request-files-changed-public-preview-experience-september-11-updates"/>
-        <updated>2025-09-11T22:53:29.000Z</updated>
-        <summary type="html"><![CDATA[Performance improvements and a higher file limit in this week’s update to the new pull request “Files changed” page public preview. 🚀 Single file view with increased file limits To…
-The post Pull request “Files changed” public preview experience – September 11 updates appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[On Working with Wizards]]></title>
-        <id>https://www.oneusefulthing.org/p/on-working-with-wizards</id>
-        <link href="https://www.oneusefulthing.org/p/on-working-with-wizards"/>
-        <updated>2025-09-11T20:37:39.000Z</updated>
-        <summary type="html"><![CDATA[Verifying magic on the jagged frontier]]></summary>
-        <author>
-            <name>Ethan Mollick</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Verified answers generally available in GitHub Discussions]]></title>
-        <id>https://github.blog/changelog/2025-09-11-verified-answers-generally-available-in-github-discussions</id>
-        <link href="https://github.blog/changelog/2025-09-11-verified-answers-generally-available-in-github-discussions"/>
-        <updated>2025-09-11T20:32:02.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Discussions now supports verified answers — a new answer state that sits above “Marked as answer” to signal exceptional community contributions. Repository administrators can now verify answers to indicate…
-The post Verified answers generally available in GitHub Discussions appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Multiple assignees for issues and pull requests now available in all repositories]]></title>
-        <id>https://github.blog/changelog/2025-09-11-multiple-assignees-for-issues-and-pull-requests-now-available-in-all-repositories</id>
-        <link href="https://github.blog/changelog/2025-09-11-multiple-assignees-for-issues-and-pull-requests-now-available-in-all-repositories"/>
-        <updated>2025-09-11T20:11:25.000Z</updated>
-        <summary type="html"><![CDATA[Multiple assignees are now available on issues and pull requests in all public and private repos.
-The post Multiple assignees for issues and pull requests now available in all repositories appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Actions: macOS 26 image now in public preview]]></title>
-        <id>https://github.blog/changelog/2025-09-11-actions-macos-26-image-now-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-09-11-actions-macos-26-image-now-in-public-preview"/>
-        <updated>2025-09-11T20:10:13.000Z</updated>
-        <summary type="html"><![CDATA[Developers looking to use the latest Xcode technology and build and test their iOS applications can use the new macOS 26 image natively in their GitHub Actions workflow runs. The…
-The post Actions: macOS 26 image now in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Deprecated Microsoft models in GitHub Models]]></title>
-        <id>https://github.blog/changelog/2025-09-11-deprecated-microsoft-models-in-github-models</id>
-        <link href="https://github.blog/changelog/2025-09-11-deprecated-microsoft-models-in-github-models"/>
-        <updated>2025-09-11T20:06:02.000Z</updated>
-        <summary type="html"><![CDATA[The following models are now deprecated in GitHub Models. Please transition to the suggested versions to continue using the improved models with enhanced features: Phi-3-medium-4k-instruct users should transition to Phi-4.…
-The post Deprecated Microsoft models in GitHub Models appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A REST API for GitHub Projects, sub-issues improvements, and more]]></title>
-        <id>https://github.blog/changelog/2025-09-11-a-rest-api-for-github-projects-sub-issues-improvements-and-more</id>
-        <link href="https://github.blog/changelog/2025-09-11-a-rest-api-for-github-projects-sub-issues-improvements-and-more"/>
-        <updated>2025-09-11T18:42:31.000Z</updated>
-        <summary type="html"><![CDATA[You can now use the REST API to understand and manage information about your projects, and take advantage of sub-issue improvements that make it even easier to break down your…
-The post A REST API for GitHub Projects, sub-issues improvements, and more appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
 </feed>

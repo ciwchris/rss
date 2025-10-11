@@ -25,9 +25,208 @@
 
   <ul>
     <li>
+      <time>2025-10-11</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Strategic Pagination Patterns for .NET APIs
+              <span class="post-metadata">(18 min | 5490 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://roxeem.com/2025/10/11/strategic-pagination-patterns-for-net-apis/>Master offset, cursor, keyset, paged, time-based, and hybrid pagination patterns in .NET APIs to balance performance, consistency, and client experience.
+The post Strategic Pagination Patterns for .NET APIs first appeared on Roxeem.</a>
+            </div>
+            <!-- <p class="post-source">Roxeem</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Note on 11th October 2025
+              <span class="post-metadata">(1 min | 280 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/11/uncomfortable/#atom-everything>I&#x27;m beginning to suspect that a key skill in working effectively with coding agents is developing an intuition for when you don&#x27;t need to closely review every line of code they produce. This feels deeply uncomfortable!
+Tags: vibe-coding, coding-agents, ai-assisted-programming, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              An MVCC-like columnar table on S3 with constant-time deletes
+              <span class="post-metadata">(2 min | 522 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/11/mvcc-s3/#atom-everything>An MVCC-like columnar table on S3 with constant-time deletes
+previously) makes it an interesting, scalable and often inexpensive platform for all kinds of database patterns.
+Shayon Mukherjee presents an ingenious design for a Parquet-backed database in S3 which accepts concurrent writes, presents a single atomic view for readers and even supports reliable row deletion despite Parquet requiring a complete file rewrite in order to remove data.
+The key to the design is a _latest_manifest JSON file at the top of the bucket, containing an integer version number. Clients use compare-and-swap to increment that version - only one client can succeed at this, so the incremented version they get back is guaranteed unique to them.
+Having reserved a version number the client can write a unique manifest file for that version - manifest/v00000123.json - with a more complex data structure referencing the current versions of every persisted file, including the one they just uploaded.
+Deleted rows are written to tombstone files as either a list of primary keys or a list of of ranges. Clients consult these when executing reads, filtering out deleted rows as part of resolving a query.
+The pricing estimates are especially noteworthy:
+For a workload ingesting 6 TB/day with 2 TB of deletes and 50K queries/day:
+PUT requests: ~380K/day (≈4 req/s) &#x3D; $1.88/day
+GET requests: highly variable, depends on partitioning effectiveness
+Best case (good time-based partitioning): ~100K-200K/day &#x3D; $0.04-$0.08/day
+Worst case (poor partitioning, scanning many files): ~2M/day &#x3D; $0.80/day
+~$3/day for ingesting 6TB of data is pretty fantastic!
+Watch out for storage costs though - each new TB of data at $0.023/GB/month adds $23.55 to the ongoing monthly bill.
+
+    
+Via Hacked News
+Tags: aws, databases, s3, parquet</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-10-10</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              simonw/claude-skills
+              <span class="post-metadata">(2 min | 636 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/10/claude-skills/#atom-everything>simonw/claude-skills
+Jesse Vincent&#x27;s Claude Code Superpowers post (previously) was this:
+Skills are what give your agents Superpowers.
+The first time they really popped up on my radar was a few weeks ago when Anthropic rolled out improved Office document creation. When the feature rolled out, I went poking around a bit -- I asked Claude to tell me all about its new skills. And it was only too happy to dish.
+In that transcript Jesse asks how the skill system works and Claude replies:
+Looking at the skills system, here&#x27;s how it works:
+Current Skills (in /mnt/skills/public/):
+docx - Word document handling
+pdf - PDF processing and form filling
+pptx - PowerPoint presentations
+xlsx - Excel spreadsheets
+This looks like it&#x27;s part of Claude&#x27;s brand new Code Interpreter feature! I wrote about that extensively last month, but I missed that there was a /mnt/skills/public/ folder full of fascinating implementation details.
+So I fired up a fresh Claude instance (fun fact: Code Interpreter also works in the Claude iOS app now, which it didn&#x27;t when they first launched) and prompted:
+Create a zip file of everything in your /mnt/skills folder
+This worked, and gave me a .zip to download. You can run the prompt yourself here, though you&#x27;ll need to enable the new feature first.
+I&#x27;ve pushed the contents of that zip to my new simonw/claude-skills GitHub repo.
+So now you can see the prompts Anthropic wrote to enable the creation and manipulation of the following files in their Claude consumer applications:
+pdf - PDF files
+docx - Microsoft Word
+pptx - Microsoft PowerPoint decks
+xlsx - Microsoft Excel
+In each case the prompts spell out detailed instructions for manipulating those file types using Python, using libraries that come pre-installed on Claude&#x27;s containers.
+Skills are more than just prompts though: the repository also includes dozens of pre-written Python scripts for performing common operations.
+pdf/scripts/fill_fillable_fields.py for example is a custom CLI tool that uses pypdf to find and then fill in a bunch of PDF form fields, specified as JSON, then render out the resulting combined PDF.
+This is a really sophisticated set of tools for document manipulation, and I love that Anthropic have made those visible - presumably deliberately - to users of Claude who know how to ask for them.
+
+
+    
+Tags: pdf, python, ai, prompt-engineering, generative-ai, llms, anthropic, claude, code-interpreter, jesse-vincent</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Superpowers: How I&#x27;m using coding agents in October 2025
+              <span class="post-metadata">(3 min | 771 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/10/superpowers/#atom-everything>Superpowers: How I&#x27;m using coding agents in October 2025
+about September, but this is a really significant piece in its own right.
+Jesse is one of the most creative users of coding agents (Claude Code in particular) that I know. He&#x27;s put a great amount of work into evolving an effective process for working with them, encourage red/green TDD (watch the test fail first), planning steps, self-updating memory notes and even implementing a feelings journal (&quot;I feel engaged and curious about this project&quot; - Claude).
+Claude Code just launched plugins, and Jesse is celebrating by wrapping up a whole host of his accumulated tricks as a new plugin called Superpowers. You can add it to your Claude Code like this:
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+
+There&#x27;s a lot in here! It&#x27;s worth spending some time browsing the repository - here&#x27;s just one fun example, in skills/debugging/root-cause-tracing/SKILL.md:
+---
+name: Root Cause Tracing
+description: Systematically trace bugs backward through call stack to find original trigger
+when_to_use: Bug appears deep in call stack but you need to find where it originates
+version: 1.0.0
+languages: all
+---
+
+Overview
+Bugs often manifest deep in the call stack (git init in wrong directory, file created in wrong location, database opened with wrong path). Your instinct is to fix where the error appears, but that&#x27;s treating a symptom.
+Core principle: Trace backward through the call chain until you find the original trigger, then fix at the source.
+When to Use
+digraph when_to_use {
+    &quot;Bug appears deep in stack?&quot; [shape&#x3D;diamond];
+    &quot;Can trace backwards?&quot; [shape&#x3D;diamond];
+    &quot;Fix at symptom point&quot; [shape&#x3D;box];
+    &quot;Trace to original trigger&quot; [shape&#x3D;box];
+    &quot;BETTER: Also add defense-in-depth&quot; [shape&#x3D;box];
+
+    &quot;Bug appears deep in stack?&quot; -&gt; &quot;Can trace backwards?&quot; [label&#x3D;&quot;yes&quot;];
+    &quot;Can trace backwards?&quot; -&gt; &quot;Trace to original trigger&quot; [label&#x3D;&quot;yes&quot;];
+    &quot;Can trace backwards?&quot; -&gt; &quot;Fix at symptom point&quot; [label&#x3D;&quot;no - dead end&quot;];
+    &quot;Trace to original trigger&quot; -&gt; &quot;BETTER: Also add defense-in-depth&quot;;
+}
+
+[...]
+This one is particularly fun because it then includes a Graphviz DOT graph illustrating the process - it turns out Claude can interpret those as workflow instructions just fine, and Jesse has been wildly experimenting with them.
+I vibe-coded up a quick URL-based DOT visualizer, here&#x27;s that one rendered:
+
+There is so much to learn about putting these tools to work in the most effective way possible. Jesse is way ahead of the curve, so it&#x27;s absolutely worth spending some time exploring what he&#x27;s shared so far.
+And if you&#x27;re worried about filling up your context with a bunch of extra stuff, here&#x27;s a reassuring note from Jesse:
+The core of it is VERY token light. It pulls in one doc of fewer than 2k tokens. As it needs bits of the process, it runs a shell script to search for them.  The long end to end chat for the planning and implementation process for that todo list app was 100k tokens.
+It uses subagents to manage token-heavy stuff, including all the actual implementation.
+(Jesse&#x27;s post also tipped me off about Claude&#x27;s /mnt/skills/public folder, see my notes here.)
+
+
+    
+Tags: plugins, ai, prompt-engineering, generative-ai, llms, ai-assisted-programming, anthropic, claude, vibe-coding, coding-agents, claude-code, sub-agents, jesse-vincent</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A Retrospective Survey of 2024/2025 Open Source Supply Chain Compromises
+              <span class="post-metadata">(1 min | 421 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/10/a-retrospective-survey/#atom-everything>A Retrospective Survey of 2024/2025 Open Source Supply Chain Compromises
+These are important lessons:
+I have the growing impression that software supply chain compromises have a few predominant causes which we might have a responsibility as a professional open source maintainers to robustly mitigate.
+To test this impression and figure out any such mitigations, I collected all 2024/2025 open source supply chain compromises I could find, and categorized their root cause.
+This is a fascinating piece of research. 5 were the result of phishing (maintainers should use passkeys/WebAuthn!), ~5 were stolen long-lived credentials, 3 were &quot;control handoff&quot; where a maintainer gave project access to someone who later turned out to be untrustworthy, 4 were caused by GitHub Actions workflows that triggered on pull requests or issue comments in a way that could leak credentials, and one (MavenGate) was caused by an expired domain being resurrected.
+
+    
+Via lobste.rs
+Tags: open-source, security, supply-chain, filippo-valsorda</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Video of GPT-OSS 20B running on a phone
+              <span class="post-metadata">(1 min | 372 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/10/gpt-oss-20b-snapdragon/#atom-everything>Video of GPT-OSS 20B running on a phone
+very good model. At launch OpenAI claimed:
+The gpt-oss-20b model delivers similar results to OpenAI o3‑mini on common benchmarks and can run on edge devices with just 16 GB of memory
+Nexa AI just posted a video on Twitter demonstrating exactly that: the full GPT-OSS 20B running on a Snapdragon Gen 5 phone in their Nexa Studio Android app. It requires at least 16GB of RAM, and benefits from Snapdragon using a similar trick to Apple Silicon where the system RAM is available to both the CPU and the GPU.
+The latest iPhone 17 Pro Max is still stuck at 12GB of RAM, presumably not enough to run this same model.
+
+
+    
+Tags: android, ai, openai, generative-ai, local-llms, llms, gpt-oss</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3597,116 +3796,6 @@ The instruct (non-reasoning) model gave me this:
 Tags: ai, generative-ai, llms, llm, qwen, pelican-riding-a-bicycle, llm-reasoning, llm-release, openrouter, ai-in-china</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Bring Your Own Key (BYOK) support for JetBrains IDEs and Xcode in public preview
-              <span class="post-metadata">(5 min | 1565 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-11-bring-your-own-key-byok-support-for-jetbrains-ides-and-xcode-in-public-preview>Bring Your Own Key (BYOK) support is now in public preview for GitHub Copilot Chat in JetBrains IDEs and Xcode! If you already have an API key from a supported…
-The post Bring Your Own Key (BYOK) support for JetBrains IDEs and Xcode in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-09-11</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Pull request “Files changed” public preview experience – September 11 updates
-              <span class="post-metadata">(5 min | 1494 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-11-pull-request-files-changed-public-preview-experience-september-11-updates>Performance improvements and a higher file limit in this week’s update to the new pull request “Files changed” page public preview. 🚀 Single file view with increased file limits To…
-The post Pull request “Files changed” public preview experience – September 11 updates appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              On Working with Wizards
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/on-working-with-wizards>Verifying magic on the jagged frontier</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Verified answers generally available in GitHub Discussions
-              <span class="post-metadata">(5 min | 1380 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-11-verified-answers-generally-available-in-github-discussions>GitHub Discussions now supports verified answers — a new answer state that sits above “Marked as answer” to signal exceptional community contributions. Repository administrators can now verify answers to indicate…
-The post Verified answers generally available in GitHub Discussions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Multiple assignees for issues and pull requests now available in all repositories
-              <span class="post-metadata">(4 min | 1290 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-11-multiple-assignees-for-issues-and-pull-requests-now-available-in-all-repositories>Multiple assignees are now available on issues and pull requests in all public and private repos.
-The post Multiple assignees for issues and pull requests now available in all repositories appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Actions: macOS 26 image now in public preview
-              <span class="post-metadata">(5 min | 1353 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-11-actions-macos-26-image-now-in-public-preview>Developers looking to use the latest Xcode technology and build and test their iOS applications can use the new macOS 26 image natively in their GitHub Actions workflow runs. The…
-The post Actions: macOS 26 image now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deprecated Microsoft models in GitHub Models
-              <span class="post-metadata">(4 min | 1298 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-11-deprecated-microsoft-models-in-github-models>The following models are now deprecated in GitHub Models. Please transition to the suggested versions to continue using the improved models with enhanced features: Phi-3-medium-4k-instruct users should transition to Phi-4.…
-The post Deprecated Microsoft models in GitHub Models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A REST API for GitHub Projects, sub-issues improvements, and more
-              <span class="post-metadata">(5 min | 1640 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-11-a-rest-api-for-github-projects-sub-issues-improvements-and-more>You can now use the REST API to understand and manage information about your projects, and take advantage of sub-issue improvements that make it even easier to break down your…
-The post A REST API for GitHub Projects, sub-issues improvements, and more appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
