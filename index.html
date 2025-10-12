@@ -31,6 +31,50 @@
       <article>
           <details>
             <summary>
+              Claude Code sub-agents
+              <span class="post-metadata">(2 min | 539 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Oct/11/sub-agents/#atom-everything>Claude Code includes the ability to run sub-agents, where a separate agent loop with a fresh token context is dispatched to achieve a goal and report back when it&#x27;s done. I wrote a bit about how these work in June when I traced Claude Code&#x27;s activity by intercepting its API calls.
+I recently learned that you can deliberately trigger Claude Code to use sub-agents just by telling it to do so!
+Here&#x27;s an example. I ran this using Claude Code against a fresh checkout of simonw/datasette (commit ec38ad37689f3c14d307770977a17aed5efc5cb9), with no additional custom instructions:
+Write markdown documentation for the context passed to each of the templates in this project. Use sub-agents.
+Here&#x27;s a snippet of the output:
+⏺ I&#x27;ll help you write markdown documentation for the context passed to each template in this project. Let me start by exploring the codebase to understand the template structure and then use sub-agents to document them comprehensively.
+⏺ Search(pattern: &quot;**/*.html&quot;)
+  ⎿  Found 47 files (ctrl+o to expand)
+
+⏺ Search(pattern: &quot;render.*template|render_template&quot;)
+  ⎿  Found 16 files (ctrl+o to expand)
+
+[...]
+⏺ Now let me launch sub-agents to analyze different template contexts in parallel:
+⏺ Task(Document index template context)
+  ⎿  Done (12 tool uses · 86.4k tokens · 1m 13s)
+
+⏺ Task(Document database template context)
+  ⎿  Done (15 tool uses · 55.4k tokens · 1m 41s)
+
+⏺ Task(Document table template context)
+  ⎿  Done (14 tool uses · 85.2k tokens · 1m 44s)
+
+⏺ Task(Document query/row template contexts)
+  ⎿  Done (17 tool uses · 78.7k tokens · 1m 55s)
+
+⏺ Task(Document special template contexts)
+  ⎿  Done (26 tool uses · 116.1k tokens · 1m 50s)
+
+It churned away for a couple of minutes (those sub-agents execute in parallel, another benefit of this pattern) and made me this 
+template_contexts.md
+ markdown file. It&#x27;s very comprehensive.
+Tags: sub-agents, coding-agents, ai-assisted-programming, claude-code, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Vibing a Non-Trivial Ghostty Feature
               <span class="post-metadata">(2 min | 721 words)</span> 
             </summary>
@@ -3630,79 +3674,6 @@ I don&#x27;t have anything solid to back this up - it&#x27;s more of a hunch bas
 Tags: prompt-engineering, llms, ai, generative-ai, gpt-5, anthropic, claude, claude-code, claude-4</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-09-12</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              gpt-5 and gpt-5-mini rate limit updates
-              <span class="post-metadata">(2 min | 502 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/12/gpt-5-rate-limits/#atom-everything>gpt-5 and gpt-5-mini rate limit updates
-gpt-5
-gpt-5-mini
-GPT-5 rate limits here show tier 5 stays at 40M tokens per minute. The GPT-5 mini rate limits for tiers 2 through 5 are 2M, 4M, 10M and 180M TPM respectively.
-As a reminder, those tiers are assigned based on how much money you have spent on the OpenAI API - from $5 for tier 1 up through $50, $100, $250 and then $1,000 for tier 
-For comparison, Anthropic&#x27;s current top tier is Tier 4 ($400 spent) which provides 2M maximum input tokens per minute and 400,000 maximum output tokens, though you can contact their sales team for higher limits than that.
-Gemini&#x27;s top tier is Tier 3 for $1,000 spent and currently gives you 8M TPM for Gemini 2.5 Pro and Flash and 30M TPM for the Flash-Lite and 2.0 Flash models.
-So OpenAI&#x27;s new rate limit increases for their top performing model pulls them ahead of Anthropic but still leaves them significantly behind Gemini.
-GPT-5 mini remains the champion for smaller models with that enormous 180M TPS limit for its top tier.
-
-
-    
-Tags: ai, openai, generative-ai, llms, anthropic, gemini, llm-pricing, gpt-5</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Matt Webb
-              <span class="post-metadata">(1 min | 329 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Sep/12/matt-webb/#atom-everything>The trick with Claude Code is to give it large, but not too large, extremely well defined problems.
-(If the problems are too large then you are now vibe coding… which (a) frequently goes wrong, and (b) is a one-way street: once vibes enter your app, you end up with tangled, write-only code which functions perfectly but can no longer be edited by humans. Great for prototyping, bad for foundations.)
-
-— Matt Webb, What I think about when I think about Claude Code
-Tags: matt-webb, claude, ai, claude-code, llms, vibe-coding, coding-agents, ai-assisted-programming, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot in VS Code August release (v1.104)
-              <span class="post-metadata">(7 min | 1958 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-12-github-copilot-in-vs-code-august-release-v1-104>The August 2025 update to GitHub Copilot in Visual Studio Code (v1.104) brings greater flexibility, security, and productivity to AI-powered development workflows. Highlights Auto model selection in Copilot Chat: Copilot…
-The post GitHub Copilot in VS Code August release (v1.104) appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Internal MCP registry and allowlist controls for VS Code Insiders
-              <span class="post-metadata">(8 min | 2310 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-09-12-internal-mcp-registry-and-allowlist-controls-for-vs-code-insiders>Enterprise and organization administrators can now configure MCP registries and test allowlist enforcement in VS Code Insiders, preparing for the rollout across all Copilot environments. Understanding MCP registries and allowlists…
-The post Internal MCP registry and allowlist controls for VS Code Insiders appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
