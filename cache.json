@@ -634,46 +634,6 @@
           "wordCount": 2061,
           "title": "Upcoming removal of Copilot premium request $0 budgets for enterprise and team accounts",
           "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-09-16-delegated-bypass-controls-for-push-protection-now-available-at-the-enterprise-level",
-          "author": "Allison",
-          "description": "Delegated bypass controls allow you to choose who can bypass push protection for secret scanning and designate reviewers for bypass requests. You can now manage your list of approvers and…\nThe post Delegated bypass controls for push protection now available at the enterprise level appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-09-16-delegated-bypass-controls-for-push-protection-now-available-at-the-enterprise-level",
-          "publishedOn": "2025-09-16T21:29:55.000Z",
-          "wordCount": 1325,
-          "title": "Delegated bypass controls for push protection now available at the enterprise level",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-09-16-conda-ecosystem-support-for-dependabot-now-generally-available",
-          "author": "Allison",
-          "description": "Dependabot now supports parsing and updating environment.yml Conda environment specification files. This release includes both security and version Dependabot updates for Conda-based Python projects. Why it matters Many Python projects…\nThe post Conda ecosystem support for Dependabot now generally available for Python appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-09-16-conda-ecosystem-support-for-dependabot-now-generally-available",
-          "publishedOn": "2025-09-16T18:01:54.000Z",
-          "wordCount": 1424,
-          "title": "Conda ecosystem support for Dependabot now generally available for Python",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-09-16-anthropic-claude-opus-4-1-is-now-available-in-public-preview",
-          "author": "Allison",
-          "description": "Claude Opus 4.1 is rolling out in public preview to users of GitHub Copilot in Visual Studio, JetBrains IDEs, Xcode, and Eclipse. Availability in GitHub Copilot Claude Opus 4.1 is…\nThe post Anthropic Claude Opus 4.1 is now available in public preview in Visual Studio, JetBrains IDEs, Xcode, and Eclipse appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-09-16-anthropic-claude-opus-4-1-is-now-available-in-public-preview-in-visual-studio-jetbrains-xcode-and-eclipse",
-          "publishedOn": "2025-09-16T16:57:42.000Z",
-          "wordCount": 1970,
-          "title": "Anthropic Claude Opus 4.1 is now available in public preview in Visual Studio, JetBrains IDEs, Xcode, and Eclipse",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-09-15-github-mcp-registry-the-fastest-way-to-discover-ai-tools",
-          "author": "Allison",
-          "description": "If you’ve tried connecting AI agents to your development tools, you know the pain — MCP servers are scattered across numerous registries, random repositories, and buried in community threads. Without…\nThe post GitHub MCP Registry: The fastest way to discover AI tools appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-09-16-github-mcp-registry-the-fastest-way-to-discover-ai-tools",
-          "publishedOn": "2025-09-16T15:55:14.000Z",
-          "wordCount": 1464,
-          "title": "GitHub MCP Registry: The fastest way to discover AI tools",
-          "imageUrl": "https://github.blog/wp-content/uploads/2025/09/MCPregistry_ChangelogOGsocial_01.jpg"
         }
       ]
     },
@@ -749,6 +709,36 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2025/Oct/16/nvidia-dgx-spark-apple-mac-studio/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://blog.exolabs.net/nvidia-dgx-spark\">NVIDIA DGX Spark + Apple Mac Studio = 4x Faster LLM Inference with EXO 1.0</a></strong></p>\nEXO Labs wired a 256GB M3 Ultra Mac Studio up to an NVIDIA DGX Spark and got a 2.8x performance boost serving Llama-3.1 8B (FP16) with an 8,192 token prompt.</p>\n<p>Their detailed explanation taught me a lot about LLM performance.</p>\n<p>There are two key steps in executing a prompt. The first is the <strong>prefill</strong> phase that reads the incoming prompt and builds a KV cache for each of the transformer layers in the model. This is compute-bound as it needs to process every token in the input and perform large matrix multiplications across all of the layers to initialize the model's internal state.</p>\n<p>Performance in the prefill stage influences TTFT - time‑to‑first‑token.</p>\n<p>The second step is the <strong>decode</strong> phase, which generates the output one token at a time. This part is limited by memory bandwidth - there's less arithmetic, but each token needs to consider the entire KV cache.</p>\n<p>Decode performance influences TPS - tokens per second.</p>\n<p>EXO noted that the Spark has 100 TFLOPS but only 273GB/s of memory bandwidth, making it a better fit for prefill. The M3 Ultra has 26 TFLOPS but 819GB/s of memory bandwidth, making it ideal for the decode phase.</p>\n<p>They run prefill on the Spark, streaming the KV cache to the Mac over 10Gb Ethernet. They can start streaming earlier layers while the later layers are still being calculated. Then the Mac runs the decode phase, returning tokens faster than if the Spark had run the full process end-to-end.\n\n    <p><small></small>Via <a href=\"https://twitter.com/exolabs/status/1978525767739883736\">@exolabs</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/apple\">apple</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/nvidia\">nvidia</a></p>",
+          "link": "https://simonwillison.net/2025/Oct/16/nvidia-dgx-spark-apple-mac-studio/#atom-everything",
+          "publishedOn": "2025-10-16T05:34:41.000Z",
+          "wordCount": 521,
+          "title": "NVIDIA DGX Spark + Apple Mac Studio = 4x Faster LLM Inference with EXO 1.0",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2025/Oct/16/riana-pfefferkorn/#atom-everything",
+          "author": null,
+          "description": "<blockquote cite=\"https://cyberlaw.stanford.edu/blog/2025/10/whos-submitting-ai-tainted-filings-in-court/\"><p>Pro se litigants [people representing themselves in court without a lawyer] account for the majority of the cases in the United States where a party submitted a court filing containing AI hallucinations. In a country where legal representation is <a href=\"https://law.stanford.edu/2024/06/13/justice-for-all-why-we-have-an-access-to-justice-gap-in-america-and-what-can-we-do-about-it/\">unaffordable</a> for most people, it is no wonder that pro se litigants are depending on free or low-cost AI tools. But it is a scandal that so many have been betrayed by them, to the detriment of the cases they are litigating all on their own.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://cyberlaw.stanford.edu/blog/2025/10/whos-submitting-ai-tainted-filings-in-court/\">Riana Pfefferkorn</a>, analyzing the <a href=\"https://www.damiencharlotin.com/hallucinations/\">AI Hallucination Cases</a> database for CIS at Stanford Law</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai-ethics\">ai-ethics</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/law\">law</a>, <a href=\"https://simonwillison.net/tags/hallucinations\">hallucinations</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
+          "link": "https://simonwillison.net/2025/Oct/16/riana-pfefferkorn/#atom-everything",
+          "publishedOn": "2025-10-16T04:16:45.000Z",
+          "wordCount": 320,
+          "title": "Quoting Riana Pfefferkorn",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2025/Oct/16/coding-without-typing-the-code/#atom-everything",
+          "author": null,
+          "description": "<p>Last year the most useful exercise for getting a feel for how good LLMs were at writing code was vibe coding (before that name had even been coined) - seeing if you could create a useful small application through prompting alone.</p>\n<p>Today I think there's a new, more ambitious and significantly more intimidating exercise: spend a day working on <strong>real production code</strong> through prompting alone, making no manual edits yourself.</p>\n<p>This doesn't mean you can't control exactly what goes into each file - you can even tell the model \"update line 15 to use this instead\" if you have to - but it's a great way to get more of a feel for how well the latest coding agents can wield their edit tools.</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
+          "link": "https://simonwillison.net/2025/Oct/16/coding-without-typing-the-code/#atom-everything",
+          "publishedOn": "2025-10-16T03:58:31.000Z",
+          "wordCount": 371,
+          "title": "Coding without typing the code",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2025/Oct/15/catherine-wu/#atom-everything",
           "author": null,
@@ -1488,16 +1478,6 @@
           "wordCount": 518,
           "title": "ICPC medals for OpenAI and Gemini",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Sep/16/the-2025-psf-board-election-results/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://pyfound.blogspot.com/2025/09/announcing-2025-psf-board-election.html\">Announcing the 2025 PSF Board Election Results!</a></strong></p>\nI'm happy to share that I've been re-elected for  second term on the board of directors of the Python Software Foundation.</p>\n<p>Jannis Leidel was also re-elected and Abigail Dogbe and Sheena O’Connell will be joining the board for the first time.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/python\">python</a>, <a href=\"https://simonwillison.net/tags/psf\">psf</a></p>",
-          "link": "https://simonwillison.net/2025/Sep/16/the-2025-psf-board-election-results/#atom-everything",
-          "publishedOn": "2025-09-16T20:39:41.000Z",
-          "wordCount": 310,
-          "title": "Announcing the 2025 PSF Board Election Results!",
-          "imageUrl": null
         }
       ]
     },
@@ -1506,6 +1486,16 @@
       "feedUrl": "https://simonw.github.io/ollama-models-atom-feed/atom.xml",
       "siteUrl": "https://ollama.com/search?o=newest",
       "articles": [
+        {
+          "id": "https://ollama.com/library/glm-4.6",
+          "author": null,
+          "description": "Advanced agentic, reasoning and coding capabilities.",
+          "link": "https://ollama.com/library/glm-4.6",
+          "publishedOn": "2025-10-15T05:17:00.000Z",
+          "wordCount": 2366,
+          "title": "glm-4.6",
+          "imageUrl": "https://ollama.com/public/og.png"
+        },
         {
           "id": "https://ollama.com/library/qwen3-vl",
           "author": null,
@@ -1612,16 +1602,6 @@
           "wordCount": 4477,
           "title": "What .NET 10 GC Changes Mean for Developers",
           "imageUrl": "https://roxeem.com/wp-content/uploads/2025/09/What-.NET-10-GC-Changes-Mean-for-Developers.webp"
-        },
-        {
-          "id": "https://roxeem.com/?p=291",
-          "author": "Roxeem",
-          "description": "Build conditional, parallel, dynamic, and stateful prompt pipelines in .NET with safety guardrails, faster latency, and testable design.\nThe post The Hidden Architecture Behind Fast and Reliable AI Prompts first appeared on Roxeem.",
-          "link": "https://roxeem.com/2025/09/16/the-hidden-architecture-behind-fast-and-reliable-ai-prompts/",
-          "publishedOn": "2025-09-16T15:06:06.000Z",
-          "wordCount": 4489,
-          "title": "The Hidden Architecture Behind Fast and Reliable AI Prompts",
-          "imageUrl": "https://roxeem.com/wp-content/uploads/2025/09/Advanced-Prompt-Orchestration.webp"
         }
       ]
     }
