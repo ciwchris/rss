@@ -2,10 +2,131 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-10-22T21:07:52.552Z</updated>
+    <updated>2025-10-23T14:11:47.545Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[OpenAI no longer has to preserve all of its ChatGPT data, with some exceptions]]></title>
+        <id>https://simonwillison.net/2025/Oct/23/openai-no-longer-has-to-preserve/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/23/openai-no-longer-has-to-preserve/#atom-everything"/>
+        <updated>2025-10-23T05:19:32.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.engadget.com/ai/openai-no-longer-has-to-preserve-all-of-its-chatgpt-data-with-some-exceptions-192422093.html">OpenAI no longer has to preserve all of its ChatGPT data, with some exceptions</a></strong></p>
+This is a relief:</p>
+<blockquote>
+<p>Federal judge Ona T. Wang filed a new order on October 9 that frees OpenAI of an obligation to "preserve and segregate all output log data that would otherwise be deleted on a going forward basis."</p>
+</blockquote>
+<p>I wrote about this <a href="https://simonwillison.net/2025/Jun/5/openai-court-order/">in June</a>. OpenAI were compelled by a court order to preserve <em>all</em> output, even from private chats, in case it became relevant to the ongoing New York Times lawsuit.</p>
+<p>Here are those "some exceptions":</p>
+<blockquote>
+<p>The judge in the case said that any chat logs already saved under the previous order would still be accessible and that OpenAI is required to hold on to any data related to ChatGPT accounts that have been flagged by the NYT.</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://youtu.be/-yhXIMNxW3A?si=eqQHx8BEia8Q7woq&amp;t=960">Theo Browne</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/law">law</a>, <a href="https://simonwillison.net/tags/new-york-times">new-york-times</a>, <a href="https://simonwillison.net/tags/privacy">privacy</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting AWS]]></title>
+        <id>https://simonwillison.net/2025/Oct/23/aws-postmortem/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/23/aws-postmortem/#atom-everything"/>
+        <updated>2025-10-23T04:49:59.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://aws.amazon.com/message/101925/"><p>For resiliency, the DNS Enactor operates redundantly and fully independently in three different Availability Zones (AZs). [...] When the second Enactor (applying the newest plan) completed its endpoint updates, it then invoked the plan clean-up process, which identifies plans that are significantly older than the one it just applied and deletes them. At the same time that this clean-up process was invoked, the first Enactor (which had been unusually delayed) applied its much older plan to the regional DDB endpoint, overwriting the newer plan. [...] The second Enactor's clean-up process then deleted this older plan because it was many generations older than the plan it had just applied. As this plan was deleted, all IP addresses for the regional endpoint were immediately removed.</p></blockquote>
+<p class="cite">&mdash; <a href="https://aws.amazon.com/message/101925/">AWS</a>, Amazon DynamoDB Service Disruption in Northern Virginia (US-EAST-1) Region (14.5 hours long!)</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/dns">dns</a>, <a href="https://simonwillison.net/tags/scaling">scaling</a>, <a href="https://simonwillison.net/tags/aws">aws</a>, <a href="https://simonwillison.net/tags/postmortem">postmortem</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video: Building a tool to copy-paste share terminal sessions using Claude Code for web]]></title>
+        <id>https://simonwillison.net/2025/Oct/23/claude-code-for-web-video/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/23/claude-code-for-web-video/#atom-everything"/>
+        <updated>2025-10-23T04:14:08.000Z</updated>
+        <summary type="html"><![CDATA[<p>This afternoon I was manually converting a terminal session into a shared HTML file for the umpteenth time when I decided to reduce the friction by building a custom tool for it - and on the spur of the moment I fired up <a href="https://www.descript.com/">Descript</a> to record the process. The result is this new <a href="https://www.youtube.com/watch?v=GQvMLLrFPVI">11 minute YouTube video</a> showing my workflow for vibe-coding simple tools from start to finish.</p>
+<p><lite-youtube videoid="GQvMLLrFPVI" js-api="js-api"
+  title="Using Claude Code for web to build a tool to copy-paste share terminal sessions"
+  playlabel="Play: Using Claude Code for web to build a tool to copy-paste share terminal sessions"
+> </lite-youtube></p>
+<h4 id="the-initial-problem">The initial problem</h4>
+<p>The problem I wanted to solve involves sharing my Claude Code CLI sessions - and the more general problem of sharing interesting things that happen in my terminal.</p>
+<p>A while back I discovered (using my vibe-coded <a href="https://tools.simonwillison.net/clipboard-viewer">clipboard inspector</a>) that copying and pasting from the macOS terminal populates a rich text clipboard format which preserves the colors and general formatting of the terminal output.</p>
+<p>The problem is that format looks like this:</p>
+<pre><code>{\rtf1\ansi\ansicpg1252\cocoartf2859
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red242\green242\blue242;\red0\green0\blue0;\red204\green98\blue70;
+\red0\green0\blue0;\red97\green97\blue97;\red102\green102\blue102;\red255\
+</code></pre>
+<p>This struck me as the kind of thing an LLM might be able to write code to parse, so I had <a href="https://chatgpt.com/share/680801ad-0804-8006-83fc-c2b209841a9c">ChatGPT take a crack at it</a> and then later <a href="https://claude.ai/share/5c12dd0e-713d-4f32-a6c1-d05dee353e4d">rewrote it from scratch with Claude Sonnet 4.5</a>. The result was <a href="https://tools.simonwillison.net/rtf-to-html">this rtf-to-html tool</a> which lets you paste in rich formatted text and gives you reasonably solid HTML that you can share elsewhere.</p>
+<p>To share that HTML I've started habitually pasting it into a <a href="https://gist.github.com/">GitHub Gist</a> and then taking advantage of <code>gitpreview.github.io</code>, a neat little unofficial tool that accepts <code>?GIST_ID</code> and displays the gist content as a standalone HTML page... which means you can link to rendered HTML that's stored in a gist.</p>
+<p>So my process was:</p>
+<ol>
+<li>Copy terminal output</li>
+<li>Paste into <a href="https://tools.simonwillison.net/rtf-to-html">rtf-to-html</a>
+</li>
+<li>Copy resulting HTML</li>
+<li>Paste that int a new GitHub Gist</li>
+<li>Grab that Gist's ID</li>
+<li>Share the link to <code>gitpreview.github.io?GIST_ID</code>
+</li>
+</ol>
+<p>Not too much hassle, but frustratingly manual if you're doing it several times a day.</p>
+<h4 id="the-desired-solution">The desired solution</h4>
+<p>Ideally I want a tool where I can do this:</p>
+<ol>
+<li>Copy terminal output</li>
+<li>Paste into a new tool</li>
+<li>Click a button and get a <code>gistpreview</code> link to share</li>
+</ol>
+<p>I decided to get Claude Code for web to build the entire thing.</p>
+<h4 id="the-prompt">The prompt</h4>
+<p>Here's the full prompt I used on <a href="https://claude.ai/code">claude.ai/code</a>, pointed at my <code>simonw/tools</code> repo, to build the tool:</p>
+<blockquote>
+<p><code>Build a new tool called terminal-to-html which lets the user copy RTF directly from their terminal and paste it into a paste area, it then produces the HTML version of that in a textarea with a copy button, below is a button that says "Save this to a Gist", and below that is a full preview. It will be very similar to the existing rtf-to-html.html tool but it doesn't show the raw RTF and it has that Save this to a Gist button</code></p>
+<p><code>That button should do the same trick that openai-audio-output.html does, with the same use of localStorage and the same flow to get users signed in with a token if they are not already</code></p>
+<p><code>So click the button, it asks the user to sign in if necessary, then it saves that HTML to a Gist in a file called index.html, gets back the Gist ID and shows the user the URL https://gistpreview.github.io/?6d778a8f9c4c2c005a189ff308c3bc47 - but with their gist ID in it</code></p>
+<p><code>They can see the URL, they can click it (do not use target="_blank") and there is also a "Copy URL" button to copy it to their clipboard</code></p>
+<p><code>Make the UI mobile friendly but also have it be courier green-text-on-black themed to reflect what it does</code></p>
+<p><code>If the user pastes and the pasted data is available as HTML but not as RTF skip the RTF step and process the HTML directly</code></p>
+<p><code>If the user pastes and it's only available as plain text then generate HTML that is just an open &lt;pre&gt; tag and their text and a closing &lt;/pre&gt; tag</code></p>
+</blockquote>
+<p>It's quite a long prompt - it took me several minutes to type! But it covered the functionality I wanted in enough detail that I was pretty confident Claude would be able to build it.</p>
+<h4 id="combining">Combining previous tools</h4>
+<p>I'm using one key technique in this prompt: I'm referencing existing tools in the same repo and telling Claude to imitate their functionality.</p>
+<p>I first wrote about this trick last March in <a href="https://simonwillison.net/2024/Mar/30/ocr-pdfs-images/">Running OCR against PDFs and images directly in your browser</a>, where I described how a snippet of code that used PDF.js and another snippet that used Tesseract.js was enough for Claude 3 Opus to build me this <a href="https://tools.simonwillison.net/ocr">working PDF OCR tool</a>. That was actually the tool that kicked off my <a href="https://tools.simonwillison.net/">tools.simonwillison.net</a> collection in the first place, which has since grown to 139 and counting.</p>
+<p>Here I'm telling Claude that I want the RTF to HTML functionality of <a href="https://github.com/simonw/tools/blob/main/rtf-to-html.html">rtf-to-html.html</a> combined with the Gist saving functionality of <a href="https://github.com/simonw/tools/blob/main/openai-audio-output.html">openai-audio-output.html</a>.</p>
+<p>That one has quite a bit going on. It uses the OpenAI audio API to generate audio output from a text prompt, which is returned by that API as base64-encoded data in JSON.</p>
+<p>Then it offers the user a button to save that JSON to a Gist, which gives the snippet a URL.</p>
+<p>Another tool I wrote, <a href="https://github.com/simonw/tools/blob/main/gpt-4o-audio-player.html">gpt-4o-audio-player.html</a>, can then accept that Gist ID in the URL and will fetch the JSON data and make the audio playable in the browser. <a href="https://tools.simonwillison.net/gpt-4o-audio-player?gist=4a982d3fe7ba8cb4c01e89c69a4a5335">Here's an example</a>.</p>
+<p>The trickiest part of this is API tokens. I've built tools in the past that require users to paste in a GitHub Personal Access Token (PAT) (which I then store in <code>localStorage</code> in their browser - I don't want other people's authentication credentials anywhere near my own servers). But that's a bit fiddly.</p>
+<p>Instead, I <a href="https://gist.github.com/simonw/975b8934066417fe771561a1b672ad4f">figured out</a> the minimal Cloudflare worker necessary to implement the server-side portion of GitHub's authentication flow. That code <a href="https://github.com/simonw/tools/blob/main/cloudflare-workers/github-auth.js">lives here</a> and means that any of the HTML+JavaScript tools in my collection can implement a GitHub authentication flow if they need to save Gists.</p>
+<p>But I don't have to tell the model any of that! I can just say "do the same trick that openai-audio-output.html does" and Claude Code will work the rest out for itself.</p>
+<h4 id="the-result">The result</h4>
+<p>Here's what <a href="https://tools.simonwillison.net/terminal-to-html">the resulting app</a> looks like after I've pasted in some terminal output from Claude Code CLI:</p>
+<p><img src="https://static.simonwillison.net/static/2025/terminal-to-html.jpg" alt="Terminal to HTML app. Green glowing text on black. Instructions: Paste terminal output below. Supports RTF, HTML or plain text. There's an HTML Code area with a Copy HTML button, Save this to a Gist and a bunch of HTML. Below is the result of save to a gist showing a URL and a Copy URL button. Below that a preview with the Claude Code heading in ASCII art." style="max-width: 100%;" /></p>
+<p>It's exactly what I asked for, and the green-on-black terminal aesthetic is spot on too.</p>
+<h4 id="other-notes-from-the-video">Other notes from the video</h4>
+<p>There are a bunch of other things that I touch on in the video. Here's a quick summary:</p>
+<ul>
+<li>
+<a href="https://tools.simonwillison.net/colophon">tools.simonwillison.net/colophon</a> is the list of all of my tools, with accompanying AI-generated descriptions. Here's <a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#a-detailed-example">more about how I built that with Claude Code</a> and notes on <a href="https://simonwillison.net/2025/Mar/13/tools-colophon/">how I added the AI-generated descriptions</a>.</li>
+<li>
+<a href="https://gistpreview.github.io">gistpreview.github.io</a> is really neat.</li>
+<li>I used <a href="https://www.descript.com/">Descript</a> to record and edit the video. I'm still getting the hang of it - hence the slightly clumsy pan-and-zoom - but it's pretty great for this kind of screen recording.</li>
+<li>The site's automated deploys are managed <a href="https://github.com/simonw/tools/blob/main/.github/workflows/pages.yml">by this GitHub Actions workflow</a>. I also have it configured to work with <a href="https://pages.cloudflare.com/">Cloudflare Pages</a> for those preview deployments from PRs (here's <a href="https://github.com/simonw/tools/pull/84#issuecomment-3434969331">an example</a>).</li>
+<li>The automated documentation is created using my <a href="https://llm.datasette.io/">llm</a> tool and <a href="https://github.com/simonw/llm-anthropic">llm-anthropic</a> plugin. Here's <a href="https://github.com/simonw/tools/blob/main/write_docs.py">the script that does that</a>, recently <a href="https://github.com/simonw/tools/commit/99f5f2713f8001b72f4b1cafee5a15c0c26efb0d">upgraded</a> to use Claude Haiku 4.5.</li>
+</ul>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/tools">tools</a>, <a href="https://simonwillison.net/tags/youtube">youtube</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/cloudflare">cloudflare</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/async-coding-agents">async-coding-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Dane Stuckey (OpenAI CISO) on prompt injection risks for ChatGPT Atlas]]></title>
         <id>https://simonwillison.net/2025/Oct/22/openai-ciso-on-atlas/#atom-everything</id>
@@ -3770,157 +3891,6 @@ The post Sunset notice: GitHub App-based Copilot Extensions appeared first on Th
         <updated>2025-09-24T09:30:06.000Z</updated>
         <summary type="html"><![CDATA[We’re bringing you a range of additional options for assigning Copilot to issues as part of this public preview. When assigning an issue to Copilot coding agent, you can now…
 The post Pick the repository and base branch when assigning issues to Copilot appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GPT-5-Codex]]></title>
-        <id>https://simonwillison.net/2025/Sep/23/gpt-5-codex/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Sep/23/gpt-5-codex/#atom-everything"/>
-        <updated>2025-09-23T23:59:20.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://platform.openai.com/docs/models/gpt-5-codex">GPT-5-Codex</a></strong></p>
-OpenAI <a href="https://simonwillison.net/2025/Sep/15/gpt-5-codex/">half-relased this model</a> earlier this month, adding it to their Codex CLI tool but not their API.</p>
-<p>Today they've fixed that - the new model can now be accessed as <code>gpt-5-codex</code>. It's priced the same as regular GPT-5: $1.25/million input tokens, $10/million output tokens, and the same hefty 90% discount for previously cached input tokens, especially important for agentic tool-using workflows which quickly produce a lengthy conversation.</p>
-<p>It's only available via their Responses API, which means you currently need to install the <a href="https://github.com/simonw/llm-openai-plugin">llm-openai-plugin</a> to use it with LLM:</p>
-<pre><code>llm install -U llm-openai-plugin
-llm -m openai/gpt-5-codex -T llm_version 'What is the LLM version?'
-</code></pre>
-<p>Outputs:</p>
-<blockquote>
-<p>The installed LLM version is 0.27.1.</p>
-</blockquote>
-<p>I added <a href="https://llm.datasette.io/en/stable/tools.html">tool support</a> to that plugin today, <a href="https://github.com/simonw/llm-openai-plugin/issues/20#issuecomment-3325921197">mostly authored by GPT-5 Codex itself</a> using OpenAI's Codex CLI.</p>
-<p>The new <a href="https://cookbook.openai.com/examples/gpt-5-codex_prompting_guide">prompting guide for GPT-5-Codex</a> is worth a read.</p>
-<blockquote>
-<p>GPT-5-Codex is purpose-built for Codex CLI, the Codex IDE extension, the Codex cloud environment, and working in GitHub, and also supports versatile tool use. We recommend using GPT-5-Codex only for agentic and interactive coding use cases.</p>
-<p>Because the model is trained specifically for coding, many best practices you once had to prompt into general purpose models are built in, and over prompting can reduce quality.</p>
-<p>The core prompting principle for GPT-5-Codex is <strong>“less is more.”</strong></p>
-</blockquote>
-<p>I <a href="https://gist.github.com/simonw/b371949ae984b0431848cd16cba24b27">tried my pelican benchmark</a> at a cost of <a href="https://www.llm-prices.com/#it=16&amp;ot=2154&amp;ic=1.25&amp;oc=10">2.156 cents</a>.</p>
-<pre><code>llm -m openai/gpt-5-codex "Generate an SVG of a pelican riding a bicycle"
-</code></pre>
-<p><img alt="See description below" src="https://static.simonwillison.net/static/2025/gpt-5-codex-api-pelican.png" /></p>
-<p>I asked Codex to describe this image and it correctly identified it as a pelican!</p>
-<pre><code>llm -m openai/gpt-5-codex -a https://static.simonwillison.net/static/2025/gpt-5-codex-api-pelican.png \
-  -s 'Write very detailed alt text'
-</code></pre>
-<blockquote>
-<p>Cartoon illustration of a cream-colored pelican with a large orange beak and tiny black eye riding a minimalist dark-blue bicycle. The bird’s wings are tucked in, its legs resemble orange stick limbs pushing the pedals, and its tail feathers trail behind with light blue motion streaks to suggest speed. A small coral-red tongue sticks out of the pelican’s beak. The bicycle has thin light gray spokes, and the background is a simple pale blue gradient with faint curved lines hinting at ground and sky.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/gpt-5">gpt-5</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Qwen3-VL: Sharper Vision, Deeper Thought, Broader Action]]></title>
-        <id>https://simonwillison.net/2025/Sep/23/qwen3-vl/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Sep/23/qwen3-vl/#atom-everything"/>
-        <updated>2025-09-23T23:51:08.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://qwen.ai/blog?id=99f0335c4ad9ff6153e517418d48535ab6d8afef&amp;from=research.latest-advancements-list">Qwen3-VL: Sharper Vision, Deeper Thought, Broader Action</a></strong></p>
-I've been looking forward to this. Qwen 2.5 VL is one of the best available open weight vision LLMs, so I had high hopes for Qwen 3's vision models.</p>
-<blockquote>
-<p>Firstly, we are open-sourcing the flagship model of this series: Qwen3-VL-235B-A22B, available in both Instruct and Thinking versions. The Instruct version matches or even exceeds Gemini 2.5 Pro in major visual perception benchmarks. The Thinking version achieves state-of-the-art results across many multimodal reasoning benchmarks.</p>
-</blockquote>
-<p>Bold claims against Gemini 2.5 Pro, which are supported by a flurry of self-reported benchmarks.</p>
-<p>This initial model is <em>enormous</em>. On Hugging Face both <a href="https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct">Qwen3-VL-235B-A22B-Instruct</a> and <a href="https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Thinking">Qwen3-VL-235B-A22B-Thinking</a> are 235B parameters and weigh 471 GB. Not something I'm going to be able to run on my 64GB Mac!</p>
-<p>The <a href="https://huggingface.co/collections/Qwen/qwen25-vl-6795ffac22b334a837c0f9a5">Qwen 2.5 VL family</a> included models at 72B, 32B, 7B and 3B sizes. Given the rate Qwen are shipping models at the moment I wouldn't be surprised to see smaller Qwen 3 VL models show up in just the next few days.</p>
-<p>Also from Qwen today, three new API-only closed-weight models: <a href="https://x.com/Alibaba_Qwen/status/1970582211993927774">upgraded Qwen 3 Coder</a>, <a href="https://qwen.ai/blog?id=4266edf7f3718f2d3fda098b3f4c48f3573215d0&amp;from=home.latest-research-list">Qwen3-LiveTranslate-Flash</a> (real-time multimodal interpretation), and <a href="https://qwen.ai/blog?id=241398b9cd6353de490b0f82806c7848c5d2777d&amp;from=research.latest-advancements-list">Qwen3-Max</a>, their new trillion parameter flagship model, which they describe as their "largest and most capable model to date".</p>
-<p>Plus <a href="https://twitter.com/Alibaba_Qwen/status/1970510193537753397">Qwen3Guard</a>, a "safety moderation model series" that looks similar in purpose to Meta's <a href="https://www.llama.com/docs/model-cards-and-prompt-formats/llama-guard-3/">Llama Guard</a>. This one is open weights (Apache 2.0) and comes in 8B, 4B and 0.6B sizes <a href="https://huggingface.co/collections/Qwen/qwen3guard-68d2729abbfae4716f3343a1">on Hugging Face</a>. There's more information in the <a href="https://github.com/QwenLM/Qwen3Guard">QwenLM/Qwen3Guard</a> GitHub repo.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45352672">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Upcoming deprecation of select Copilot models from Claude, OpenAI, and Gemini]]></title>
-        <id>https://github.blog/changelog/2025-09-23-auto-draft</id>
-        <link href="https://github.blog/changelog/2025-09-23-upcoming-deprecation-of-select-copilot-models-from-claude-openai-and-gemini"/>
-        <updated>2025-09-23T23:09:51.000Z</updated>
-        <summary type="html"><![CDATA[As part of our commitment to a fast, high‑quality Copilot experience, we regularly evaluate and retire older models in favor of newer, more capable ones. We will deprecate the following…
-The post Upcoming deprecation of select Copilot models from Claude, OpenAI, and Gemini appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Kate Catlin</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Claude Opus 4.1 is now generally available in GitHub Copilot]]></title>
-        <id>https://github.blog/changelog/2025-09-23-claude-opus-4-1-is-now-generally-available-in-github-copilot</id>
-        <link href="https://github.blog/changelog/2025-09-23-claude-opus-4-1-is-now-generally-available-in-github-copilot"/>
-        <updated>2025-09-23T20:42:15.000Z</updated>
-        <summary type="html"><![CDATA[Availability in GitHub Copilot Claude Opus 4.1 is available to Copilot Pro+ and Copilot Enterprise plans. You can access this model in GitHub Copilot Chat on github.com, VS Code, Visual…
-The post Claude Opus 4.1 is now generally available in GitHub Copilot appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[qwen3-embedding]]></title>
-        <id>https://ollama.com/library/qwen3-embedding</id>
-        <link href="https://ollama.com/library/qwen3-embedding"/>
-        <updated>2025-09-23T20:26:00.000Z</updated>
-        <summary type="html"><![CDATA[Building upon the foundational models of the Qwen3 series, Qwen3 Embedding provides a comprehensive range of text embeddings models in various sizes]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[qwen3-coder]]></title>
-        <id>https://ollama.com/library/qwen3-coder</id>
-        <link href="https://ollama.com/library/qwen3-coder"/>
-        <updated>2025-09-23T19:14:00.000Z</updated>
-        <summary type="html"><![CDATA[Alibaba's performant long context models for agentic and coding tasks.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Accelerate remediation with security campaigns and assignable alerts for code scanning and secret scanning]]></title>
-        <id>https://github.blog/changelog/2025-09-23-accelerate-remediation-with-security-campaigns-and-assignable-alerts-for-code-scanning-and-secret-scanning</id>
-        <link href="https://github.blog/changelog/2025-09-23-accelerate-remediation-with-security-campaigns-and-assignable-alerts-for-code-scanning-and-secret-scanning"/>
-        <updated>2025-09-23T16:47:00.000Z</updated>
-        <summary type="html"><![CDATA[Today, we’re announcing two major enhancements that help security and developer teams remediate security debt more efficiently. Security campaigns for secret scanning alerts Security campaigns are already generally available for…
-The post Accelerate remediation with security campaigns and assignable alerts for code scanning and secret scanning appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[OpenAI GPT-5-Codex is rolling out in public preview for GitHub Copilot]]></title>
-        <id>https://github.blog/changelog/2025-09-23-openai-gpt-5-codex-is-rolling-out-in-public-preview-for-github-copilot</id>
-        <link href="https://github.blog/changelog/2025-09-23-openai-gpt-5-codex-is-rolling-out-in-public-preview-for-github-copilot"/>
-        <updated>2025-09-23T16:43:02.000Z</updated>
-        <summary type="html"><![CDATA[OpenAI’s GPT-5-Codex model, optimized for agentic coding, is now rolling out in GitHub Copilot Availability in GitHub Copilot GPT-5-Codex will be available to Copilot Pro, Pro+, Business, and Enterprise. You’ll…
-The post OpenAI GPT-5-Codex is rolling out in public preview for GitHub Copilot appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Incremental security analysis with CodeQL is now available for all languages]]></title>
-        <id>https://github.blog/changelog/2025-09-23-incremental-security-analysis-with-codeql-is-now-available-for-all-languages</id>
-        <link href="https://github.blog/changelog/2025-09-23-incremental-security-analysis-with-codeql-is-now-available-for-all-languages"/>
-        <updated>2025-09-23T15:21:27.000Z</updated>
-        <summary type="html"><![CDATA[CodeQL scans on pull requests for Go, C#, C/C++ and Swift are now incremental. All CodeQL languages now support incremental analysis. This is powered by our new incremental analysis, which…
-The post Incremental security analysis with CodeQL is now available for all languages appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub Copilot app modernization is now generally available for Java and .NET]]></title>
-        <id>https://github.blog/changelog/2025-09-22-github-copilot-app-modernization-is-now-generally-available-for-java-and-net</id>
-        <link href="https://github.blog/changelog/2025-09-22-github-copilot-app-modernization-is-now-generally-available-for-java-and-net"/>
-        <updated>2025-09-23T13:00:35.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Copilot app modernization is now generally available for Java and .NET projects. With Copilot, you can assess applications, apply code transformations, patch builds, and containerize services, all in days…
-The post GitHub Copilot app modernization is now generally available for Java and .NET appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
         </author>
