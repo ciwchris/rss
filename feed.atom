@@ -2,10 +2,189 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-10-28T14:11:07.551Z</updated>
+    <updated>2025-10-28T21:09:57.948Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Hacking the WiFi-enabled color screen GitHub Universe conference badge]]></title>
+        <id>https://simonwillison.net/2025/Oct/28/github-universe-badge/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Oct/28/github-universe-badge/#atom-everything"/>
+        <updated>2025-10-28T17:17:44.000Z</updated>
+        <summary type="html"><![CDATA[<p>I'm at <a href="https://githubuniverse.com/">GitHub Universe</a> this week (thanks to a free ticket from Microsoft). Yesterday I picked up my conference badge... which incorporates a full Raspberry Pi with a battery, color screen, WiFi and bluetooth.</p>
+<p>GitHub Universe has a tradition of hackable conference badges - the badge last year had an eInk display. This year's is a huge upgrade though - a color screen and WiFI connection makes this thing a genuinely useful little computer!</p>
+<p><img src="https://static.simonwillison.net/static/2025/gitub-universe-badge.jpg" alt="Photo of the badge - it has a color screen with six app icons" style="max-width: 100%;" /></p>
+<p>The only thing it's missing is a keyboard - the device instead provides five buttons total - Up, Down, A, B, C. It might be possible to get a bluetooth keyboard to work though I'll believe that when I see it - there's not a lot of space on this device for a keyboard driver.</p>
+<p>Everything is written using MicroPython, and the device is designed to be hackable: connect it to a laptop with a USB-C cable and you can start modifying the code directly on the device.</p>
+<h4 id="getting-setup-with-the-badge">Getting setup with the badge</h4>
+<p>Out of the box the badge will play an opening animation (implemented as a sequence of PNG image frames) and then show a home screen with six app icons.</p>
+<p>The default apps are mostly neat Octocat-themed demos: a flappy-bird clone, a tamagotchi-style pet, a drawing app that works like an etch-a-sketch, an IR scavenger hunt for the conference venue itself (this thing has an IR sensor too!), and a gallery app showing some images.</p>
+<p>The sixth app is a badge app. This will show your GitHub profile image and some basic stats, but will only work if you dig out a USB-C cable and make some edits to the files on the badge directly.</p>
+<p>I did this on a Mac. I plugged a USB-C cable into the badge which caused MacOS to treat it as an attached drive volume. In that drive are several files including <code>secrets.py</code>. Open that up, confirm the WiFi details are correct and add your GitHub username. The file should look like this:</p>
+<pre><span class="pl-c1">WIFI_SSID</span> <span class="pl-c1">=</span> <span class="pl-s">"..."</span>
+<span class="pl-c1">WIFI_PASSWORD</span> <span class="pl-c1">=</span> <span class="pl-s">"..."</span>
+<span class="pl-c1">GITHUB_USERNAME</span> <span class="pl-c1">=</span> <span class="pl-s">"simonw"</span></pre>
+<p>The badge comes with the SSID and password for the GitHub Universe WiFi network pre-populated.</p>
+<p>That's it! Unmount the disk, hit the reboot button on the back of the badge and when it comes back up again the badge app should look something like this:</p>
+<p><img src="https://static.simonwillison.net/static/2025/badge-profile.jpg" alt="Badge shows my GitHub avatar, plus 10,947 followers, 4,083 contribs, 893 repos" style="max-width: 100%;" /></p>
+<h4 id="building-your-own-apps">Building your own apps</h4>
+<p>Here's <a href="https://badger.github.io/">the official documentation</a> for building software for the badge.</p>
+<p>When I got mine yesterday the official repo had not yet been updated, so I had to figure this out myself.</p>
+<p>I copied all of the code across to my laptop, added it to a Git repo and then fired up Claude Code and told it:</p>
+<blockquote>
+<p><code>Investigate this code and add a detailed README</code></p>
+</blockquote>
+<p>Here's <a href="https://github.com/simonw/github-universe-2025-badge/blob/15773c7a53275e7836216c3aa9a8a781c06f7859/README.md">the result</a>, which was really useful for getting a start on understanding how it all worked.</p>
+<p>Each of the six default apps lives in a <code>apps/</code> folder, for example <a href="https://github.com/simonw/github-universe-2025-badge/tree/main/apps/sketch">apps/sketch/</a> for the sketching app.</p>
+<p>There's also a menu app which powers the home screen. That lives in <a href="https://github.com/simonw/github-universe-2025-badge/tree/main/apps/menu">apps/menu/</a>. You can edit code in here to add new apps that you create to that screen.</p>
+<p>I told Claude:</p>
+<blockquote>
+<p><code>Add a new app to it available from the menu which shows network status and other useful debug info about the machine it is running on</code></p>
+</blockquote>
+<p>This was a bit of a long-shot, but it totally worked!</p>
+<p>The first version had an error:</p>
+<p><img src="https://static.simonwillison.net/static/2025/badge-error.jpg" alt="A stacktrace! file badgeware.py line 510 has a list index out of range error." style="max-width: 100%;" /></p>
+<p>I OCRd that photo (with the Apple Photos app) and pasted the message into Claude Code and it fixed the problem.</p>
+<p>This almost worked... but the addition of a seventh icon to the 2x3 grid meant that you could select the icon but it didn't scroll into view. I had Claude <a href="https://github.com/simonw/github-universe-2025-badge/commit/2a60f75db101dc1dc7568ff466ad5c97dc86b336">fix that for me too</a>.</p>
+<p>Here's the code for <a href="https://github.com/simonw/github-universe-2025-badge/blob/main/apps/debug/__init__.py">apps/debug/__init__.py</a>, and <a href="https://gistpreview.github.io/?276d3e0c6566ddbc93adc7020ef6b439">the full Claude Code transcript</a> created using my terminal-to-HTML app <a href="https://simonwillison.net/2025/Oct/23/claude-code-for-web-video/">described here</a>.</p>
+<p>Here are the four screens of the debug app:</p>
+<p><img src="https://static.simonwillison.net/static/2025/badge-debug-network.jpg" alt="Network info, showing WiFi network details and IP address" style="max-width: 100%;" /></p>
+<p><img src="https://static.simonwillison.net/static/2025/badge-debug-storage.jpg" alt="Storage screen, it has 1MB total, 72BK used. Usage 7%. CMD is /system/apps/debug" style="max-width: 100%;" /></p>
+<p><img src="https://static.simonwillison.net/static/2025/badge-debug-system.jpg" alt="System: Platform rp2, Python 1.26.0, CPU freq 200MHz, Uptime 13m46s" style="max-width: 100%;" /></p>
+<p><img src="https://static.simonwillison.net/static/2025/badge-debug-memory.jpg" alt="Memory info - 100KB used, 241KB total, and a usage bar. Press B to run GC." style="max-width: 100%;" /></p>
+<h4 id="an-icon-editor">An icon editor</h4>
+<p>The icons used on the app are 24x24 pixels. I decided it would be neat to have a web app that helps build those icons, including the ability to start by creating an icon from an emoji.</p>
+<p>I bulit this one <a href="https://claude.ai/share/ca05bd58-859e-4ceb-b5c7-7428b348df3c">using Claude Artifacts</a>. Here's the result, now available at <a href="https://tools.simonwillison.net/icon-editor">tools.simonwillison.net/icon-editor</a>:</p>
+<p><img src="https://static.simonwillison.net/static/2025/icon-editor.jpg" alt="A stacktrace! file badgeware.py line 510 has a list index out of range error." style="max-width: 100%;" /></p>
+<h4 id="and-a-repl">And a REPL</h4>
+<p>I noticed that last year's badge configuration app (which I can't find in <a href="https://github.com/badger/badger.github.io/">github.com/badger/badger.github.io</a> any more, I think they reset the history on that repo?) worked by talking to MicroPython over the Web Serial API from Chrome. Here's <a href="https://github.com/simonw/2004-badger.github.io/blob/e3501d631a987bfbc12d93c9e35bf2c64e55d052/public/script.js#L305-L394">my archived copy of that code</a>.</p>
+<p>Wouldn't it be useful to have a REPL in a web UI that you could use to interact with the badge directly over USB?</p>
+<p>I pointed Claude Code at a copy of that repo and told it:</p>
+<blockquote>
+<p><code>Based on this build a new HTML with inline JavaScript page that uses WebUSB to simply test that the connection to the badge works and then list files on that device using the same mechanism</code></p>
+</blockquote>
+<p>It took a bit of poking (here's <a href="https://gistpreview.github.io/?13d93a9e3b0ce1c921cd20303f2f1d84">the transcript</a>) but the result is now live at <a href="https://tools.simonwillison.net/badge-repl">tools.simonwillison.net/badge-repl</a>. It only works in Chrome - you'll need to plug the badge in with a USB-C cable and then click "Connect to Badge".</p>
+<p><img src="https://static.simonwillison.net/static/2025/badge-repl.jpg" alt="Badge Interactive REPL. Note: This tool requires the Web Serial API (Chrome/Edge on desktop). Connect to Badge, Disconnect and Clear Terminal buttons. Then a REPL interface displaying: Ready to connect. Click &quot;Connect to Badge&quot; to start.Traceback (most recent call last):ddae88e91.dirty on 2025-10-20; GitHub Badger with RP2350 Type &quot;help()&quot; for more information.  &gt;&gt;&gt;  MicroPython v1.14-5485.gddae88e91.dirty on 2025-10-20; GitHub Badger with RP2350 Type &quot;help()&quot; for more information. &gt;&gt;&gt; os.listdir() ['icon.py', 'ui.py', 'init.py', '._init.py', '._icon.py'] &gt;&gt;&gt; machine.freq() 200000000 &gt;&gt;&gt; gc.mem_free() 159696 &gt;&gt;&gt; help() Welcome to MicroPython!" style="max-width: 100%;" /></p>
+<h4 id="get-hacking">Get hacking</h4>
+<p>If you're a GitHub Universe attendee I hope this is useful. The official <a href="https://badger.github.io/">badger.github.io</a> site has plenty more details to help you get started.</p>
+<p>There isn't yet a way to get hold of this hardware outside of GitHub Universe - I know they had some supply chain challenges just getting enough badges for the conference attendees!</p>
+<p>It's a very neat device, built for GitHub by <a href="https://www.pimoroni.com/">Pimoroni</a> in Sheffield, UK. A version of this should become generally available in the future under the name "Pimoroni Tufty 2350".</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/hardware-hacking">hardware-hacking</a>, <a href="https://simonwillison.net/tags/microsoft">microsoft</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/disclosures">disclosures</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot in Visual Studio Code gets upgraded]]></title>
+        <id>https://github.blog/changelog/2025-10-28-auto-draft</id>
+        <link href="https://github.blog/changelog/2025-10-28-github-copilot-in-visual-studio-code-gets-upgraded"/>
+        <updated>2025-10-28T15:30:02.000Z</updated>
+        <summary type="html"><![CDATA[The following items released to VS Code Insiders and were announced at GitHub Universe 2025. Highlights OpenAI Codex integration: Access OpenAI Codex in VS Code Insiders with a Copilot Pro+…
+The post GitHub Copilot in Visual Studio Code gets upgraded appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Dylan Birtolo</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[A mission control to assign, steer, and track Copilot coding agent tasks]]></title>
+        <id>https://github.blog/changelog/2025-10-27-a-mission-control-to-assign-steer-and-track-copilot-coding-agent-tasks</id>
+        <link href="https://github.blog/changelog/2025-10-28-a-mission-control-to-assign-steer-and-track-copilot-coding-agent-tasks"/>
+        <updated>2025-10-28T15:29:08.000Z</updated>
+        <summary type="html"><![CDATA[We’ve redesigned how you manage your Copilot coding agent tasks on github.com. Instead of jumping between pages to track progress, monitor changes, and manage tasks, everything you need now lives…
+The post A mission control to assign, steer, and track Copilot coding agent tasks appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Code Quality in public preview]]></title>
+        <id>https://github.blog/changelog/2025-10-22-github-code-quality-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-10-28-github-code-quality-in-public-preview"/>
+        <updated>2025-10-28T15:28:45.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Code Quality is now available in public preview! It turns every pull request into an opportunity to improve. With in-context findings, one-click Copilot fixes, and reliability and maintainability scores,…
+The post GitHub Code Quality in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[New public preview features in Copilot code review: AI reviews that see the full picture]]></title>
+        <id>https://github.blog/changelog/2025-10-24-new-public-preview-features-in-copilot-code-review-ai-reviews-that-see-the-full-picture</id>
+        <link href="https://github.blog/changelog/2025-10-28-new-public-preview-features-in-copilot-code-review-ai-reviews-that-see-the-full-picture"/>
+        <updated>2025-10-28T15:27:44.000Z</updated>
+        <summary type="html"><![CDATA[Copilot code review (CCR) now blends LLM detections and tool calling with deterministic tools like ESLint and CodeQL, delivering smarter reviews and a seamless handoff to the Copilot coding agent…
+The post New public preview features in Copilot code review: AI reviews that see the full picture appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Work with Copilot coding agent in Slack]]></title>
+        <id>https://github.blog/changelog/2025-10-23-work-with-copilot-coding-agent-in-slack</id>
+        <link href="https://github.blog/changelog/2025-10-28-work-with-copilot-coding-agent-in-slack"/>
+        <updated>2025-10-28T15:26:45.000Z</updated>
+        <summary type="html"><![CDATA[The GitHub app for Slack now works with GitHub Copilot coding agent, letting you generate pull requests directly from your Slack conversations. This update is rolling out over the course…
+The post Work with Copilot coding agent in Slack appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot for Linear available in public preview]]></title>
+        <id>https://github.blog/changelog/2025-10-24-github-copilot-for-linear-available-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-10-28-github-copilot-for-linear-available-in-public-preview"/>
+        <updated>2025-10-28T15:25:36.000Z</updated>
+        <summary type="html"><![CDATA[You can now assign issues in Linear to Copilot coding agent, our asynchronous, autonomous background agent. When you assign a Linear issue to Copilot, it will: Analyze the issue contents…
+The post GitHub Copilot for Linear available in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Enterprise AI controls & the agent control plane are in public preview]]></title>
+        <id>https://github.blog/changelog/2025-10-27-enterprise-ai-controls-the-agent-control-plane-are-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-10-28-enterprise-ai-controls-the-agent-control-plane-are-in-public-preview"/>
+        <updated>2025-10-28T15:24:07.000Z</updated>
+        <summary type="html"><![CDATA[We’re introducing a new enterprise-level experience focused on administrative functions for AI systems, available today to all GitHub Enterprise Cloud customers using Copilot. This is your agent control plane, a…
+The post Enterprise AI controls & the agent control plane are in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot usage metrics dashboard and API in public preview]]></title>
+        <id>https://github.blog/changelog/2025-10-22-copilot-usage-metrics-dashboard-and-api-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-10-28-copilot-usage-metrics-dashboard-and-api-in-public-preview"/>
+        <updated>2025-10-28T15:23:43.000Z</updated>
+        <summary type="html"><![CDATA[The Copilot usage metrics dashboard and corresponding API are available in public preview for GitHub Enterprise. The AI era of software development isn’t about are teams using AI, but rather…
+The post Copilot usage metrics dashboard and API in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Ask Copilot coding agent to make changes in any pull request with @copilot]]></title>
+        <id>https://github.blog/changelog/2025-10-20-ask-copilot-coding-agent-to-make-changes-in-any-pull-request-with-copilot</id>
+        <link href="https://github.blog/changelog/2025-10-28-ask-copilot-coding-agent-to-make-changes-in-any-pull-request-with-copilot"/>
+        <updated>2025-10-28T15:20:57.000Z</updated>
+        <summary type="html"><![CDATA[As well as open new pull requests from scratch, Copilot can now help you make changes to an existing pull request created by a human—just mention @copilot in a comment.…
+The post Ask Copilot coding agent to make changes in any pull request with @copilot appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot coding agent now supports self-hosted runners]]></title>
+        <id>https://github.blog/changelog/2025-10-21-copilot-coding-agent-now-supports-self-hosted-runners</id>
+        <link href="https://github.blog/changelog/2025-10-28-copilot-coding-agent-now-supports-self-hosted-runners"/>
+        <updated>2025-10-28T15:20:53.000Z</updated>
+        <summary type="html"><![CDATA[You can now configure Copilot coding agents’s development environment to run in your own infrastructure using self-hosted GitHub Actions runners managed by Actions Runner Controller (ARC). With this setup, you…
+The post Copilot coding agent now supports self-hosted runners appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Aaron Boodman]]></title>
         <id>https://simonwillison.net/2025/Oct/28/aaron-boodman/#atom-everything</id>
