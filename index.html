@@ -31,6 +31,99 @@
       <article>
           <details>
             <summary>
+              New prompt injection papers: Agents Rule of Two and The Attacker Moves Second
+              <span class="post-metadata">(5 min | 1400 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/2/new-prompt-injection-papers/#atom-everything>Two interesting new papers regarding LLM security and prompt injection came to my attention this weekend.
+
+Agents Rule of Two: A Practical Approach to AI Agent Security
+
+The first is Agents Rule of Two: A Practical Approach to AI Agent Security, published on October 31st on the Meta AI blog. It doesn&#x27;t list authors but it was shared on Twitter by Meta AI security researcher Mick Ayzenberg.
+
+It proposes a &quot;Rule of Two&quot; that&#x27;s inspired by both my own lethal trifecta concept and the Google Chrome team&#x27;s Rule Of 2 for writing code that works with untrustworthy inputs:
+
+
+At a high level, the Agents Rule of Two states that until robustness research allows us to reliably detect and refuse prompt injection, agents must satisfy no more than two of the following three properties within a session to avoid the highest impact consequences of prompt injection.
+
+[A] An agent can process untrustworthy inputs
+
+[B] An agent can have access to sensitive systems or private data
+
+[C] An agent can change state or communicate externally
+
+It&#x27;s still possible that all three properties are necessary to carry out a request. If an agent requires all three without starting a new session (i.e., with a fresh context window), then the agent should not be permitted to operate autonomously and at a minimum requires supervision --- via human-in-the-loop approval or another reliable means of validation.
+
+
+It&#x27;s accompanied by this handy diagram:
+
+
+
+I like this a lot.
+
+I&#x27;ve spent several years now trying to find clear ways to explain the risks of prompt injection attacks to developers who are building on top of LLMs. It&#x27;s frustratingly difficult.
+
+I&#x27;ve had the most success with the lethal trifecta, which boils one particular class of prompt injection attack down to a simple-enough model: if your system has access to private data, exposure to untrusted content and a way to communicate externally then it&#x27;s vulnerable to private data being stolen.
+
+The one problem with the lethal trifecta is that it only covers the risk of data exfiltration: there are plenty of other, even nastier risks that arise from prompt injection attacks against LLM-powered agents with access to tools which the lethal trifecta doesn&#x27;t cover.
+
+The Agents Rule of Two neatly solves this, through the addition of &quot;changing state&quot; as a property to consider. This brings other forms of tool usage into the picture: anything that can change state triggered by untrustworthy inputs is something to be very cautious about.
+
+It&#x27;s also refreshing to see another major research lab concluding that prompt injection remains an unsolved problem, and attempts to block or filter them have not proven reliable enough to depend on. The current solution is to design systems with this in mind, and the Rule of Two is a solid way to think about that.
+
+Update: On thinking about this further there&#x27;s one aspect of the Rule of Two model that doesn&#x27;t work for me: the Venn diagram above marks the combination of untrustworthy inputs and the ability to change state as &quot;safe&quot;, but that&#x27;s not right. Even without access to private systems or sensitive data that pairing can still produce harmful results. Unfortunately adding an exception for that pair undermines the simplicity of the &quot;Rule of Two&quot; framing!
+ 
+Which brings me to the second paper...
+
+The Attacker Moves Second: Stronger Adaptive Attacks Bypass Defenses Against LLM Jailbreaks and Prompt Injections
+
+This paper is dated 10th October 2025 on Arxiv and comes from a heavy-hitting team of 14 authors - Milad Nasr, Nicholas Carlini, Chawin Sitawarin, Sander V. Schulhoff, Jamie Hayes, Michael Ilie, Juliette Pluto, Shuang Song, Harsh Chaudhari, Ilia Shumailov, Abhradeep Thakurta, Kai Yuanqing Xiao, Andreas Terzis, Florian Tramèr - including representatives from OpenAI, Anthropic, and Google DeepMind.
+
+The paper looks at 12 published defenses against prompt injection and jailbreaking and subjects them to a range of &quot;adaptive attacks&quot; - attacks that are allowed to expend considerable effort iterating multiple times to try and find a way through.
+
+The defenses did not fare well:
+
+
+By systematically tuning and scaling general optimization techniques—gradient descent, reinforcement learning, random search, and human-guided exploration—we bypass 12 recent defenses (based on a diverse set of techniques) with attack success rate above 90% for most; importantly, the majority of defenses originally reported near-zero attack success rates.
+
+
+Notably the &quot;Human red-teaming setting&quot; scored 100%, defeating all defenses. That red-team consisted of 500 participants in an online competition they ran with a $20,000 prize fund.
+
+The key point of the paper is that static example attacks - single string prompts designed to bypass systems - are an almost useless way to evaluate these defenses. Adaptive attacks are far more powerful, as shown by this chart:
+
+
+
+The three automated adaptive attack techniques used by the paper are:
+
+
+
+Gradient-based methods - these were the least effective, using the technique described in the legendary Universal and Transferable Adversarial Attacks on Aligned Language Models paper from 2023.
+
+
+Reinforcement learning methods - particularly effective against black-box models: &quot;we allowed the attacker model to interact directly with the defended system and observe its outputs&quot;, using 32 sessions of 5 rounds each.
+
+
+Search-based methods - generate candidates with an LLM, then evaluate and further modify them using LLM-as-judge and other classifiers.
+
+
+The paper concludes somewhat optimistically:
+
+
+[...] Adaptive evaluations are therefore more challenging to perform,
+making it all the more important that they are performed. We again urge defense authors to release simple, easy-to-prompt defenses that are amenable to human analysis. [...] Finally, we hope that our analysis here will increase the standard for defense evaluations, and in so doing, increase the likelihood that reliable jailbreak and prompt injection defenses will be developed.
+
+
+Given how totally the defenses were defeated, I do not share their optimism that reliable defenses will be developed any time soon.
+
+As a review of how far we still have to go this paper packs a powerful punch. I think it makes a strong case for Meta&#x27;s Agents Rule of Two as the best practical advice for building secure LLM-powered agent systems today in the absence of prompt injection defenses we can rely on.
+Tags: definitions, security, openai, prompt-injection, anthropic, nicholas-carlini, paper-review, lethal-trifecta</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               PyCon US 2026 call for proposals is now open
               <span class="post-metadata">(1 min | 414 words)</span> 
             </summary>
@@ -4444,36 +4537,6 @@ This category of coding agent software is still really new, and the models have 
 
 I plan to write more as I figure out the ways of using them that are most effective. I encourage other practitioners to do the same!
 Tags: ai, generative-ai, llms, ai-assisted-programming, ai-agents, coding-agents, claude-code, codex-cli</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-10-04</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Let the LLM Write the Prompts: An Intro to DSPy in Compound Al Pipelines
-              <span class="post-metadata">(2 min | 478 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/4/drew-on-dspy/#atom-everything>Let the LLM Write the Prompts: An Intro to DSPy in Compound Al Pipelines
-DSPy in the past. This half hour talk by Drew Breunig at the recent Databricks Data + AI Summit is the clearest explanation I&#x27;ve seen yet of the kinds of problems it can help solve.
-Here&#x27;s Drew&#x27;s written version of the talk.
-Drew works on Overture Maps, which combines Point Of Interest data from numerous providers to create a single unified POI database. This is an example of conflation, a notoriously difficult task in GIS where multiple datasets are deduped and merged together.
-Drew uses an inexpensive local model, Qwen3-0.6B, to compare 70 million addresses and identity matches, for example between Place(address&#x3D;&quot;3359 FOOTHILL BLVD&quot;, name&#x3D;&quot;RESTAURANT LOS ARCOS&quot;) and Place(address&#x3D;&quot;3359 FOOTHILL BLVD&quot;, name&#x3D;&quot;Los Arcos Taqueria&quot;&#x27;).
-DSPy&#x27;s role is to optimize the prompt used for that smaller model. Drew used GPT-4.1 and the dspy.MIPROv2 optimizer, producing a 700 token prompt that increased the score from 60.7% to 82%.
-
-Why bother? Drew points out that having a prompt optimization pipeline makes it trivial to evaluate and switch to other models if they can score higher with a custom optimized prompt - without needing to execute that trial-and-error optimization by hand.
-
-
-    
-Tags: geospatial, gis, ai, prompt-engineering, generative-ai, llms, drew-breunig, overture, dspy</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
