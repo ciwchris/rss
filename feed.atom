@@ -2,10 +2,84 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-11-03T14:10:58.612Z</updated>
+    <updated>2025-11-03T21:10:08.956Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[The case against pgvector]]></title>
+        <id>https://simonwillison.net/2025/Nov/3/the-case-against-pgvector/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/3/the-case-against-pgvector/#atom-everything"/>
+        <updated>2025-11-03T20:26:10.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://alex-jacobs.com/posts/the-case-against-pgvector/">The case against pgvector</a></strong></p>
+I wasn't keen on the title of this piece but the content is great: Alex Jacobs talks through lessons learned trying to run the popular pgvector PostgreSQL vector indexing extension at scale, in particular the challenges involved in maintaining a large index with close-to-realtime updates using the IVFFlat or HNSW index types.</p>
+<p>The section on pre-v.s.-post filtering is particularly useful:</p>
+<blockquote>
+<p>Okay but let's say you solve your index and insert problems. Now you have a document search system with millions of vectors. Documents have metadata---maybe they're marked as <code>draft</code>, <code>published</code>, or <code>archived</code>. A user searches for something, and you only want to return published documents.</p>
+<p>[...] should Postgres filter on status first (pre-filter) or do the vector search first and then filter (post-filter)?</p>
+<p>This seems like an implementation detail. It’s not. It’s the difference between queries that take 50ms and queries that take 5 seconds. It’s also the difference between returning the most relevant results and… not.</p>
+</blockquote>
+<p>The <a href="https://news.ycombinator.com/item?id=45798479">Hacker News thread</a> for this article attracted a robust discussion, including some fascinating comments by Discourse developer Rafael dos Santos Silva (xfalcox) about how they are using pgvector at scale:</p>
+<blockquote>
+<p>We [run pgvector in production] at Discourse, in thousands of databases, and it's leveraged in most of the billions of page views we serve. [...]</p>
+<p>Also worth mentioning that we use quantization extensively:</p>
+<ul>
+<li>halfvec (16bit float) for storage - bit (binary vectors) for indexes</li>
+</ul>
+<p>Which makes the storage cost and on-going performance good enough that we could enable this in all our hosting. [...]</p>
+<p>In Discourse embeddings power:</p>
+<ul>
+<li>Related Topics, a list of topics to read next, which uses embeddings of the current topic as the key to search for similar ones</li>
+<li>Suggesting tags and categories when composing a new topic</li>
+<li>Augmented search</li>
+<li>RAG for uploaded files</li>
+</ul>
+</blockquote>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45798479">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/postgresql">postgresql</a>, <a href="https://simonwillison.net/tags/scaling">scaling</a>, <a href="https://simonwillison.net/tags/vector-search">vector-search</a>, <a href="https://simonwillison.net/tags/embeddings">embeddings</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Copilot policy now supports agent mode in the IDE]]></title>
+        <id>https://github.blog/changelog/2025-11-03-github-copilot-policy-now-supports-agent-mode-in-the-ide</id>
+        <link href="https://github.blog/changelog/2025-11-03-github-copilot-policy-now-supports-agent-mode-in-the-ide"/>
+        <updated>2025-11-03T18:13:16.000Z</updated>
+        <summary type="html"><![CDATA[GitHub admins can now manage access to Copilot agent mode for IDE via the Copilot policies page on github.com. What’s changed To provide better governance, Copilot policies now allow for…
+The post GitHub Copilot policy now supports agent mode in the IDE appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting MiniMax]]></title>
+        <id>https://simonwillison.net/2025/Nov/3/minimax/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/3/minimax/#atom-everything"/>
+        <updated>2025-11-03T17:24:39.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://x.com/minimax__ai/status/1985375617622454566"><p><strong>Interleaved thinking</strong> is essential for LLM agents: it means alternating between explicit reasoning and tool use, while carrying that reasoning forward between steps.This process significantly enhances <strong>planning, self‑correction, and reliability</strong> in long workflows. [...]</p>
+<p>From community feedback, we've often observed failures to preserve prior-round thinking state across multi-turn interactions with M2. The root cause is that the widely-used <strong>OpenAI Chat Completion API does not support passing reasoning content back in subsequent requests</strong>. Although the Anthropic API natively supports this capability, the community has provided less support for models beyond Claude, and many applications still omit passing back the previous turns' thinking in their Anthropic API implementations. This situation has resulted in poor support for Interleaved Thinking for new models. <strong>To fully unlock M2's capabilities, preserving the reasoning process across multi-turn interactions is essential</strong>.</p></blockquote>
+<p class="cite">&mdash; <a href="https://x.com/minimax__ai/status/1985375617622454566">MiniMax</a>, Interleaved Thinking Unlocks Reliable MiniMax-M2 Agentic Capability</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/definitions">definitions</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/minimax">minimax</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Control AI spending with budget tracking for GitHub AI tools]]></title>
+        <id>https://github.blog/changelog/2025-10-30-control-ai-spending-with-budget-tracking-for-github-ai-tools</id>
+        <link href="https://github.blog/changelog/2025-11-03-control-ai-spending-with-budget-tracking-for-github-ai-tools"/>
+        <updated>2025-11-03T08:00:30.000Z</updated>
+        <summary type="html"><![CDATA[As your AI-powered development workflows expand, so should your ability to effectively manage them. Today, we’re launching two new premium request SKUs for GitHub Copilot coding agent and GitHub Spark,…
+The post Control AI spending with budget tracking for GitHub AI tools appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[New prompt injection papers: Agents Rule of Two and The Attacker Moves Second]]></title>
         <id>https://simonwillison.net/2025/Nov/2/new-prompt-injection-papers/#atom-everything</id>
@@ -389,6 +463,17 @@ The post GitHub MCP Server now comes with server instructions, better tools, and
         <summary type="html"><![CDATA[MiniMax M2 is a high-efficiency large language model built for coding and agentic workflows.]]></summary>
         <author>
             <name>Ollama models</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Upcoming deprecation of CodeQL Action v3]]></title>
+        <id>https://github.blog/changelog/2025-10-28-upcoming-deprecation-of-codeql-action-v3</id>
+        <link href="https://github.blog/changelog/2025-10-28-upcoming-deprecation-of-codeql-action-v3"/>
+        <updated>2025-10-28T18:05:01.000Z</updated>
+        <summary type="html"><![CDATA[On October 7, 2025, we released CodeQL Action v4, which runs on the Node.js 24 runtime. CodeQL Action v3 will be deprecated at the same time as GHES 3.19, which…
+The post Upcoming deprecation of CodeQL Action v3 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
         </author>
     </entry>
     <entry>
