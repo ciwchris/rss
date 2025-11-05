@@ -25,9 +25,332 @@
 
   <ul>
     <li>
+      <time>2025-11-05</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting @belligerentbarbies
+              <span class="post-metadata">(1 min | 402 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/5/brenda/#atom-everything>I&#x27;m worried that they put co-pilot in Excel because Excel is the beast that drives our entire economy and do you know who has tamed that beast?
+Brenda.
+Who is Brenda?
+She is a mid-level employee in every finance department, in every business across this stupid nation and the Excel goddess herself descended from the heavens, kissed Brenda on her forehead and the sweat from Brenda&#x27;s brow is what allows us to do capitalism. [...]
+She&#x27;s gonna birth that formula for a financial report and then she&#x27;s gonna send that financial report to a higher up and he&#x27;s gonna need to make a change to the report and normally he would have sent it back to Brenda but he&#x27;s like oh I have AI and AI is probably like smarter than Brenda and then the AI is gonna fuck it up real bad and he won&#x27;t be able to recognize it because he doesn&#x27;t understand Excel because AI hallucinates.
+You know who&#x27;s not hallucinating?
+Brenda.
+
+— @belligerentbarbies, on TikTok
+Tags: generative-ai, ai, excel, hallucinations, llms, tiktok, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-11-04</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Code execution with MCP: Building more efficient agents
+              <span class="post-metadata">(2 min | 667 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/4/code-execution-with-mcp/#atom-everything>Code execution with MCP: Building more efficient agents
+wrote about Claude Skills I mentioned that I don&#x27;t use MCP at all any more when working with coding agents - I find CLI utilities and libraries like Playwright Python to be a more effective way of achieving the same goals.
+This new piece from Anthropic proposes a way to bring the two worlds more closely together.
+It identifies two challenges with MCP as it exists today. The first has been widely discussed before: all of those tool descriptions take up a lot of valuable real estate in the agent context even before you start using them.
+The second is more subtle but equally interesting: chaining multiple MCP tools together involves passing their responses through the context, absorbing more valuable tokens and introducing chances for the LLM to make additional mistakes.
+What if you could turn MCP tools into code functions instead, and then let the LLM wire them together with executable code?
+Anthropic&#x27;s example here imagines a system that turns MCP tools into TypeScript files on disk, looking something like this:
+// ./servers/google-drive/getDocument.ts
+interface GetDocumentInput {
+  documentId: string;
+}
+interface GetDocumentResponse {
+  content: string;
+}
+/* Read a document from Google Drive */
+export async function getDocument(input: GetDocumentInput): Promise&lt;GetDocumentResponse&gt; {
+  return callMCPTool&lt;GetDocumentResponse&gt;(&#x27;google_drive__get_document&#x27;, input);
+}
+
+
+This takes up no tokens at all - it&#x27;s a file on disk. In a similar manner to Skills the agent can navigate the filesystem to discover these definitions on demand.
+Then it can wire them together by generating code:
+const transcript &#x3D; (await gdrive.getDocument({ documentId: &#x27;abc123&#x27; })).content;
+await salesforce.updateRecord({
+  objectType: &#x27;SalesMeeting&#x27;,
+  recordId: &#x27;00Q5f000001abcXYZ&#x27;,
+  data: { Notes: transcript }
+});
+
+
+Notably, the example here avoids round-tripping the response from the gdrive.getDocument() call through the model on the way to the salesforce.updateRecord() call - which is faster, more reliable, saves on context tokens, and avoids the model being exposed to any potentially sensitive data in that document.
+This all looks very solid to me! I think it&#x27;s a sensible way to take advantage of the strengths of coding agents and address some of the major drawbacks of MCP as it is usually implemented today.
+There&#x27;s one catch: Anthropic outline the proposal in some detail but provide no code to execute on it! Implementation is left as an exercise for the reader:
+If you implement this approach, we encourage you to share your findings with the MCP community.
+Via @AnthropicAI
+Tags: ai, prompt-engineering, generative-ai, llms, anthropic, model-context-protocol, coding-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A new SQL-powered permissions system in Datasette 1.0a20
+              <span class="post-metadata">(10 min | 2859 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/4/datasette-10a20/#atom-everything>Datasette 1.0a20 is out with the biggest breaking API change on the road to 1.0, improving how Datasette&#x27;s permissions system works by migrating permission logic to SQL running in SQLite. This release involved 163 commits, with 10,660 additions and 1,825 deletions, most of which was written with the help of Claude Code.
+
+
+
+
+  
+Understanding the permissions system
+
+  
+Permissions systems need to be able to efficiently list things
+
+  
+The new permission_resources_sql() plugin hook
+
+  
+Hierarchies, plugins, vetoes, and restrictions
+
+  
+New debugging tools
+
+  
+The missing feature: list actors who can act on this resource
+
+  
+Upgrading plugins for Datasette 1.0a20
+
+  
+Using Claude Code to implement this change
+
+  
+Starting with a proof-of-concept
+
+  
+Miscellaneous tips I picked up along the way
+
+  
+What&#x27;s next?
+
+
+
+Understanding the permissions system
+
+Datasette&#x27;s permissions system exists to answer the following question:
+
+
+Is this actor allowed to perform this action, optionally against this particular resource?
+
+
+An actor is usually a user, but might also be an automation operating via the Datasette API.
+
+An action is a thing they need to do - things like view-table, execute-sql, insert-row.
+
+A resource is the subject of the action - the database you are executing SQL against, the table you want to insert a row into.
+
+Datasette&#x27;s default configuration is public but read-only: anyone can view databases and tables or execute read-only SQL queries but no-one can modify data.
+
+Datasette plugins can enable all sorts of additional ways to interact with databases, many of which need to be protected by a form of authentication Datasette also 1.0 includes a write API with a need to configure who can insert, update, and delete rows or create new tables.
+
+Actors can be authenticated in a number of different ways provided by plugins using the actor_from_request() plugin hook. datasette-auth-passwords and datasette-auth-github and datasette-auth-existing-cookies are examples of authentication plugins.
+
+Permissions systems need to be able to efficiently list things
+
+The previous implementation included a design flaw common to permissions systems of this nature: each permission check involved a function call which would delegate to one or more plugins and return a True/False result.
+
+This works well for single checks, but has a significant problem: what if you need to show the user a list of things they can access, for example the tables they can view?
+
+I want Datasette to be able to handle potentially thousands of tables - tables in SQLite are cheap! I don&#x27;t want to have to run 1,000+ permission checks just to show the user a list of tables.
+
+Since Datasette is built on top of SQLite we already have a powerful mechanism to help solve this problem. SQLite is really good at filtering large numbers of records.
+
+The new permission_resources_sql() plugin hook
+
+The biggest change in the new release is that I&#x27;ve replaced the previous  permission_allowed(actor, action, resource) plugin hook - which let a plugin determine if an actor could perform an action against a resource - with a new permission_resources_sql(actor, action) plugin hook.
+
+Instead of returning a True/False result, this new hook returns a SQL query that returns rules helping determine the resources the current actor can execute the specified action against.
+
+Here&#x27;s an example, lifted from the documentation:
+
+from datasette import hookimpl
+from datasette.permissions import PermissionSQL
+
+
+@hookimpl
+def permission_resources_sql(datasette, actor, action):
+    if action !&#x3D; &quot;view-table&quot;:
+        return None
+    if not actor or actor.get(&quot;id&quot;) !&#x3D; &quot;alice&quot;:
+        return None
+
+    return PermissionSQL(
+        sql&#x3D;&quot;&quot;&quot;
+            SELECT
+                &#x27;accounting&#x27; AS parent,
+                &#x27;sales&#x27; AS child,
+                1 AS allow,
+                &#x27;alice can view accounting/sales&#x27; AS reason
+        &quot;&quot;&quot;,
+    )
+
+This hook grants the actor with ID &quot;alice&quot; permission to view the &quot;sales&quot; table in the &quot;accounting&quot; database.
+
+The PermissionSQL object should always return four columns: a parent, child, allow (1 or 0), and a reason string for debugging.
+
+When you ask Datasette to list the resources an actor can access for a specific action, it will combine the SQL returned by all installed plugins into a single query that joins against the internal catalog tables and efficiently lists all the resources the actor can access.
+
+This query can then be limited or paginated to avoid loading too many results at once.
+
+Hierarchies, plugins, vetoes, and restrictions
+
+Datasette has several additional requirements that make the permissions system more complicated.
+
+Datasette permissions can optionally act against a two-level hierarchy. You can grant a user the ability to insert-row against a specific table, or every table in a specific database, or every table in every database in that Datasette instance.
+
+Some actions can apply at the table level, others the database level and others only make sense globally - enabling a new feature that isn&#x27;t tied to tables or databases, for example.
+
+Datasette currently has ten default actions but plugins that add additional features can register new actions to better participate in the permission systems.
+
+Datasette&#x27;s permission system has a mechanism to veto permission checks - a plugin can return a deny for a specific permission check which will override any allows. This needs to be hierarchy-aware - a deny at the database level can be outvoted by an allow at the table level.
+
+Finally, Datasette includes a mechanism for applying additional restrictions to a request. This was introduced for Datasette&#x27;s API - it allows a user to create an API token that can act on their behalf but is only allowed to perform a subset of their capabilities - just reading from two specific tables, for example. Restrictions are described in more detail in the documentation.
+
+That&#x27;s a lot of different moving parts for the new implementation to cover.
+
+New debugging tools
+
+Since permissions are critical to the security of a Datasette deployment it&#x27;s vital that they are as easy to understand and debug as possible.
+
+The new alpha adds several new debugging tools, including this page that shows the full list of resources matching a specific action for the current user:
+
+
+
+And this page listing the rules that apply to that question - since different plugins may return different rules which get combined together:
+
+
+
+This screenshot illustrates two of Datasette&#x27;s built-in rules: there is a default allow for read-only operations such as view-table (which can be over-ridden by plugins) and another rule that says the root user can do anything (provided Datasette was started with the --root option.)
+
+Those rules are defined in the datasette/default_permissions.py Python module.
+
+The missing feature: list actors who can act on this resource
+
+There&#x27;s one question that the new system cannot answer: provide a full list of actors who can perform this action against this resource.
+
+It&#x27;s not possibly to provide this globally for Datasette because Datasette doesn&#x27;t have a way to track what &quot;actors&quot; exist in the system. SSO plugins such as datasette-auth-github mean a new authenticated GitHub user might show up at any time, with the ability to perform actions despite the Datasette system never having encountered that particular username before.
+
+API tokens and actor restrictions come into play here as well. A user might create a signed API token that can perform a subset of actions on their behalf - the existence of that token can&#x27;t be predicted by the permissions system.
+
+This is a notable omission, but it&#x27;s also quite common in other systems. AWS cannot provide a list of all actors who have permission to access a specific S3 bucket, for example - presumably for similar reasons.
+
+Upgrading plugins for Datasette 1.0a20
+
+Datasette&#x27;s plugin ecosystem is the reason I&#x27;m paying so much attention to ensuring Datasette 1.0 has a stable API. I don&#x27;t want plugin authors to need to chase breaking changes once that 1.0 release is out.
+
+The Datasette upgrade guide includes detailed notes on upgrades that are needed between the 0.x and 1.0 alpha releases. I&#x27;ve added an extensive section about the permissions changes to that document.
+
+I&#x27;ve also been experimenting with dumping those instructions directly into coding agent tools - Claude Code and Codex CLI - to have them upgrade existing plugins for me. This has been working extremely well. I&#x27;ve even had Claude Code update those notes itself with things it learned during an upgrade process!
+
+This is greatly helped by the fact that every single Datasette plugin has an automated test suite that demonstrates the core functionality works as expected. Coding agents can use those tests to verify that their changes have had the desired effect.
+
+I&#x27;ve also been leaning heavily on uv to help with the upgrade process. I wrote myself two new helper scripts - tadd and radd - to help test the new plugins.
+
+
+
+tadd &#x3D; &quot;test against datasette dev&quot; - it runs a plugin&#x27;s existing test suite against the current development version of Datasette checked out on my machine. It passes extra options through to pytest so I can run tadd -k test_name or tadd -x --pdb as needed.
+
+
+radd &#x3D; &quot;run against datasette dev&quot; - it runs the latest dev datasette command with the plugin installed.
+
+
+The tadd and radd implementations can be found in this TIL.
+
+Some of my plugin upgrades have become a one-liner to the codex exec command, which runs OpenAI Codex CLI with a prompt without entering interactive mode:
+
+
+codex exec --dangerously-bypass-approvals-and-sandbox \
+&quot;Run the command tadd and look at the errors and then
+read ~/dev/datasette/docs/upgrade-1.0a20.md and apply
+fixes and run the tests again and get them to pass&quot;
+
+There are still a bunch more to go - there&#x27;s a list in this tracking issue - but I expect to have the plugins I maintain all upgraded pretty quickly now that I have a solid process in place.
+
+Using Claude Code to implement this change
+
+This change to Datasette core by far the most ambitious piece of work I&#x27;ve ever attempted using a coding agent.
+
+Last year I agreed with the prevailing opinion that LLM assistance was much more useful for greenfield coding tasks than working on existing codebases. The amount you could usefully get done was greatly limited by the need to fit the entire codebase into the model&#x27;s context window.
+
+Coding agents have entirely changed that calculation. Claude Code and Codex CLI still have relatively limited token windows - albeit larger than last year - but their ability to search through the codebase, read extra files on demand and &quot;reason&quot; about the code they are working with has made them vastly more capable.
+
+I no longer see codebase size as a limiting factor for how useful they can be.
+
+I&#x27;ve also spent enough time with Claude Sonnet 4.5 to build a weird level of trust in it. I can usually predict exactly what changes it will make for a prompt. If I tell it &quot;extract this code into a separate function&quot; or &quot;update every instance of this pattern&quot; I know it&#x27;s likely to get it right.
+
+For something like permission code I still review everything it does, often by watching it as it works since it displays diffs in the UI.
+
+I also pay extremely close attention to the tests it&#x27;s writing. Datasette 1.0a19 already had 1,439 tests, many of which exercised the existing permission system. 1.0a20 increases that to 1,583 tests. I feel very good about that, especially since most of the existing tests continued to pass without modification.
+
+Starting with a proof-of-concept
+
+I built several different proof-of-concept implementations of SQL permissions before settling on the final design. My research/sqlite-permissions-poc project was the one that finally convinced me of a viable approach,
+
+That one started as a free ranging conversation with Claude, at the end of which I told it to generate a specification which I then fed into GPT-5 to implement. You can see that specification at the end of the README.
+
+I later fed the POC itself into Claude Code and had it implement the first version of the new Datasette system based on that previous experiment.
+
+This is admittedly a very weird way of working, but it helped me finally break through on a problem that I&#x27;d been struggling with for months.
+
+Miscellaneous tips I picked up along the way
+
+
+When working on anything relating to plugins it&#x27;s vital to have at least a few real plugins that you upgrade in lock-step with the core changes. The tadd and radd shortcuts were invaluable for productively working on those plugins while I made changes to core.
+
+Coding agents make experiments much cheaper. I threw away so much code on the way to the final implementation, which was psychologically easier because the cost to create that code in the first place was so low.
+
+Tests, tests, tests. This project would have been impossible without that existing test suite. The additional tests we built along the way give me confidence that the new system is as robust as I need it to be.
+
+Claude writes good commit messages now! I finally gave in and let it write these - previously I&#x27;ve been determined to write them myself. It&#x27;s a big time saver to be able to say &quot;write a tasteful commit message for these changes&quot;.
+
+Claude is also great at breaking up changes into smaller commits. It can also productively rewrite history to make it easier to follow, especially useful if you&#x27;re still working in a branch.
+
+A really great way to review Claude&#x27;s changes is with the GitHub PR interface. You can attach comments to individual lines of code and then later prompt Claude like this: Use gh CLI to fetch comments on URL-to-PR and make the requested changes. This is a very quick way to apply little nitpick changes - rename this function, refactor this repeated code, add types here etc.
+
+The code I write with LLMs is higher quality code. I usually find myself making constant trade-offs while coding: this function would be neater if I extracted this helper, it would be nice to have inline documentation here, this changing this would be good but would break a dozen tests... for each of those I have to determine if the additional time is worth the benefit. Claude can apply changes so much faster than me that these calculations have changed - almost any improvement is worth applying, no matter how trivial, because the time cost is so low.
+
+Internal tools are cheap now. The new debugging interfaces were mostly written by Claude and are significantly nicer to use and look at than the hacky versions I would have knocked out myself, if I had even taken the extra time to build them.
+
+That trick with a Markdown file full of upgrade instructions works astonishingly well - it&#x27;s the same basic idea as Claude Skills. I maintain over 100 Datasette plugins now and I expect I&#x27;ll be automating all sorts of minor upgrades in the future using this technique.
+
+
+What&#x27;s next?
+
+Now that the new alpha is out my focus is upgrading the existing plugin ecosystem to use it, and supporting other plugin authors who are doing the same.
+
+The new permissions system unlocks some key improvements to Datasette Cloud concerning finely-grained permissions for larger teams, so I&#x27;ll be integrating the new alpha there this week.
+
+This is the single biggest backwards-incompatible change required before Datasette 1.0. I plan to apply the lessons I learned from this project to the other, less intimidating changes. I&#x27;m hoping this can result in a final 1.0 release before the end of the year!
+Tags: plugins, projects, python, sql, sqlite, datasette, annotated-release-notes, uv, coding-agents, claude-code, codex-cli</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -73,6 +396,19 @@ We’re not lying. We genuinely believe our reasoning is sound. That’s what ma
 Tags: technical-debt, psychology, programming-languages</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Required review by specific teams now available in rulesets
+              <span class="post-metadata">(7 min | 1978 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-03-required-review-by-specific-teams-now-available-in-rulesets>You can now require approvals from specific teams to merge changes into protected branches based on files and folders, giving you more control over who approves changes into specific branches.…
+The post Required review by specific teams now available in rulesets appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
@@ -4463,187 +4799,6 @@ The post Upcoming changes to GitHub Dependabot pull request comment commands app
 The post Upcoming changes to GitHub Dependabot pull request comment commands appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-10-06</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Enterprise access restrictions now supports multiple enterprises
-              <span class="post-metadata">(5 min | 1594 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-10-06-enterprise-access-restrictions-now-supports-multiple-enterprises>GitHub Enterprise Cloud customers with multiple Enterprise Managed Users (EMU) accounts can now configure a single proxy header to restrict traffic to github.com outside any of these enterprises. Previously, enterprise…
-The post Enterprise access restrictions now supports multiple enterprises appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deloitte to pay money back to Albanese government after using AI in $440,000 report
-              <span class="post-metadata">(1 min | 414 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/deloitte-to-pay-money-back/#atom-everything>Deloitte to pay money back to Albanese government after using AI in $440,000 report
-Deloitte will provide a partial refund to the federal government over a $440,000 report that contained several errors, after admitting it used generative artificial intelligence to help produce it.
-(I was initially confused by the &quot;Albanese government&quot; reference in the headline since this is a story about the Australian federal government. That&#x27;s because the current Australia Prime Minister is Anthony Albanese.)
-Here&#x27;s the page for the report. The PDF now includes this note:
-This Report was updated on 26 September 2025 and replaces the Report dated 4 July 2025. The Report has been updated to correct those citations and reference list entries which contained errors in the previously issued version, to amend the summary of the Amato proceeding which contained errors, and to make revisions to improve clarity and readability. The updates made in no way impact or affect the substantive content, findings and recommendations in the Report.
-Tags: ai, generative-ai, llms, ai-ethics, hallucinations</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              a system that can do work independently on behalf of the user
-              <span class="post-metadata">(1 min | 319 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/work-independently/#atom-everything>I&#x27;ve settled on agents as meaning &quot;LLMs calling tools in a loop to achieve a goal&quot; but OpenAI continue to muddy the waters with much more vague definitions. Swyx spotted this one in the press pack OpenAI sent out for their DevDay announcements today:
-How does OpenAl define an &quot;agent&quot;? An Al agent is a system that can do work independently on behalf of the user.
-Adding this one to my collection.
-Tags: ai-agents, openai, agent-definitions, swyx</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              gpt-image-1-mini
-              <span class="post-metadata">(2 min | 678 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/gpt-image-1-mini/#atom-everything>gpt-image-1-mini
-gpt-image-1-mini, which they describe as &quot;A smaller image generation model that’s 80% less expensive than the large model.&quot;
-They released it very quietly - I didn&#x27;t hear about this in the DevDay keynote but I later spotted it on the DevDay 2025 announcements page.
-It wasn&#x27;t instantly obvious to me how to use this via their API. I ended up vibe coding a Python CLI tool for it so I could try it out.
-I dumped the plain text diff version of the commit to the OpenAI Python library titled feat(api): dev day 2025 launches into ChatGPT GPT-5 Thinking and worked with it to figure out how to use the new image model and build a script for it. Here&#x27;s the transcript and the the openai_image.py script it wrote.
-I had it add inline script dependencies, so you can run it with uv like this:
-export OPENAI_API_KEY&#x3D;&quot;$(llm keys get openai)&quot;
-uv run https://tools.simonwillison.net/python/openai_image.py &quot;A pelican riding a bicycle&quot;
-
-It picked this illustration style without me specifying it:
-
-(This is a very different test from my normal &quot;Generate an SVG of a pelican riding a bicycle&quot; since it&#x27;s using a dedicated image generator, not having a text-based model try to generate SVG code.)
-My tool accepts a prompt, and optionally a filename (if you don&#x27;t provide one it saves to a filename like /tmp/image-621b29.png).
-It also accepts options for model and dimensions and output quality - the --help output lists those, you can see that here.
-OpenAI&#x27;s pricing is a little confusing. The model page claims low quality images should cost around half a cent and medium quality around a cent and a half. It also lists an image token price of $8/million tokens. It turns out there&#x27;s a default &quot;high&quot; quality setting - most of the images I&#x27;ve generated have reported between 4,000 and 6,000 output tokens, which costs between 3.2 and 4.8 cents.
-One last demo, this time using --quality low:
- uv run https://tools.simonwillison.net/python/openai_image.py \
-  &#x27;racoon eating cheese wearing a top hat, realistic photo&#x27; \
-  /tmp/racoon-hat-photo.jpg \
-  --size 1024x1024 \
-  --output-format jpeg \
-  --quality low
-
-This saved the following:
-
-And reported this to standard error:
-{
-  &quot;background&quot;: &quot;opaque&quot;,
-  &quot;created&quot;: 1759790912,
-  &quot;generation_time_in_s&quot;: 20.87331541599997,
-  &quot;output_format&quot;: &quot;jpeg&quot;,
-  &quot;quality&quot;: &quot;low&quot;,
-  &quot;size&quot;: &quot;1024x1024&quot;,
-  &quot;usage&quot;: {
-    &quot;input_tokens&quot;: 17,
-    &quot;input_tokens_details&quot;: {
-      &quot;image_tokens&quot;: 0,
-      &quot;text_tokens&quot;: 17
-    },
-    &quot;output_tokens&quot;: 272,
-    &quot;total_tokens&quot;: 289
-  }
-}
-
-This took 21s, but I&#x27;m on an unreliable conference WiFi connection so I don&#x27;t trust that measurement very much.
-272 output tokens &#x3D; 0.2 cents so this is much closer to the expected pricing from the model page.
-
-
-    
-Tags: python, tools, ai, openai, generative-ai, uv, text-to-image, pelican-riding-a-bicycle, vibe-coding</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5 pro
-              <span class="post-metadata">(1 min | 418 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/gpt-5-pro/#atom-everything>GPT-5 pro
-It has similar base characteristics to GPT-5: both share a September 30, 2024 knowledge cutoff and 400,000 context limit.
-GPT-5 pro has maximum output tokens 272,000 max, an increase from 128,000 for GPT-5.
-As our most advanced reasoning model, GPT-5 pro defaults to (and only supports) reasoning.effort: high
-It&#x27;s only available via OpenAI&#x27;s Responses API. My LLM tool doesn&#x27;t support that in core yet, but the llm-openai-plugin plugin does. I released llm-openai-plugin 0.7 adding support for the new model, then ran this:
-llm install -U llm-openai-plugin
-llm -m openai/gpt-5-pro &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-It&#x27;s very, very slow. The model took 6 minutes 8 seconds to respond and charged me for 16 input and 9,205 output tokens. At $15/million input and $120/million output this pelican cost me $1.10!
-
-Here&#x27;s the full transcript. It looks visually pretty simpler to the much, much cheaper result I got from GPT-5.
-
-
-    
-Tags: ai, openai, generative-ai, llms, llm-pricing, pelican-riding-a-bicycle, llm-reasoning, llm-release, gpt-5</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI DevDay 2025 live blog
-              <span class="post-metadata">(7 min | 2248 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/openai-devday-live-blog/#atom-everything>I&#x27;m at OpenAI DevDay in Fort Mason, San Francisco today. As I did last year, I&#x27;m going to be live blogging the announcements from the kenote. Unlike last year, this year there&#x27;s a livestream.
-Tags: ai, openai, generative-ai, llms, live-blog</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Grok Code Fast 1 is now available in Visual Studio, JetBrains IDEs, Xcode, and Eclipse
-              <span class="post-metadata">(5 min | 1420 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-10-06-grok-code-fast-1-is-now-available-in-visual-studio-jetbrains-ides-xcode-and-eclipse>Grok Code Fast 1 is available in public preview to GitHub Copilot Pro, Pro+, Business, and Enterprise plans. You’ll be able to access the model in GitHub Copilot Chat on…
-The post Grok Code Fast 1 is now available in Visual Studio, JetBrains IDEs, Xcode, and Eclipse appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Tim Berners-Lee
-              <span class="post-metadata">(1 min | 347 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/6/tim-berners-lee/#atom-everything>I believed that giving users such a simple way to navigate the internet would unlock creativity and collaboration on a global scale. If you could put anything on it, then after a while, it would have everything on it.
-But for the web to have everything on it, everyone had to be able to use it, and want to do so. This was already asking a lot. I couldn’t also ask that they pay for each search or upload they made. In order to succeed, therefore, it would have to be free. That’s why, in 1993, I convinced my Cern managers to donate the intellectual property of the world wide web, putting it into the public domain. We gave the web away to everyone.
-
-— Tim Berners-Lee, Why I gave the world wide web away for free
-Tags: web, tim-berners-lee, computer-history</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
