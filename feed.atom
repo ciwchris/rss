@@ -2,10 +2,202 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-11-06T14:11:16.584Z</updated>
+    <updated>2025-11-06T21:09:48.454Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[New releases for GitHub Actions – November 2025]]></title>
+        <id>https://github.blog/changelog/2025-11-06-new-releases-for-github-actions-november-2025</id>
+        <link href="https://github.blog/changelog/2025-11-06-new-releases-for-github-actions-november-2025"/>
+        <updated>2025-11-06T19:02:42.000Z</updated>
+        <summary type="html"><![CDATA[Increased limits for reusable workflows You can now use up to 10 nested reusable workflows and call up to 50 workflows in total from a given workflow run. The previous…
+The post New releases for GitHub Actions – November 2025 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video + notes on upgrading a Datasette plugin for the latest 1.0 alpha, with help from uv and OpenAI Codex CLI]]></title>
+        <id>https://simonwillison.net/2025/Nov/6/upgrading-datasette-plugins/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/6/upgrading-datasette-plugins/#atom-everything"/>
+        <updated>2025-11-06T18:26:05.000Z</updated>
+        <summary type="html"><![CDATA[<p>I'm upgrading various plugins for compatibility with the new <a href="https://simonwillison.net/2025/Nov/4/datasette-10a20/">Datasette 1.0a20 alpha release</a> and I decided to record <a href="https://www.youtube.com/watch?v=qy4ci7AoF9Y">a video</a> of the process. This post accompanies that video with detailed additional notes.</p>
+
+<p><lite-youtube videoid="qy4ci7AoF9Y" js-api="js-api" title="My process for upgrading Datasette plugins with uv and OpenAI Codex CLI" playlabel="Play: My process for upgrading Datasette plugins with uv and OpenAI Codex CLI"> </lite-youtube></p>
+
+<h4 id="the-datasette-checkbox-plugin">The datasette-checkbox plugin</h4>
+<p>I picked a very simple plugin to illustrate the upgrade process (possibly too simple). <a href="https://github.com/datasette/datasette-checkbox">datasette-checkbox</a> adds just one feature to Datasette: if you are viewing a table with boolean columns (detected as integer columns with names like <code>is_active</code> or <code>has_attachments</code> or <code>should_notify</code>) <em>and</em> your current user has permission to update rows in that table it adds an inline checkbox UI that looks like this:</p>
+<p><img src="https://static.simonwillison.net/static/2025/datasette-checkbox.gif" alt="Animated demo of a table with name, is_done, should_be_deleted and is_happy columns. Each column has checkboxes, and clicking a checkboxflashes a little &quot;updated&quot; message." style="max-width: 100%;" /></p>
+<p>I built the first version with the help of Claude back in August 2024 - details <a href="https://github.com/datasette/datasette-checkbox/issues/1#issuecomment-2294168693">in this issue comment</a>.</p>
+<p>Most of the implementation is JavaScript that makes calls to Datasette 1.0's <a href="https://simonwillison.net/2022/Dec/2/datasette-write-api/">JSON write API</a>. The Python code just checks that the user has the necessary permissions before including the extra JavaScript.</p>
+<h4 id="running-the-plugin-s-tests">Running the plugin's tests</h4>
+<p>The first step in upgrading any plugin is to run its tests against the latest Datasette version.</p>
+<p>Thankfully <code>uv</code> makes it easy to run code in scratch virtual environments that include the different code versions you want to test against.</p>
+<p>I have a test utility called <code>tadd</code> (for "test against development Datasette") which I use for that purpose. I can run it in any plugin directory like this:</p>
+<div class="highlight highlight-source-shell"><pre>tadd</pre></div>
+<p>And it will run the existing plugin tests against whatever version of Datasette I have checked out in my <code>~/dev/datasette</code> directory.</p>
+<p>You can see the full implementation of <code>tadd</code> (and its friend <code>radd</code> described below) <a href="https://til.simonwillison.net/python/uv-tests#variants-tadd-and-radd">in this TIL</a> - the basic version looks like this:</p>
+<div class="highlight highlight-source-shell"><pre><span class="pl-c"><span class="pl-c">#!</span>/bin/sh</span>
+uv run --no-project --isolated \
+  --with-editable <span class="pl-s"><span class="pl-pds">'</span>.[test]<span class="pl-pds">'</span></span> --with-editable <span class="pl-k">~</span>/dev/datasette \
+  python -m pytest <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$@</span><span class="pl-pds">"</span></span></pre></div>
+<p>I started by running <code>tadd</code> in the <code>datasette-checkbox</code> directory, and got my first failure... but it wasn't due to permissions, it was because the <code>pyproject.toml</code> for the plugin was <a href="https://github.com/datasette/datasette-checkbox/blob/0.1a3/pyproject.toml#L13C1-L15C2">pinned</a> to a specific mismatched version of Datasette:</p>
+<div class="highlight highlight-source-toml"><pre><span class="pl-smi">dependencies</span> = [
+    <span class="pl-s"><span class="pl-pds">"</span>datasette==1.0a19<span class="pl-pds">"</span></span>
+]</pre></div>
+<p>I fixed this problem by swapping <code>==</code> to <code>&gt;=</code> and ran the tests again... and they passed! Which was a problem because I was expecting permission-related failures.</p>
+<p>It turns out when I first wrote the plugin I was <a href="https://github.com/datasette/datasette-checkbox/blob/0.1a3/tests/test_checkbox.py">lazy with the tests</a> - they weren't actually confirming that the table page loaded without errors.</p>
+<p>I needed to actually run the code myself to see the expected bug.</p>
+<p>First I created myself a demo database using <a href="https://sqlite-utils.datasette.io/en/stable/cli.html#creating-tables">sqlite-utils create-table</a>:</p>
+<div class="highlight highlight-source-shell"><pre>sqlite-utils create-table demo.db \
+  demo id integer is_checked integer --pk id</pre></div>
+<p>Then I ran it with Datasette against the plugin's code like so:</p>
+<div class="highlight highlight-source-shell"><pre>radd demo.db</pre></div>
+<p>Sure enough, visiting <code>/demo/demo</code> produced a 500 error about the missing <code>Datasette.permission_allowed()</code> method.</p>
+<p>The next step was to update the test to also trigger this error:</p>
+<pre><span class="pl-en">@<span class="pl-s1">pytest</span>.<span class="pl-c1">mark</span>.<span class="pl-c1">asyncio</span></span>
+<span class="pl-k">async</span> <span class="pl-k">def</span> <span class="pl-en">test_plugin_adds_javascript</span>():
+    <span class="pl-s1">datasette</span> <span class="pl-c1">=</span> <span class="pl-en">Datasette</span>()
+    <span class="pl-s1">db</span> <span class="pl-c1">=</span> <span class="pl-s1">datasette</span>.<span class="pl-c1">add_memory_database</span>(<span class="pl-s">"demo"</span>)
+    <span class="pl-k">await</span> <span class="pl-s1">db</span>.<span class="pl-c1">execute_write</span>(
+        <span class="pl-s">"CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, is_active INTEGER)"</span>
+    )
+    <span class="pl-k">await</span> <span class="pl-s1">datasette</span>.<span class="pl-c1">invoke_startup</span>()
+    <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">datasette</span>.<span class="pl-c1">client</span>.<span class="pl-c1">get</span>(<span class="pl-s">"/demo/test"</span>)
+    <span class="pl-k">assert</span> <span class="pl-s1">response</span>.<span class="pl-c1">status_code</span> <span class="pl-c1">==</span> <span class="pl-c1">200</span></pre>
+<p>And now <code>tadd</code> fails as expected.</p>
+<h4 id="upgrading-the-plugin-with-codex">Upgrading the plugin with Codex</h4>
+<p>It this point I could have manually fixed the plugin itself - which would likely have been faster given the small size of the fix - but instead I demonstrated a bash one-liner I've been using to apply these kinds of changes automatically:</p>
+<div class="highlight highlight-source-shell"><pre>codex <span class="pl-c1">exec</span> --dangerously-bypass-approvals-and-sandbox \
+<span class="pl-s"><span class="pl-pds">"</span>Run the command tadd and look at the errors and then</span>
+<span class="pl-s">read ~/dev/datasette/docs/upgrade-1.0a20.md and apply</span>
+<span class="pl-s">fixes and run the tests again and get them to pass<span class="pl-pds">"</span></span></pre></div>
+<p><code>codex exec</code> runs OpenAI Codex in non-interactive mode - it will loop until it has finished the prompt you give it.</p>
+<p>I tell it to consult the subset of the <a href="https://docs.datasette.io/en/latest/upgrade_guide.html#datasette-1-0a20-plugin-upgrade-guide">Datasette upgrade documentation</a> that talks about Datasette permissions and then get the <code>tadd</code> command to pass its tests.</p>
+<p>This is an example of what I call <a href="https://simonwillison.net/2025/Sep/30/designing-agentic-loops/">designing agentic loops</a> - I gave Codex the tools it needed (<code>tadd</code>) and a clear goal and let it get to work on my behalf.</p>
+<p>The remainder of the video covers finishing up the work - testing the fix manually, commiting my work using:</p>
+<div class="highlight highlight-source-shell"><pre>git commit -a -m <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>basename <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$PWD</span><span class="pl-pds">"</span></span><span class="pl-pds">)</span></span> for datasette&gt;=1.0a20<span class="pl-pds">"</span></span> \
+  -m <span class="pl-s"><span class="pl-pds">"</span>Refs https://github.com/simonw/datasette/issues/2577<span class="pl-pds">"</span></span></pre></div>
+<p>Then shipping a <a href="https://pypi.org/project/datasette-checkbox/0.1a4/">0.1a4 release</a> to PyPI using the pattern <a href="https://til.simonwillison.net/pypi/pypi-releases-from-github">described in this TIL</a>.
+Finally, I demonstrated that the shipped plugin worked in a fresh environment using <code>uvx</code> like this:</p>
+<div class="highlight highlight-source-shell"><pre>uvx --prerelease=allow --with datasette-checkbox \
+  datasette --root <span class="pl-k">~</span>/dev/ecosystem/datasette-checkbox/demo.db</pre></div>
+<p>Executing this command installs and runs a fresh Datasette instance with a fresh copy of the new alpha plugin (<code>--prerelease=allow</code>). It's a neat way of confirming that freshly released software works as expected.</p>
+<h4 id="a-colophon-for-the-video">A colophon for the video</h4>
+<p>This video was shot in a single take using <a href="https://www.descript.com/">Descript</a>, with no rehearsal and perilously little preparation in advance. I recorded through my AirPods and applied the "Studio Sound" filter to clean up the audio. I pasted in a <code>simonwillison.net</code> closing slide from <a href="https://simonwillison.net/2025/Oct/23/claude-code-for-web-video/">my previous video</a> and exported it locally at 1080p, then uploaded it to YouTube.</p>
+<p>Something I learned from the Software Carpentry <a href="https://simonwillison.net/2020/Sep/26/weeknotes-software-carpentry-sqlite/">instructor training course</a> is that making mistakes in front of an audience is actively helpful - it helps them see a realistic version of how software development works and they can learn from watching you recover. I see this as a great excuse for not editing out all of my mistakes!</p>
+<p>I'm trying to build new habits around video content that let me produce useful videos while minimizing the amount of time I spend on production.</p>
+<p>I plan to iterate more on the format as I get more comfortable with the process. I'm hoping I can find the right balance between production time and value to viewers.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/youtube">youtube</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Improved onboarding flow for GitHub Projects]]></title>
+        <id>https://github.blog/changelog/2025-11-06-improved-onboarding-flow-for-github-projects</id>
+        <link href="https://github.blog/changelog/2025-11-06-improved-onboarding-flow-for-github-projects"/>
+        <updated>2025-11-06T17:50:59.000Z</updated>
+        <summary type="html"><![CDATA[We’ve improved the GitHub Projects onboarding flow to help you get started faster, with options to connect and import items from a repository, set a default repository for new issues,…
+The post Improved onboarding flow for GitHub Projects appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Code research projects with async coding agents like Claude Code and Codex]]></title>
+        <id>https://simonwillison.net/2025/Nov/6/async-code-research/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/6/async-code-research/#atom-everything"/>
+        <updated>2025-11-06T15:53:23.000Z</updated>
+        <summary type="html"><![CDATA[<p>I've been experimenting with a pattern for LLM usage recently that's working out really well: <strong>asynchronous code research tasks</strong>. Pick a research question, spin up an asynchronous coding agent and let it go and run some experiments and report back when it's done.</p>
+<ul>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#code-research">Code research</a></li>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#coding-agents">Coding agents</a></li>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#asynchronous-coding-agents">Asynchronous coding agents</a></li>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#give-them-a-dedicated-github-repository">Give them a dedicated GitHub repository</a></li>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#let-them-rip-with-unlimited-network-access">Let them rip with unlimited network access</a></li>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#my-simonw-research-collection">My simonw/research collection</a></li>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#this-is-total-slop-of-course">This is total slop, of course</a></li>
+  <li><a href="https://simonwillison.net/2025/Nov/6/async-code-research/#try-it-yourself">Try it yourself</a></li>
+</ul>
+<h4 id="code-research">Code research</h4>
+<p>Software development benefits enormously from something I call <strong>code research</strong>. The great thing about questions about code is that they can often be definitively answered by writing and executing code.</p>
+<p>I often see questions on forums which hint at a lack of understanding of this skill.</p>
+<p>"Could Redis work for powering the notifications feed for my app?" is a great example. The answer is <em>always</em> "it depends", but a better answer is that a good programmer already has everything they need to answer that question for themselves. Build a proof-of-concept, simulate the patterns you expect to see in production, then run experiments to see if it's going to work.</p>
+<p>I've been a keen practitioner of code research for a long time. Many of my most interesting projects started out as a few dozen lines of experimental code to prove to myself that something was possible.</p>
+<h4 id="coding-agents">Coding agents</h4>
+<p>It turns out <strong>coding agents</strong> like Claude Code and Codex are a fantastic fit for this kind of work as well. Give them the right goal and a useful environment and they'll churn through a basic research project without any further supervision.</p>
+<p>LLMs hallucinate and make mistakes. This is far less important for code research tasks because the code itself doesn't lie: if they write code and execute it and it does the right things then they've demonstrated to both themselves and to you that something really does work.</p>
+<p>They can't prove something is impossible - just because the coding agent couldn't find a way to do something doesn't mean it can't be done - but they can often demonstrate that something <em>is</em> possible in just a few minutes of crunching.</p>
+<h4 id="asynchronous-coding-agents">Asynchronous coding agents</h4>
+<p>I've used interactive coding agents like Claude Code and Codex CLI for a bunch of these, but today I'm increasingly turning to their <strong>asynchronous coding agent</strong> family members instead.</p>
+<p>An asynchronous coding agent is a coding agent that operates on a fire-and-forget basis. You pose it a task, it churns away on a server somewhere and when it's done it files a pull request against your chosen GitHub repository.</p>
+<p>OpenAI's <a href="https://chatgpt.com/codex">Codex Cloud</a>, Anthropic's <a href="https://claude.ai/code">Claude Code for web</a>, Google Gemini's <a href="https://jules.google/">Jules</a>, and GitHub's <a href="https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent?utm_source=chatgpt.com">Copilot coding agent</a> are four prominent examples of this pattern.</p>
+<p>These are <em>fantastic</em> tools for code research projects. Come up with a clear goal, turn it into a few paragraphs of prompt, set them loose and check back ten minutes later to see what they've come up with.</p>
+<p>I'm firing off 2-3 code research projects a day right now. My own time commitment is minimal and they frequently come back with useful or interesting results.</p>
+<h4 id="give-them-a-dedicated-github-repository">Give them a dedicated GitHub repository</h4>
+<p>You can run a code research task against an existing GitHub repository, but I find it's much more liberating to have a separate, dedicated repository for your coding agents to run their projects in.</p>
+<p>This frees you from being limited to research against just code you've already written, and also means you can be much less cautious about what you let the agents do.</p>
+<p>I have two repositories that I use for this - one public, one private. I use the public one for research tasks that have no need to be private, and the private one for anything that I'm not yet ready to share with the world.</p>
+<h4 id="let-them-rip-with-unlimited-network-access">Let them rip with unlimited network access</h4>
+<p>The biggest benefit of a dedicated repository is that you don't need to be cautious about what the agents operating in that repository can do.</p>
+<p>Both Codex Cloud and Claude Code for web default to running agents in a locked-down environment, with strict restrictions on how they can access the network. This makes total sense if they are running against sensitive repositories - a prompt injection attack of the <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">lethal trifecta</a> variety could easily be used to steal sensitive code or environment variables.</p>
+<p>If you're running in a fresh, non-sensitive repository you don't need to worry about this at all! I've configured my research repositories for full network access, which means my coding agents can install any dependencies they need, fetch data from the web and generally do anything I'd be able to do on my own computer.</p>
+<h4 id="my-simonw-research-collection">My simonw/research collection</h4>
+<p>Let's dive into some examples. My public research repository is at <a href="https://github.com/simonw/research">simonw/research</a> on GitHub. It currently contains 13 folders, each of which is a separate research project. I only created it two weeks ago so I'm already averaging nearly one a day!</p>
+<p>It also includes <a href="https://github.com/simonw/research/blob/main/.github/workflows/update-readme.yml">a GitHub Workflow</a> which uses <a href="https://docs.github.com/en/github-models">GitHub Models</a> to automatically update <a href="https://github.com/simonw/research/blob/main/README.md">the README</a> file with a summary of every new project, using <a href="https://cog.readthedocs.io/">Cog</a>, <a href="https://llm.datasette.io/">LLM</a>, <a href="https://github.com/tonybaloney/llm-github-models">llm-github-models</a> and <a href="https://github.com/simonw/research/blob/b059108dfefeb05a48e1c27f7a127dc9fd648129/README.md#L9-L116">this snippet of Python</a>.</p>
+<p>Here are a some example research projects from the repo.</p>
+<p><strong><a href="https://github.com/simonw/research/tree/main/node-pyodide">node-pyodide</a></strong> shows an example of a <a href="https://github.com/simonw/research/blob/main/node-pyodide/server-simple.js">Node.js script</a> that runs the <a href="https://pyodide.org/">Pyodide</a> WebAssembly distribution of Python inside it - yet another of my <a href="https://simonwillison.net/tags/sandboxing+python/">ongoing attempts</a> to find a great way of running Python in a WebAssembly sandbox on a server.</p>
+<p><strong><a href="https://github.com/simonw/research/tree/main/python-markdown-comparison">python-markdown-comparison</a></strong> (<a href="https://gistpreview.github.io/?fb07c2a3fd2d4cfb814a46696a58a00e">transcript</a>) provides a detailed performance benchmark of seven different Python Markdown libraries. I fired this one off because I stumbled across <a href="https://pypi.org/project/cmarkgfm/">cmarkgfm</a>, a Python binding around GitHub's Markdown implementation in C, and wanted to see how it compared to the other options. This one produced some charts! <code>cmarkgfm</code> came out on top by a significant margin:</p>
+<p><img src="https://static.simonwillison.net/static/2025/markdown-performance.png" alt="Bar chart titled &quot;Relative Performance vs cmarkgfm (Large Document)&quot; comparing relative speed of markdown libraries, with marko at 52.1x, markdown2 at 16.9x, mistletoe at 14.1x, markdown at 12.9x, commonmark at 12.1x, mistune at 10.0x, and cmarkgfm at 1.0x baseline marked by a red dashed line; x-axis labeled &quot;Relative Speed (lower is better)&quot; ranging from 0 to 50+" style="max-width: 100%;" /></p>
+<p>Here's the entire prompt I used for that project:</p>
+<blockquote>
+<p>Create a performance benchmark and feature comparison report on PyPI cmarkgfm compared to other popular Python markdown libraries - check all of them out from github and read the source to get an idea for features, then design and run a benchmark including generating some charts, then create a report in a new python-markdown-comparison folder (do not create a _summary.md file or edit anywhere outside of that folder). Make sure the performance chart images are directly displayed in the README.md in the folder.</p>
+</blockquote>
+<p>Note that I didn't specify any Markdown libraries other than <code>cmarkgfm</code> - Claude Code ran a search and found the other six by itself.</p>
+<p><strong><a href="https://github.com/simonw/research/tree/main/cmarkgfm-in-pyodide">cmarkgfm-in-pyodide</a></strong> is a lot more fun. A neat thing about having all of my research projects in the same repository is that new projects can build on previous ones. Here I decided to see how hard it would be to get <code>cmarkgfm</code> - which has a C extension - working inside Pyodide inside Node.js. Claude successfully compiled a 88.4KB <code>cmarkgfm_pyodide-2025.10.22-cp312-cp312-emscripten_3_1_46_wasm32.whl</code> file with the necessary C extension and proved it could be loaded into Pyodide in WebAssembly inside of Node.js.</p>
+<p>I ran this one using Claude Code on my laptop after an initial attempt failed. The starting prompt was:</p>
+<blockquote>
+<p>Figure out how to get the cmarkgfm markdown lover <em>[typo in prompt, this should have been "library" but it figured it out anyway]</em> for Python working in pyodide. This will be hard because it uses C so you will need to compile it to pyodide compatible webassembly somehow. Write a report on your results plus code to a new cmarkgfm-in-pyodide directory. Test it using pytest to exercise a node.js test script that calls pyodide as seen in the existing node.js and pyodide directory</p>
+<p>There is an existing branch that was an initial attempt at this research, but which failed because it did not have Internet access. You do have Internet access. Use that existing branch to accelerate your work, but do not commit any code unless you are certain that you have successfully executed tests that prove that the pyodide module you created works correctly.</p>
+</blockquote>
+<p>This one gave up half way through, complaining that emscripten would take too long. I told it:</p>
+<blockquote>
+<p>Complete this project, actually run emscripten, I do not care how long it takes, update the report if it works</p>
+</blockquote>
+<p>It churned away for a bit longer and complained that the existing Python library used CFFI which isn't available in Pyodide. I asked it:</p>
+<blockquote>
+<p>Can you figure out how to rewrite cmarkgfm to not use FFI and to use a pyodide-friendly way of integrating that C code instead?</p>
+</blockquote>
+<p>... and it did. You can <a href="https://gistpreview.github.io/?6d778a8f9c4c2c005a189ff308c3bc47">see the full transcript here</a>.</p>
+<p><strong><a href="https://github.com/simonw/research/tree/main/blog-tags-scikit-learn">blog-tags-scikit-learn</a></strong>. Taking a short break from WebAssembly, I thought it would be fun to put <a href="https://scikit-learn.org/stable/">scikit-learn</a> through its paces on a text classification task against my blog:</p>
+<blockquote>
+<p>Work in a new folder called blog-tags-scikit-learn</p>
+<p>Download <code>https://datasette.simonwillison.net/simonwillisonblog.db</code> - a SQLite database. Take a look at the blog_entry table and the associated tags - a lot of the earlier entries do not have tags associated with them, where the later entries do. Design, implement and execute models to suggests tags for those earlier entries based on textual analysis against later ones</p>
+<p>Use Python scikit learn and try several different strategies</p>
+<p>Produce JSON of the results for each one, plus scripts for running them and a detailed markdown description</p>
+<p>Also include an HTML page with a nice visualization of the results that works by loading those JSON files.</p>
+</blockquote>
+<p>This resulted in seven <code>.py</code> files, four <code>.json</code> results files and a detailed <a href="https://github.com/simonw/research/blob/main/blog-tags-scikit-learn/README.md">report</a>. (It ignored the bit about an HTML page with a nice visualization for some reason.) Not bad for a few moments of idle curiosity typed into my phone!</p>
+<p>That's just three of the thirteen projects in the repository so far. The commit history for each one usually links to the prompt and sometimes the transcript if you want to see how they unfolded.</p>
+<p>More recently I added a short <code>AGENTS.md</code> file to the repo with a few extra tips for my research agents. You can <a href="https://github.com/simonw/research/blob/b059108dfefeb05a48e1c27f7a127dc9fd648129/AGENTS.md">read that here</a>.</p>
+<h4 id="this-is-total-slop-of-course">This is total slop, of course</h4>
+<p>My preferred definition of <a href="https://simonwillison.net/2024/May/8/slop/">AI slop</a> is AI-generated content that is published without human review. I've not been reviewing these reports in great detail myself, and I wouldn't usually publish them online without some serious editing and verification.</p>
+<p>I want to share the pattern I'm using though, so I decided to keep them quarantined in this one public <code>simonw/research</code> repository.</p>
+<p>A tiny feature request for GitHub: I'd love to be able to mark a repository as "exclude from search indexes" such that it gets labelled with <code>&lt;meta name="robots" content="noindex"&gt;</code> tags. I still like to keep AI-generated content out of search, to avoid contributing more to the <a href="https://en.wikipedia.org/wiki/Dead_Internet_theory">dead internet</a>.</p>
+<h4 id="try-it-yourself">Try it yourself</h4>
+<p>It's pretty easy to get started trying out this coding agent research pattern. Create a free GitHub repository (public or private) and let some agents loose on it and see what happens.</p>
+<p>You can run agents locally but I find the asynchronous agents to be more convenient - especially as I can run them (or trigger them from my phone) without any fear of them damaging my own machine or leaking any of my private data.</p>
+<p>Claude Code for web offers <a href="https://support.claude.com/en/articles/12690958-claude-code-promotion">a free $250 of credits</a> for their $20/month users for a limited time (until November 18, 2025). Gemini Jules has <a href="https://jules.google/docs/usage-limits/">a free tier</a>. There are plenty of other coding agents you can try out as well.</p>
+<p>Let me know if your research agents come back with anything interesting!</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/webassembly">webassembly</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/jules">jules</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Open redirect endpoint in Datasette prior to 0.65.2 and 1.0a21]]></title>
         <id>https://simonwillison.net/2025/Nov/5/open-redirect-datasette/#atom-everything</id>
@@ -300,6 +492,17 @@ When I <a href="https://simonwillison.net/2025/Oct/16/claude-skills/">wrote abou
         <p>Tags: <a href="https://simonwillison.net/tags/plugins">plugins</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/sql">sql</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/annotated-release-notes">annotated-release-notes</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Secret scanning detects Base64-encoded secrets and more — October 2025]]></title>
+        <id>https://github.blog/changelog/2025-11-04-secret-scanning-now-detects-base64-encoded-secrets</id>
+        <link href="https://github.blog/changelog/2025-11-04-secret-scanning-now-detects-base64-encoded-secrets"/>
+        <updated>2025-11-04T19:21:06.000Z</updated>
+        <summary type="html"><![CDATA[Secret scanning — October 2025 GitHub secret scanning continually adds support for new secret types. The following updates were made during the month of October. Base64-encoded secrets: Secret scanning now…
+The post Secret scanning detects Base64-encoded secrets and more — October 2025 appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
         </author>
     </entry>
     <entry>
@@ -3684,47 +3887,6 @@ In the wake of Apple <a href="https://daringfireball.net/2025/10/iceblock_remove
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/apple">apple</a>, <a href="https://simonwillison.net/tags/brent-simmons">brent-simmons</a>, <a href="https://simonwillison.net/tags/macos">macos</a>, <a href="https://simonwillison.net/tags/netnewswire">netnewswire</a>, <a href="https://simonwillison.net/tags/ios">ios</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Semantic Kernel and Microsoft Agent Framework]]></title>
-        <id>https://devblogs.microsoft.com/semantic-kernel/?p=5041</id>
-        <link href="https://devblogs.microsoft.com/semantic-kernel/semantic-kernel-and-microsoft-agent-framework/"/>
-        <updated>2025-10-08T06:51:06.000Z</updated>
-        <summary type="html"><![CDATA[Last week we announced Microsoft Agent Framework, you can find all the details: In the blog post here: Introducing Microsoft Agent Framework: The Open-Source Engine for Agentic AI Apps | Azure AI Foundry Blog Explore documentation for more details: https://aka.ms/AgentFramework/Docs See it in action: Watch demos on AI Show and Open at Microsoft Learn step by step: Microsoft Learn modules for […]
-The post Semantic Kernel and Microsoft Agent Framework appeared first on Semantic Kernel.]]></summary>
-        <author>
-            <name>Shawn Henry</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Python 3.14]]></title>
-        <id>https://simonwillison.net/2025/Oct/8/python-314/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Oct/8/python-314/#atom-everything"/>
-        <updated>2025-10-08T04:10:06.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.python.org/downloads/release/python-3140/">Python 3.14</a></strong></p>
-This year's major Python version, Python 3.14, just made its first stable release!</p>
-<p>As usual the <a href="https://docs.python.org/3.14/whatsnew/3.14.html">what's new in Python 3.14</a> document is the best place to get familiar with the new release:</p>
-<blockquote>
-<p>The biggest changes include <a href="https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-template-string-literals">template string literals</a>, <a href="https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-deferred-annotations">deferred evaluation of annotations</a>, and support for <a href="https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-multiple-interpreters">subinterpreters</a> in the standard library.</p>
-<p>The library changes include significantly improved capabilities for <a href="https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-asyncio-introspection">introspection in asyncio</a>, <a href="https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-zstandard">support for Zstandard</a> via a new <a href="https://docs.python.org/3.14/library/compression.zstd.html#module-compression.zstd">compression.zstd</a> module, syntax highlighting in the REPL, as well as the usual deprecations and removals, and improvements in user-friendliness and correctness.</p>
-</blockquote>
-<p>Subinterpreters look particularly interesting as a way to use multiple CPU cores to run Python code despite the continued existence of the GIL. If you're feeling brave and <a href="https://hugovk.github.io/free-threaded-wheels/">your dependencies cooperate</a> you can also use the free-threaded build of Python 3.14 - <a href="https://docs.python.org/3.14/whatsnew/3.14.html#whatsnew314-free-threaded-now-supported">now officially supported</a> - to skip the GIL entirely.</p>
-<p>A new major Python release means an older release hits the <a href="https://devguide.python.org/versions/">end of its support lifecycle</a> - in this case that's Python 3.9. If you maintain open source libraries that target every supported Python versions (as I do) this means features introduced in Python 3.10 can now be depended on! <a href="https://docs.python.org/3.14/whatsnew/3.10.html">What's new in Python 3.10</a> lists those - I'm most excited by <a href="https://docs.python.org/3.14/whatsnew/3.10.html#pep-634-structural-pattern-matching">structured pattern matching</a> (the <code>match/case</code> statement) and the <a href="https://docs.python.org/3.14/whatsnew/3.10.html#pep-604-new-type-union-operator">union type operator</a>, allowing <code>int | float | None</code> as a type annotation in place of <code>Optional[Union[int, float]]</code>.</p>
-<p>If you use <code>uv</code> you can grab a copy of 3.14 using:</p>
-<pre><code>uv self update
-uv python upgrade 3.14
-uvx python@3.14
-</code></pre>
-<p>Or for free-threaded Python 3.1;:</p>
-<pre><code>uvx python@3.14t
-</code></pre>
-<p>The <code>uv</code> team wrote <a href="https://astral.sh/blog/python-3.14">about their Python 3.14 highlights</a> in their announcement of Python 3.14's availability via <code>uv</code>.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/gil">gil</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/psf">psf</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
