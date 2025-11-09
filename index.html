@@ -31,6 +31,40 @@
       <article>
           <details>
             <summary>
+              Pelican on a Bike - Raytracer Edition
+              <span class="post-metadata">(2 min | 498 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/9/pelican-on-a-bike-raytracer-edition/#atom-everything>Pelican on a Bike - Raytracer Edition
+Write a POV-Ray file that shows a pelican riding on a bicycle.
+This turns out to be a harder challenge than SVG, presumably because there are less examples of POV-Ray in the training data:
+Most produced a script that failed to parse. I would paste the error back into the chat and let it attempt a fix.
+The results are really fun though! A lot of them end up accompanied by a weird floating egg for some reason - here&#x27;s Claude Opus 4:
+
+I think the best result came from GPT-5 - again with the floating egg though!
+
+I decided to try this on the new gpt-5-codex-mini, using the trick I described yesterday. Here&#x27;s the code it wrote.
+./target/debug/codex prompt -m gpt-5-codex-mini \
+  &quot;Write a POV-Ray file that shows a pelican riding on a bicycle.&quot;
+
+It turns out you can render POV files on macOS like this:
+brew install povray
+povray demo.pov # produces demo.png
+
+The code GPT-5 Codex Mini created didn&#x27;t quite work, so I round-tripped it through Sonnet 4.5 via Claude Code a couple of times - transcript here. Once it had fixed the errors I got this:
+
+That&#x27;s significantly worse than the one beetle_b got from GPT-5 Mini!
+
+    
+Via BeetleB on Hacker News
+Tags: 3d, ray-tracing, ai, generative-ai, llms, pelican-riding-a-bicycle, gpt-5</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Reverse engineering Codex CLI to get GPT-5-Codex-Mini to draw me a pelican
               <span class="post-metadata">(6 min | 1855 words)</span> 
             </summary>
@@ -5007,35 +5041,6 @@ The post Strategic Pagination Patterns for .NET APIs first appeared on Roxeem.</
             <div class="post-content">
               <a target="_blank" href=https://simonwillison.net/2025/Oct/11/uncomfortable/#atom-everything>I&#x27;m beginning to suspect that a key skill in working effectively with coding agents is developing an intuition for when you don&#x27;t need to closely review every line of code they produce. This feels deeply uncomfortable!
 Tags: vibe-coding, coding-agents, ai-assisted-programming, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              An MVCC-like columnar table on S3 with constant-time deletes
-              <span class="post-metadata">(2 min | 522 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/11/mvcc-s3/#atom-everything>An MVCC-like columnar table on S3 with constant-time deletes
-previously) makes it an interesting, scalable and often inexpensive platform for all kinds of database patterns.
-Shayon Mukherjee presents an ingenious design for a Parquet-backed database in S3 which accepts concurrent writes, presents a single atomic view for readers and even supports reliable row deletion despite Parquet requiring a complete file rewrite in order to remove data.
-The key to the design is a _latest_manifest JSON file at the top of the bucket, containing an integer version number. Clients use compare-and-swap to increment that version - only one client can succeed at this, so the incremented version they get back is guaranteed unique to them.
-Having reserved a version number the client can write a unique manifest file for that version - manifest/v00000123.json - with a more complex data structure referencing the current versions of every persisted file, including the one they just uploaded.
-Deleted rows are written to tombstone files as either a list of primary keys or a list of of ranges. Clients consult these when executing reads, filtering out deleted rows as part of resolving a query.
-The pricing estimates are especially noteworthy:
-For a workload ingesting 6 TB/day with 2 TB of deletes and 50K queries/day:
-PUT requests: ~380K/day (≈4 req/s) &#x3D; $1.88/day
-GET requests: highly variable, depends on partitioning effectiveness
-Best case (good time-based partitioning): ~100K-200K/day &#x3D; $0.04-$0.08/day
-Worst case (poor partitioning, scanning many files): ~2M/day &#x3D; $0.80/day
-~$3/day for ingesting 6TB of data is pretty fantastic!
-Watch out for storage costs though - each new TB of data at $0.023/GB/month adds $23.55 to the ongoing monthly bill.
-
-    
-Via Hacked News
-Tags: aws, databases, s3, parquet</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
