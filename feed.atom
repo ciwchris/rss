@@ -2,10 +2,64 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-11-12T14:11:55.570Z</updated>
+    <updated>2025-11-12T21:10:21.101Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Secret scanning improves private key detection, updates Sentry pattern names]]></title>
+        <id>https://github.blog/changelog/2025-11-12-secret-scanning-improves-private-key-detection</id>
+        <link href="https://github.blog/changelog/2025-11-12-secret-scanning-improves-private-key-detection"/>
+        <updated>2025-11-12T18:15:01.000Z</updated>
+        <summary type="html"><![CDATA[To reduce the risk of cryptographic credentials being exposed in your repositories, secret scanning now detects additional private key formats and has upgraded existing private key detectors. In addition, Sentry…
+The post Secret scanning improves private key detection, updates Sentry pattern names appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Steve Krouse]]></title>
+        <id>https://simonwillison.net/2025/Nov/12/steve-krouse/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/12/steve-krouse/#atom-everything"/>
+        <updated>2025-11-12T17:21:19.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://x.com/stevekrouse/status/1988641250329989533"><p>The fact that MCP is a difference surface from your normal API allows you to ship MUCH faster to MCP. This has been unlocked by inference at runtime</p>
+<p>Normal APIs are promises to developers, because developer commit code that relies on those APIs, and then walk away. If you break the API, you break the promise, and you break that code. This means a developer gets woken up at 2am to fix the code</p>
+<p>But MCP servers are called by LLMs which dynamically read the spec every time, which allow us to constantly change the MCP server. It doesn't matter! We haven't made any promises. The LLM can figure it out afresh every time</p></blockquote>
+<p class="cite">&mdash; <a href="https://x.com/stevekrouse/status/1988641250329989533">Steve Krouse</a></p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/steve-krouse">steve-krouse</a>, <a href="https://simonwillison.net/tags/apis">apis</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Fun-reliable side-channels for cross-container communication]]></title>
+        <id>https://simonwillison.net/2025/Nov/12/h4x0rchat/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/12/h4x0rchat/#atom-everything"/>
+        <updated>2025-11-12T16:04:03.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://h4x0r.org/funreliable/">Fun-reliable side-channels for cross-container communication</a></strong></p>
+Here's a very clever hack for communicating between different processes running in different containers on the same machine. It's based on clever abuse of POSIX advisory locks which allow a process to create and detect locks across byte offset ranges:</p>
+<blockquote>
+<p>These properties combined are enough to provide a basic cross-container side-channel primitive, because a process in one container can set a read-lock at some interval on <code>/proc/self/ns/time</code>, and a process in another container can observe the presence of that lock by querying for a hypothetically intersecting write-lock.</p>
+</blockquote>
+<p>I dumped <a href="https://github.com/crashappsec/h4x0rchat/blob/main/h4x0rchat.c">the C proof-of-concept</a> into GPT-5 for <a href="https://chatgpt.com/share/6914aad2-397c-8006-b404-b9ddbd900c8f">a code-level explanation</a>, then had it help me figure out how to run it in Docker. Here's the recipe that worked for me:</p>
+<pre><code>cd /tmp
+wget https://github.com/crashappsec/h4x0rchat/blob/9b9d0bd5b2287501335acca35d070985e4f51079/h4x0rchat.c
+docker run --rm -it -v "$PWD:/src" \
+  -w /src gcc:13 bash -lc 'gcc -Wall -O2 \
+  -o h4x0rchat h4x0rchat.c &amp;&amp; ./h4x0rchat'
+</code></pre>
+<p>Run that <code>docker run</code> line in two separate terminal windows and you can chat between the two of them like this:</p>
+<p><a style="text-decoration: none; border-bottom: none" href="https://static.simonwillison.net/static/2025/h4x0rchat.gif"><img style="max-width: 100%" alt="Animated demo. Two terminal windows. Both run that command, then start a l33t speak chat interface. Each interface asks the user for a name, then messages that are typed in one are instantly displayed in the other and vice-versa." src="https://static.simonwillison.net/static/2025/h4x0rchat.gif"></a>
+
+    <p><small></small>Via <a href="https://lobste.rs/s/3z4pro/fun_reliable_side_channels_for_cross">lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/c">c</a>, <a href="https://simonwillison.net/tags/docker">docker</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Giving your AI a Job Interview]]></title>
         <id>https://www.oneusefulthing.org/p/giving-your-ai-a-job-interview</id>
