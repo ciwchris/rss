@@ -25,9 +25,42 @@
 
   <ul>
     <li>
+      <time>2025-11-13</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Manage Copilot coding agent tasks in Visual Studio Code
+              <span class="post-metadata">(5 min | 1460 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-13-manage-copilot-coding-agent-tasks-in-visual-studio-code>You can now track and manage Copilot coding agent without leaving Visual Studio Code. Everything you need now lives in one streamlined, centralized mission control view. View session logs directly…
+The post Manage Copilot coding agent tasks in Visual Studio Code appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-11-12</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Copilot code review and coding agent now support agent-specific instructions
+              <span class="post-metadata">(5 min | 1543 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-12-copilot-code-review-and-coding-agent-now-support-agent-specific-instructions>You can now craft targeted custom instructions for Copilot code review and Copilot coding agent. The new excludeAgent property for .instructions.md custom instructions gives you exact control over when specific…
+The post Copilot code review and coding agent now support agent-specific instructions appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4839,296 +4872,6 @@ Via lobste.rs
 Tags: browsers, csrf, go, security</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-10-14</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              NVIDIA DGX Spark: great hardware, early days for the ecosystem
-              <span class="post-metadata">(6 min | 1900 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/14/nvidia-dgx-spark/#atom-everything>NVIDIA sent me a preview unit of their new DGX Spark desktop &quot;AI supercomputer&quot;. I&#x27;ve never had hardware to review before! You can consider this my first ever sponsored post if you like, but they did not pay me any cash and aside from an embargo date they did not request (nor would I grant) any editorial input into what I write about the device.
-
-The device retails for around $4,000. They officially go on sale tomorrow.
-
-First impressions are that this is a snazzy little computer. It&#x27;s similar in size to a Mac mini, but with an exciting textured surface that feels refreshingly different and a little bit science fiction.
-
-
-
-There is a very powerful machine tucked into that little box. Here are the specs, which I had Claude Code figure out for me by poking around on the device itself:
-
-
-Hardware Specifications
-
-
-Architecture: aarch64 (ARM64)
-
-CPU: 20 cores
-
-10x Cortex-X925 (performance cores)
-
-10x Cortex-A725 (efficiency cores)
-
-
-
-RAM: 119 GB total (112 GB available) - I’m not sure why Claude reported it differently here, the machine is listed as 128GB - it looks like a 128GB &#x3D;&#x3D; 119GiB thing because Claude used free -h
-
-Storage: 3.7 TB (6% used, 3.3 TB available)
-
-
-GPU Specifications
-
-
-Model: NVIDIA GB10 (Blackwell architecture)
-
-Compute Capability: sm_121 (12.1)
-
-Memory: 119.68 GB
-
-Multi-processor Count: 48 streaming multiprocessors
-
-Architecture: Blackwell
-
-
-
-Short version: this is an ARM64 device with 128GB of memory that&#x27;s available to both the GPU and the 20 CPU cores at the same time, strapped onto a 4TB NVMe SSD.
-
-The Spark is firmly targeted at “AI researchers”. It’s designed for both training and running models.
-
-The tricky bit: CUDA on ARM64
-
-Until now almost all of my own model running experiments have taken place on a Mac. This has gotten far less painful over the past year and a half thanks to the amazing work of the MLX team and community, but it&#x27;s still left me deeply frustrated at my lack of access to the NVIDIA CUDA ecosystem. I&#x27;ve lost count of the number of libraries and tutorials which expect you to be able to use Hugging Face Transformers or PyTorch with CUDA, and leave you high and dry if you don&#x27;t have an NVIDIA GPU to run things on.
-
-Armed (ha) with my new NVIDIA GPU I was excited to dive into this world that had long eluded me... only to find that there was another assumption baked in to much of this software: x86 architecture for the rest of the machine.
-
-This resulted in all kinds of unexpected new traps for me to navigate. I eventually managed to get a PyTorch 2.7 wheel for CUDA on ARM, but failed to do so for 2.8. I&#x27;m not confident there because the wheel itself is unavailable but I&#x27;m finding navigating the PyTorch ARM ecosystem pretty confusing.
-
-NVIDIA are trying to make this easier, with mixed success. A lot of my initial challenges got easier when I found their official Docker container, so now I&#x27;m figuring out how best to use Docker with GPUs. Here&#x27;s the current incantation that&#x27;s been working for me:
-
-
-docker run -it --gpus&#x3D;all \
-  -v /usr/local/cuda:/usr/local/cuda:ro \
-  nvcr.io/nvidia/cuda:13.0.1-devel-ubuntu24.04 \
-  bash
-
-I have not yet got my head around the difference between CUDA 12 and 13. 13 appears to be very new, and a lot of the existing tutorials and libraries appear to expect 12.
-
-The missing documentation isn&#x27;t missing any more
-
-When I first received this machine around a month ago there was very little in the way of documentation to help get me started. This meant climbing the steep NVIDIA+CUDA learning curve mostly on my own.
-
-This has changed substantially in just the last week. NVIDIA now have extensive guides for getting things working on the Spark and they are a huge breath of fresh air - exactly the information I needed when I started exploring this hardware.
-
-Here&#x27;s the getting started guide and the essential collection of playbooks. There&#x27;s still a lot I haven&#x27;t tried yet just in this official set of guides.
-
-Claude Code for everything
-
-Claude Code was an absolute lifesaver for me while I was trying to figure out how best to use this device. My Ubuntu skills were a little rusty, and I also needed to figure out CUDA drivers and Docker incantations and how to install the right versions of PyTorch. Claude 4.5 Sonnet is much better than me at all of these things.
-
-Since many of my experiments took place in disposable Docker containers I had no qualms at all about running it in YOLO mode:
-
-
-IS_SANDBOX&#x3D;1 claude --dangerously-skip-permissions
-
-
-The IS_SANDBOX&#x3D;1 environment variable stops Claude from complaining about running as root.
-
-
-Before I found out about IS_SANDBOX
-
-
-I was tipped off about IS_SANDBOX after I published this article. Here&#x27;s my original workaround:
-
-
-Claude understandably won&#x27;t let you do this as root, even in a Docker container, so I found myself using the following incantation in a fresh nvcr.io/nvidia/cuda:13.0.1-devel-ubuntu24.04 instance pretty often:
-
-
-apt-get update &amp;&amp; apt-get install -y sudo
-# pick the first free UID &gt;&#x3D;1000
-U&#x3D;$(for i in $(seq 1000 65000); do if ! getent passwd $i &gt;/dev/null; then echo $i; break; fi; done)
-echo &quot;Chosen UID: $U&quot;
-# same for a GID
-G&#x3D;$(for i in $(seq 1000 65000); do if ! getent group $i &gt;/dev/null; then echo $i; break; fi; done)
-echo &quot;Chosen GID: $G&quot;
-# create user+group
-groupadd -g &quot;$G&quot; devgrp
-useradd -m -u &quot;$U&quot; -g &quot;$G&quot; -s /bin/bash dev
-# enable password-less sudo:
-printf &#x27;dev ALL&#x3D;(ALL) NOPASSWD:ALL\n&#x27; &gt; /etc/sudoers.d/90-dev-nopasswd
-chmod 0440 /etc/sudoers.d/90-dev-nopasswd
-# Install npm
-DEBIAN_FRONTEND&#x3D;noninteractive TZ&#x3D;Etc/UTC apt-get install -y npm
-# Install Claude
-npm install -g @anthropic-ai/claude-code
-
-Then switch to the dev user and run Claude for the first time:
-
-
-su - dev
-claude --dangerously-skip-permissions
-
-
-
-
-
-This will provide a URL which you can visit to authenticate with your Anthropic account, confirming by copying back a token and pasting it into the terminal.
-
-Docker tip: you can create a snapshot of the current image (with Claude installed) by running docker ps to get the container ID and then:
-
-
-docker commit --pause&#x3D;false &lt;container_id&gt; cc:snapshot
-
-Then later you can start a similar container using:
-
-
-docker run -it \
-  --gpus&#x3D;all \
-  -v /usr/local/cuda:/usr/local/cuda:ro \
-  cc:snapshot bash
-
-Here&#x27;s an example of the kinds of prompts I&#x27;ve been running in Claude Code inside the container:
-
-
-I want to run https://huggingface.co/unsloth/Qwen3-4B-GGUF using llama.cpp - figure out how to get llama cpp working on this machine  such that it runs with the GPU, then install it in this directory and get that model to work to serve a prompt. Goal is to get this  command to run: llama-cli -hf unsloth/Qwen3-4B-GGUF -p &quot;I believe the meaning of life is&quot; -n 128 -no-cnv
-
-
-That one worked flawlessly - Claude checked out the llama.cpp repo, compiled it for me and iterated on it until it could run that model on the GPU. Here&#x27;s a full transcript, converted from Claude&#x27;s .jsonl log format to Markdown using a script I vibe coded just now.
-
-I later told it:
-
-
-Write out a markdown file with detailed notes on what you did. Start with the shortest form of notes on how to get a successful build, then add a full account of everything you tried, what went wrong and how you fixed it.
-
-
-Which produced this handy set of notes.
-
-Tailscale was made for this
-
-Having a machine like this on my local network is neat, but what&#x27;s even neater is being able to access it from anywhere else in the world, from both my phone and my laptop.
-
-Tailscale is perfect for this. I installed it on the Spark (using the Ubuntu instructions here), signed in with my SSO account (via Google)... and the Spark showed up in the &quot;Network Devices&quot; panel on my laptop and phone instantly.
-
-I can SSH in from my laptop or using the Termius iPhone app on my phone. I&#x27;ve also been running tools like Open WebUI which give me a mobile-friendly web interface for interacting with LLMs on the Spark.
-
-Here comes the ecosystem
-
-The embargo on these devices dropped yesterday afternoon, and it turns out a whole bunch of relevant projects have had similar preview access to myself. This is fantastic news as many of the things I&#x27;ve been trying to figure out myself suddenly got a whole lot easier.
-
-Four particularly notable examples:
-
-
-Ollama works out of the box. They actually had a build that worked a few weeks ago, and were the first success I had running an LLM on the machine.
-
-
-llama.cpp creator Georgi Gerganov just published  extensive benchmark results from running llama.cpp on a Spark. He&#x27;s getting ~3,600 tokens/second to read the prompt and ~59 tokens/second to generate a response with the MXFP4 version of GPT-OSS 20B and ~817 tokens/second to read and ~18 tokens/second to generate for GLM-4.5-Air-GGUF.
-
-LM Studio now have a build for the Spark. I haven&#x27;t tried this one yet as I&#x27;m currently using my machine exclusively via SSH.
-
-vLLM - one of the most popular engines for serving production LLMs - had early access and there&#x27;s now an official NVIDIA vLLM NGC Container for running their stack.
-
-
-Should you get one?
-
-It&#x27;s a bit too early for me to provide a confident recommendation concerning this machine. As indicated above, I&#x27;ve had a tough time figuring out how best to put it to use, largely through my own inexperience with CUDA, ARM64 and Ubuntu GPU machines in general.
-
-The ecosystem improvements in just the past 24 hours have been very reassuring though. I expect it will be clear within a few weeks how well supported this machine is going to be.
-Tags: hardware, ai, tailscale, generative-ai, local-llms, llms, nvidia, ollama, llama-cpp, coding-agents, claude-code, lm-studio, disclosures</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              qwen3-vl
-              <span class="post-metadata">(10 min | 2973 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/qwen3-vl>The most powerful vision-language model in the Qwen model family to date.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Just Talk To It - the no-bs Way of Agentic Engineering
-              <span class="post-metadata">(2 min | 558 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/14/agentic-engineering/#atom-everything>Just Talk To It - the no-bs Way of Agentic Engineering
-While Claude reacts well to 🚨 SCREAMING ALL-CAPS 🚨 commands that threaten it that it will imply ultimate failure and 100 kittens will die if it runs command X, that freaks out GPT-5. (Rightfully so). So drop all of that and just use words like a human.
-Peter is a heavy user of parallel agents:
-I&#x27;ve completely moved to codex cli as daily driver. I run between 3-8 in parallel in a 3x3 terminal grid, most of them in the same folder, some experiments go in separate folders. I experimented with worktrees, PRs but always revert back to this setup as it gets stuff done the fastest.
-He shares my preference for CLI utilities over MCPs:
-I can just refer to a cli by name. I don&#x27;t need any explanation in my agents file. The agent will try $randomcrap on the first call, the cli will present the help menu, context now has full info how this works and from now on we good. I don&#x27;t have to pay a price for any tools, unlike MCPs which are a constant cost and garbage in my context. Use GitHub&#x27;s MCP and see 23k tokens gone. Heck, they did make it better because it was almost 50.000 tokens when it first launched. Or use the gh cli which has basically the same feature set, models already know how to use it, and pay zero context tax.
-It&#x27;s worth reading the section on why he abandoned spec driven development in full.
-
-
-    
-Tags: ai, generative-ai, llms, ai-assisted-programming, model-context-protocol, coding-agents, claude-code, codex-cli, parallel-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              CodeQL scanning Rust and C/C++ without builds is now generally available
-              <span class="post-metadata">(5 min | 1537 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-10-14-codeql-scanning-rust-and-c-c-without-builds-is-now-generally-available>We’ve added support for Rust and scanning C/C++ projects without builds in CodeQL, the engine powering GitHub code scanning. Both of these initiatives have ended their public preview and are…
-The post CodeQL scanning Rust and C/C++ without builds is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Enterprise Server 3.18 is now generally available
-              <span class="post-metadata">(5 min | 1607 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-10-14-github-enterprise-server-3-18-is-now-generally-available>GitHub Enterprise Server (GHES) 3.18 enhances deployment efficiency, monitoring capabilities, code security, and policy management. Here are a few highlights in the 3.18 release: Enterprise administrators can define custom properties…
-The post GitHub Enterprise Server 3.18 is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub MCP Server now supports GitHub Projects and more
-              <span class="post-metadata">(6 min | 1736 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-10-14-github-mcp-server-now-supports-github-projects-and-more>The GitHub MCP Server is introducing a new tool to interact with and manage GitHub Projects. We have also implemented multiple strategies to decrease the footprint of the GitHub MCP…
-The post GitHub MCP Server now supports GitHub Projects and more appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot alerts API offset-based pagination parameters deprecated
-              <span class="post-metadata">(5 min | 1423 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-10-14-dependabot-alerts-api-pagination-parameters-deprecated>We’ve removed offset-based pagination parameters (page, first, and last) in all GitHub Dependabot alerts for REST API endpoints. Going forward, we only support cursor-based pagination parameters (before, after, and per_page).…
-The post Dependabot alerts API offset-based pagination parameters deprecated appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
