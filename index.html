@@ -31,6 +31,28 @@
       <article>
           <details>
             <summary>
+              parakeet-mlx
+              <span class="post-metadata">(1 min | 361 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/14/parakeet-mlx/#atom-everything>parakeet-mlx
+Parakeet ASR (Automatic Speech Recognition, like Whisper) model to to Apple&#x27;s MLX framework.
+It&#x27;s packaged as a Python CLI tool, so you can run it like this:
+uvx parakeet-mlx default_tc.mp3
+
+The first time I ran this it downloaded a 2.5GB model file.
+Once that was fetched it took 53 seconds to transcribe a 65MB 1hr 1m 28s podcast episode (this one) and produced this default_tc.srt file with a timestamped transcript of the audio I fed into it. The quality appears to be very high.
+
+
+    
+Tags: python, ai, nvidia, uv, mlx, speech-to-text</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               GPT-5.1 Instant and GPT-5.1 Thinking System Card Addendum
               <span class="post-metadata">(2 min | 602 words)</span> 
             </summary>
@@ -4938,59 +4960,6 @@ The post Grok Code Fast 1 is now generally available in GitHub Copilot appeared 
 The post Actions Runner Controller release 0.13.0 appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              NVIDIA DGX Spark + Apple Mac Studio &#x3D; 4x Faster LLM Inference with EXO 1.0
-              <span class="post-metadata">(2 min | 521 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/16/nvidia-dgx-spark-apple-mac-studio/#atom-everything>NVIDIA DGX Spark + Apple Mac Studio &#x3D; 4x Faster LLM Inference with EXO 1.0
-Their detailed explanation taught me a lot about LLM performance.
-There are two key steps in executing a prompt. The first is the prefill phase that reads the incoming prompt and builds a KV cache for each of the transformer layers in the model. This is compute-bound as it needs to process every token in the input and perform large matrix multiplications across all of the layers to initialize the model&#x27;s internal state.
-Performance in the prefill stage influences TTFT - time‑to‑first‑token.
-The second step is the decode phase, which generates the output one token at a time. This part is limited by memory bandwidth - there&#x27;s less arithmetic, but each token needs to consider the entire KV cache.
-Decode performance influences TPS - tokens per second.
-EXO noted that the Spark has 100 TFLOPS but only 273GB/s of memory bandwidth, making it a better fit for prefill. The M3 Ultra has 26 TFLOPS but 819GB/s of memory bandwidth, making it ideal for the decode phase.
-They run prefill on the Spark, streaming the KV cache to the Mac over 10Gb Ethernet. They can start streaming earlier layers while the later layers are still being calculated. Then the Mac runs the decode phase, returning tokens faster than if the Spark had run the full process end-to-end.
-
-    
-Via @exolabs
-Tags: apple, ai, generative-ai, local-llms, llms, nvidia</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Riana Pfefferkorn
-              <span class="post-metadata">(1 min | 320 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/16/riana-pfefferkorn/#atom-everything>Pro se litigants [people representing themselves in court without a lawyer] account for the majority of the cases in the United States where a party submitted a court filing containing AI hallucinations. In a country where legal representation is unaffordable for most people, it is no wonder that pro se litigants are depending on free or low-cost AI tools. But it is a scandal that so many have been betrayed by them, to the detriment of the cases they are litigating all on their own.
-
-— Riana Pfefferkorn, analyzing the AI Hallucination Cases database for CIS at Stanford Law
-Tags: ai-ethics, generative-ai, law, hallucinations, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Coding without typing the code
-              <span class="post-metadata">(1 min | 371 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/16/coding-without-typing-the-code/#atom-everything>Last year the most useful exercise for getting a feel for how good LLMs were at writing code was vibe coding (before that name had even been coined) - seeing if you could create a useful small application through prompting alone.
-Today I think there&#x27;s a new, more ambitious and significantly more intimidating exercise: spend a day working on real production code through prompting alone, making no manual edits yourself.
-This doesn&#x27;t mean you can&#x27;t control exactly what goes into each file - you can even tell the model &quot;update line 15 to use this instead&quot; if you have to - but it&#x27;s a great way to get more of a feel for how well the latest coding agents can wield their edit tools.
-Tags: coding-agents, ai-assisted-programming, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 

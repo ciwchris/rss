@@ -2,10 +2,29 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-11-14T14:11:16.078Z</updated>
+    <updated>2025-11-14T21:09:52.591Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[parakeet-mlx]]></title>
+        <id>https://simonwillison.net/2025/Nov/14/parakeet-mlx/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/14/parakeet-mlx/#atom-everything"/>
+        <updated>2025-11-14T20:00:32.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/senstella/parakeet-mlx">parakeet-mlx</a></strong></p>
+Neat MLX project by Senstella bringing NVIDIA's <a href="https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2">Parakeet</a> ASR (Automatic Speech Recognition, like Whisper) model to to Apple's MLX framework.</p>
+<p>It's packaged as a Python CLI tool, so you can run it like this:</p>
+<pre><code>uvx parakeet-mlx default_tc.mp3
+</code></pre>
+<p>The first time I ran this it downloaded a 2.5GB model file.</p>
+<p>Once that was fetched it took 53 seconds to transcribe a 65MB 1hr 1m 28s podcast episode (<a href="https://accessibility-and-gen-ai.simplecast.com/episodes/ep-6-simon-willison-datasette">this one</a>) and produced <a href="https://gist.github.com/simonw/ea1dc73029bf080676839289e705a2a2">this default_tc.srt file</a> with a timestamped transcript of the audio I fed into it. The quality appears to be very high.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/nvidia">nvidia</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/mlx">mlx</a>, <a href="https://simonwillison.net/tags/speech-to-text">speech-to-text</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[GPT-5.1 Instant and GPT-5.1 Thinking System Card Addendum]]></title>
         <id>https://simonwillison.net/2025/Nov/14/gpt-51-system-card-addendum/#atom-everything</id>
@@ -3847,56 +3866,6 @@ The post Grok Code Fast 1 is now generally available in GitHub Copilot appeared 
 The post Actions Runner Controller release 0.13.0 appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[NVIDIA DGX Spark + Apple Mac Studio = 4x Faster LLM Inference with EXO 1.0]]></title>
-        <id>https://simonwillison.net/2025/Oct/16/nvidia-dgx-spark-apple-mac-studio/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Oct/16/nvidia-dgx-spark-apple-mac-studio/#atom-everything"/>
-        <updated>2025-10-16T05:34:41.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://blog.exolabs.net/nvidia-dgx-spark">NVIDIA DGX Spark + Apple Mac Studio = 4x Faster LLM Inference with EXO 1.0</a></strong></p>
-EXO Labs wired a 256GB M3 Ultra Mac Studio up to an NVIDIA DGX Spark and got a 2.8x performance boost serving Llama-3.1 8B (FP16) with an 8,192 token prompt.</p>
-<p>Their detailed explanation taught me a lot about LLM performance.</p>
-<p>There are two key steps in executing a prompt. The first is the <strong>prefill</strong> phase that reads the incoming prompt and builds a KV cache for each of the transformer layers in the model. This is compute-bound as it needs to process every token in the input and perform large matrix multiplications across all of the layers to initialize the model's internal state.</p>
-<p>Performance in the prefill stage influences TTFT - time‑to‑first‑token.</p>
-<p>The second step is the <strong>decode</strong> phase, which generates the output one token at a time. This part is limited by memory bandwidth - there's less arithmetic, but each token needs to consider the entire KV cache.</p>
-<p>Decode performance influences TPS - tokens per second.</p>
-<p>EXO noted that the Spark has 100 TFLOPS but only 273GB/s of memory bandwidth, making it a better fit for prefill. The M3 Ultra has 26 TFLOPS but 819GB/s of memory bandwidth, making it ideal for the decode phase.</p>
-<p>They run prefill on the Spark, streaming the KV cache to the Mac over 10Gb Ethernet. They can start streaming earlier layers while the later layers are still being calculated. Then the Mac runs the decode phase, returning tokens faster than if the Spark had run the full process end-to-end.
-
-    <p><small></small>Via <a href="https://twitter.com/exolabs/status/1978525767739883736">@exolabs</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/apple">apple</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/nvidia">nvidia</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Riana Pfefferkorn]]></title>
-        <id>https://simonwillison.net/2025/Oct/16/riana-pfefferkorn/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Oct/16/riana-pfefferkorn/#atom-everything"/>
-        <updated>2025-10-16T04:16:45.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://cyberlaw.stanford.edu/blog/2025/10/whos-submitting-ai-tainted-filings-in-court/"><p>Pro se litigants [people representing themselves in court without a lawyer] account for the majority of the cases in the United States where a party submitted a court filing containing AI hallucinations. In a country where legal representation is <a href="https://law.stanford.edu/2024/06/13/justice-for-all-why-we-have-an-access-to-justice-gap-in-america-and-what-can-we-do-about-it/">unaffordable</a> for most people, it is no wonder that pro se litigants are depending on free or low-cost AI tools. But it is a scandal that so many have been betrayed by them, to the detriment of the cases they are litigating all on their own.</p></blockquote>
-<p class="cite">&mdash; <a href="https://cyberlaw.stanford.edu/blog/2025/10/whos-submitting-ai-tainted-filings-in-court/">Riana Pfefferkorn</a>, analyzing the <a href="https://www.damiencharlotin.com/hallucinations/">AI Hallucination Cases</a> database for CIS at Stanford Law</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/law">law</a>, <a href="https://simonwillison.net/tags/hallucinations">hallucinations</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Coding without typing the code]]></title>
-        <id>https://simonwillison.net/2025/Oct/16/coding-without-typing-the-code/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Oct/16/coding-without-typing-the-code/#atom-everything"/>
-        <updated>2025-10-16T03:58:31.000Z</updated>
-        <summary type="html"><![CDATA[<p>Last year the most useful exercise for getting a feel for how good LLMs were at writing code was vibe coding (before that name had even been coined) - seeing if you could create a useful small application through prompting alone.</p>
-<p>Today I think there's a new, more ambitious and significantly more intimidating exercise: spend a day working on <strong>real production code</strong> through prompting alone, making no manual edits yourself.</p>
-<p>This doesn't mean you can't control exactly what goes into each file - you can even tell the model "update line 15 to use this instead" if you have to - but it's a great way to get more of a feel for how well the latest coding agents can wield their edit tools.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
 </feed>
