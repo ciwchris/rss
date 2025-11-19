@@ -25,9 +25,775 @@
 
   <ul>
     <li>
+      <time>2025-11-19</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Matthew Prince
+              <span class="post-metadata">(1 min | 356 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/19/matthew-prince/#atom-everything>Cloudflare&#x27;s network began experiencing significant failures to deliver core network traffic [...] triggered by a change to one of our database systems&#x27; permissions which caused the database to output multiple entries into a “feature file” used by our Bot Management system. That feature file, in turn, doubled in size. The larger-than-expected feature file was then propagated to all the machines that make up our network. [...] The software had a limit on the size of the feature file that was below its doubled size. That caused the software to fail. [...]
+This resulted in the following panic which in turn resulted in a 5xx error:
+thread fl2_worker_thread panicked: called Result::unwrap() on an Err value
+
+— Matthew Prince, Cloudflare outage on November 18, 2025
+Tags: scaling, postmortem, cloudflare, rust</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2025-11-18</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              llm-gemini 0.27
+              <span class="post-metadata">(1 min | 381 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/llm-gemini/#atom-everything>llm-gemini 0.27
+Support for nested schemas in Pydantic, thanks Bill Pugh. #107
+Now tests against Python 3.14.
+Support for YouTube URLs as attachments and the media_resolution option. Thanks, Duane Milne. #112
+New model: gemini-3-pro-preview. #113
+The YouTube URL feature is particularly neat, taking advantage of this API feature. I used it against the Google Antigravity launch video:
+llm -m gemini-3-pro-preview \
+ -a &#x27;https://www.youtube.com/watch?v&#x3D;nTOVIGsqCuY&#x27; \
+ &#x27;Summary, with detailed notes about what this thing is and how it differs from regular VS Code, then a complete detailed transcript with timestamps&#x27;
+
+Here&#x27;s the result. A spot-check of the timestamps against points in the video shows them to be exactly right.
+
+
+    
+Tags: projects, youtube, ai, generative-ai, llms, llm, gemini</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              MacWhisper has Automatic Speaker Recognition now
+              <span class="post-metadata">(1 min | 334 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/macwhisper-speaker-recognition/#atom-everything>Inspired by this conversation on Hacker News I decided to upgrade MacWhisper to try out NVIDIA Parakeet and the new Automatic Speaker Recognition feature.
+It appears to work really well! Here&#x27;s the result against this 39.7MB m4a file from my Gemini 3 Pro write-up this morning:
+
+You can export the transcript with both timestamps and speaker names using the Share -&gt; Segments &gt; .json menu item:
+
+Here&#x27;s the resulting JSON.
+Tags: whisper, nvidia, ai, speech-to-text, macwhisper</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot CLI: New models, enhanced code search, and better image support
+              <span class="post-metadata">(6 min | 1715 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-github-copilot-cli-new-models-enhanced-code-search-and-better-image-support>GitHub Copilot CLI continues to evolve with significant improvements to search capabilities, better image support, access to and support for the latest AI models, and reliability enhancements. Here’s what we’ve…
+The post GitHub Copilot CLI: New models, enhanced code search, and better image support appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Google Antigravity
+              <span class="post-metadata">(2 min | 525 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/google-antigravity/#atom-everything>Google Antigravity
+Gemini 3 Pro. At first glance Antigravity is yet another VS Code fork Cursor clone - it&#x27;s a desktop application you install that then signs in to your Google account and provides an IDE for agentic coding against their Gemini models.
+When you look closer it&#x27;s actually a fair bit more interesting than that.
+The best introduction right now is the official 14 minute Learn the basics of Google Antigravity video on YouTube, where product engineer Kevin Hou (who previously worked at Windsurf) walks through the process of building an app.
+There are some interesting new ideas in Antigravity. The application itself has three &quot;surfaces&quot; - an agent manager dashboard, a traditional VS Code style editor and deep integration with a browser via a new Chrome extension. This plays a similar role to Playwright MCP, allowing the agent to directly test the web applications it is building.
+Antigravity also introduces the concept of &quot;artifacts&quot; (confusingly not at all similar to Claude Artifacts). These are Markdown documents that are automatically created as the agent works, for things like task lists, implementation plans and a &quot;walkthrough&quot; report showing what the agent has done once it finishes.
+I tried using Antigravity to help add support for Gemini 3 to by llm-gemini plugin. 
+
+It worked OK at first then gave me an &quot;Agent execution terminated due to model provider overload. Please try again later&quot; error. I&#x27;m going to give it another go after they&#x27;ve had a chance to work through those initial launch jitters.
+
+
+    
+Tags: google, ai, generative-ai, llms, ai-assisted-programming, gemini, vs-code, coding-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Ethan Mollick
+              <span class="post-metadata">(1 min | 351 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/ethan-mollick/#atom-everything>Three years ago, we were impressed that a machine could write a poem about otters. Less than 1,000 days later, I am debating statistical methodology with an agent that built its own research environment. The era of the chatbot is turning into the era of the digital coworker. To be very clear, Gemini 3 isn’t perfect, and it still needs a manager who can guide and check it. But it suggests that “human in the loop” is evolving from “human who fixes AI mistakes” to “human who directs AI work.” And that may be the biggest change since the release of ChatGPT.
+
+— Ethan Mollick, Three Years from GPT-3 to Gemini 3
+Tags: gemini, ethan-mollick, generative-ai, chatgpt, ai, llms, ai-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Trying out Gemini 3 Pro with audio transcription and a new pelican benchmark
+              <span class="post-metadata">(8 min | 2389 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/gemini-3/#atom-everything>Google released Gemini 3 Pro today. Here&#x27;s the announcement from Sundar Pichai, Demis Hassabis, and Koray Kavukcuoglu, their developer blog announcement from Logan Kilpatrick, the Gemini 3 Pro Model Card, and their collection of 11 more articles. It&#x27;s a big release!
+
+I had a few days of preview access to this model via AI Studio. The best way to describe it is that it&#x27;s Gemini 2.5 upgraded to match the leading rival models.
+
+Gemini 3 has the same underlying characteristics as Gemini 2.5. The knowledge cutoff is the same (January 2025). It accepts 1 million input tokens, can output up to 64,000 tokens, and has multimodal inputs across text, images, audio, and video.
+
+Benchmarks
+
+Google&#x27;s own reported numbers (in the model card) show it scoring slightly higher against Claude 4.5 Sonnet and GPT-5.1 against most of the standard benchmarks. As always I&#x27;m waiting for independent confirmation, but I have no reason to believe those numbers are inaccurate.
+
+
+
+Pricing
+
+It terms of pricing it&#x27;s a little more expensive than Gemini 2.5 but still cheaper than Claude Sonnet 4.5. Here&#x27;s how it fits in with those other leading models:
+
+
+
+  
+    
+
+      Model
+      Input (per 1M tokens)
+      Output (per 1M tokens)
+    
+
+  
+  
+    
+
+      GPT-5.1
+      $1.25
+      $10.00
+    
+
+    
+
+      Gemini 2.5 Pro
+      
+        ≤ 200k tokens: $1.25
+
+        &gt; 200k tokens: $2.50
+      
+      
+        ≤ 200k tokens: $10.00
+
+        &gt; 200k tokens: $15.00
+      
+    
+
+    
+
+      Gemini 3 Pro
+      
+        ≤ 200k tokens: $2.00
+
+        &gt; 200k tokens: $4.00
+      
+      
+        ≤ 200k tokens: $12.00
+
+        &gt; 200k tokens: $18.00
+      
+    
+
+    
+
+      Claude Sonnet 4.5
+      
+        ≤ 200k tokens: $3.00
+
+        &gt; 200k tokens: $6.00
+      
+      
+        ≤ 200k tokens: $15.00
+
+        &gt; 200k tokens: $22.50
+      
+    
+
+    
+
+      Claude Opus 4.1
+      $15.00
+      $75.00
+    
+
+  
+
+Trying it out against a complex image
+
+That screenshot of the benchmarks from above looked like a good test for Gemini 3&#x27;s multimodal support. I fed it that image URL and asked it to generate alt text for the image:
+
+
+llm -m gemini-3-pro-preview -a https://static.simonwillison.net/static/2025/gemini-3-benchmarks.jpg &#x27;Alt text for this image, include all figures and make them comprehensible to a screen reader user&#x27;
+
+
+Here&#x27;s what I got back:
+
+
+A comprehensive table comparing four AI models across various performance benchmarks. The columns listed are: Benchmark Name, Description, Gemini 3 Pro (highlighted in blue), Gemini 2.5 Pro, Claude Sonnet 4.5, and GPT-5.1.
+
+Humanity&#x27;s Last Exam (Academic reasoning)
+
+
+No tools: Gemini 3 Pro 37.5%, Gemini 2.5 Pro 21.6%, Claude Sonnet 4.5 13.7%, GPT-5.1 26.5%.
+
+With search and code execution: Gemini 3 Pro 45.8% (others have no data).
+
+
+ARC-AGI-2 (Visual reasoning puzzles; ARC Prize Verified)
+
+
+Gemini 3 Pro 31.1%, Gemini 2.5 Pro 4.9%, Claude Sonnet 4.5 13.6%, GPT-5.1 17.6%.
+
+
+GPQA Diamond (Scientific knowledge; No tools)
+
+
+Gemini 3 Pro 91.9%, Gemini 2.5 Pro 86.4%, Claude Sonnet 4.5 83.4%, GPT-5.1 88.1%.
+
+
+AIME 2025 (Mathematics)
+
+
+No tools: Gemini 3 Pro 95.0%, Gemini 2.5 Pro 88.0%, Claude Sonnet 4.5 87.0%, GPT-5.1 94.0%.
+
+With code execution: Gemini 3 Pro 100%, Claude Sonnet 4.5 100%.
+
+
+MathArena Apex (Challenging Math Contest problems)
+
+
+Gemini 3 Pro 23.4%, Gemini 2.5 Pro 0.5%, Claude Sonnet 4.5 1.6%, GPT-5.1 1.0%.
+
+
+MMMU-Pro (Multimodal understanding and reasoning)
+
+
+Gemini 3 Pro 81.0%, Gemini 2.5 Pro 68.0%, Claude Sonnet 4.5 68.0%, GPT-5.1 76.0%.
+
+
+ScreenSpot-Pro (Screen understanding)
+
+
+Gemini 3 Pro 72.7%, Gemini 2.5 Pro 11.4%, Claude Sonnet 4.5 36.2%, GPT-5.1 3.5%.
+
+
+CharXiv Reasoning (Information synthesis from complex charts)
+
+
+Gemini 3 Pro 81.4%, Gemini 2.5 Pro 69.6%, Claude Sonnet 4.5 68.5%, GPT-5.1 69.5%.
+
+
+OmniDocBench 1.5 (OCR; Overall Edit Distance, lower is better)
+
+
+Gemini 3 Pro 0.115, Gemini 2.5 Pro 0.145, Claude Sonnet 4.5 0.145, GPT-5.1 0.147.
+
+
+Video-MMMU (Knowledge acquisition from videos)
+
+
+Gemini 3 Pro 87.6%, Gemini 2.5 Pro 83.6%, Claude Sonnet 4.5 77.8%, GPT-5.1 80.4%.
+
+
+LiveCodeBench Pro (Competitive coding problems; Elo Rating, higher is better)
+
+
+Gemini 3 Pro 2,439; Gemini 2.5 Pro 1,775; Claude Sonnet 4.5 1,418; GPT-5.1 2,243.
+
+
+Terminal-Bench 2.0 (Agentic terminal coding; Terminus-2 agent)
+
+
+Gemini 3 Pro 54.2%, Gemini 2.5 Pro 32.6%, Claude Sonnet 4.5 42.8%, GPT-5.1 47.6%.
+
+
+SWE-Bench Verified (Agentic coding; Single attempt)
+
+
+Gemini 3 Pro 76.2%, Gemini 2.5 Pro 59.6%, Claude Sonnet 4.5 77.2%, GPT-5.1 76.3%.
+
+
+t2-bench (Agentic tool use)
+
+
+Gemini 3 Pro 85.4%, Gemini 2.5 Pro 54.9%, Claude Sonnet 4.5 84.7%, GPT-5.1 80.2%.
+
+
+Vending-Bench 2 (Long-horizon agentic tasks; Net worth (mean), higher is better)
+
+
+Gemini 3 Pro $5,478.16; Gemini 2.5 Pro $573.64; Claude Sonnet 4.5 $3,838.74; GPT-5.1 $1,473.43.
+
+
+FACTS Benchmark Suite (Held out internal grounding, parametric, MM, and search retrieval benchmarks)
+
+
+Gemini 3 Pro 70.5%, Gemini 2.5 Pro 63.4%, Claude Sonnet 4.5 50.4%, GPT-5.1 50.8%.
+
+
+SimpleQA Verified (Parametric knowledge)
+
+
+Gemini 3 Pro 72.1%, Gemini 2.5 Pro 54.5%, Claude Sonnet 4.5 29.3%, GPT-5.1 34.9%.
+
+
+MMMLU (Multilingual Q&amp;A)
+
+
+Gemini 3 Pro 91.8%, Gemini 2.5 Pro 89.5%, Claude Sonnet 4.5 89.1%, GPT-5.1 91.0%.
+
+
+Global PIQA (Commonsense reasoning across 100 Languages and Cultures)
+
+
+Gemini 3 Pro 93.4%, Gemini 2.5 Pro 91.5%, Claude Sonnet 4.5 90.1%, GPT-5.1 90.9%.
+
+
+MRCR v2 (8-needle) (Long context performance)
+
+
+128k (average): Gemini 3 Pro 77.0%, Gemini 2.5 Pro 58.0%, Claude Sonnet 4.5 47.1%, GPT-5.1 61.6%.
+
+1M (pointwise): Gemini 3 Pro 26.3%, Gemini 2.5 Pro 16.4%, Claude Sonnet 4.5 (not supported), GPT-5.1 (not supported).
+
+
+
+I have not checked every line of this but a loose spot-check looks accurate to me.
+
+That prompt took 1,105 input and 3,901 output tokens, at a cost of 5.6824 cents.
+
+I ran this follow-up prompt:
+
+
+llm -c &#x27;Convert to JSON&#x27;
+
+
+You can see the full output here, which starts like this:
+
+
+{
+  &quot;metadata&quot;: {
+    &quot;columns&quot;: [
+      &quot;Benchmark&quot;,
+      &quot;Description&quot;,
+      &quot;Gemini 3 Pro&quot;,
+      &quot;Gemini 2.5 Pro&quot;,
+      &quot;Claude Sonnet 4.5&quot;,
+      &quot;GPT-5.1&quot;
+    ]
+  },
+  &quot;benchmarks&quot;: [
+    {
+      &quot;name&quot;: &quot;Humanity&#x27;s Last Exam&quot;,
+      &quot;description&quot;: &quot;Academic reasoning&quot;,
+      &quot;sub_results&quot;: [
+        {
+          &quot;condition&quot;: &quot;No tools&quot;,
+          &quot;gemini_3_pro&quot;: &quot;37.5%&quot;,
+          &quot;gemini_2_5_pro&quot;: &quot;21.6%&quot;,
+          &quot;claude_sonnet_4_5&quot;: &quot;13.7%&quot;,
+          &quot;gpt_5_1&quot;: &quot;26.5%&quot;
+        },
+        {
+          &quot;condition&quot;: &quot;With search and code execution&quot;,
+          &quot;gemini_3_pro&quot;: &quot;45.8%&quot;,
+          &quot;gemini_2_5_pro&quot;: null,
+          &quot;claude_sonnet_4_5&quot;: null,
+          &quot;gpt_5_1&quot;: null
+        }
+      ]
+    },
+
+Analyzing a city council meeting
+
+To try it out against an audio file I extracted the 3h33m of audio from the video Half Moon Bay City Council Meeting - November 4, 2025. I used yt-dlp to get that audio:
+
+
+yt-dlp -x --audio-format m4a &#x27;https://www.youtube.com/watch?v&#x3D;qgJ7x7R6gy0&#x27;
+
+That gave me a 74M m4a file, which I ran through Gemini 3 Pro like this:
+
+
+llm -m gemini-3-pro-preview -a /tmp/HMBCC\ 11⧸4⧸25\ -\ Half\ Moon\ Bay\ City\ Council\ Meeting\ -\ November\ 4,\ 2025\ \[qgJ7x7R6gy0\].m4a &#x27;Output a Markdown transcript of this meeting. Include speaker names and timestamps. Start with an outline of the key meeting sections, each with a title and summary and timestamp and list of participating names. Note in bold if anyone raised their voices, interrupted each other or had disagreements. Then follow with the full transcript.&#x27;
+
+
+That failed with an &quot;Internal error encountered&quot; message, so I shrunk the file down to a more manageable 38MB using ffmpeg:
+
+
+ffmpeg -i &quot;/private/tmp/HMB.m4a&quot; -ac 1 -ar 22050 -c:a aac -b:a 24k &quot;/private/tmp/HMB_compressed.m4a&quot;
+
+Then ran it again like this (for some reason I had to use --attachment-type this time):
+
+
+llm -m gemini-3-pro-preview --attachment-type /tmp/HMB_compressed.m4a &#x27;audio/aac&#x27; &#x27;Output a Markdown transcript of this meeting. Include speaker names and timestamps. Start with an outline of the key meeting sections, each with a title and summary and timestamp and list of participating names. Note in bold if anyone raised their voices, interrupted each other or had disagreements. Then follow with the full transcript.&#x27;
+
+
+This time it worked! The full output is here, but it starts like this:
+
+
+Here is the transcript of the Half Moon Bay City Council meeting.
+
+Meeting Outline
+
+1. Call to Order, Updates, and Public Forum
+
+
+
+Summary: Mayor Brownstone calls the meeting to order. City Manager Chidester reports no reportable actions from the closed session. Announcements are made regarding food insecurity volunteers and the Diwali celebration. During the public forum, Councilmember Penrose (speaking as a citizen) warns against autocracy. Citizens speak regarding lease agreements, downtown maintenance, local music events, and homelessness outreach statistics.
+
+
+Timestamp: 00:00:00 - 00:13:25
+
+
+Participants: Mayor Brownstone, Matthew Chidester, Irma Acosta, Deborah Penrose, Jennifer Moore, Sandy Vella, Joaquin Jimenez, Anita Rees.
+
+
+2. Consent Calendar
+
+
+
+Summary: The Council approves minutes from previous meetings and a resolution authorizing a licensing agreement for Seahorse Ranch. Councilmember Johnson corrects a pull request regarding abstentions on minutes.
+
+
+Timestamp: 00:13:25 - 00:15:15
+
+
+Participants: Mayor Brownstone, Councilmember Johnson, Councilmember Penrose, Vice Mayor Ruddick, Councilmember Nagengast.
+
+
+3. Ordinance Introduction: Commercial Vitality (Item 9A)
+
+
+
+Summary: Staff presents a new ordinance to address neglected and empty commercial storefronts, establishing maintenance and display standards. Councilmembers discuss enforcement mechanisms, window cleanliness standards, and the need for objective guidance documents to avoid subjective enforcement.
+
+
+Timestamp: 00:15:15 - 00:30:45
+
+
+Participants: Karen Decker, Councilmember Johnson, Councilmember Nagengast, Vice Mayor Ruddick, Councilmember Penrose.
+
+
+4. Ordinance Introduction: Building Standards &amp; Electrification (Item 9B)
+
+
+
+Summary: Staff introduces updates to the 2025 Building Code. A major change involves repealing the city&#x27;s all-electric building requirement due to the 9th Circuit Court ruling (California Restaurant Association v. City of Berkeley). Public speaker Mike Ferreira expresses strong frustration and disagreement with &quot;unelected state agencies&quot; forcing the City to change its ordinances.
+
+
+Timestamp: 00:30:45 - 00:45:00
+
+
+Participants: Ben Corrales, Keith Weiner, Joaquin Jimenez, Jeremy Levine, Mike Ferreira, Councilmember Penrose, Vice Mayor Ruddick.
+
+
+5. Housing Element Update &amp; Adoption (Item 9C)
+
+
+
+Summary: Staff presents the 5th draft of the Housing Element, noting State HCD requirements to modify ADU allocations and place a measure on the ballot regarding the &quot;Measure D&quot; growth cap. There is significant disagreement from Councilmembers Ruddick and Penrose regarding the State&#x27;s requirement to hold a ballot measure. Public speakers debate the enforceability of Measure D. Mike Ferreira interrupts the vibe to voice strong distaste for HCD&#x27;s interference in local law. The Council votes to adopt the element but strikes the language committing to a ballot measure.
+
+
+Timestamp: 00:45:00 - 01:05:00
+
+
+Participants: Leslie (Staff), Joaquin Jimenez, Jeremy Levine, Mike Ferreira, Councilmember Penrose, Vice Mayor Ruddick, Councilmember Johnson.
+
+
+
+Transcript
+
+Mayor Brownstone [00:00:00]
+Good evening everybody and welcome to the November 4th Half Moon Bay City Council meeting. As a reminder, we have Spanish interpretation services available in person and on Zoom.
+
+Victor Hernandez (Interpreter) [00:00:35]
+Thank you, Mr. Mayor, City Council, all city staff, members of the public. [Spanish instructions provided regarding accessing the interpretation channel on Zoom and in the room.] Thank you very much.
+
+
+Those first two lines of the transcript already illustrate something interesting here: Gemini 3 Pro chose NOT to include the exact text of the Spanish instructions, instead summarizing them as &quot;[Spanish instructions provided regarding accessing the interpretation channel on Zoom and in the room.]&quot;.
+
+I haven&#x27;t spot-checked the entire 3hr33m meeting, but I&#x27;ve confirmed that the timestamps do not line up. The transcript closes like this:
+
+
+Mayor Brownstone [01:04:00]
+Meeting adjourned. Have a good evening.
+
+
+That actually happens at 3h31m5s and the mayor says:
+
+
+Okay. Well, thanks everybody, members of the public for participating. Thank you for staff. Thank you to fellow council members. This meeting is now adjourned. Have a good evening.
+
+
+I&#x27;m disappointed about the timestamps, since mismatches there make it much harder to jump to the right point and confirm that the summarized transcript is an accurate representation of what was said.
+
+This took 320,087 input tokens and 7,870 output tokens, for a total cost of $1.42.
+
+And a new pelican benchmark
+
+Gemini 3 Pro has a new concept of a &quot;thinking level&quot; which can be set to low or high (and defaults to high). I tried my classic Generate an SVG of a pelican riding a bicycle prompt at both levels.
+
+Here&#x27;s low - Gemini decided to add a jaunty little hat (with a comment in the SVG that says &lt;!-- Hat (Optional Fun Detail) --&gt;):
+
+
+
+And here&#x27;s high. This is genuinely an excellent pelican, and the bicycle frame is at least the correct shape:
+
+
+
+Honestly though, my pelican benchmark is beginning to feel a little bit too basic. I decided to upgrade it. Here&#x27;s v2 of the benchmark, which I plan to use going forward:
+
+
+Generate an SVG of a California brown pelican riding a bicycle. The bicycle must have spokes and a correctly shaped bicycle frame. The pelican must have its characteristic large pouch, and there should be a clear indication of feathers. The pelican must be clearly pedaling the bicycle. The image should show the full breeding plumage of the California brown pelican.
+
+
+For reference, here&#x27;s a photo I took of a California brown pelican recently (sadly without a bicycle):
+
+
+
+Here&#x27;s Gemini 3 Pro&#x27;s attempt at high thinking level for that new prompt:
+
+
+
+And for good measure, here&#x27;s that same prompt against GPT-5.1 - which produced this dumpy little fellow:
+
+
+
+And Claude Sonnet 4.5, which didn&#x27;t do quite as well:
+
+
+
+None of the models seem to have caught on to the crucial detail that the California brown pelican is not, in fact, brown.
+Tags: google, ai, generative-ai, llms, llm, gemini, llm-pricing, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Gemini 3 Pro is in public preview for GitHub Copilot
+              <span class="post-metadata">(5 min | 1456 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-gemini-3-pro-is-in-public-preview-for-github-copilot>Gemini 3 Pro, Google’s latest frontier model, is now rolling out and will be available in GitHub Copilot Pro, Pro+ Business, and Enterprise subscriptions. Rollout will be gradual. Check back…
+The post Gemini 3 Pro is in public preview for GitHub Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Auto model selection for Copilot in JetBrains IDEs, Xcode, and Eclipse in public preview
+              <span class="post-metadata">(5 min | 1634 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-auto-model-selection-for-copilot-in-jetbrains-ides-xcode-and-eclipse-in-public-preview>GitHub Copilot in JetBrains IDEs, Xcode, and Eclipse now includes an Auto option that selects the model on your behalf. Choose Auto from the model picker in Copilot Chat. This…
+The post Auto model selection for Copilot in JetBrains IDEs, Xcode, and Eclipse in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enhanced MCP OAuth support for GitHub Copilot in JetBrains, Eclipse, and Xcode
+              <span class="post-metadata">(5 min | 1503 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-enhanced-mcp-oauth-support-for-github-copilot-in-jetbrains-eclipse-and-xcode>We’ve introduced enhanced authentication capabilities in GitHub Copilot plugins for JetBrains, Eclipse, and Xcode to support more third-party OAuth providers with a secure and flexible approach using Dynamic Client Registration…
+The post Enhanced MCP OAuth support for GitHub Copilot in JetBrains, Eclipse, and Xcode appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Custom agents available in GitHub Copilot for JetBrains, Eclipse, and Xcode now in public preview
+              <span class="post-metadata">(5 min | 1555 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-custom-agents-available-in-github-copilot-for-jetbrains-eclipse-and-xcode-now-in-public-preview>Custom agents are now in public preview for JetBrains IDEs, Eclipse, and Xcode, allowing you to package reusable expertise, guardrails, and tool access into AI agents tailored to your project…
+The post Custom agents available in GitHub Copilot for JetBrains, Eclipse, and Xcode now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Unified code-to-cloud artifact risk visibility with Microsoft Defender for Cloud now in public preview
+              <span class="post-metadata">(6 min | 1856 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-unified-code-to-cloud-artifact-risk-visibility-with-microsoft-defender-for-cloud-now-in-public-preview>GitHub now makes it easier for teams to track, prioritize, and remediate security risks that matter by connecting code, build artifacts, and production context. Here’s what’s shipped and how you…
+The post Unified code-to-cloud artifact risk visibility with Microsoft Defender for Cloud now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Isolated Subagents for JetBrains, Eclipse, and Xcode now in public preview
+              <span class="post-metadata">(6 min | 1739 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-isolated-subagents-for-jetbrains-eclipse-and-xcode-now-in-public-preview>We’re excited to share that isolated subagents are now in public preview across JetBrains IDEs, Eclipse, and Xcode! Empowered by isolated context, subagents let you delegate focused tasks to autonomous…
+The post Isolated Subagents for JetBrains, Eclipse, and Xcode now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot Next Edit Suggestions (NES) now in public preview for Xcode and Eclipse
+              <span class="post-metadata">(5 min | 1570 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-github-copilot-next-edit-suggestions-nes-now-in-public-preview-for-xcode-and-eclipse>GitHub Copilot Next Edit Suggestions (NES) is now available in public preview for Xcode and Eclipse. This new feature helps developers move faster by suggesting the next logical edit based…
+The post GitHub Copilot Next Edit Suggestions (NES) now in public preview for Xcode and Eclipse appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot coding agent for Eclipse now in public preview
+              <span class="post-metadata">(7 min | 2090 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-github-copilot-coding-agent-for-eclipse-now-in-public-preview>GitHub Copilot coding agent is now available in public preview for Eclipse. This release brings Copilot directly into native Eclipse workflows. What’s new Delegate from Eclipse: Describe a task in…
+The post GitHub Copilot coding agent for Eclipse now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Plan mode in GitHub Copilot now in public preview in JetBrains, Eclipse, and Xcode
+              <span class="post-metadata">(6 min | 1757 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-18-plan-mode-in-github-copilot-now-in-public-preview-in-jetbrains-eclipse-and-xcode>We’re excited to announce that plan mode in GitHub Copilot is now available in public preview for JetBrains IDEs, Eclipse, and Xcode. Here’s what you need to know about this…
+The post Plan mode in GitHub Copilot now in public preview in JetBrains, Eclipse, and Xcode appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              gemini-3-pro-preview
+              <span class="post-metadata">(8 min | 2374 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/gemini-3-pro-preview>Google&#x27;s most intelligent model with SOTA reasoning and multimodal understanding, and powerful agentic and vibe coding capabilities.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Three Years from GPT-3 to Gemini 3
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://www.oneusefulthing.org/p/three-years-from-gpt-3-to-gemini>From chatbots to agents</a>
+            </div>
+            <!-- <p class="post-source">One Useful Thing</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-11-17</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              The fate of “small” open source
+              <span class="post-metadata">(2 min | 540 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/17/the-fate-of-small-open-source/#atom-everything>The fate of “small” open source
+blob-util is destined to fade away.
+Why take on additional supply chain risks adding another dependency when an LLM can likely kick out the subset of functionality needed by your own code to-order?
+I still believe in open source, and I’m still doing it (in fits and starts). But one thing has become clear to me: the era of small, low-value libraries like blob-util is over. They were already on their way out thanks to Node.js and the browser taking on more and more of their functionality (see node:glob, structuredClone, etc.), but LLMs are the final nail in the coffin.
+I&#x27;ve been thinking about a similar issue myself recently as well.
+Quite a few of my own open source projects exist to solve problems that are frustratingly hard to figure out. s3-credentials is a great example of this: it solves the problem of creating read-only or read-write credentials for an S3 bucket - something that I&#x27;ve always found infuriatingly difficult since you need to know to craft an IAM policy that looks something like this:
+{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;s3:ListBucket&quot;,
+        &quot;s3:GetBucketLocation&quot;
+      ],
+      &quot;Resource&quot;: [
+        &quot;arn:aws:s3:::my-s3-bucket&quot;
+      ]
+    },
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;s3:GetObject&quot;,
+        &quot;s3:GetObjectAcl&quot;,
+        &quot;s3:GetObjectLegalHold&quot;,
+        &quot;s3:GetObjectRetention&quot;,
+        &quot;s3:GetObjectTagging&quot;
+      ],
+      &quot;Resource&quot;: [
+        &quot;arn:aws:s3:::my-s3-bucket/*&quot;
+      ]
+    }
+  ]
+}
+
+Modern LLMs are very good at S3 IAM polices, to the point that if I needed to solve this problem today I doubt I would find it frustrating enough to justify finding or creating a reusable library to help.
+
+
+    
+Tags: open-source, ai, generative-ai, llms, ai-assisted-programming, nolan-lawson</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4127,460 +4893,6 @@ Poisoned states generate poisoned outputs, which poison future states. Try to su
 
 — Bruce Schneier and Barath Raghavan, Agentic AI’s OODA Loop Problem
 Tags: prompt-injection, security, ai-agents, bruce-schneier, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-10-20</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Claude Haiku 4.5 is generally available in all supported IDEs
-              <span class="post-metadata">(5 min | 1406 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-10-20-claude-haiku-4-5-is-generally-available-in-all-supported-ides>Claude Haiku 4.5 is generally available to Copilot Enterprise, Copilot Business, Copilot Pro, and Copilot Pro+. You’ll now be able to access the model in GitHub Copilot Chat on github.com,…
-The post Claude Haiku 4.5 is generally available in all supported IDEs appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Claude Code for web - a new asynchronous coding agent from Anthropic
-              <span class="post-metadata">(5 min | 1482 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/20/claude-code-for-web/#atom-everything>Anthropic launched Claude Code for web this morning. It&#x27;s an asynchronous coding agent - their answer to OpenAI&#x27;s Codex Cloud and Google&#x27;s Jules, and has a very similar shape. I had preview access over the weekend and I&#x27;ve already seen some very promising results from it.
-
-It&#x27;s available online at claude.ai/code and shows up as a tab in the Claude iPhone app as well:
-
-
-
-As far as I can tell it&#x27;s their latest Claude Code CLI app wrapped in a container (Anthropic are getting really good at containers these days) and configured to --dangerously-skip-permissions. It appears to behave exactly the same as the CLI tool, and includes a neat &quot;teleport&quot; feature which can copy both the chat transcript and the edited files down to your local Claude Code CLI tool if you want to take over locally.
-
-It&#x27;s very straight-forward to use. You point Claude Code for web at a GitHub repository, select an environment (fully locked down, restricted to an allow-list of domains or configured to access domains of your choosing, including &quot;*&quot; for everything) and kick it off with a prompt.
-
-While it&#x27;s running you can send it additional prompts which are queued up and executed after it completes its current step.
-
-Once it&#x27;s done it opens a branch on your repo with its work and can optionally open a pull request.
-
-Putting Claude Code for web to work
-
-Claude Code for web&#x27;s PRs are indistinguishable from Claude Code CLI&#x27;s, so Anthropic told me it was OK to submit those against public repos even during the private preview. Here are some examples from this weekend:
-
-
-
-Add query-string-stripper.html tool against my simonw/tools repo - a very simple task that creates (and deployed via GitHub Pages) this query-string-stripper tool.
-
-
-minijinja vs jinja2 Performance Benchmark - I ran this against a private repo and then copied the results here, so no PR. Here&#x27;s the prompt I used.
-
-
-Update deepseek-ocr README to reflect successful project completion - I noticed that the README produced by Claude Code CLI for this project was misleadingly out of date, so I had Claude Code for web fix the problem.
-
-
-That second example is the most interesting. I saw a tweet from Armin about his MiniJinja Rust template language adding support for Python 3.14 free threading. I hadn&#x27;t realized that project had Python bindings, so I decided it would be interesting to see a quick performance comparison between MiniJinja and Jinja2.
-
-I ran Claude Code for web against a private repository with a completely open environment (* in the allow-list) and prompted:
-
-
-I’m interested in benchmarking the Python bindings for https://github.com/mitsuhiko/minijinja against the equivalente template using Python jinja2
-
-Design and implement a benchmark for this. It should use the latest main checkout of minijinja and the latest stable release of jinja2. The benchmark should use the uv version of Python 3.14 and should test both the regular 3.14 and the 3.14t free threaded version - so four scenarios total
-
-The benchmark should run against a reasonably complicated example of a template, using template inheritance and loops and such like In the PR include a shell script to run the entire benchmark, plus benchmark implantation, plus markdown file describing the benchmark and the results in detail, plus some illustrative charts created using matplotlib
-
-
-I entered this into the Claude iPhone app on my mobile keyboard, hence the typos.
-
-It churned away for a few minutes and gave me exactly what I asked for. Here&#x27;s one of the four charts it created:
-
-
-
-(I was surprised to see MiniJinja out-performed by Jinja2, but I guess Jinja2 has had a decade of clever performance optimizations and doesn&#x27;t need to deal with any extra overhead of calling out to Rust.)
-
-Note that I would likely have got the exact same result running this prompt against Claude CLI on my laptop. The benefit of Claude Code for web is entirely in its convenience as a way of running these tasks in a hosted container managed by Anthropic, with a pleasant web and mobile UI layered over the top.
-
-Anthropic are framing this as part of their sandboxing strategy
-
-It&#x27;s interesting how Anthropic chose to announce this new feature: the product launch is buried half way down their new engineering blog post Beyond permission prompts: making Claude Code more secure and autonomous, which starts like this:
-
-
-Claude Code&#x27;s new sandboxing features, a bash tool and Claude Code on the web, reduce permission prompts and increase user safety by enabling two boundaries: filesystem and network isolation.
-
-
-I&#x27;m very excited to hear that Claude Code CLI is taking sandboxing more seriously. I&#x27;ve not yet dug into the details of that - it looks like it&#x27;s using seatbelt on macOS and Bubblewrap on Linux.
-
-
-Anthropic released a new open source (Apache 2) library, anthropic-experimental/sandbox-runtime, with their implementation of this so far.
-
-
-Filesystem sandboxing is relatively easy. The harder problem is network isolation, which they describe like this:
-
-
-Network isolation, by only allowing internet access through a unix domain socket connected to a proxy server running outside the sandbox. This proxy server enforces restrictions on the domains that a process can connect to, and handles user confirmation for newly requested domains. And if you’d like further-increased security, we also support customizing this proxy to enforce arbitrary rules on outgoing traffic.
-
-
-This is crucial to protecting against both prompt injection and lethal trifecta attacks. The best way to prevent lethal trifecta attacks is to cut off one of the three legs, and network isolation is how you remove the data exfiltration leg that allows successful attackers to steal your data.
-
-If you run Claude Code for web in &quot;No network access&quot; mode you have nothing to worry about.
-
-I&#x27;m a little bit nervous about their &quot;Trusted network access&quot; environment. It&#x27;s intended to only allow access to domains relating to dependency installation, but the default domain list has dozens of entries which makes me nervous about unintended exfiltration vectors sneaking through.
-
-You can also configure a custom environment with your own allow-list. I have one called &quot;Everything&quot; which allow-lists &quot;*&quot;, because for projects like my MiniJinja/Jinja2 comparison above there are no secrets or source code involved that need protecting.
-
-I see Anthropic&#x27;s focus on sandboxes as an acknowledgment that coding agents run in YOLO mode (--dangerously-skip-permissions and the like) are enormously more valuable and productive than agents where you have to approve their every step.
-
-The challenge is making it convenient and easy to run them safely. This kind of sandboxing kind is the only approach to safety that feels credible to me.
-
-
-Update: A note on cost: I&#x27;m currently using a Claude &quot;Max&quot; plan that Anthropic gave me in order to test some of their features, so I don&#x27;t have a good feeling for how Claude Code would cost for these kinds of projects.
-
-
-From running npx ccusage@latest (an unofficial cost estimate tool) it looks like I&#x27;m using between $1 and $5 worth of daily Claude CLI invocations at the moment.
-Tags: armin-ronacher, jinja, sandboxing, security, ai, prompt-injection, generative-ai, llms, anthropic, claude, coding-agents, claude-code, lethal-trifecta, async-coding-agents, disclosures</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Getting DeepSeek-OCR working on an NVIDIA Spark via brute force using Claude Code
-              <span class="post-metadata">(8 min | 2256 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/20/deepseek-ocr-claude-code/#atom-everything>DeepSeek released a new model yesterday: DeepSeek-OCR, a 6.6GB model fine-tuned specifically for OCR. They released it as model weights that run using PyTorch and CUDA. I got it running on the NVIDIA Spark by having Claude Code effectively brute force the challenge of getting it working on that particular hardware.
-
-This small project (40 minutes this morning, most of which was Claude Code churning away while I had breakfast and did some other things) ties together a bunch of different concepts I&#x27;ve been exploring recently. I designed an agentic loop for the problem, gave Claude full permissions inside a Docker sandbox, embraced the parallel agents lifestyle and reused my notes on the NVIDIA Spark from last week.
-
-I knew getting a PyTorch CUDA model running on the Spark was going to be a little frustrating, so I decided to outsource the entire process to Claude Code to see what would happen.
-
-TLDR: It worked. It took four prompts (one long, three very short) to have Claude Code figure out everything necessary to run the new DeepSeek model on the NVIDIA Spark, OCR a document for me and produce copious notes about the process.
-
-The setup
-
-I connected to the Spark from my Mac via SSH and started a new Docker container there:
-
-
-docker run -it --gpus&#x3D;all \
-  -v /usr/local/cuda:/usr/local/cuda:ro \
-  nvcr.io/nvidia/cuda:13.0.1-devel-ubuntu24.04 \
-  bash
-
-Then I installed npm and used that to install Claude Code:
-
-
-apt-get update
-DEBIAN_FRONTEND&#x3D;noninteractive TZ&#x3D;Etc/UTC apt-get install -y npm
-npm install -g @anthropic-ai/claude-code
-
-Then started Claude Code, telling it that it&#x27;s OK that it&#x27;s running as root because it&#x27;s in a sandbox:
-
-
-IS_SANDBOX&#x3D;1 claude --dangerously-skip-permissions
-
-It provided me a URL to click on to authenticate with my Anthropic account.
-
-The initial prompts
-
-I kicked things off with this prompt:
-
-
-Create a folder deepseek-ocr and do everything else in that folder
-
-
-Then I ran the following, providing links to both the GitHub repository and the Hugging Face model, providing a clue about NVIDIA ARM and giving it an image (this one, see previous post) that I wanted it to run OCR on.
-
-
-Your task is to get this working: https://github.com/deepseek-ai/DeepSeek-OCR - it uses Hugging Face Transformers and models from https://huggingface.co/deepseek-ai/DeepSeek-OCR - you are running in a Docker container on an NVIDIA ARM device, first research your environment to check it will be possible to do this. Git clone both of those - you may need to enable LFS first. Make extensive notes as you go in a notes.md file which you should only ever append new notes to. At the end of this you should have scripts in the folder which can be run to both setup and then run the model against an example - use https://static.simonwillison.net/static/2025/ft.jpeg as the example image that you OCR. As a final step create a detailed README.md file explaining the project and what you learned and how to run your code.
-
-
-Note how I also told it to &quot;make extensive notes as you go in a notes.md file which you should only ever append new notes to&quot; so I&#x27;d have some useful notes at the end.
-
-The follow-ups
-
-It churned away for 13 minutes, and made a sequence of discoveries about the platform and the model and the difficulties of running PyTorch on it.
-
-And then... it gave up:
-
-
-The NVIDIA GB10 GPU has compute capability sm_121, which is too new for PyTorch 2.5.1
-
-
-PyTorch 2.5.1 supports: sm_50, sm_80, sm_86, sm_89, sm_90, sm_90a
-
-GB10 requires: sm_121
-
-Error: CUDA error: no kernel image is available for execution on the device
-
-
-Additionally, the model has hardcoded .cuda() calls, preventing CPU fallback without code modifications.
-
-
-So I gave it some encouragement:
-
-
-Any other options that might help get CUDA working like using different versions of PyTorch that have available CUDA wheels for this platform? Have you checked to see what PyTorch versions already have these ARM CUDA wheels that would work here?
-
-
-It ran this command to grep for all available PyTorch wheels on download.pytorch.org that match the ARM architecture:
-
-
-curl -s https://download.pytorch.org/whl/torch/ | grep -o &#x27;torch-[0-9.]*.*aarch64.whl&#x27; | sort -V | tail -20
-
-... and that unblocked it.
-
-
-Excellent! I can see that PyTorch 2.9.0 has ARM64 wheels for CUDA 12.8, 12.9, and CUDA 13.0 (cu130)! This is exactly what we need!
-
-
-It installed the wheels it found and reported:
-
-
-Good news! PyTorch 2.9.0 can detect the GB10 GPU with CUDA capability 12.1 (sm_121), but it says the maximum supported is 12.0. However, it&#x27;s just a warning now instead of a hard error! Let&#x27;s try running inference: [...]
-
-
-Then kept on churning for a bit, ignoring warnings, and managed to run the model! It loaded the image and ran this prompt:
-
-&lt;|grounding|&gt;OCR this image.
-
-
-And got back output that started like this:
-
-&lt;|ref|&gt;The perils of vibe coding&lt;|/ref|&gt;&lt;|det|&gt;[[352, 30, 624, 111]]&lt;|/det|&gt;
-&lt;|ref|&gt;opt&lt;|/ref|&gt;&lt;|det|&gt;[[970, 0, 994, 30]]&lt;|/det|&gt;
-&lt;|ref|&gt;such&lt;|/ref|&gt;&lt;|det|&gt;[[970, 24, 996, 58]]&lt;|/det|&gt;
-&lt;|ref|&gt;days&lt;|/ref|&gt;&lt;|det|&gt;[[970, 52, 996, 87]]&lt;|/det|&gt;
-&lt;|ref|&gt;pavi&lt;|/ref|&gt;&lt;|det|&gt;[[970, 85, 996, 118]]&lt;|/det|&gt;
-&lt;|ref|&gt;TECHNOLOGY&lt;|/ref|&gt;&lt;|det|&gt;[[33, 199, 127, 230]]&lt;|/det|&gt;
-&lt;|ref|&gt;holds the promise of replacing program-&lt;|/ref|&gt;&lt;|det|&gt;[[220, 170, 390, 210]]&lt;|/det|&gt;
-&lt;|ref|&gt;mers - a profession of very well paid&lt;|/ref|&gt;&lt;|det|&gt;[[220, 199, 390, 238]]&lt;|/det|&gt;
-&lt;|ref|&gt;people.For another, the work can be&lt;|/ref|&gt;&lt;|det|&gt;[[220, 228, 390, 267]]&lt;|/det|&gt;
-
-
-Claude declared victory and pointed me to the output/result.mmd file, which contained only whitespace. So OCR had worked but the result had failed to be written correctly to disk.
-
-I said:
-
-
-That result.mmd file looks to be exclusively whitespace to me, try and get a better result there - the bounding box image was good though
-
-
-Which caused Claude to reconsider the prompt it used:
-
-
-Maybe we need to use a different prompt. Looking at the README from DeepSeek-OCR, there are different prompts:
-
-
-
-&quot;&lt;image&gt;\n&lt;|grounding|&gt;Convert the document to markdown.&quot; - for documents
-
-
-&quot;&lt;image&gt;\n&lt;|grounding|&gt;OCR this image.&quot; - general OCR
-
-
-&quot;&lt;image&gt;\nFree OCR.&quot; - without layouts
-
-
-The &quot;grounding&quot; mode seems to be focused on bounding boxes, which is why we got good bounding box results but the text output might be in a different format.
-
-Let me try running it again with a different prompt that&#x27;s more focused on text extraction rather than grounding.
-
-
-It tried all of the prompt variants, made a note about them and created a file called PROMPTS_GUIDE.md with a bunch more details, including this comparison table:
-
-
-
-
-
-Prompt
-Speed
-Text Quality
-Structure
-Coordinates
-Best Use Case
-
-
-
-
-Free OCR
-⚡⚡⚡ Fast
-⭐⭐⭐ Excellent
-⭐ Basic
-❌ No
-General OCR
-
-
-Markdown
-⚡⚡ Medium
-⭐⭐⭐ Excellent
-⭐⭐⭐ Full
-⭐⭐ Partial
-Documents
-
-
-Grounding
-⚡ Slow
-⭐⭐ Good
-⭐ Basic
-⭐⭐⭐ Full
-Annotations
-
-
-Detailed
-⚡⚡⚡ Fastest
-⭐ N/A
-❌ N/A
-❌ No
-Image analysis
-
-
-
-
-And this table under the heading &quot;Performance Benchmarks&quot;:
-
-
-Test image: 3503×1668 pixels (Financial Times article)
-
-
-
-
-Prompt
-Time
-Output Size
-Tokens
-
-
-
-
-Free OCR
-24s
-Clean text
-2257
-
-
-Markdown
-39s
-Formatted MD
-2257 + structure
-
-
-Grounding
-58s
-Text + coords
-2257 + boxes
-
-
-Detailed
-9s
-Description
-~300
-
-
-
-
-My final prompt was this, to gather everything together into a zip file I could extract from the Docker container:
-
-
-Create a zip file with the output and output_text and all of the scripts and notes - but leave out the github repo and the huggingface repo directories
-
-
-I added the contents of that zip file to my new simonw/research GitHub repo in the deepseek-ocr-nvidia-spark folder.
-
-Claude really likes writing notes! Here&#x27;s the directory listing of that finished folder:
-
-  |-- download_test_image.sh
-  |-- FINAL_SUMMARY.md
-  |-- notes.md
-  |-- output
-  |   |-- images
-  |   |-- result_with_boxes.jpg
-  |   &#x60;-- result.mmd
-  |-- output_text
-  |   |-- detailed
-  |   |   |-- images
-  |   |   |-- result_with_boxes.jpg
-  |   |   &#x60;-- result.mmd
-  |   |-- free_ocr
-  |   |   |-- images
-  |   |   |-- result_with_boxes.jpg
-  |   |   &#x60;-- result.mmd
-  |   &#x60;-- markdown
-  |       |-- images
-  |       |   &#x60;-- 0.jpg
-  |       |-- result_with_boxes.jpg
-  |       &#x60;-- result.mmd
-  |-- PROMPTS_GUIDE.md
-  |-- README_SUCCESS.md
-  |-- README.md
-  |-- run_ocr_best.py
-  |-- run_ocr_cpu_nocuda.py
-  |-- run_ocr_cpu.py
-  |-- run_ocr_text_focused.py
-  |-- run_ocr.py
-  |-- run_ocr.sh
-  |-- setup.sh
-  |-- SOLUTION.md
-  |-- test_image.jpeg
-  |-- TEXT_OUTPUT_SUMMARY.md
-  &#x60;-- UPDATE_PYTORCH.md
-
-
-Takeaways
-
-My first prompt was at 15:31:07 (UTC). The final message from Claude Code came in at 16:10:03. That means it took less than 40 minutes start to finish, and I was only actively involved for about 5-10 minutes of that time. The rest of the time I was having breakfast and doing other things.
-
-Having tried and failed to get PyTorch stuff working in the past, I count this as a huge win. I&#x27;ll be using this process a whole lot more in the future.
-
-How good were the actual results? There&#x27;s honestly so much material in the resulting notes created by Claude that I haven&#x27;t reviewed all of it. There may well be all sorts of errors in there, but it&#x27;s indisputable that it managed to run the model and made notes on how it did that such that I&#x27;ll be able to do the same thing in the future.
-
-I think the key factors in executing this project successfully were the following:
-
-
-I gave it exactly what it needed: a Docker environment in the target hardware, instructions on where to get what it needed (the code and the model) and a clear goal for it to pursue. This is a great example of the pattern I described in designing agentic loops.
-
-Running it in a Docker sandbox meant I could use claude --dangerously-skip-permissions and leave it running on its own. If I&#x27;d had to approve every command it wanted to run I would have got frustrated and quit the project after just a few minutes.
-
-I applied my own knowledge and experience when it got stuck. I was confident (based on previous experiments with the Spark) that a CUDA wheel for ARM64 existed that was likely to work, so when it gave up I prompted it to try again, leading to success.
-
-
-Oh, and it looks like DeepSeek OCR is a pretty good model if you spend the time experimenting with different ways to run it.
-
-Bonus: Using VS Code to monitor the container
-
-A small TIL from today: I had kicked off the job running in the Docker container via SSH to the Spark when I realized it would be neat if I could easily monitor the files it was creating while it was running.
-
-I asked Claude.ai:
-
-
-I am running a Docker container on a remote machine, which I started over SSH
-
-How can I have my local VS Code on MacOS show me the filesystem in that docker container inside that remote machine, without restarting anything?
-
-
-It gave me a set of steps that solved this exact problem:
-
-
-Install the VS Code &quot;Remote SSH&quot; and &quot;Dev Containers&quot; extensions
-
-Use &quot;Remote-SSH: Connect to Host&quot; to connect to the remote machine (on my Tailscale network that&#x27;s spark@100.113.1.114)
-
-In the window for that remote SSH session, run &quot;Dev Containers: Attach to Running Container&quot; - this shows a list of containers and you can select the one you want to attach to
-
-... and that&#x27;s it! VS Code opens a new window providing full access to all of the files in that container. I opened up notes.md and watched it as Claude Code appended to it in real time.
-
-
-At the end when I told Claude to create a zip file of the results I could select that in the VS Code file explorer and use the &quot;Download&quot; menu item to download it to my Mac.
-Tags: ocr, python, ai, docker, pytorch, generative-ai, llms, ai-assisted-programming, anthropic, claude, nvidia, vs-code, vision-llms, deepseek, llm-release, coding-agents, claude-code, ai-in-china</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
