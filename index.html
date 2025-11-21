@@ -25,6 +25,38 @@
 
   <ul>
     <li>
+      <time>2025-11-21</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              We should all be using dependency cooldowns
+              <span class="post-metadata">(2 min | 505 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/21/dependency-cooldowns/#atom-everything>We should all be using dependency cooldowns
+dependency cooldowns.
+Supply chain attacks happen when an attacker compromises a widely used open source package and publishes a new version with an exploit. These are usually spotted very quickly, so an attack often only has a few hours of effective window before the problem is identified and the compromised package is pulled.
+You are most at risk if you&#x27;re automatically applying upgrades the same day they are released.
+William says:
+I love cooldowns for several reasons:
+They&#x27;re empirically effective, per above. They won&#x27;t stop all attackers, but they do stymie the majority of high-visibiity, mass-impact supply chain attacks that have become more common.
+They&#x27;re incredibly easy to implement. Moreover, they&#x27;re literally free to implement in most cases: most people can use Dependabot&#x27;s functionality, Renovate&#x27;s functionality, or the functionality build directly into their package manager
+The one counter-argument to this is that sometimes an upgrade fixes a security vulnerability, and in those cases every hour of delay in upgrading as an hour when an attacker could exploit the new issue against your software.
+I see that as an argument for carefully monitoring the release notes of your dependencies, and paying special attention to security advisories. I&#x27;m a big fan of the GitHub Advisory Database for that kind of information.
+
+    
+Via Hacker News
+Tags: definitions, github, open-source, packaging, supply-chain</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-11-20</time>
 
       <section>
@@ -4588,178 +4620,6 @@ Privacy Settings
 As we continue building tools fo…</a>
             </div>
             <!-- <p class="post-source">Activity in the release-notes tag</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI no longer has to preserve all of its ChatGPT data, with some exceptions
-              <span class="post-metadata">(1 min | 405 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/23/openai-no-longer-has-to-preserve/#atom-everything>OpenAI no longer has to preserve all of its ChatGPT data, with some exceptions
-Federal judge Ona T. Wang filed a new order on October 9 that frees OpenAI of an obligation to &quot;preserve and segregate all output log data that would otherwise be deleted on a going forward basis.&quot;
-I wrote about this in June. OpenAI were compelled by a court order to preserve all output, even from private chats, in case it became relevant to the ongoing New York Times lawsuit.
-Here are those &quot;some exceptions&quot;:
-The judge in the case said that any chat logs already saved under the previous order would still be accessible and that OpenAI is required to hold on to any data related to ChatGPT accounts that have been flagged by the NYT.
-Via Theo Browne
-Tags: law, new-york-times, privacy, ai, openai, generative-ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting AWS
-              <span class="post-metadata">(1 min | 363 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/23/aws-postmortem/#atom-everything>For resiliency, the DNS Enactor operates redundantly and fully independently in three different Availability Zones (AZs). [...] When the second Enactor (applying the newest plan) completed its endpoint updates, it then invoked the plan clean-up process, which identifies plans that are significantly older than the one it just applied and deletes them. At the same time that this clean-up process was invoked, the first Enactor (which had been unusually delayed) applied its much older plan to the regional DDB endpoint, overwriting the newer plan. [...] The second Enactor&#x27;s clean-up process then deleted this older plan because it was many generations older than the plan it had just applied. As this plan was deleted, all IP addresses for the regional endpoint were immediately removed.
-
-— AWS, Amazon DynamoDB Service Disruption in Northern Virginia (US-EAST-1) Region (14.5 hours long!)
-Tags: dns, scaling, aws, postmortem</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Video: Building a tool to copy-paste share terminal sessions using Claude Code for web
-              <span class="post-metadata">(5 min | 1569 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/23/claude-code-for-web-video/#atom-everything>This afternoon I was manually converting a terminal session into a shared HTML file for the umpteenth time when I decided to reduce the friction by building a custom tool for it - and on the spur of the moment I fired up Descript to record the process. The result is this new 11 minute YouTube video showing my workflow for vibe-coding simple tools from start to finish.
-
-&lt;lite-youtube videoid&#x3D;&quot;GQvMLLrFPVI&quot; js-api&#x3D;&quot;js-api&quot;
-  title&#x3D;&quot;Using Claude Code for web to build a tool to copy-paste share terminal sessions&quot;
-  playlabel&#x3D;&quot;Play: Using Claude Code for web to build a tool to copy-paste share terminal sessions&quot;
-&gt; 
-
-The initial problem
-
-The problem I wanted to solve involves sharing my Claude Code CLI sessions - and the more general problem of sharing interesting things that happen in my terminal.
-
-A while back I discovered (using my vibe-coded clipboard inspector) that copying and pasting from the macOS terminal populates a rich text clipboard format which preserves the colors and general formatting of the terminal output.
-
-The problem is that format looks like this:
-
-{\rtf1\ansi\ansicpg1252\cocoartf2859
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Monaco;}
-{\colortbl;\red255\green255\blue255;\red242\green242\blue242;\red0\green0\blue0;\red204\green98\blue70;
-\red0\green0\blue0;\red97\green97\blue97;\red102\green102\blue102;\red255\
-
-
-This struck me as the kind of thing an LLM might be able to write code to parse, so I had ChatGPT take a crack at it and then later rewrote it from scratch with Claude Sonnet 4.5. The result was this rtf-to-html tool which lets you paste in rich formatted text and gives you reasonably solid HTML that you can share elsewhere.
-
-To share that HTML I&#x27;ve started habitually pasting it into a GitHub Gist and then taking advantage of gitpreview.github.io, a neat little unofficial tool that accepts ?GIST_ID and displays the gist content as a standalone HTML page... which means you can link to rendered HTML that&#x27;s stored in a gist.
-
-So my process was:
-
-
-Copy terminal output
-
-Paste into rtf-to-html
-
-Copy resulting HTML
-
-Paste that int a new GitHub Gist
-
-Grab that Gist&#x27;s ID
-
-Share the link to gitpreview.github.io?GIST_ID
-
-
-Not too much hassle, but frustratingly manual if you&#x27;re doing it several times a day.
-
-The desired solution
-
-Ideally I want a tool where I can do this:
-
-
-Copy terminal output
-
-Paste into a new tool
-
-Click a button and get a gistpreview link to share
-
-
-I decided to get Claude Code for web to build the entire thing.
-
-The prompt
-
-Here&#x27;s the full prompt I used on claude.ai/code, pointed at my simonw/tools repo, to build the tool:
-
-
-Build a new tool called terminal-to-html which lets the user copy RTF directly from their terminal and paste it into a paste area, it then produces the HTML version of that in a textarea with a copy button, below is a button that says &quot;Save this to a Gist&quot;, and below that is a full preview. It will be very similar to the existing rtf-to-html.html tool but it doesn&#x27;t show the raw RTF and it has that Save this to a Gist button
-
-That button should do the same trick that openai-audio-output.html does, with the same use of localStorage and the same flow to get users signed in with a token if they are not already
-
-So click the button, it asks the user to sign in if necessary, then it saves that HTML to a Gist in a file called index.html, gets back the Gist ID and shows the user the URL https://gistpreview.github.io/?6d778a8f9c4c2c005a189ff308c3bc47 - but with their gist ID in it
-
-They can see the URL, they can click it (do not use target&#x3D;&quot;_blank&quot;) and there is also a &quot;Copy URL&quot; button to copy it to their clipboard
-
-Make the UI mobile friendly but also have it be courier green-text-on-black themed to reflect what it does
-
-If the user pastes and the pasted data is available as HTML but not as RTF skip the RTF step and process the HTML directly
-
-If the user pastes and it&#x27;s only available as plain text then generate HTML that is just an open &lt;pre&gt; tag and their text and a closing &lt;/pre&gt; tag
-
-
-It&#x27;s quite a long prompt - it took me several minutes to type! But it covered the functionality I wanted in enough detail that I was pretty confident Claude would be able to build it.
-
-Combining previous tools
-
-I&#x27;m using one key technique in this prompt: I&#x27;m referencing existing tools in the same repo and telling Claude to imitate their functionality.
-
-I first wrote about this trick last March in Running OCR against PDFs and images directly in your browser, where I described how a snippet of code that used PDF.js and another snippet that used Tesseract.js was enough for Claude 3 Opus to build me this working PDF OCR tool. That was actually the tool that kicked off my tools.simonwillison.net collection in the first place, which has since grown to 139 and counting.
-
-Here I&#x27;m telling Claude that I want the RTF to HTML functionality of rtf-to-html.html combined with the Gist saving functionality of openai-audio-output.html.
-
-That one has quite a bit going on. It uses the OpenAI audio API to generate audio output from a text prompt, which is returned by that API as base64-encoded data in JSON.
-
-Then it offers the user a button to save that JSON to a Gist, which gives the snippet a URL.
-
-Another tool I wrote, gpt-4o-audio-player.html, can then accept that Gist ID in the URL and will fetch the JSON data and make the audio playable in the browser. Here&#x27;s an example.
-
-The trickiest part of this is API tokens. I&#x27;ve built tools in the past that require users to paste in a GitHub Personal Access Token (PAT) (which I then store in localStorage in their browser - I don&#x27;t want other people&#x27;s authentication credentials anywhere near my own servers). But that&#x27;s a bit fiddly.
-
-Instead, I figured out the minimal Cloudflare worker necessary to implement the server-side portion of GitHub&#x27;s authentication flow. That code lives here and means that any of the HTML+JavaScript tools in my collection can implement a GitHub authentication flow if they need to save Gists.
-
-But I don&#x27;t have to tell the model any of that! I can just say &quot;do the same trick that openai-audio-output.html does&quot; and Claude Code will work the rest out for itself.
-
-The result
-
-Here&#x27;s what the resulting app looks like after I&#x27;ve pasted in some terminal output from Claude Code CLI:
-
-
-
-It&#x27;s exactly what I asked for, and the green-on-black terminal aesthetic is spot on too.
-
-Other notes from the video
-
-There are a bunch of other things that I touch on in the video. Here&#x27;s a quick summary:
-
-
-
-tools.simonwillison.net/colophon is the list of all of my tools, with accompanying AI-generated descriptions. Here&#x27;s more about how I built that with Claude Code and notes on how I added the AI-generated descriptions.
-
-
-gistpreview.github.io is really neat.
-
-I used Descript to record and edit the video. I&#x27;m still getting the hang of it - hence the slightly clumsy pan-and-zoom - but it&#x27;s pretty great for this kind of screen recording.
-
-The site&#x27;s automated deploys are managed by this GitHub Actions workflow. I also have it configured to work with Cloudflare Pages for those preview deployments from PRs (here&#x27;s an example).
-
-The automated documentation is created using my llm tool and llm-anthropic plugin. Here&#x27;s the script that does that, recently upgraded to use Claude Haiku 4.5.
-
-
-    
-        
-Tags: github, tools, youtube, ai, cloudflare, generative-ai, llms, ai-assisted-programming, anthropic, claude, vibe-coding, coding-agents, claude-code, async-coding-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
