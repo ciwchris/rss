@@ -2,10 +2,124 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-11-22T21:09:10.411Z</updated>
+    <updated>2025-11-23T14:09:11.889Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Agent design is still hard]]></title>
+        <id>https://simonwillison.net/2025/Nov/23/agent-design-is-still-hard/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/23/agent-design-is-still-hard/#atom-everything"/>
+        <updated>2025-11-23T00:49:39.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://lucumr.pocoo.org/2025/11/21/agents-are-hard/">Agent design is still hard</a></strong></p>
+Armin Ronacher presents a cornucopia of lessons learned from building agents over the past few months.</p>
+<p>There are several agent abstraction libraries available now (my own <a href="https://llm.datasette.io/">LLM library</a> is edging into that territory with its <a href="https://simonwillison.net/2025/May/27/llm-tools/">tools feature</a>) but Armin has found that the abstractions are not worth adopting yet:</p>
+<blockquote>
+<p>[…] the differences between models are significant enough that you will need to build your own agent abstraction. We have not found any of the solutions from these SDKs that build the right abstraction for an agent. I think this is partly because, despite the basic agent design being just a loop, there are subtle differences based on the tools you provide. These differences affect how easy or hard it is to find the right abstraction (cache control, different requirements for reinforcement, tool prompts, provider-side tools, etc.). Because the right abstraction is not yet clear, using the original SDKs from the dedicated platforms keeps you fully in control. […]</p>
+<p>This might change, but right now we would probably not use an abstraction when building an agent, at least until things have settled down a bit. The benefits do not yet outweigh the costs for us.</p>
+</blockquote>
+<p>Armin introduces the new-to-me term <strong>reinforcement</strong>, where you remind the agent of things as it goes along:</p>
+<blockquote>
+<p>Every time the agent runs a tool you have the opportunity to not just return data that the tool produces, but also to feed more information back into the loop. For instance, you can remind the agent about the overall objective and the status of individual tasks. […] Another use of reinforcement is to inform the system about state changes that happened in the background.</p>
+</blockquote>
+<p>Claude Code’s TODO list is another example of this pattern in action.</p>
+<p>Testing and evals remains the single hardest problem in AI engineering:</p>
+<blockquote>
+<p>We find testing and evals to be the hardest problem here. This is not entirely surprising, but the agentic nature makes it even harder. Unlike prompts, you cannot just do the evals in some external system because there’s too much you need to feed into it. This means you want to do evals based on observability data or instrumenting your actual test runs. So far none of the solutions we have tried have convinced us that they found the right approach here.</p>
+</blockquote>
+<p>Armin also has a follow-up post, <a href="https://lucumr.pocoo.org/2025/11/22/llm-apis/">LLM APIs are a Synchronization Problem</a>, which argues that the shape of current APIs hides too many details from us as developers, and the core challenge here is in synchronizing state between the tokens fed through the GPUs and our client applications - something that may benefit from alternative approaches developed by the local-first movement.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=46013935">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/armin-ronacher">armin-ronacher</a>, <a href="https://simonwillison.net/tags/definitions">definitions</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Olmo 3 is a fully open LLM]]></title>
+        <id>https://simonwillison.net/2025/Nov/22/olmo-3/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/22/olmo-3/#atom-everything"/>
+        <updated>2025-11-22T23:59:46.000Z</updated>
+        <summary type="html"><![CDATA[<p>Olmo is the LLM series from Ai2 - the <a href="https://allenai.org/">Allen institute for AI</a>. Unlike most open weight models these are notable for including the full training data, training process and checkpoints along with those releases.</p>
+<p>The <a href="https://allenai.org/blog/olmo3">new Olmo 3</a> claims to be "the best fully open 32B-scale thinking model" and has a strong focus on interpretability:</p>
+<blockquote>
+<p>At its center is <strong>Olmo 3-Think (32B)</strong>, the best fully open 32B-scale thinking model that for the first time lets you inspect intermediate reasoning traces and trace those behaviors back to the data and training decisions that produced them.</p>
+</blockquote>
+<p>They've released four 7B models - Olmo 3-Base, Olmo 3-Instruct, Olmo 3-Think and Olmo 3-RL Zero, plus 32B variants of the 3-Think and 3-Base models.</p>
+<p>Having full access to the training data is really useful. Here's how they describe that:</p>
+<blockquote>
+<p>Olmo 3 is pretrained on <strong>Dolma 3</strong>, a new ~9.3-trillion-token corpus drawn from web pages, science PDFs processed with <a href="https://olmocr.allenai.org/">olmOCR</a>, codebases, math problems and solutions, and encyclopedic text. From this pool, we construct <strong>Dolma 3 Mix</strong>, a 5.9-trillion-token (~6T) pretraining mix with a higher proportion of coding and mathematical data than earlier Dolma releases, plus much stronger decontamination via extensive deduplication, quality filtering, and careful control over data mixing. We follow established web standards in collecting training data and don't collect from sites that explicitly disallow it, including paywalled content.</p>
+</blockquote>
+<p>They also highlight that they are training on fewer tokens than their competition:</p>
+<blockquote>
+<p>[...] it's the strongest fully open thinking model we're aware of, narrowing the gap to the best open-weight models of similar scale – such as Qwen 3 32B – while training on roughly 6x fewer tokens.</p>
+</blockquote>
+<p>If you're continuing to hold out hope for a model trained entirely on licensed data this one sadly won't fit the bill - a lot of that data still comes from a crawl of the web.</p>
+<p>I tried out the 32B Think model and the 7B Instruct model <a href="https://lmstudio.ai/models/olmo3">using LM Studio</a>. The 7B model is a 4.16GB download, the 32B one is 18.14GB.</p>
+<p>The 32B model is absolutely an over-thinker! I asked it to "Generate an SVG of a pelican riding a bicycle" and it thought for <em>14 minutes 43 seconds</em>, outputting 8,437 tokens total most of which was <a href="https://gist.github.com/simonw/2ae9d5ed71de9608b7955eea9671306f">this epic thinking trace</a>.</p>
+<p>I don't usually quote the full SVG in these write-ups, but in this case it's short enough that I think it's worth sharing. The SVG comments give a great impression of what it was trying to do - it has a Bicycle, Bike frame, Pelican, Left and Right wings and even "Feet on pedals".</p>
+<div class="highlight highlight-text-xml-svg"><pre>&lt;<span class="pl-ent">svg</span> <span class="pl-e">width</span>=<span class="pl-s"><span class="pl-pds">"</span>200<span class="pl-pds">"</span></span> <span class="pl-e">height</span>=<span class="pl-s"><span class="pl-pds">"</span>200<span class="pl-pds">"</span></span> <span class="pl-e">viewBox</span>=<span class="pl-s"><span class="pl-pds">"</span>0 0 100 100<span class="pl-pds">"</span></span>&gt;
+  <span class="pl-c"><span class="pl-c">&lt;!--</span> Bicycle <span class="pl-c">--&gt;</span></span>
+  &lt;<span class="pl-ent">circle</span> <span class="pl-e">cx</span>=<span class="pl-s"><span class="pl-pds">"</span>30<span class="pl-pds">"</span></span> <span class="pl-e">cy</span>=<span class="pl-s"><span class="pl-pds">"</span>60<span class="pl-pds">"</span></span> <span class="pl-e">r</span>=<span class="pl-s"><span class="pl-pds">"</span>15<span class="pl-pds">"</span></span> <span class="pl-e">stroke</span>=<span class="pl-s"><span class="pl-pds">"</span>black<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>none<span class="pl-pds">"</span></span>/&gt;
+  &lt;<span class="pl-ent">circle</span> <span class="pl-e">cx</span>=<span class="pl-s"><span class="pl-pds">"</span>70<span class="pl-pds">"</span></span> <span class="pl-e">cy</span>=<span class="pl-s"><span class="pl-pds">"</span>60<span class="pl-pds">"</span></span> <span class="pl-e">r</span>=<span class="pl-s"><span class="pl-pds">"</span>15<span class="pl-pds">"</span></span> <span class="pl-e">stroke</span>=<span class="pl-s"><span class="pl-pds">"</span>black<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>none<span class="pl-pds">"</span></span>/&gt;
+  
+  <span class="pl-c"><span class="pl-c">&lt;!--</span> Bike frame <span class="pl-c">--&gt;</span></span>
+  &lt;<span class="pl-ent">rect</span> <span class="pl-e">x</span>=<span class="pl-s"><span class="pl-pds">"</span>35<span class="pl-pds">"</span></span> <span class="pl-e">y</span>=<span class="pl-s"><span class="pl-pds">"</span>25<span class="pl-pds">"</span></span> <span class="pl-e">width</span>=<span class="pl-s"><span class="pl-pds">"</span>30<span class="pl-pds">"</span></span> <span class="pl-e">height</span>=<span class="pl-s"><span class="pl-pds">"</span>10<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>saddlebrown<span class="pl-pds">"</span></span>/&gt;
+  &lt;<span class="pl-ent">line</span> <span class="pl-e">x1</span>=<span class="pl-s"><span class="pl-pds">"</span>35<span class="pl-pds">"</span></span> <span class="pl-e">y1</span>=<span class="pl-s"><span class="pl-pds">"</span>40<span class="pl-pds">"</span></span> <span class="pl-e">x2</span>=<span class="pl-s"><span class="pl-pds">"</span>30<span class="pl-pds">"</span></span> <span class="pl-e">y2</span>=<span class="pl-s"><span class="pl-pds">"</span>60<span class="pl-pds">"</span></span> <span class="pl-e">stroke</span>=<span class="pl-s"><span class="pl-pds">"</span>black<span class="pl-pds">"</span></span> <span class="pl-e">stroke-width</span>=<span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>/&gt;
+  &lt;<span class="pl-ent">line</span> <span class="pl-e">x1</span>=<span class="pl-s"><span class="pl-pds">"</span>65<span class="pl-pds">"</span></span> <span class="pl-e">y1</span>=<span class="pl-s"><span class="pl-pds">"</span>40<span class="pl-pds">"</span></span> <span class="pl-e">x2</span>=<span class="pl-s"><span class="pl-pds">"</span>70<span class="pl-pds">"</span></span> <span class="pl-e">y2</span>=<span class="pl-s"><span class="pl-pds">"</span>60<span class="pl-pds">"</span></span> <span class="pl-e">stroke</span>=<span class="pl-s"><span class="pl-pds">"</span>black<span class="pl-pds">"</span></span> <span class="pl-e">stroke-width</span>=<span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>/&gt;
+  
+  <span class="pl-c"><span class="pl-c">&lt;!--</span> Pelican <span class="pl-c">--&gt;</span></span>
+  &lt;<span class="pl-ent">ellipse</span> <span class="pl-e">cx</span>=<span class="pl-s"><span class="pl-pds">"</span>55<span class="pl-pds">"</span></span> <span class="pl-e">cy</span>=<span class="pl-s"><span class="pl-pds">"</span>65<span class="pl-pds">"</span></span> <span class="pl-e">rx</span>=<span class="pl-s"><span class="pl-pds">"</span>20<span class="pl-pds">"</span></span> <span class="pl-e">ry</span>=<span class="pl-s"><span class="pl-pds">"</span>15<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>white<span class="pl-pds">"</span></span>/&gt;
+  &lt;<span class="pl-ent">polygon</span> <span class="pl-e">points</span>=<span class="pl-s"><span class="pl-pds">"</span>52 50,57 35,62 50<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>black<span class="pl-pds">"</span></span>/&gt; <span class="pl-c"><span class="pl-c">&lt;!--</span> Head/beak <span class="pl-c">--&gt;</span></span>
+  &lt;<span class="pl-ent">circle</span> <span class="pl-e">cx</span>=<span class="pl-s"><span class="pl-pds">"</span>55<span class="pl-pds">"</span></span> <span class="pl-e">cy</span>=<span class="pl-s"><span class="pl-pds">"</span>45<span class="pl-pds">"</span></span> <span class="pl-e">r</span>=<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>white<span class="pl-pds">"</span></span>/&gt;
+  &lt;<span class="pl-ent">circle</span> <span class="pl-e">cx</span>=<span class="pl-s"><span class="pl-pds">"</span>60<span class="pl-pds">"</span></span> <span class="pl-e">cy</span>=<span class="pl-s"><span class="pl-pds">"</span>45<span class="pl-pds">"</span></span> <span class="pl-e">r</span>=<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>white<span class="pl-pds">"</span></span>/&gt;
+  
+  &lt;<span class="pl-ent">polygon</span> <span class="pl-e">points</span>=<span class="pl-s"><span class="pl-pds">"</span>45 60,50 70,55 60<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>lightgrey<span class="pl-pds">"</span></span>/&gt; <span class="pl-c"><span class="pl-c">&lt;!--</span> Left wing <span class="pl-c">--&gt;</span></span>
+  &lt;<span class="pl-ent">polygon</span> <span class="pl-e">points</span>=<span class="pl-s"><span class="pl-pds">"</span>65 60,70 70,55 60<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>lightgrey<span class="pl-pds">"</span></span>/&gt; <span class="pl-c"><span class="pl-c">&lt;!--</span> Right wing <span class="pl-c">--&gt;</span></span>
+  
+  <span class="pl-c"><span class="pl-c">&lt;!--</span> Feet on pedals <span class="pl-c">--&gt;</span></span>
+  &lt;<span class="pl-ent">polygon</span> <span class="pl-e">points</span>=<span class="pl-s"><span class="pl-pds">"</span>25 75,30 85,35 75<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>black<span class="pl-pds">"</span></span>/&gt;
+  &lt;<span class="pl-ent">polygon</span> <span class="pl-e">points</span>=<span class="pl-s"><span class="pl-pds">"</span>75 75,70 85,65 75<span class="pl-pds">"</span></span> <span class="pl-e">fill</span>=<span class="pl-s"><span class="pl-pds">"</span>black<span class="pl-pds">"</span></span>/&gt;
+&lt;/<span class="pl-ent">svg</span>&gt;</pre></div>
+<p>Rendered it looks like this:</p>
+<p><img src="https://static.simonwillison.net/static/2025/olmo3-32b-pelican.jpg" alt="Two circles, each with a triangle sticking out from the bottom. They have bars leading up to a brown box. Overlapping them is a black triangle with white circles for eyes and two grey triangles that are probably meant to be wings. It is not recognizable as a pelican or a bicycle." style="max-width: 100%;" /></p>
+<p>I tested OLMo 2 32B 4bit <a href="https://simonwillison.net/2025/Mar/16/olmo2/">back in March</a> and got something that, while pleasingly abstract, didn't come close to resembling a pelican or a bicycle:</p>
+<p><img src="https://static.simonwillison.net/static/2025/olmo2-pelican.jpg" alt="Blue and black wiggly lines looking more like a circuit diagram than a pelican riding a bicycle" style="max-width: 100%;" /></p>
+<p>To be fair 32B models generally don't do great with this. Here's Qwen 3 32B's attempt (I ran that just now <a href="https://openrouter.ai/chat?models=qwen/qwen3-32b">using OpenRouter</a>):</p>
+<p><img src="https://static.simonwillison.net/static/2025/qwen3-32b-pelican.png" alt="The bicycle is two black circles joined by two lines, with a weird rectangular saddle perched on top The pelican is a blue oval, a white circles with a yellow triangle in it and a weird eye shaped oval overlapping the blue one." style="max-width: 100%;" /></p>
+<h4 id="olmotrace">OlmoTrace</h4>
+<p>I was particularly keen on trying out the ability to "inspect intermediate reasoning traces". Here's how that's described later in the announcement:</p>
+<blockquote>
+<p>A core goal of Olmo 3 is not just to <em>open</em> the model flow, but to make it <em>actionable</em> for people who want to understand and improve model behavior. Olmo 3 integrates with <a href="https://allenai.org/blog/olmotrace"><strong>OlmoTrace</strong></a>, our tool for tracing model outputs back to training data in real time.</p>
+<p>For example, in the Ai2 Playground, you can ask Olmo 3-Think (32B) to answer a general-knowledge question, then use OlmoTrace to inspect where and how the model may have learned to generate parts of its response. This closes the gap between training data and model behavior: you can see not only what the model is doing, but why---and adjust data or training decisions accordingly.</p>
+</blockquote>
+<p>You can access OlmoTrace via <a href="https://playground.allenai.org/">playground.allenai.org</a>, by first running a prompt and then clicking the "Show OlmoTrace" button below the output.</p>
+<p>I tried that on "Generate a conference bio for Simon Willison" (an ego-prompt I use to see how much the models have picked up about me from their training data) and got back a result that looked like this:</p>
+<p><img src="https://static.simonwillison.net/static/2025/olmotrace.jpg" alt="Screenshot of AI2 Playground interface with Olmo 3 32B Think model selected. User prompt reads &quot;Generate a conference bio for Simon Willison&quot;. AI response shows expanded &quot;Thoughts&quot; section: &quot;Okay, the user wants me to generate a conference bio for Simon Willison. Let me start by recalling who Simon is. He's a well-known developer, entrepreneur, and author in the tech community. I remember he's the co-founder of co:here and now works at Anthropic. He's famous for his work with SQLite, especially the datasette project. Also, he writes a blog called SimonWillison.net which is quite popular. First, I need to structure a typical conference bio. These usually include his current role, past positions, notable projects, and maybe some achievements or recognitions. I should highlight his key contributions like datasette, which allows easy exploration of SQLite databases via a web interface. That's a big deal in data journalism and open data circles.&quot; Right panel shows &quot;OlmoTrace&quot; feature described as &quot;Documents from the training data that have exact text matches with the model response. Powered by infini-gram&quot;. First document excerpt discusses technology and innovation, with highlighted match text &quot;societal implications of technology, emphasizing the&quot; shown in bold, surrounded by text about responsibility and merging innovation with intellect. Second document excerpt about Matt Hall has highlighted match &quot;is a software engineer and entrepreneur based in&quot; shown in bold, describing someone in New York City who co-founded a PFP collection and works at Google Creative Lab. Note indicates &quot;Document repeated 2 times in result&quot; with &quot;View all repeated documents&quot; link." style="max-width: 100%;" /></p>
+<p>It thinks I co-founded co:here and work at Anthropic, both of which are incorrect - but that's not uncommon with LLMs, I frequently see them suggest that I'm the CTO of GitHub and other such inaccuracies.</p>
+<p>I found the OlmoTrace panel on the right disappointing. None of the training documents it highlighted looked relevant - it appears to be looking for phrase matches (powered by <a href="https://infini-gram.io/">Ai2's infini-gram</a>) but the documents it found had nothing to do with me at all.</p>
+<h4 id="can-open-training-data-address-concerns-of-backdoors-">Can open training data address concerns of backdoors?</h4>
+<p>Ai2 claim that Olmo 3 is "the best fully open 32B-scale thinking model", which I think holds up provided you define "fully open" as including open training data. There's not a great deal of competition in that space though - Ai2 compare themselves to <a href="https://marin.community/">Stanford's Marin</a> and <a href="https://www.swiss-ai.org/apertus">Swiss AI's Apertus</a>, neither of which I'd heard about before.</p>
+<p>A big disadvantage of other open weight models is that it's impossible to audit their training data. Anthropic published a paper last month showing that <a href="https://www.anthropic.com/research/small-samples-poison">a small number of samples can poison LLMs of any size</a> - it can take just "250 poisoned documents" to add a backdoor to a large model that triggers undesired behavior based on a short carefully crafted prompt.</p>
+
+<p>This makes fully open training data an even bigger deal.</p>
+
+<p>Ai2 researcher Nathan Lambert included this note about the importance of transparent training data in <a href="https://www.interconnects.ai/p/olmo-3-americas-truly-open-reasoning">his detailed post about the release</a>:</p>
+
+<blockquote><p>In particular, we're excited about the future of RL Zero research on Olmo 3 precisely because everything is open. Researchers can study the interaction between the reasoning traces we include at midtraining and the downstream model behavior (qualitative and quantitative).</p>
+
+<p>This helps answer questions that have plagued RLVR results on Qwen models, hinting at forms of data contamination particularly on math and reasoning benchmarks (see Shao, Rulin, et al. "Spurious rewards: Rethinking training signals in rlvr." <a href="https://arxiv.org/abs/2506.10947">arXiv preprint arXiv:2506.10947</a> (2025). or Wu, Mingqi, et al. "Reasoning or memorization? unreliable results of reinforcement learning due to data contamination." <a href="https://arxiv.org/abs/2507.10532">arXiv preprint arXiv:2507.10532</a> (2025).)</p>
+</blockquote>
+
+<p>I hope we see more competition in this space, including further models in the Olmo series. The improvements from Olmo 1 (in <a href="https://simonwillison.net/2024/Feb/2/olmos/">February 2024</a>) and Olmo 2 (in <a href="https://simonwillison.net/2025/Mar/16/olmo2/">March 2025</a>) have been significant. I'm hoping that trend continues!</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/interpretability">interpretability</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/ai2">ai2</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/nathan-lambert">nathan-lambert</a>, <a href="https://simonwillison.net/tags/olmo">olmo</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Nov 22nd, 2025 - Kagi Hub Belgrade]]></title>
         <id>https://kagifeedback.org/d/9037-nov-22nd-2025-kagi-hub-belgrade/1</id>
@@ -3528,63 +3642,6 @@ New model interpretability research from Anthropic, this time focused on SVG and
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/svg">svg</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/interpretability">interpretability</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[claude_code_docs_map.md]]></title>
-        <id>https://simonwillison.net/2025/Oct/24/claude-code-docs-map/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Oct/24/claude-code-docs-map/#atom-everything"/>
-        <updated>2025-10-24T23:01:42.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://docs.claude.com/en/docs/claude-code/claude_code_docs_map.md">claude_code_docs_map.md</a></strong></p>
-Something I'm enjoying about Claude Code is that any time you ask it questions about <em>itself</em> it runs tool calls like these:</p>
-<p><img alt="I'll check the Claude Code documentation about bash hooks to see if there's something about the   configuration that might explain why it didn't trigger. Fetch(https://docs.claude.com/en/docs/claude-code/claude_code_docs_map.md)   ⎿  Received 25.9KB (200 OK) Fetch(https://docs.claude.com/en/docs/claude-code/hooks-guide.md)   ⎿  Received 9.4KB (200 OK) Fetch(https://docs.claude.com/en/docs/claude-code/hooks)   ⎿  Received 2.2MB (200 OK) Ah, I see the issue! The bashHook in your settings.json is checking the $PROMPT variable, but   according to the documentation, bash hooks should:    1. Use PreToolUse hooks (not a simple bash script)   2. Parse JSON input from stdin   3. Access the command via tool_input.command in the JSON " src="https://static.simonwillison.net/static/2025/claude-code-self-documentation.jpg" /></p>
-<p>In this case I'd asked it about its "hooks" feature.</p>
-<p>The <a href="https://docs.claude.com/en/docs/claude-code/claude_code_docs_map.md">claude_code_docs_map.md</a> file is a neat Markdown index of all of their other documentation - the same pattern advocated by <a href="https://llmstxt.org/">llms.txt</a>. Claude Code can then fetch further documentation to help it answer your question.</p>
-<p>I intercepted the current Claude Code system prompt <a href="https://simonwillison.net/2025/Jun/2/claude-trace/">using this trick</a> and sure enough it included a note about this URL:</p>
-<blockquote>
-<p><code>When the user directly asks about Claude Code (eg. "can Claude Code do...", "does Claude Code have..."), or asks in second person (eg. "are you able...", "can you do..."), or asks how to use a specific Claude Code feature (eg. implement a hook, or write a slash command), use the WebFetch tool to gather information to answer the question from Claude Code docs. The list of available docs is available at https://docs.claude.com/en/docs/claude-code/claude_code_docs_map.md.</code></p>
-</blockquote>
-<p>I wish other LLM products - including both ChatGPT and Claude.ai themselves - would implement a similar pattern. It's infuriating how bad LLM tools are at answering questions about themselves, though unsurprising given that their model's training data pre-dates the latest version of those tools.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/markdown">markdown</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/system-prompts">system-prompts</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A Pragmatic Guide to Server-Sent Events (SSE) in ASP.NET Core]]></title>
-        <id>https://roxeem.com/?p=444</id>
-        <link href="https://roxeem.com/2025/10/24/a-pragmatic-guide-to-server-sent-events-sse-in-asp-net-core/"/>
-        <updated>2025-10-24T14:44:33.000Z</updated>
-        <summary type="html"><![CDATA[Learn how to implement Server-Sent Events (SSE) in ASP.NET Core. Compare SSE vs WebSockets & SignalR, and apply scaling best practices.
-The post A Pragmatic Guide to Server-Sent Events (SSE) in ASP.NET Core first appeared on Roxeem.]]></summary>
-        <author>
-            <name>Roxeem</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Geoffrey Litt]]></title>
-        <id>https://simonwillison.net/2025/Oct/24/geoffrey-litt/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Oct/24/geoffrey-litt/#atom-everything"/>
-        <updated>2025-10-24T14:07:11.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://www.geoffreylitt.com/2025/10/24/code-like-a-surgeon"><p>A lot of people say AI will make us all "managers" or "editors"...but I think this is a dangerously incomplete view!</p>
-<p>Personally, I'm trying to <strong>code like a surgeon</strong>.</p>
-<p>A surgeon isn't a manager, they do the actual work! But their skills and time are highly leveraged with a support team that handles prep, secondary tasks, admin. The surgeon focuses on the important stuff they are uniquely good at. [...]</p>
-<p>It turns out there are a LOT of secondary tasks which AI agents are now good enough to help out with. Some things I'm finding useful to hand off these days:</p>
-<ul>
-<li>Before attempting a big task, write a guide to relevant areas of the codebase</li>
-<li>Spike out an attempt at a big change. Often I won't use the result but I'll review it as a sketch of where to go</li>
-<li>Fix typescript errors or bugs which have a clear specification</li>
-<li>Write documentation about what I'm building</li>
-</ul>
-<p>I often find it useful to run these secondary tasks async in the background -- while I'm eating lunch, or even literally overnight!</p>
-<p>When I sit down for a work session, I want to feel like a surgeon walking into a prepped operating room. Everything is ready for me to do what I'm good at.</p></blockquote>
-<p class="cite">&mdash; <a href="https://www.geoffreylitt.com/2025/10/24/code-like-a-surgeon">Geoffrey Litt</a>, channeling The Mythical Man-Month</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/parallel-agents">parallel-agents</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/geoffrey-litt">geoffrey-litt</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

@@ -25,9 +25,162 @@
 
   <ul>
     <li>
+      <time>2025-11-23</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Agent design is still hard
+              <span class="post-metadata">(2 min | 712 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/23/agent-design-is-still-hard/#atom-everything>Agent design is still hard
+There are several agent abstraction libraries available now (my own LLM library is edging into that territory with its tools feature) but Armin has found that the abstractions are not worth adopting yet:
+[…] the differences between models are significant enough that you will need to build your own agent abstraction. We have not found any of the solutions from these SDKs that build the right abstraction for an agent. I think this is partly because, despite the basic agent design being just a loop, there are subtle differences based on the tools you provide. These differences affect how easy or hard it is to find the right abstraction (cache control, different requirements for reinforcement, tool prompts, provider-side tools, etc.). Because the right abstraction is not yet clear, using the original SDKs from the dedicated platforms keeps you fully in control. […]
+This might change, but right now we would probably not use an abstraction when building an agent, at least until things have settled down a bit. The benefits do not yet outweigh the costs for us.
+Armin introduces the new-to-me term reinforcement, where you remind the agent of things as it goes along:
+Every time the agent runs a tool you have the opportunity to not just return data that the tool produces, but also to feed more information back into the loop. For instance, you can remind the agent about the overall objective and the status of individual tasks. […] Another use of reinforcement is to inform the system about state changes that happened in the background.
+Claude Code’s TODO list is another example of this pattern in action.
+Testing and evals remains the single hardest problem in AI engineering:
+We find testing and evals to be the hardest problem here. This is not entirely surprising, but the agentic nature makes it even harder. Unlike prompts, you cannot just do the evals in some external system because there’s too much you need to feed into it. This means you want to do evals based on observability data or instrumenting your actual test runs. So far none of the solutions we have tried have convinced us that they found the right approach here.
+Armin also has a follow-up post, LLM APIs are a Synchronization Problem, which argues that the shape of current APIs hides too many details from us as developers, and the core challenge here is in synchronizing state between the tokens fed through the GPUs and our client applications - something that may benefit from alternative approaches developed by the local-first movement.
+
+    
+Via Hacker News
+Tags: armin-ronacher, definitions, ai, prompt-engineering, generative-ai, llms, evals, ai-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-11-22</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Olmo 3 is a fully open LLM
+              <span class="post-metadata">(5 min | 1467 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/22/olmo-3/#atom-everything>Olmo is the LLM series from Ai2 - the Allen institute for AI. Unlike most open weight models these are notable for including the full training data, training process and checkpoints along with those releases.
+
+The new Olmo 3 claims to be &quot;the best fully open 32B-scale thinking model&quot; and has a strong focus on interpretability:
+
+
+At its center is Olmo 3-Think (32B), the best fully open 32B-scale thinking model that for the first time lets you inspect intermediate reasoning traces and trace those behaviors back to the data and training decisions that produced them.
+
+
+They&#x27;ve released four 7B models - Olmo 3-Base, Olmo 3-Instruct, Olmo 3-Think and Olmo 3-RL Zero, plus 32B variants of the 3-Think and 3-Base models.
+
+Having full access to the training data is really useful. Here&#x27;s how they describe that:
+
+
+Olmo 3 is pretrained on Dolma 3, a new ~9.3-trillion-token corpus drawn from web pages, science PDFs processed with olmOCR, codebases, math problems and solutions, and encyclopedic text. From this pool, we construct Dolma 3 Mix, a 5.9-trillion-token (~6T) pretraining mix with a higher proportion of coding and mathematical data than earlier Dolma releases, plus much stronger decontamination via extensive deduplication, quality filtering, and careful control over data mixing. We follow established web standards in collecting training data and don&#x27;t collect from sites that explicitly disallow it, including paywalled content.
+
+
+They also highlight that they are training on fewer tokens than their competition:
+
+
+[...] it&#x27;s the strongest fully open thinking model we&#x27;re aware of, narrowing the gap to the best open-weight models of similar scale – such as Qwen 3 32B – while training on roughly 6x fewer tokens.
+
+
+If you&#x27;re continuing to hold out hope for a model trained entirely on licensed data this one sadly won&#x27;t fit the bill - a lot of that data still comes from a crawl of the web.
+
+I tried out the 32B Think model and the 7B Instruct model using LM Studio. The 7B model is a 4.16GB download, the 32B one is 18.14GB.
+
+The 32B model is absolutely an over-thinker! I asked it to &quot;Generate an SVG of a pelican riding a bicycle&quot; and it thought for 14 minutes 43 seconds, outputting 8,437 tokens total most of which was this epic thinking trace.
+
+I don&#x27;t usually quote the full SVG in these write-ups, but in this case it&#x27;s short enough that I think it&#x27;s worth sharing. The SVG comments give a great impression of what it was trying to do - it has a Bicycle, Bike frame, Pelican, Left and Right wings and even &quot;Feet on pedals&quot;.
+
+
+&lt;svg width&#x3D;&quot;200&quot; height&#x3D;&quot;200&quot; viewBox&#x3D;&quot;0 0 100 100&quot;&gt;
+  &lt;!-- Bicycle --&gt;
+  &lt;circle cx&#x3D;&quot;30&quot; cy&#x3D;&quot;60&quot; r&#x3D;&quot;15&quot; stroke&#x3D;&quot;black&quot; fill&#x3D;&quot;none&quot;/&gt;
+  &lt;circle cx&#x3D;&quot;70&quot; cy&#x3D;&quot;60&quot; r&#x3D;&quot;15&quot; stroke&#x3D;&quot;black&quot; fill&#x3D;&quot;none&quot;/&gt;
+  
+  &lt;!-- Bike frame --&gt;
+  &lt;rect x&#x3D;&quot;35&quot; y&#x3D;&quot;25&quot; width&#x3D;&quot;30&quot; height&#x3D;&quot;10&quot; fill&#x3D;&quot;saddlebrown&quot;/&gt;
+  &lt;line x1&#x3D;&quot;35&quot; y1&#x3D;&quot;40&quot; x2&#x3D;&quot;30&quot; y2&#x3D;&quot;60&quot; stroke&#x3D;&quot;black&quot; stroke-width&#x3D;&quot;3&quot;/&gt;
+  &lt;line x1&#x3D;&quot;65&quot; y1&#x3D;&quot;40&quot; x2&#x3D;&quot;70&quot; y2&#x3D;&quot;60&quot; stroke&#x3D;&quot;black&quot; stroke-width&#x3D;&quot;3&quot;/&gt;
+  
+  &lt;!-- Pelican --&gt;
+  &lt;ellipse cx&#x3D;&quot;55&quot; cy&#x3D;&quot;65&quot; rx&#x3D;&quot;20&quot; ry&#x3D;&quot;15&quot; fill&#x3D;&quot;white&quot;/&gt;
+  &lt;polygon points&#x3D;&quot;52 50,57 35,62 50&quot; fill&#x3D;&quot;black&quot;/&gt; &lt;!-- Head/beak --&gt;
+  &lt;circle cx&#x3D;&quot;55&quot; cy&#x3D;&quot;45&quot; r&#x3D;&quot;2&quot; fill&#x3D;&quot;white&quot;/&gt;
+  &lt;circle cx&#x3D;&quot;60&quot; cy&#x3D;&quot;45&quot; r&#x3D;&quot;2&quot; fill&#x3D;&quot;white&quot;/&gt;
+  
+  &lt;polygon points&#x3D;&quot;45 60,50 70,55 60&quot; fill&#x3D;&quot;lightgrey&quot;/&gt; &lt;!-- Left wing --&gt;
+  &lt;polygon points&#x3D;&quot;65 60,70 70,55 60&quot; fill&#x3D;&quot;lightgrey&quot;/&gt; &lt;!-- Right wing --&gt;
+  
+  &lt;!-- Feet on pedals --&gt;
+  &lt;polygon points&#x3D;&quot;25 75,30 85,35 75&quot; fill&#x3D;&quot;black&quot;/&gt;
+  &lt;polygon points&#x3D;&quot;75 75,70 85,65 75&quot; fill&#x3D;&quot;black&quot;/&gt;
+&lt;/svg&gt;
+
+Rendered it looks like this:
+
+
+
+I tested OLMo 2 32B 4bit back in March and got something that, while pleasingly abstract, didn&#x27;t come close to resembling a pelican or a bicycle:
+
+
+
+To be fair 32B models generally don&#x27;t do great with this. Here&#x27;s Qwen 3 32B&#x27;s attempt (I ran that just now using OpenRouter):
+
+
+
+OlmoTrace
+
+I was particularly keen on trying out the ability to &quot;inspect intermediate reasoning traces&quot;. Here&#x27;s how that&#x27;s described later in the announcement:
+
+
+A core goal of Olmo 3 is not just to open the model flow, but to make it actionable for people who want to understand and improve model behavior. Olmo 3 integrates with OlmoTrace, our tool for tracing model outputs back to training data in real time.
+
+For example, in the Ai2 Playground, you can ask Olmo 3-Think (32B) to answer a general-knowledge question, then use OlmoTrace to inspect where and how the model may have learned to generate parts of its response. This closes the gap between training data and model behavior: you can see not only what the model is doing, but why---and adjust data or training decisions accordingly.
+
+
+You can access OlmoTrace via playground.allenai.org, by first running a prompt and then clicking the &quot;Show OlmoTrace&quot; button below the output.
+
+I tried that on &quot;Generate a conference bio for Simon Willison&quot; (an ego-prompt I use to see how much the models have picked up about me from their training data) and got back a result that looked like this:
+
+
+
+It thinks I co-founded co:here and work at Anthropic, both of which are incorrect - but that&#x27;s not uncommon with LLMs, I frequently see them suggest that I&#x27;m the CTO of GitHub and other such inaccuracies.
+
+I found the OlmoTrace panel on the right disappointing. None of the training documents it highlighted looked relevant - it appears to be looking for phrase matches (powered by Ai2&#x27;s infini-gram) but the documents it found had nothing to do with me at all.
+
+Can open training data address concerns of backdoors?
+
+Ai2 claim that Olmo 3 is &quot;the best fully open 32B-scale thinking model&quot;, which I think holds up provided you define &quot;fully open&quot; as including open training data. There&#x27;s not a great deal of competition in that space though - Ai2 compare themselves to Stanford&#x27;s Marin and Swiss AI&#x27;s Apertus, neither of which I&#x27;d heard about before.
+
+A big disadvantage of other open weight models is that it&#x27;s impossible to audit their training data. Anthropic published a paper last month showing that a small number of samples can poison LLMs of any size - it can take just &quot;250 poisoned documents&quot; to add a backdoor to a large model that triggers undesired behavior based on a short carefully crafted prompt.
+
+
+This makes fully open training data an even bigger deal.
+
+
+Ai2 researcher Nathan Lambert included this note about the importance of transparent training data in his detailed post about the release:
+
+
+
+In particular, we&#x27;re excited about the future of RL Zero research on Olmo 3 precisely because everything is open. Researchers can study the interaction between the reasoning traces we include at midtraining and the downstream model behavior (qualitative and quantitative).
+
+
+This helps answer questions that have plagued RLVR results on Qwen models, hinting at forms of data contamination particularly on math and reasoning benchmarks (see Shao, Rulin, et al. &quot;Spurious rewards: Rethinking training signals in rlvr.&quot; arXiv preprint arXiv:2506.10947 (2025). or Wu, Mingqi, et al. &quot;Reasoning or memorization? unreliable results of reinforcement learning due to data contamination.&quot; arXiv preprint arXiv:2507.10532 (2025).)
+
+
+
+I hope we see more competition in this space, including further models in the Olmo series. The improvements from Olmo 1 (in February 2024) and Olmo 2 (in March 2025) have been significant. I&#x27;m hoping that trend continues!
+Tags: ai, generative-ai, llms, interpretability, pelican-riding-a-bicycle, llm-reasoning, ai2, ai-ethics, llm-release, nathan-lambert, olmo</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4495,73 +4648,6 @@ I&#x27;d love to see how this behaves if you jack up the feature for the Golden 
     
 Via @tarngerine
 Tags: svg, ai, generative-ai, llms, anthropic, interpretability, pelican-riding-a-bicycle</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-10-24</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              claude_code_docs_map.md
-              <span class="post-metadata">(2 min | 464 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/24/claude-code-docs-map/#atom-everything>claude_code_docs_map.md
-itself it runs tool calls like these:
-
-In this case I&#x27;d asked it about its &quot;hooks&quot; feature.
-The claude_code_docs_map.md file is a neat Markdown index of all of their other documentation - the same pattern advocated by llms.txt. Claude Code can then fetch further documentation to help it answer your question.
-I intercepted the current Claude Code system prompt using this trick and sure enough it included a note about this URL:
-When the user directly asks about Claude Code (eg. &quot;can Claude Code do...&quot;, &quot;does Claude Code have...&quot;), or asks in second person (eg. &quot;are you able...&quot;, &quot;can you do...&quot;), or asks how to use a specific Claude Code feature (eg. implement a hook, or write a slash command), use the WebFetch tool to gather information to answer the question from Claude Code docs. The list of available docs is available at https://docs.claude.com/en/docs/claude-code/claude_code_docs_map.md.
-I wish other LLM products - including both ChatGPT and Claude.ai themselves - would implement a similar pattern. It&#x27;s infuriating how bad LLM tools are at answering questions about themselves, though unsurprising given that their model&#x27;s training data pre-dates the latest version of those tools.
-
-
-    
-Tags: markdown, ai, prompt-engineering, generative-ai, llms, anthropic, claude-code, system-prompts</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A Pragmatic Guide to Server-Sent Events (SSE) in ASP.NET Core
-              <span class="post-metadata">(23 min | 6985 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://roxeem.com/2025/10/24/a-pragmatic-guide-to-server-sent-events-sse-in-asp-net-core/>Learn how to implement Server-Sent Events (SSE) in ASP.NET Core. Compare SSE vs WebSockets &amp; SignalR, and apply scaling best practices.
-The post A Pragmatic Guide to Server-Sent Events (SSE) in ASP.NET Core first appeared on Roxeem.</a>
-            </div>
-            <!-- <p class="post-source">Roxeem</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Geoffrey Litt
-              <span class="post-metadata">(2 min | 451 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Oct/24/geoffrey-litt/#atom-everything>A lot of people say AI will make us all &quot;managers&quot; or &quot;editors&quot;...but I think this is a dangerously incomplete view!
-Personally, I&#x27;m trying to code like a surgeon.
-A surgeon isn&#x27;t a manager, they do the actual work! But their skills and time are highly leveraged with a support team that handles prep, secondary tasks, admin. The surgeon focuses on the important stuff they are uniquely good at. [...]
-It turns out there are a LOT of secondary tasks which AI agents are now good enough to help out with. Some things I&#x27;m finding useful to hand off these days:
-Before attempting a big task, write a guide to relevant areas of the codebase
-Spike out an attempt at a big change. Often I won&#x27;t use the result but I&#x27;ll review it as a sketch of where to go
-Fix typescript errors or bugs which have a clear specification
-Write documentation about what I&#x27;m building
-I often find it useful to run these secondary tasks async in the background -- while I&#x27;m eating lunch, or even literally overnight!
-When I sit down for a work session, I want to feel like a surgeon walking into a prepped operating room. Everything is ready for me to do what I&#x27;m good at.
-
-— Geoffrey Litt, channeling The Mythical Man-Month
-Tags: parallel-agents, coding-agents, geoffrey-litt, ai-assisted-programming, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
