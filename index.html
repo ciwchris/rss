@@ -25,6 +25,254 @@
 
   <ul>
     <li>
+      <time>2025-11-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Claude Opus 4.5, and why evaluating new LLMs is increasingly difficult
+              <span class="post-metadata">(4 min | 1228 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/24/claude-opus/#atom-everything>Anthropic released Claude Opus 4.5 this morning, which they call &quot;best model in the world for coding, agents, and computer use&quot;. This is their attempt to retake the crown for best coding model after significant challenges from OpenAI&#x27;s GPT-5.1-Codex-Max and Google&#x27;s Gemini 3, both released within the past week!
+
+The core characteristics of Opus 4.5 are a 200,000 token context (same as Sonnet), 64,000 token output limit (also the same as Sonnet), and a March 2025 &quot;reliable knowledge cutoff&quot; (Sonnet 4.5 is January, Haiku 4.5 is February).
+
+The pricing is a big relief: $5/million for input and $25/million for output. This is a lot cheaper than the previous Opus at $15/$75 and keeps it a little more competitive with the GPT-5.1 family ($1.25/$10) and Gemini 3 Pro ($2/$12, or $4/$18 for &gt;200,000 tokens). For comparison, Sonnet 4.5 is $3/$15 and Haiku 4.5 is $1/$5.
+
+The Key improvements in Opus 4.5 over Opus 4.1 document has a few more interesting details:
+
+
+Opus 4.5 has a new effort parameter defaults to high but can be set to medium or low for faster responses.
+
+There model supports enhanced computer use, specifically a zoom tool which you can provide to Opus 4.5 to allow it to request a zoomed in region of the screen to inspect.
+
+&quot;Thinking blocks from previous assistant turns are preserved in model context by default&quot; - apparently previous Anthropic models discarded those.
+
+
+
+I had access to a preview of Anthropic&#x27;s new model over the weekend. I spent a bunch of time with it in Claude Code, resulting in a new alpha release of sqlite-utils that included several large-scale refactorings - Opus 4.5 was responsible for most of the work across 20 commits, 39 files changed,  2,022 additions and 1,173 deletions in a two day period. Here&#x27;s the Claude Code transcript where I had it help implement one of the more complicated new features.
+
+It&#x27;s clearly an excellent new model, but I did run into a catch. My preview expired at 8pm on Sunday when I still had a few remaining issues in the milestone for the alpha. I switched back to Claude Sonnet 4.5 and... kept on working at the same pace I&#x27;d been achieving with the new model.
+
+With hindsight, production coding like this is a less effective way of evaluating the strengths of a new model than I had expected.
+
+I&#x27;m not saying the new model isn&#x27;t an improvement on Sonnet 4.5 - but I can&#x27;t say with confidence that the challenges I posed it were able to identify a meaningful difference in capabilities between the two.
+
+This represents a growing problem for me. My favorite moments in AI are when a new model gives me the ability to do something that simply wasn&#x27;t possible before. In the past these have felt a lot more obvious, but today it&#x27;s often very difficult to find concrete examples that differentiate the new generation of models from their predecessors.
+
+Google&#x27;s Nano Banana Pro image generation model was notable in that its ability to render usable infographics really does represent a task at which  previous models had been laughably incapable.
+
+The frontier LLMs are a lot harder to differentiate between. Benchmarks like SWE-bench Verified show models beating each other by single digit percentage point margins, but what does that actually equate to in real-world problems that I need to solve on a daily basis?
+
+And honestly, this is mainly on me. I&#x27;ve fallen behind on maintaining my own collection of tasks that are just beyond the capabilities of the frontier models. I used to have a whole bunch if these but they&#x27;ve fallen one-by-one and now I&#x27;m embarrassingly lacking in suitable challenges to help evaluate new models.
+
+I frequently advise people to stash away tasks that models fail at in their notes so they can try them against newer models later on - a tip I picked up from Ethan Mollick. I need to double-down on that advice myself!
+
+I&#x27;d love to see AI labs like Anthropic help address this challenge directly. I&#x27;d like to see new model releases accompanied by concrete examples of tasks they can solve that the previous generation of models from the same provider were unable to handle.
+
+&quot;Here&#x27;s an example prompt which failed on Sonnet 4.5 but succeeds on Opus 4.5&quot; would excite me a lot more than some single digit percent improvement on a benchmark with a name like MMLU or GPQA Diamond.
+
+In the meantime, I&#x27;m just gonna have to keep on getting them to draw pelicans riding bicycles. Here&#x27;s Opus 4.5 (on its default &quot;high&quot; effort level):
+
+
+
+It did significantly better on the new more detailed prompt:
+
+
+
+Still susceptible to prompt injection
+
+From the safety section of Anthropic&#x27;s announcement post:
+
+
+With Opus 4.5, we’ve made substantial progress in robustness against prompt injection attacks, which smuggle in deceptive instructions to fool the model into harmful behavior. Opus 4.5 is harder to trick with prompt injection than any other frontier model in the industry:
+
+
+
+
+On the one hand this looks great, it&#x27;s a clear improvement over previous models and the competition.
+
+What does the chart actually tell us though? It tells us that single attempts at prompt injection still work 1/20 times, and if an attacker can try ten different attacks that success rate goes up to 1/3!
+
+I still don&#x27;t think training models not to fall for prompt injection is the way forward here. We continue to need to design our applications under the assumption that a suitably motivated attacker will be able to find a way to trick the models.
+Tags: prompt-injection, generative-ai, llms, anthropic, claude, evals, llm-pricing, pelican-riding-a-bicycle, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 3.39
+              <span class="post-metadata">(2 min | 576 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/24/sqlite-utils-339/#atom-everything>sqlite-utils 3.39
+a bug in sqlite-utils concerning plugin installation - if you installed the package using uv tool install further attempts to install plugins with sqlite-utils install X would fail, because uv doesn&#x27;t bundle pip by default. I had the same bug with Datasette a while ago, turns out I forgot to apply the fix to sqlite-utils.
+Since I was pushing a new dot-release I decided to integrate some of the non-breaking changes from the 4.0 alpha I released last night.
+I tried to have Claude Code do the backporting for me:
+create a new branch called 3.x starting with the 3.38 tag, then consult 
+https://github.com/simonw/sqlite-utils/issues/688 and cherry-pick the commits it lists in the second comment, then review each of the links in the first comment and cherry-pick those as well. After each cherry-pick run the command &quot;just test&quot; to confirm the tests pass and fix them if they don&#x27;t. Look through the commit history on main since the 3.38 tag to help you with this task.
+This worked reasonably well - here&#x27;s the terminal transcript. It successfully argued me out of two of the larger changes which would have added more complexity than I want in a small dot-release like this.
+I still had to do a bunch of manual work to get everything up to scratch, which I carried out in this PR - including adding comments there and then telling Claude Code:
+Apply changes from the review on this PR https://github.com/simonw/sqlite-utils/pull/689
+Here&#x27;s the transcript from that.
+The release is now out with the following release notes:
+Fixed a bug with sqlite-utils install when the tool had been installed using uv. (#687)
+The --functions argument now optionally accepts a path to a Python file as an alternative to a string full of code, and can be specified multiple times - see Defining custom SQL functions. (#659)
+sqlite-utils now requires on Python 3.10 or higher.
+Tags: projects, sqlite, sqlite-utils, annotated-release-notes, uv, coding-agents, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude Opus 4.5 is in public preview for GitHub Copilot
+              <span class="post-metadata">(5 min | 1514 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-11-24-claude-opus-4-5-is-in-public-preview-for-github-copilot>Claude Opus 4.5, Anthropic’s latest model, is now rolling out in GitHub Copilot. In early testing, Claude Opus 4.5 surpassed internal coding benchmarks while cutting token usage in half, making…
+The post Claude Opus 4.5 is in public preview for GitHub Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 4.0a1 has several (minor) backwards incompatible changes
+              <span class="post-metadata">(5 min | 1355 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/24/sqlite-utils-40a1/#atom-everything>I released a new alpha version of sqlite-utils last night - the 128th release of that package since I started building it back in 2018.
+
+sqlite-utils is two things in one package: a Python library for conveniently creating and manipulating SQLite databases and a CLI tool for working with them in the terminal. Almost every feature provided by the package is available via both of those surfaces.
+
+This is hopefully the last alpha before a 4.0 stable release. I use semantic versioning for this library, so the 4.0 version number indicates that there are backward incompatible changes that may affect code written against the 3.x line.
+
+These changes are mostly very minor: I don&#x27;t want to break any existing code if I can avoid it. I made it all the way to version 3.38 before I had to ship a major release and I&#x27;m sad I couldn&#x27;t push that even further!
+
+Here are the annotated release notes for 4.0a1.
+
+
+
+
+Breaking change: The db.table(table_name) method now only works with tables. To access a SQL view use db.view(view_name) instead. (#657)
+
+
+
+This change is for type hint enthusiasts. The Python library used to encourage accessing both SQL tables and SQL views through the db[&quot;name_of_table_or_view&quot;] syntactic sugar - but tables and view have different interfaces since there&#x27;s no way to handle a .insert(row) on a SQLite view. If you want clean type hints for your code you can now use the db.table(table_name) and db.view(view_name) methods instead.
+
+
+
+The table.insert_all() and table.upsert_all() methods can now accept an iterator of lists or tuples as an alternative to dictionaries. The first item should be a list/tuple of column names. See Inserting data from a list or tuple iterator for details. (#672)
+
+
+
+A new feature, not a breaking change. I realized that supporting a stream of lists or tuples as an option for populating large tables would be a neat optimization over always dealing with dictionaries each of which duplicated the column names.
+
+I had the idea for this one while walking the dog and built the first prototype by prompting Claude Code for web on my phone. Here&#x27;s the prompt I used and the prototype report it created, which included a benchmark estimating how much of a performance boost could be had for different sizes of tables.
+
+
+
+
+Breaking change: The default floating point column type has been changed from FLOAT to REAL, which is the correct SQLite type for floating point values. This affects auto-detected columns when inserting data. (#645)
+
+
+
+I was horrified to discover a while ago that I&#x27;d been creating SQLite columns called FLOAT but the correct type to use was REAL! This change fixes that. Previously the fix was to ask for tables to be created in strict mode.
+
+
+
+Now uses pyproject.toml in place of setup.py for packaging. (#675)
+
+
+
+As part of this I also figured out recipes for using uv as a development environment for the package, which are now baked into the Justfile.
+
+
+
+Tables in the Python API now do a much better job of remembering the primary key and other schema details from when they were first created. (#655)
+
+
+
+This one is best explained in the issue.
+
+
+
+
+Breaking change: The table.convert() and sqlite-utils convert mechanisms no longer skip values that evaluate to False. Previously the --skip-false option was needed, this has been removed. (#542)
+
+
+
+Another change which I would have made earlier but, since it introduces a minor behavior change to an existing feature, I reserved it for the 4.0 release.
+
+
+
+
+Breaking change: Tables created by this library now wrap table and column names in &quot;double-quotes&quot; in the schema. Previously they would use [square-braces]. (#677)
+
+
+
+Back in 2018 when I started this project I was new to working in-depth with SQLite and incorrectly concluded that the correct way to create tables and columns named after reserved words was like this:
+
+create table [my table] (
+  [id] integer primary key,
+  [key] text
+)
+
+
+That turned out to be a non-standard SQL syntax which the SQLite documentation describes like this:
+
+
+A keyword enclosed in square brackets is an identifier. This is not standard SQL. This quoting mechanism is used by MS Access and SQL Server and is included in SQLite for compatibility.
+
+
+Unfortunately I baked it into the library early on and it&#x27;s been polluting the world with weirdly escaped table and column names ever since!
+
+I&#x27;ve finally fixed that, with the help of Claude Code which took on the mind-numbing task of updating hundreds of existing tests that asserted against the generated schemas.
+
+The above example table schema now looks like this:
+
+create table &quot;my table&quot; (
+  &quot;id&quot; integer primary key,
+  &quot;key&quot; text
+)
+
+
+This may seem like a pretty small change but I expect it to cause a fair amount of downstream pain purely in terms of updating tests that work against tables created by sqlite-utils!
+
+
+
+The --functions CLI argument now accepts a path to a Python file in addition to accepting a string full of Python code. It can also now be specified multiple times. (#659)
+
+
+
+I made this change first in LLM and decided to bring it to sqlite-utils for consistency between the two tools.
+
+
+
+
+Breaking change: Type detection is now the default behavior for the insert and upsert CLI commands when importing CSV or TSV data. Previously all columns were treated as TEXT unless the --detect-types flag was passed. Use the new --no-detect-types flag to restore the old behavior. The SQLITE_UTILS_DETECT_TYPES environment variable has been removed. (#679)
+
+
+
+One last minor ugliness that I waited for a major version bump to fix.
+
+Update: Now that the embargo has lifted I can reveal that a substantial amount of the work on this release was performed using a preview version of Anthropic&#x27;s new Claude Opus 4.5 model. Here&#x27;s the Claude Code transcript for the work to implement the ability to use an iterator over lists instead of dictionaries for bulk insert and upsert operations.
+Tags: projects, sqlite, sqlite-utils, annotated-release-notes, ai-assisted-programming, coding-agents, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-11-23</time>
 
       <section>
