@@ -25,9 +25,92 @@
 
   <ul>
     <li>
+      <time>2025-12-01</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              YouTube embeds fail with a 153 error
+              <span class="post-metadata">(2 min | 557 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/1/youtube-embed-153-error/#atom-everything>YouTube embeds fail with a 153 error
+this one) on this site. After some digging it turns out the culprit was this HTTP header, which Django&#x27;s SecurityMiddleware was sending by default:
+Referrer-Policy: same-origin
+
+YouTube&#x27;s embedded player terms documentation explains why this broke:
+API Clients that use the YouTube embedded player (including the YouTube IFrame Player API) must provide identification through the HTTP Referer request header. In some environments, the browser will automatically set HTTP Referer, and API Clients need only ensure they are not setting the Referrer-Policy in a way that suppresses the Referer value. YouTube recommends using strict-origin-when-cross-origin Referrer-Policy, which is already the default in many browsers.
+The fix, which I outsourced to GitHub Copilot agent since I was on my phone, was to add this to my settings.py:
+SECURE_REFERRER_POLICY &#x3D; &quot;strict-origin-when-cross-origin&quot;
+
+This explainer on the Chrome blog describes what the header means:
+strict-origin-when-cross-origin offers more privacy. With this policy, only the origin is sent in the Referer header of cross-origin requests.
+This prevents leaks of private data that may be accessible from other parts of the full URL such as the path and query string.
+Effectively it means that any time you follow a link from my site to somewhere else they&#x27;ll see this in the incoming HTTP headers even if you followed the link from a page other than my homepage:
+Referer: https://simonwillison.net/
+
+The previous header, same-origin, is explained by MDN here:
+Send the origin, path, and query string for same-origin requests. Don&#x27;t send the Referer header for cross-origin requests.
+This meant that previously traffic from my site wasn&#x27;t sending any HTTP referer at all!
+
+
+    
+Tags: django, http, privacy, youtube</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-11-30</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Felix Nolan
+              <span class="post-metadata">(1 min | 416 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/30/felix-nolan/#atom-everything>I am increasingly worried about AI in the video game space in general. [...] I&#x27;m not sure that the CEOs and the people making the decisions at these sorts of companies understand the difference between actual content and slop. [...]
+It&#x27;s exactly the same cryolab, it&#x27;s exactly the same robot factory place on all of these different planets. It&#x27;s like there&#x27;s so much to explore and nothing to find. [...]
+And what was in this contraband chest was a bunch of harvested organs. And I&#x27;m like, oh, wow. If this was an actual game that people cared about the making of, this would be something interesting - an interesting bit of environmental storytelling. [...] But it&#x27;s not, because it&#x27;s just a cold, heartless, procedurally generated slop. [...]
+Like, the point of having a giant open world to explore isn&#x27;t the size of the world or the amount of stuff in it. It&#x27;s that all of that stuff, however much there is, was made by someone for a reason.
+
+— Felix Nolan, TikTok about AI and procedural generation in video games
+Tags: ai-ethics, slop, game-design, tiktok, generative-ai, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              ChatGPT is three years old today
+              <span class="post-metadata">(2 min | 614 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Nov/30/chatgpt-third-birthday/#atom-everything>It&#x27;s ChatGPT&#x27;s third birthday today.
+It&#x27;s fun looking back at Sam Altman&#x27;s low key announcement thread from November 30th 2022:
+today we launched ChatGPT. try talking with it here: 
+chat.openai.com
+language interfaces are going to be a big deal, i think. talk to the computer (voice or text) and get what you want, for increasingly complex definitions of &quot;want&quot;!
+this is an early demo of what&#x27;s possible (still a lot of limitations--it&#x27;s very much a research release). [...]
+We later learned from Forbes in February 2023 that OpenAI nearly didn&#x27;t release it at all:
+Despite its viral success, ChatGPT did not impress employees inside OpenAI. “None of us were that enamored by it,” Brockman told Forbes. “None of us were like, ‘This is really useful.’” This past fall, Altman and company decided to shelve the chatbot to concentrate on domain-focused alternatives instead. But in November, after those alternatives failed to catch on internally—and as tools like Stable Diffusion caused the AI ecosystem to explode—OpenAI reversed course.
+MIT Technology Review&#x27;s March 3rd 2023 story The inside story of how ChatGPT was built from the people who made it provides an interesting oral history of those first few months:
+Jan Leike: It’s been overwhelming, honestly. We’ve been surprised, and we’ve been trying to catch up.
+John Schulman: I was checking Twitter a lot in the days after release, and there was this crazy period where the feed was filling up with ChatGPT screenshots. I expected it to be intuitive for people, and I expected it to gain a following, but I didn’t expect it to reach this level of mainstream popularity.
+Sandhini Agarwal: I think it was definitely a surprise for all of us how much people began using it. We work on these models so much, we forget how surprising they can be for the outside world sometimes.
+It&#x27;s since been described as one of the most successful consumer software launches of all time, signing up a million users in the first five days and reaching 800 million monthly users by November 2025, three years after that initial low-key launch.
+Tags: sam-altman, generative-ai, openai, chatgpt, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4893,79 +4976,6 @@ This makes a lot of sense to me. Most of my MCP usage with coding agents like Cl
     
 Via Hacker News
 Tags: ai, generative-ai, llms, ai-assisted-programming, model-context-protocol, coding-agents, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-11-01</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Claude Code Can Debug Low-level Cryptography
-              <span class="post-metadata">(1 min | 435 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/1/claude-code-cryptography/#atom-everything>Claude Code Can Debug Low-level Cryptography
-Filippo isn&#x27;t directly using Claude&#x27;s solutions to the bugs, but is finding it useful for tracking down the cause and saving him a solid amount of debugging work:
-Three out of three one-shot debugging hits with no help is extremely impressive. Importantly, there is no need to trust the LLM or review its output when its job is just saving me an hour or two by telling me where the bug is, for me to reason about it and fix it.
-Using coding agents in this way may represent a useful entrypoint for LLM-skeptics who wouldn&#x27;t dream of letting an autocomplete-machine writing code on their behalf.
-
-    
-Via Hacker News
-Tags: cryptography, go, security, ai, generative-ai, llms, ai-assisted-programming, filippo-valsorda, coding-agents, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              October 2025 sponsors-only newsletter
-              <span class="post-metadata">(1 min | 349 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/1/sponsors-only-newsletter/#atom-everything>I just hit send on the October edition of my sponsors-only monthly newsletter. If you are a sponsor (or if you start a sponsorship now) you can access a copy here. In the newsletter this month:
-Coding agents and &quot;vibe engineering&quot;
-Claude Code for web
-NVIDIA DGX Spark
-Claude Skills
-OpenAI DevDay and GitHub Universe
-Python 3.14
-October in Chinese Al model releases
-Miscellaneous extras
-Tools I&#x27;m using at the moment
-Here&#x27;s a copy of the September newsletter as a preview of what you&#x27;ll get. Pay $10/month to stay a month ahead of the free copy!
-Tags: newsletter</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Julian Andres Klode
-              <span class="post-metadata">(1 min | 325 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/1/debian/#atom-everything>I plan to introduce hard Rust dependencies and Rust code into
-APT, no earlier than May 2026. This extends at first to the
-Rust compiler and standard library, and the Sequoia ecosystem.
-In particular, our code to parse .deb, .ar, .tar, and the
-HTTP signature verification code would strongly benefit
-from memory safe languages and a stronger approach to
-unit testing.
-If you maintain a port without a working Rust toolchain,
-please ensure it has one within the next 6 months, or
-sunset the port.
-
-— Julian Andres Klode, debian-devel mailing list
-Tags: open-source, debian, rust, linux</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>

@@ -2,10 +2,92 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-11-30T21:09:24.191Z</updated>
+    <updated>2025-12-01T14:12:26.330Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[YouTube embeds fail with a 153 error]]></title>
+        <id>https://simonwillison.net/2025/Dec/1/youtube-embed-153-error/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/1/youtube-embed-153-error/#atom-everything"/>
+        <updated>2025-12-01T05:26:23.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/simonwillisonblog/issues/561">YouTube embeds fail with a 153 error</a></strong></p>
+I just fixed this bug on my blog. I was getting an annoying "Error 153: Video player configuration error" on some of the YouTube video embeds (like <a href="https://simonwillison.net/2024/Jun/21/search-based-rag/">this one</a>) on this site. After some digging it turns out the culprit was this HTTP header, which Django's SecurityMiddleware was <a href="https://docs.djangoproject.com/en/5.2/ref/middleware/#module-django.middleware.security">sending by default</a>:</p>
+<pre><code>Referrer-Policy: same-origin
+</code></pre>
+<p>YouTube's <a href="https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity">embedded player terms documentation</a> explains why this broke:</p>
+<blockquote>
+<p>API Clients that use the YouTube embedded player (including the YouTube IFrame Player API) must provide identification through the <code>HTTP Referer</code> request header. In some environments, the browser will automatically set <code>HTTP Referer</code>, and API Clients need only ensure they are not setting the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy"><code>Referrer-Policy</code></a> in a way that suppresses the <code>Referer</code> value. YouTube recommends using <code>strict-origin-when-cross-origin</code> Referrer-Policy, which is already the default in many browsers.</p>
+</blockquote>
+<p>The fix, which I <a href="https://github.com/simonw/simonwillisonblog/pull/562">outsourced to GitHub Copilot agent</a> since I was on my phone, was to add this to my <code>settings.py</code>:</p>
+<pre><code>SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+</code></pre>
+<p>This <a href="https://developer.chrome.com/blog/referrer-policy-new-chrome-default">explainer on the Chrome blog</a> describes what the header means:</p>
+<blockquote>
+<p><code>strict-origin-when-cross-origin</code> offers more privacy. With this policy, only the origin is sent in the Referer header of cross-origin requests.</p>
+<p>This prevents leaks of private data that may be accessible from other parts of the full URL such as the path and query string.</p>
+</blockquote>
+<p>Effectively it means that any time you follow a link from my site to somewhere else they'll see this in the incoming HTTP headers even if you followed the link from a page other than my homepage:</p>
+<pre><code>Referer: https://simonwillison.net/
+</code></pre>
+<p>The previous header, <code>same-origin</code>, is <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy">explained by MDN here</a>:</p>
+<blockquote>
+<p>Send the <a href="https://developer.mozilla.org/en-US/docs/Glossary/Origin">origin</a>, path, and query string for <a href="https://developer.mozilla.org/en-US/docs/Glossary/Same-origin_policy">same-origin</a> requests. Don't send the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referer"><code>Referer</code></a> header for cross-origin requests.</p>
+</blockquote>
+<p>This meant that previously traffic from my site wasn't sending any HTTP referer at all!
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/django">django</a>, <a href="https://simonwillison.net/tags/http">http</a>, <a href="https://simonwillison.net/tags/privacy">privacy</a>, <a href="https://simonwillison.net/tags/youtube">youtube</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting Felix Nolan]]></title>
+        <id>https://simonwillison.net/2025/Nov/30/felix-nolan/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/30/felix-nolan/#atom-everything"/>
+        <updated>2025-11-30T22:48:46.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.tiktok.com/@nobody.important000/video/7578381835051420935"><p>I am increasingly worried about AI in the video game space in general. [...] I'm not sure that the CEOs and the people making the decisions at these sorts of companies understand the difference between actual content and slop. [...]</p>
+<p>It's exactly the same cryolab, it's exactly the same robot factory place on all of these different planets. It's like there's <strong>so much to explore and nothing to find</strong>. [...]</p>
+<p>And what was in this contraband chest was a bunch of harvested organs. And I'm like, oh, wow. If this was an actual game that people cared about the making of, this would be something interesting - an interesting bit of environmental storytelling. [...] But it's not, because it's just a cold, heartless, procedurally generated slop. [...]</p>
+<p>Like, the point of having a giant open world to explore isn't the size of the world or the amount of stuff in it. It's that all of that stuff, however much there is, was made by someone for a reason.</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.tiktok.com/@nobody.important000/video/7578381835051420935">Felix Nolan</a>, TikTok about AI and procedural generation in video games</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/game-design">game-design</a>, <a href="https://simonwillison.net/tags/tiktok">tiktok</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ChatGPT is three years old today]]></title>
+        <id>https://simonwillison.net/2025/Nov/30/chatgpt-third-birthday/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Nov/30/chatgpt-third-birthday/#atom-everything"/>
+        <updated>2025-11-30T22:17:53.000Z</updated>
+        <summary type="html"><![CDATA[<p>It's ChatGPT's third birthday today.</p>
+<p>It's fun looking back at Sam Altman's <a href="https://twitter.com/sama/status/1598038818472759297">low key announcement thread</a> from November 30th 2022:</p>
+<blockquote>
+<p>today we launched ChatGPT. try talking with it here: </p>
+<p><a href="https://chat.openai.com/">chat.openai.com</a></p>
+<p>language interfaces are going to be a big deal, i think. talk to the computer (voice or text) and get what you want, for increasingly complex definitions of "want"!</p>
+<p>this is an early demo of what's possible (still a lot of limitations--it's very much a research release). [...]</p>
+</blockquote>
+<p>We later learned <a href="https://www.forbes.com/sites/kenrickcai/2023/02/02/things-you-didnt-know-chatgpt-stable-diffusion-generative-ai/">from Forbes in February 2023</a> that OpenAI nearly didn't release it at all:</p>
+<blockquote>
+<p>Despite its viral success, ChatGPT did not impress employees inside OpenAI. “None of us were that enamored by it,” Brockman told Forbes. “None of us were like, ‘This is really useful.’” This past fall, Altman and company decided to shelve the chatbot to concentrate on domain-focused alternatives instead. But in November, after those alternatives failed to catch on internally—and as tools like Stable Diffusion caused the AI ecosystem to explode—OpenAI reversed course.</p>
+</blockquote>
+<p>MIT Technology Review's March 3rd 2023 story <a href="https://www.technologyreview.com/2023/03/03/1069311/inside-story-oral-history-how-chatgpt-built-openai/">The inside story of how ChatGPT was built from the people who made it</a> provides an interesting oral history of those first few months:</p>
+<blockquote>
+<p><strong>Jan Leike</strong>: It’s been overwhelming, honestly. We’ve been surprised, and we’ve been trying to catch up.</p>
+<p><strong>John Schulman</strong>: I was checking Twitter a lot in the days after release, and there was this crazy period where the feed was filling up with ChatGPT screenshots. I expected it to be intuitive for people, and I expected it to gain a following, but I didn’t expect it to reach this level of mainstream popularity.</p>
+<p><strong>Sandhini Agarwal</strong>: I think it was definitely a surprise for all of us how much people began using it. We work on these models so much, we forget how surprising they can be for the outside world sometimes.</p>
+</blockquote>
+<p>It's since <a href="https://www.wbur.org/onpoint/2025/06/25/sam-altman-openai-keach-hagey">been described</a> as one of the most successful consumer software launches of all time, signing up a million users in the first five days and <a href="https://techcrunch.com/2025/10/06/sam-altman-says-chatgpt-has-hit-800m-weekly-active-users/">reaching 800 million monthly users</a> by November 2025, three years after that initial low-key launch.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/sam-altman">sam-altman</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Rodrigo Arias Mallo]]></title>
         <id>https://simonwillison.net/2025/Nov/30/rodrigo-arias-mallo/#atom-everything</id>
@@ -3794,73 +3876,6 @@ Useful, detailed guide from Shrivu Shankar, a Claude Code power user. Lots of ti
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Claude Code Can Debug Low-level Cryptography]]></title>
-        <id>https://simonwillison.net/2025/Nov/1/claude-code-cryptography/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/1/claude-code-cryptography/#atom-everything"/>
-        <updated>2025-11-01T22:26:43.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://words.filippo.io/claude-debugging/">Claude Code Can Debug Low-level Cryptography</a></strong></p>
-Go cryptography author Filippo Valsorda reports on some very positive results applying Claude Code to the challenge of implementing novel cryptography algorithms. After Claude was able to resolve a "fairly complex low-level bug" in fresh code he tried it against two other examples and got positive results both time.</p>
-<p>Filippo isn't directly using Claude's solutions to the bugs, but is finding it useful for tracking down the cause and saving him a solid amount of debugging work:</p>
-<blockquote>
-<p>Three out of three one-shot debugging hits with no help is <em>extremely impressive</em>. Importantly, there is no need to trust the LLM or review its output when its job is just saving me an hour or two by telling me where the bug is, for me to reason about it and fix it.</p>
-</blockquote>
-<p>Using coding agents in this way may represent a useful entrypoint for LLM-skeptics who wouldn't <em>dream</em> of letting an autocomplete-machine writing code on their behalf.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45784179">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/cryptography">cryptography</a>, <a href="https://simonwillison.net/tags/go">go</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/filippo-valsorda">filippo-valsorda</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[October 2025 sponsors-only newsletter]]></title>
-        <id>https://simonwillison.net/2025/Nov/1/sponsors-only-newsletter/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/1/sponsors-only-newsletter/#atom-everything"/>
-        <updated>2025-11-01T22:11:58.000Z</updated>
-        <summary type="html"><![CDATA[<p>I just hit send on the October edition of my <a href="https://github.com/sponsors/simonw/">sponsors-only monthly newsletter</a>. If you are a sponsor (or if you start a sponsorship now) you can <a href="https://github.com/simonw-private/monthly/blob/main/2025-10-october.md">access a copy here</a>. In the newsletter this month:</p>
-<ul>
-<li>Coding agents and "vibe engineering"</li>
-<li>Claude Code for web</li>
-<li>NVIDIA DGX Spark</li>
-<li>Claude Skills</li>
-<li>OpenAI DevDay and GitHub Universe</li>
-<li>Python 3.14</li>
-<li>October in Chinese Al model releases</li>
-<li>Miscellaneous extras</li>
-<li>Tools I'm using at the moment</li>
-</ul>
-<p>Here's <a href="https://gist.github.com/simonw/d6d4d86afc0d76767c63f23fc5137030">a copy of the September newsletter</a> as a preview of what you'll get. Pay $10/month to stay a month ahead of the free copy!</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/newsletter">newsletter</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Julian Andres Klode]]></title>
-        <id>https://simonwillison.net/2025/Nov/1/debian/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/1/debian/#atom-everything"/>
-        <updated>2025-11-01T17:34:34.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://lists.debian.org/debian-devel/2025/10/msg00285.html"><p>I plan to introduce hard Rust dependencies and Rust code into
-APT, no earlier than May 2026. This extends at first to the
-Rust compiler and standard library, and the Sequoia ecosystem.</p>
-<p>In particular, our code to parse .deb, .ar, .tar, and the
-HTTP signature verification code would strongly benefit
-from memory safe languages and a stronger approach to
-unit testing.</p>
-<p>If you maintain a port without a working Rust toolchain,
-please ensure it has one within the next 6 months, or
-sunset the port.</p></blockquote>
-<p class="cite">&mdash; <a href="https://lists.debian.org/debian-devel/2025/10/msg00285.html">Julian Andres Klode</a>, debian-devel mailing list</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/debian">debian</a>, <a href="https://simonwillison.net/tags/rust">rust</a>, <a href="https://simonwillison.net/tags/linux">linux</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
