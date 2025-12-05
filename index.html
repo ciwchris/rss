@@ -25,9 +25,146 @@
 
   <ul>
     <li>
+      <time>2025-12-05</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              TIL: Subtests in pytest 9.0.0+
+              <span class="post-metadata">(1 min | 395 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/5/til-pytest-subtests/#atom-everything>TIL: Subtests in pytest 9.0.0+
+in the release notes for pytest 9.0.0: subtests.
+I&#x27;m a big user of the pytest.mark.parametrize decorator - see Documentation unit tests from 2018 - so I thought it would be interesting to try out subtests and see if they&#x27;re a useful alternative.
+Short version: this parameterized test:
+@pytest.mark.parametrize(&quot;setting&quot;, app.SETTINGS)
+def test_settings_are_documented(settings_headings, setting):
+    assert setting.name in settings_headings
+Becomes this using subtests instead:
+def test_settings_are_documented(settings_headings, subtests):
+    for setting in app.SETTINGS:
+        with subtests.test(setting&#x3D;setting.name):
+            assert setting.name in settings_headings
+Why is this better? Two reasons:
+It appears to run a bit faster
+Subtests can be created programatically after running some setup code first
+I had Claude Code port several tests to the new pattern. I like it.
+
+
+    
+Tags: python, testing, ai, pytest, til, generative-ai, llms, ai-assisted-programming, coding-agents, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Thoughts on Go vs. Rust vs. Zig
+              <span class="post-metadata">(1 min | 318 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/5/go-vs-rust-vs-zig/#atom-everything>Thoughts on Go vs. Rust vs. Zig
+One thing that I hadn&#x27;t noticed before is that none of these three languages implement class-based OOP.
+
+    
+Via Hacker News
+Tags: go, object-oriented-programming, programming-languages, rust, zig</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              The Resonant Computing Manifesto
+              <span class="post-metadata">(2 min | 587 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/5/resonant-computing/#atom-everything>The Resonant Computing Manifesto
+The Big Interview event, this manifesto (of which I&#x27;m a founding signatory) pushes for a positive framework for thinking about building hyper-personalized AI-powered software.
+This part in particular resonates with me:
+For decades, technology has required standardized solutions to complex human problems. In order to scale software, you had to build for the average user, sanding away the edge cases. In many ways, this is why our digital world has come to resemble the sterile, deadening architecture that Alexander spent his career pushing back against.
+This is where AI provides a missing puzzle piece. Software can now respond fluidly to the context and particularity of each human—at scale. One-size-fits-all is no longer a technological or economic necessity. Where once our digital environments inevitably shaped us against our will, we can now build technology that adaptively shapes itself in service of our individual and collective aspirations.
+There are echos here of the Malleable software concept from Ink &amp; Switch.
+The manifesto proposes five principles for building resonant software:  Keeping data private and under personal stewardship, building software that&#x27;s dedicated to the user&#x27;s interests, ensuring plural and distributed control rather than platform monopolies, making tools adaptable to individual context, and designing for prosocial membership of shared spaces.
+Steven Levy talked to the manifesto&#x27;s lead instigator Alex Komoroske and provides some extra flavor in It&#x27;s Time to Save Silicon Valley From Itself:
+By 2025, it was clear to Komoroske and his cohort that Big Tech had strayed far from its early idealistic principles. As Silicon Valley began to align itself more strongly with political interests, the idea emerged within the group to lay out a different course, and a casual suggestion led to a process where some in the group began drafting what became today’s manifesto. They chose the word “resonant” to describe their vision mainly because of its positive connotations. As the document explains, “It’s the experience of encountering something that speaks to our deeper values.”
+Tags: ai, alex-komoroske</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-12-04</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Django 6.0 released
+              <span class="post-metadata">(2 min | 550 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/4/django-6/#atom-everything>Django 6.0 released
+flurry of neat features, but the two that most caught my eye are background workers and template partials.
+Background workers started out as DEP (Django Enhancement Proposal) 14, proposed and shepherded by Jake Howard. Jake prototyped the feature in django-tasks and wrote this extensive background on the feature when it landed in core just in time for the 6.0 feature freeze back in September.
+Kevin Wetzels published a useful first look at Django&#x27;s background tasks based on the earlier RC, including notes on building a custom database-backed worker implementation.
+Template Partials were implemented as a Google Summer of Code project by Farhan Ali Raza. I really like the design of this. Here&#x27;s an example from the documentation showing the neat inline attribute which lets you both use and define a partial at the same time:
+{# Define and render immediately. #}
+{% partialdef user-info inline %}
+    &lt;div id&#x3D;&quot;user-info-{{ user.username }}&quot;&gt;
+        &lt;h3&gt;{{ user.name }}&lt;/h3&gt;
+        &lt;p&gt;{{ user.bio }}&lt;/p&gt;
+    &lt;/div&gt;
+{% endpartialdef %}
+
+{# Other page content here. #}
+
+{# Reuse later elsewhere in the template. #}
+&lt;section class&#x3D;&quot;featured-authors&quot;&gt;
+    &lt;h2&gt;Featured Authors&lt;/h2&gt;
+    {% for user in featured %}
+        {% partial user-info %}
+    {% endfor %}
+&lt;/section&gt;
+
+
+You can also render just a named partial from a template directly in Python code like this:
+return render(request, &quot;authors.html#user-info&quot;, {&quot;user&quot;: user})
+I&#x27;m looking forward to trying this out in combination with HTMX.
+I asked Claude Code to dig around in my blog&#x27;s source code looking for places that could benefit from a template partial. Here&#x27;s the resulting commit that uses them to de-duplicate the display of dates and tags from pages that list multiple types of content, such as my tag pages.
+
+
+    
+Tags: django, python, ai, generative-ai, llms, ai-assisted-programming, htmx, coding-agents, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Text a community college librarian
+              <span class="post-metadata">(1 min | 425 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/4/text-a-librarian/#atom-everything>I take tap dance evening classes at the College of San Mateo community college. A neat bonus of this is that I&#x27;m now officially a student of that college, which gives me access to their library... including the ability to send text messages to the librarians asking for help with research.
+I recently wrote about Coutellerie Nontronnaise on my Niche Museums website, a historic knife manufactory in Nontron, France. They had a certificate on the wall claiming that they had previously held a Guinness World Record for the smallest folding knife, but I had been unable to track down any supporting evidence.
+I posed this as a text message challenge to the librarians, and they tracked down the exact page from the 1989 &quot;Le livre guinness des records&quot; describing the record:
+Le plus petit
+Les établissements Nontronnaise ont réalisé un couteau de 10 mm de long, pour le Festival d’Aubigny, Vendée, qui s’est déroulé du 4 au 5 juillet 1987.
+Thank you, Maria at the CSM library!
+Tags: research, museums, libraries</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -57,6 +194,19 @@ Kagi Assistant
 We&#x27;ve made the …</a>
             </div>
             <!-- <p class="post-source">Activity in the release-notes tag</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Actions workflow dispatch workflows now support 25 inputs
+              <span class="post-metadata">(4 min | 1256 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-12-04-actions-workflow-dispatch-workflows-now-support-25-inputs>You can now use up to 25 inputs on workflows triggered via the workflow_dispatch trigger. The previous limit was 10 which was challenging for the community. This new limit gives…
+The post Actions workflow dispatch workflows now support 25 inputs appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
       <article>
@@ -4584,120 +4734,6 @@ Let me know if your research agents come back with anything interesting!
 Tags: ai, webassembly, generative-ai, llms, ai-assisted-programming, slop, ai-agents, coding-agents, claude-code, jules, codex-cli</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-11-05</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Open redirect endpoint in Datasette prior to 0.65.2 and 1.0a21
-              <span class="post-metadata">(1 min | 386 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/5/open-redirect-datasette/#atom-everything>Open redirect endpoint in Datasette prior to 0.65.2 and 1.0a21
-the same open redirect issue with a fix by James Jefferies.
-Datasette 0.65.2 fixes the bug and also adds Python 3.14 support and a datasette publish cloudrun fix.
-Datasette 1.0a21 also has that Cloud Run fix and two other small new features:
-New datasette --get /path --headers option for inspecting the headers returned by a path. (#2578)
-New datasette.client.get(..., skip_permission_checks&#x3D;True) parameter to bypass permission checks when making requests using the internal client. (#2583)
-I decided to include the Cloud Run deployment fix so anyone with Datasette instances deployed to Cloud Run can update them with the new patched versions.
-
-
-    
-Tags: security, datasette, cloudrun, annotated-release-notes</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Removing XSLT for a more secure browser
-              <span class="post-metadata">(1 min | 413 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/5/removing-xslt/#atom-everything>Removing XSLT for a more secure browser
-back in August, it looks like it&#x27;s now official:
-Chrome intends to deprecate and remove XSLT from the browser. [...] We intend to remove support from version 155 (November 17, 2026). The Firefox and WebKit projects have also indicated plans to remove XSLT from their browser engines. [...]
-The continued inclusion of XSLT 1.0 in web browsers presents a significant and unnecessary security risk. The underlying libraries that process these transformations, such as libxslt (used by Chromium browsers), are complex, aging C/C++ codebases. This type of code is notoriously susceptible to memory safety vulnerabilities like buffer overflows, which can lead to arbitrary code execution.
-I mostly encounter XSLT on people&#x27;s Atom/RSS feeds, converting those to a more readable format in case someone should navigate directly to that link. Jake Archibald shared an alternative solution to that back in September.
-
-    
-Via Hacker News
-Tags: browsers, chrome, security, web-standards, xml, xslt, jake-archibald</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The legacy Copilot usage report CSV is no longer available
-              <span class="post-metadata">(5 min | 1455 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-05-the-legacy-copilot-usage-report-csv-is-no-longer-available>We’ve retired the legacy Copilot usage report CSV that was previously available to organization administrators under Copilot access settings. Three months ago, the legacy usage report was deprecated in favor…
-The post The legacy Copilot usage report CSV is no longer available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              enterprise: qualifier is now generally available in GitHub code search
-              <span class="post-metadata">(4 min | 1330 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-05-enterprise-qualifier-is-now-generally-available-in-github-code-search>We’ve added a new enterprise: qualifier to GitHub code search, making it easier to search across all organizations in your enterprise. Previously, searching across multiple organizations required manually combining many…
-The post enterprise: qualifier is now generally available in GitHub code search appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot coding agent supports organization custom instructions
-              <span class="post-metadata">(4 min | 1313 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-05-copilot-coding-agent-supports-organization-custom-instructions>Copilot coding agent, our asynchronous, autonomous background agent, now supports organization custom instructions. Custom instructions allow you to guide Copilot on how to understand your project as well as how…
-The post Copilot coding agent supports organization custom instructions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot coding agent now supports pull request templates
-              <span class="post-metadata">(4 min | 1317 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-05-copilot-coding-agent-now-supports-pull-request-templates>Copilot coding agent is our asynchronous, autonomous background agent. When Copilot coding agent finishes its work, it updates the body of its pull request with a summary of changes. Now,…
-The post Copilot coding agent now supports pull request templates appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              npm security update: Classic token creation disabled and granular token changes
-              <span class="post-metadata">(6 min | 1780 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-05-npm-security-update-classic-token-creation-disabled-and-granular-token-changes>Today marks another milestone in our ongoing effort to strengthen npm’s security. As previously announced, we’re implementing the first set of changes to npm’s token management system. What’s changing today…
-The post npm security update: Classic token creation disabled and granular token changes appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 

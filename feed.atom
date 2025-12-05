@@ -2,10 +2,141 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-12-04T21:10:45.136Z</updated>
+    <updated>2025-12-05T14:11:44.224Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[TIL: Subtests in pytest 9.0.0+]]></title>
+        <id>https://simonwillison.net/2025/Dec/5/til-pytest-subtests/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/5/til-pytest-subtests/#atom-everything"/>
+        <updated>2025-12-05T06:03:29.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://til.simonwillison.net/pytest/subtests">TIL: Subtests in pytest 9.0.0+</a></strong></p>
+I spotted an interesting new feature <a href="https://docs.pytest.org/en/stable/changelog.html#pytest-9-0-0-2025-11-05">in the release notes for pytest 9.0.0</a>: <a href="https://docs.pytest.org/en/stable/how-to/subtests.html#subtests">subtests</a>.</p>
+<p>I'm a <em>big</em> user of the <a href="https://docs.pytest.org/en/stable/example/parametrize.html">pytest.mark.parametrize</a> decorator - see <a href="https://simonwillison.net/2018/Jul/28/documentation-unit-tests/">Documentation unit tests</a> from 2018 - so I thought it would be interesting to try out subtests and see if they're a useful alternative.</p>
+<p>Short version: this parameterized test:</p>
+<pre><span class="pl-en">@<span class="pl-s1">pytest</span>.<span class="pl-c1">mark</span>.<span class="pl-c1">parametrize</span>(<span class="pl-s">"setting"</span>, <span class="pl-s1">app</span>.<span class="pl-c1">SETTINGS</span>)</span>
+<span class="pl-k">def</span> <span class="pl-en">test_settings_are_documented</span>(<span class="pl-s1">settings_headings</span>, <span class="pl-s1">setting</span>):
+    <span class="pl-k">assert</span> <span class="pl-s1">setting</span>.<span class="pl-c1">name</span> <span class="pl-c1">in</span> <span class="pl-s1">settings_headings</span></pre>
+<p>Becomes this using subtests instead:</p>
+<pre><span class="pl-k">def</span> <span class="pl-en">test_settings_are_documented</span>(<span class="pl-s1">settings_headings</span>, <span class="pl-s1">subtests</span>):
+    <span class="pl-k">for</span> <span class="pl-s1">setting</span> <span class="pl-c1">in</span> <span class="pl-s1">app</span>.<span class="pl-c1">SETTINGS</span>:
+        <span class="pl-k">with</span> <span class="pl-s1">subtests</span>.<span class="pl-c1">test</span>(<span class="pl-s1">setting</span><span class="pl-c1">=</span><span class="pl-s1">setting</span>.<span class="pl-c1">name</span>):
+            <span class="pl-k">assert</span> <span class="pl-s1">setting</span>.<span class="pl-c1">name</span> <span class="pl-c1">in</span> <span class="pl-s1">settings_headings</span></pre>
+<p>Why is this better? Two reasons:</p>
+<ol>
+<li>It appears to run a bit faster</li>
+<li>Subtests can be created programatically after running some setup code first</li>
+</ol>
+<p>I <a href="https://gistpreview.github.io/?0487e5bb12bcbed850790a6324788e1b">had Claude Code</a> port <a href="https://github.com/simonw/datasette/pull/2609/files">several tests</a> to the new pattern. I like it.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/testing">testing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/pytest">pytest</a>, <a href="https://simonwillison.net/tags/til">til</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Thoughts on Go vs. Rust vs. Zig]]></title>
+        <id>https://simonwillison.net/2025/Dec/5/go-vs-rust-vs-zig/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/5/go-vs-rust-vs-zig/#atom-everything"/>
+        <updated>2025-12-05T04:28:05.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://sinclairtarget.com/blog/2025/08/thoughts-on-go-vs.-rust-vs.-zig/">Thoughts on Go vs. Rust vs. Zig</a></strong></p>
+Thoughtful commentary on Go, Rust, and Zig by Sinclair Target. I haven't seen a single comparison that covers all three before and I learned a lot from reading this.</p>
+<p>One thing that I hadn't noticed before is that none of these three languages implement class-based OOP.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=46153466">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/go">go</a>, <a href="https://simonwillison.net/tags/object-oriented-programming">object-oriented-programming</a>, <a href="https://simonwillison.net/tags/programming-languages">programming-languages</a>, <a href="https://simonwillison.net/tags/rust">rust</a>, <a href="https://simonwillison.net/tags/zig">zig</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The Resonant Computing Manifesto]]></title>
+        <id>https://simonwillison.net/2025/Dec/5/resonant-computing/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/5/resonant-computing/#atom-everything"/>
+        <updated>2025-12-05T01:19:26.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://resonantcomputing.org/">The Resonant Computing Manifesto</a></strong></p>
+Launched today at WIRED’s <a href="https://events.wired.com/big-interview-2025">The Big Interview</a> event, this manifesto (of which I'm a founding signatory) pushes for a positive framework for thinking about building hyper-personalized AI-powered software.</p>
+<p>This part in particular resonates with me:</p>
+<blockquote>
+<p>For decades, technology has required standardized solutions to complex human problems. In order to scale software, you had to build for the average user, sanding away the edge cases. In many ways, this is why our digital world has come to resemble the sterile, deadening architecture that Alexander spent his career pushing back against.</p>
+<p>This is where AI provides a missing puzzle piece. Software can now respond fluidly to the context and particularity of each human—at scale. One-size-fits-all is no longer a technological or economic necessity. Where once our digital environments inevitably shaped us against our will, we can now build technology that <em>adaptively shapes itself</em> in service of our individual and collective aspirations.</p>
+</blockquote>
+<p>There are echos here of the <a href="https://www.inkandswitch.com/essay/malleable-software/">Malleable software concept</a> from Ink &amp; Switch.</p>
+<p>The manifesto proposes five principles for building resonant software:  Keeping data <strong>private</strong> and under personal stewardship, building software that's <strong>dedicated</strong> to the user's interests, ensuring <strong>plural</strong> and distributed control rather than platform monopolies, making tools <strong>adaptable</strong> to individual context, and designing for <strong>prosocial</strong> membership of shared spaces.</p>
+<p>Steven Levy talked to the manifesto's lead instigator Alex Komoroske and provides some extra flavor in <a href="https://www.wired.com/story/big-interview-event-techdirt-mike-masnick-common-tools-alex-komoroske/">It's Time to Save Silicon Valley From Itself</a>:</p>
+<blockquote>
+<p>By 2025, it was clear to Komoroske and his cohort that Big Tech had strayed far from its early idealistic principles. As Silicon Valley began to align itself more strongly with political interests, the idea emerged within the group to lay out a different course, and a casual suggestion led to a process where some in the group began drafting what became today’s manifesto. They chose the word “resonant” to describe their vision mainly because of its positive connotations. As the document explains, “It’s the experience of encountering something that speaks to our deeper values.”</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/alex-komoroske">alex-komoroske</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Django 6.0 released]]></title>
+        <id>https://simonwillison.net/2025/Dec/4/django-6/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/4/django-6/#atom-everything"/>
+        <updated>2025-12-04T23:57:34.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.djangoproject.com/weblog/2025/dec/03/django-60-released/">Django 6.0 released</a></strong></p>
+Django 6.0 includes a <a href="https://docs.djangoproject.com/en/6.0/releases/6.0/">flurry of neat features</a>, but the two that most caught my eye are <strong>background workers</strong> and <strong>template partials</strong>.</p>
+<p>Background workers started out as <a href="https://github.com/django/deps/blob/main/accepted/0014-background-workers.rst">DEP (Django Enhancement Proposal) 14</a>, proposed and shepherded by Jake Howard. Jake prototyped the feature in <a href="https://github.com/RealOrangeOne/django-tasks">django-tasks</a> and wrote <a href="https://theorangeone.net/posts/django-dot-tasks-exists/">this extensive background on the feature</a> when it landed in core just in time for the 6.0 feature freeze back in September.</p>
+<p>Kevin Wetzels published a useful <a href="https://roam.be/notes/2025/a-first-look-at-djangos-new-background-tasks/">first look at Django's background tasks</a> based on the earlier RC, including notes on building a custom database-backed worker implementation.</p>
+<p><a href="https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials">Template Partials</a> were implemented as a Google Summer of Code project by Farhan Ali Raza. I really like the design of this. Here's an example from <a href="https://docs.djangoproject.com/en/6.0/ref/templates/language/#inline-partials">the documentation</a> showing the neat <code>inline</code> attribute which lets you both use and define a partial at the same time:</p>
+<div class="highlight highlight-text-html-django"><pre><span class="pl-c">{# Define and render immediately. #}</span>
+<span class="pl-e">{%</span> <span class="pl-s">partialdef</span> <span class="pl-s">user</span>-<span class="pl-s">info</span> <span class="pl-s">inline</span> <span class="pl-e">%}</span>
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>user-info-{{ user.username }}<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">h3</span>&gt;{{ user.name }}&lt;/<span class="pl-ent">h3</span>&gt;
+        &lt;<span class="pl-ent">p</span>&gt;{{ user.bio }}&lt;/<span class="pl-ent">p</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+<span class="pl-e">{%</span> <span class="pl-s">endpartialdef</span> <span class="pl-e">%}</span>
+
+<span class="pl-c">{# Other page content here. #}</span>
+
+<span class="pl-c">{# Reuse later elsewhere in the template. #}</span>
+&lt;<span class="pl-ent">section</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>featured-authors<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">h2</span>&gt;Featured Authors&lt;/<span class="pl-ent">h2</span>&gt;
+    <span class="pl-e">{%</span> <span class="pl-k">for</span> <span class="pl-s">user</span> <span class="pl-k">in</span> <span class="pl-s">featured</span> <span class="pl-e">%}</span>
+        <span class="pl-e">{%</span> <span class="pl-s">partial</span> <span class="pl-s">user</span>-<span class="pl-s">info</span> <span class="pl-e">%}</span>
+    <span class="pl-e">{%</span> <span class="pl-k">endfor</span> <span class="pl-e">%}</span>
+&lt;/<span class="pl-ent">section</span>&gt;</pre></div>
+
+<p>You can also render just a named partial from a template directly in Python code like this:</p>
+<pre><span class="pl-k">return</span> <span class="pl-en">render</span>(<span class="pl-s1">request</span>, <span class="pl-s">"authors.html#user-info"</span>, {<span class="pl-s">"user"</span>: <span class="pl-s1">user</span>})</pre>
+
+<p>I'm looking forward to trying this out in combination with <a href="https://htmx.org">HTMX</a>.</p>
+<p>I asked <a href="https://gistpreview.github.io/?8db0c1a50aad95d5bc5b5b7d66a503ab">Claude Code to dig around in my blog's source code</a> looking for places that could benefit from a template partial. Here's <a href="https://github.com/simonw/simonwillisonblog/commit/9b1a6b99140b43e869ada3348ce4d4407e9a06ba">the resulting commit</a> that uses them to de-duplicate the display of dates and tags from pages that list multiple types of content, such as <a href="https://simonwillison.net/tags/django/">my tag pages</a>.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/django">django</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/htmx">htmx</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Text a community college librarian]]></title>
+        <id>https://simonwillison.net/2025/Dec/4/text-a-librarian/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/4/text-a-librarian/#atom-everything"/>
+        <updated>2025-12-04T23:52:21.000Z</updated>
+        <summary type="html"><![CDATA[<p>I take tap dance evening classes at the <a href="https://collegeofsanmateo.edu/">College of San Mateo</a> community college. A neat bonus of this is that I'm now officially a student of that college, which gives me access to their library... including the ability to send text messages to the librarians asking for help with research.</p>
+<p>I recently wrote about <a href="https://www.niche-museums.com/114">Coutellerie Nontronnaise</a> on my Niche Museums website, a historic knife manufactory in Nontron, France. They had <a href="https://niche-museums.imgix.net/Coutellerie-Nontronnaise-12.jpeg?w=1200&amp;auto=compress">a certificate on the wall</a> claiming that they had previously held a Guinness World Record for the smallest folding knife, but I had been unable to track down any supporting evidence.</p>
+<p>I posed this as a text message challenge to the librarians, and they tracked down <a href="https://archive.org/details/lelivreguinnessd0000na/mode/2up?q=nontronnaise">the exact page</a> from the 1989 "Le livre guinness des records" describing the record:</p>
+<blockquote>
+<p><em>Le plus petit</em></p>
+<p>Les établissements Nontronnaise ont réalisé un couteau de 10 mm de long, pour le Festival d’Aubigny, Vendée, qui s’est déroulé du 4 au 5 juillet 1987.</p>
+</blockquote>
+<p>Thank you, Maria at the CSM library!</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/research">research</a>, <a href="https://simonwillison.net/tags/museums">museums</a>, <a href="https://simonwillison.net/tags/libraries">libraries</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Dec 4th, 2025 - New Kagi Search companions and quality-of-life improvements]]></title>
         <id>https://kagifeedback.org/d/9164-dec-4th-2025-new-kagi-search-companions-and-quality-of-life-improvements/1</id>
@@ -33,6 +164,17 @@ Kagi Assistant
 We've made the …]]></summary>
         <author>
             <name>Activity in the release-notes tag</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Actions workflow dispatch workflows now support 25 inputs]]></title>
+        <id>https://github.blog/changelog/2025-12-04-actions-workflow-dispatch-workflows-now-support-25-inputs</id>
+        <link href="https://github.blog/changelog/2025-12-04-actions-workflow-dispatch-workflows-now-support-25-inputs"/>
+        <updated>2025-12-04T19:58:47.000Z</updated>
+        <summary type="html"><![CDATA[You can now use up to 25 inputs on workflows triggered via the workflow_dispatch trigger. The previous limit was 10 which was challenging for the community. This new limit gives…
+The post Actions workflow dispatch workflows now support 25 inputs appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
         </author>
     </entry>
     <entry>
@@ -3621,105 +3763,6 @@ The post Improved onboarding flow for GitHub Projects appeared first on The GitH
         <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/webassembly">webassembly</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/jules">jules</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Open redirect endpoint in Datasette prior to 0.65.2 and 1.0a21]]></title>
-        <id>https://simonwillison.net/2025/Nov/5/open-redirect-datasette/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/5/open-redirect-datasette/#atom-everything"/>
-        <updated>2025-11-05T23:11:17.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/datasette/security/advisories/GHSA-w832-gg5g-x44m">Open redirect endpoint in Datasette prior to 0.65.2 and 1.0a21</a></strong></p>
-This GitHub security advisory covers two new releases of Datasette that I shipped today, both addressing <a href="https://github.com/simonw/datasette/issues/2429">the same open redirect issue</a> with a fix by <a href="https://github.com/jamesjefferies">James Jefferies</a>.</p>
-<p><strong><a href="https://docs.datasette.io/en/stable/changelog.html#v0-65-2">Datasette 0.65.2</a></strong> fixes the bug and also adds Python 3.14 support and a <code>datasette publish cloudrun</code> fix.</p>
-<p><strong><a href="https://docs.datasette.io/en/latest/changelog.html#a21-2025-11-05">Datasette 1.0a21</a></strong> also has that Cloud Run fix and two other small new features:</p>
-<blockquote>
-<ul>
-<li>New <code>datasette --get /path --headers</code> option for inspecting the headers returned by a path. (<a href="https://github.com/simonw/datasette/issues/2578">#2578</a>)</li>
-<li>New <code>datasette.client.get(..., skip_permission_checks=True)</code> parameter to bypass permission checks when making requests using the internal client. (<a href="https://github.com/simonw/datasette/issues/2583">#2583</a>)</li>
-</ul>
-</blockquote>
-<p>I decided to include the Cloud Run deployment fix so anyone with Datasette instances deployed to Cloud Run can update them with the new patched versions.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/cloudrun">cloudrun</a>, <a href="https://simonwillison.net/tags/annotated-release-notes">annotated-release-notes</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Removing XSLT for a more secure browser]]></title>
-        <id>https://simonwillison.net/2025/Nov/5/removing-xslt/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/5/removing-xslt/#atom-everything"/>
-        <updated>2025-11-05T22:24:57.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://developer.chrome.com/docs/web-platform/deprecating-xslt">Removing XSLT for a more secure browser</a></strong></p>
-Previously discussed <a href="https://simonwillison.net/2025/Aug/19/xslt/">back in August</a>, it looks like it's now official:</p>
-<blockquote>
-<p>Chrome intends to deprecate and remove XSLT from the browser. [...] We intend to remove support from version 155 (November 17, 2026). The <a href="https://github.com/mozilla/standards-positions/issues/1287#issuecomment-3227145793">Firefox</a> and <a href="https://github.com/whatwg/html/issues/11523#issuecomment-3149280766">WebKit</a> projects have also indicated plans to remove XSLT from their browser engines. [...]</p>
-<p>The continued inclusion of XSLT 1.0 in web browsers presents a significant and unnecessary security risk. The underlying libraries that process these transformations, such as <a href="https://github.com/GNOME/libxslt">libxslt</a> (used by Chromium browsers), are complex, aging C/C++ codebases. This type of code is notoriously susceptible to memory safety vulnerabilities like buffer overflows, which can lead to arbitrary code execution.</p>
-</blockquote>
-<p>I mostly encounter XSLT on people's Atom/RSS feeds, converting those to a more readable format in case someone should navigate directly to that link. Jake Archibald <a href="https://jakearchibald.com/2025/making-xml-human-readable-without-xslt/">shared an alternative solution to that</a> back in September.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45823059">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/browsers">browsers</a>, <a href="https://simonwillison.net/tags/chrome">chrome</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/web-standards">web-standards</a>, <a href="https://simonwillison.net/tags/xml">xml</a>, <a href="https://simonwillison.net/tags/xslt">xslt</a>, <a href="https://simonwillison.net/tags/jake-archibald">jake-archibald</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[The legacy Copilot usage report CSV is no longer available]]></title>
-        <id>https://github.blog/changelog/2025-11-05-the-legacy-copilot-usage-report-csv-is-no-longer-available</id>
-        <link href="https://github.blog/changelog/2025-11-05-the-legacy-copilot-usage-report-csv-is-no-longer-available"/>
-        <updated>2025-11-05T20:25:52.000Z</updated>
-        <summary type="html"><![CDATA[We’ve retired the legacy Copilot usage report CSV that was previously available to organization administrators under Copilot access settings. Three months ago, the legacy usage report was deprecated in favor…
-The post The legacy Copilot usage report CSV is no longer available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[enterprise: qualifier is now generally available in GitHub code search]]></title>
-        <id>https://github.blog/changelog/2025-11-05-enterprise-qualifier-is-now-generally-available-in-github-code-search</id>
-        <link href="https://github.blog/changelog/2025-11-05-enterprise-qualifier-is-now-generally-available-in-github-code-search"/>
-        <updated>2025-11-05T19:49:17.000Z</updated>
-        <summary type="html"><![CDATA[We’ve added a new enterprise: qualifier to GitHub code search, making it easier to search across all organizations in your enterprise. Previously, searching across multiple organizations required manually combining many…
-The post enterprise: qualifier is now generally available in GitHub code search appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Copilot coding agent supports organization custom instructions]]></title>
-        <id>https://github.blog/changelog/2025-11-05-copilot-coding-agent-supports-organization-custom-instructions</id>
-        <link href="https://github.blog/changelog/2025-11-05-copilot-coding-agent-supports-organization-custom-instructions"/>
-        <updated>2025-11-05T18:19:03.000Z</updated>
-        <summary type="html"><![CDATA[Copilot coding agent, our asynchronous, autonomous background agent, now supports organization custom instructions. Custom instructions allow you to guide Copilot on how to understand your project as well as how…
-The post Copilot coding agent supports organization custom instructions appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Copilot coding agent now supports pull request templates]]></title>
-        <id>https://github.blog/changelog/2025-11-05-copilot-coding-agent-now-supports-pull-request-templates</id>
-        <link href="https://github.blog/changelog/2025-11-05-copilot-coding-agent-now-supports-pull-request-templates"/>
-        <updated>2025-11-05T18:18:54.000Z</updated>
-        <summary type="html"><![CDATA[Copilot coding agent is our asynchronous, autonomous background agent. When Copilot coding agent finishes its work, it updates the body of its pull request with a summary of changes. Now,…
-The post Copilot coding agent now supports pull request templates appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[npm security update: Classic token creation disabled and granular token changes]]></title>
-        <id>https://github.blog/changelog/2025-11-05-npm-security-update-classic-token-creation-disabled-and-granular-token-changes</id>
-        <link href="https://github.blog/changelog/2025-11-05-npm-security-update-classic-token-creation-disabled-and-granular-token-changes"/>
-        <updated>2025-11-05T15:06:07.000Z</updated>
-        <summary type="html"><![CDATA[Today marks another milestone in our ongoing effort to strengthen npm’s security. As previously announced, we’re implementing the first set of changes to npm’s token management system. What’s changing today…
-The post npm security update: Classic token creation disabled and granular token changes appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
 </feed>
