@@ -504,16 +504,6 @@
           "wordCount": 1963,
           "title": "Actions pull_request_target and environment branch protections changes",
           "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2025-10-24-graphql-explorer-removal-from-api-documentation-on-november-7-2025",
-          "author": "Allison",
-          "description": "Following the previous announcement notice, we retired GraphQL Explorer. Who this affects This change affects a few users who use the GraphQL Explorer for experimenting with the GitHub GraphQL API.…\nThe post GraphQL Explorer removal from API documentation on November 7, 2025 appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2025-11-07-graphql-explorer-removal-from-api-documentation-on-november-7-2025",
-          "publishedOn": "2025-11-07T08:00:06.000Z",
-          "wordCount": 1494,
-          "title": "GraphQL Explorer removal from API documentation on November 7, 2025",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-deprecations.jpg"
         }
       ]
     },
@@ -614,6 +604,26 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2025/Dec/6/one-shot-decompilation/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://blog.chrislewis.au/the-unexpected-effectiveness-of-one-shot-decompilation-with-claude/\">The Unexpected Effectiveness of One-Shot Decompilation with Claude</a></strong></p>\nChris Lewis decompiles N64 games. He wrote about this previously in <a href=\"https://blog.chrislewis.au/using-coding-agents-to-decompile-nintendo-64-games/\">Using Coding Agents to Decompile Nintendo 64 Games</a>, describing his efforts to decompile Snowboard Kids 2 (<a href=\"https://en.wikipedia.org/wiki/Snowboard_Kids_2\">released in 1999</a>) using a \"matching\" process:</p>\n<blockquote>\n<p>The matching decompilation process involves analysing the MIPS assembly, inferring its behaviour, and writing C that, when compiled with the same toolchain and settings, reproduces the exact code: same registers, delay slots, and instruction order. [...]</p>\n<p>A good match is more than just C code that compiles to the right bytes. It should look like something an N64-era developer would plausibly have written: simple, idiomatic C control flow and sensible data structures.</p>\n</blockquote>\n<p>Chris was getting some useful results from coding agents earlier on, but this <a href=\"https://blog.chrislewis.au/the-unexpected-effectiveness-of-one-shot-decompilation-with-claude/\">new post</a> describes how a switching to a new processing Claude Opus 4.5 and Claude Code has massively accelerated the project - as demonstrated started by this chart on <a href=\"https://decomp.dev/cdlewis/snowboardkids2-decomp?mode=history\">the decomp.dev page</a> for his project:</p>\n<p><img alt=\"Chart showing progress in matching code for Snowboard Kids 2. It slowly climbs from 20% to 25% from 3rd September to 17th November, then rises quickly to 45% by 2nd December\" src=\"https://static.simonwillison.net/static/2025/decomp-progress.jpg\" /></p>\n<p>Here's <a href=\"https://github.com/cdlewis/snowboardkids2-decomp/blob/852f47a4905a08d5d652387597bc5b47d29582f2/CLAUDE.md\">the prompt he was using</a>.</p>\n<p>The big productivity boost was unlocked by switching to use Claude Code in non-interactive mode and having it tackle the less complicated functions (aka the lowest hanging fruit) first. Here's the relevant code from the <a href=\"https://github.com/cdlewis/snowboardkids2-decomp/blob/785db3cb0ce356e57ea5016835499fd6b393c490/tools/vacuum.sh#L44-L54\">driving Bash script</a>:</p>\n<pre>simplest_func=<span class=\"pl-s\"><span class=\"pl-pds\">$(</span>python3 tools/score_functions.py asm/nonmatchings/ <span class=\"pl-k\">2&gt;&amp;1</span><span class=\"pl-pds\">)</span></span>\n<span class=\"pl-c\"><span class=\"pl-c\">#</span> ...</span>\noutput=<span class=\"pl-s\"><span class=\"pl-pds\">$(</span>claude -p <span class=\"pl-s\"><span class=\"pl-pds\">\"</span>decompile the function <span class=\"pl-smi\">$simplest_func</span><span class=\"pl-pds\">\"</span></span> <span class=\"pl-k\">2&gt;&amp;1</span> <span class=\"pl-k\">|</span> tee -a tools/vacuum.log<span class=\"pl-pds\">)</span></span></pre>\n\n<p><a href=\"https://github.com/cdlewis/snowboardkids2-decomp/blob/785db3cb0ce356e57ea5016835499fd6b393c490/tools/score_functions.py\">score_functions.py</a> uses some heuristics to decide which of the remaining un-matched functions look to be the least complex.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=46080498\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/games\">games</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/prompt-engineering\">prompt-engineering</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/claude-code\">claude-code</a></p>",
+          "link": "https://simonwillison.net/2025/Dec/6/one-shot-decompilation/#atom-everything",
+          "publishedOn": "2025-12-06T18:30:56.000Z",
+          "wordCount": 513,
+          "title": "The Unexpected Effectiveness of One-Shot Decompilation with Claude",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2025/Dec/6/daniel-lemire/#atom-everything",
+          "author": null,
+          "description": "<blockquote cite=\"https://lemire.me/blog/2025/12/05/why-speed-matters/\"><p>If you work slowly, you will be more likely to stick with your slightly obsolete work. You know that professor who spent seven years preparing lecture notes twenty years ago? He is not going to throw them away and start again, as that would be a new seven-year project. So he will keep teaching using aging lecture notes until he retires and someone finally updates the course.</p></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://lemire.me/blog/2025/12/05/why-speed-matters/\">Daniel Lemire</a>, Why speed matters</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/productivity\">productivity</a></p>",
+          "link": "https://simonwillison.net/2025/Dec/6/daniel-lemire/#atom-everything",
+          "publishedOn": "2025-12-06T14:40:46.000Z",
+          "wordCount": 299,
+          "title": "Quoting Daniel Lemire",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2025/Dec/5/til-pytest-subtests/#atom-everything",
           "author": null,
@@ -1292,36 +1302,6 @@
           "publishedOn": "2025-11-07T16:00:42.000Z",
           "wordCount": 415,
           "title": "Could LLMs encourage new programming languages?",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Nov/7/codex-tailscale-spark/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://til.simonwillison.net/llms/codex-spark-gpt-oss\">Using Codex CLI with gpt-oss:120b on an NVIDIA DGX Spark via Tailscale</a></strong></p>\nInspired by a <a href=\"https://www.youtube.com/watch?v=qy4ci7AoF9Y&amp;lc=UgzaGdLX8TAuQ9ugx1Z4AaABAg\">YouTube comment</a> I wrote up how I run OpenAI's Codex CLI coding agent against the gpt-oss:120b model running in Ollama on my <a href=\"https://simonwillison.net/2025/Oct/14/nvidia-dgx-spark/\">NVIDIA DGX Spark</a> via a Tailscale network.</p>\n<p>It takes a little bit of work to configure but the result is I can now use Codex CLI on my laptop anywhere in the world against a self-hosted model.</p>\n<p>I used it to build <a href=\"https://static.simonwillison.net/static/2025/gpt-oss-120b-invaders.html\">this space invaders clone</a>.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/tailscale\">tailscale</a>, <a href=\"https://simonwillison.net/tags/til\">til</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/nvidia\">nvidia</a>, <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/space-invaders\">space-invaders</a>, <a href=\"https://simonwillison.net/tags/codex-cli\">codex-cli</a></p>",
-          "link": "https://simonwillison.net/2025/Nov/7/codex-tailscale-spark/#atom-everything",
-          "publishedOn": "2025-11-07T07:23:12.000Z",
-          "wordCount": 369,
-          "title": "Using Codex CLI with gpt-oss:120b on an NVIDIA DGX Spark via Tailscale",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Nov/7/game-design-is-simple-actually/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://www.raphkoster.com/2025/11/03/game-design-is-simple-actually/\">Game design is simple, actually</a></strong></p>\nGame design legend Raph Koster (Ultima Online, Star Wars Galaxies and many more) provides a deeply informative and delightfully illustrated \"twelve-step program for understanding game design.\"</p>\n<p>You know it's going to be good when the first section starts by defining \"fun\".\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=45841262\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/game-design\">game-design</a></p>",
-          "link": "https://simonwillison.net/2025/Nov/7/game-design-is-simple-actually/#atom-everything",
-          "publishedOn": "2025-11-07T05:47:03.000Z",
-          "wordCount": 308,
-          "title": "Game design is simple, actually",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Nov/7/you-should-write-an-agent/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://fly.io/blog/everyone-write-an-agent/\">You should write an agent</a></strong></p>\nThomas Ptacek on the Fly blog:</p>\n<blockquote>\n<p>Agents are the most surprising programming experience I’ve had in my career. Not because I’m awed by the magnitude of their powers — I like them, but I don’t like-like them. It’s because of how easy it was to get one up on its legs, and how much I learned doing that.</p>\n</blockquote>\n<p>I think he's right: hooking up a simple agentic loop that prompts an LLM and runs a tool for it any time it request one really is the new \"hello world\" of AI engineering.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=45840088\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/thomas-ptacek\">thomas-ptacek</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/fly\">fly</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-agents\">ai-agents</a></p>",
-          "link": "https://simonwillison.net/2025/Nov/7/you-should-write-an-agent/#atom-everything",
-          "publishedOn": "2025-11-07T04:40:12.000Z",
-          "wordCount": 369,
-          "title": "You should write an agent",
           "imageUrl": null
         }
       ]
