@@ -2,10 +2,68 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-12-09T14:13:15.195Z</updated>
+    <updated>2025-12-09T21:09:32.371Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[mistralai/mistral-vibe]]></title>
+        <id>https://simonwillison.net/2025/Dec/9/mistral-vibe/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/9/mistral-vibe/#atom-everything"/>
+        <updated>2025-12-09T20:19:21.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/mistralai/mistral-vibe">mistralai/mistral-vibe</a></strong></p>
+Here's the Apache 2.0 licensed source code for Mistral's new "Vibe" CLI coding agent, <a href="https://mistral.ai/news/devstral-2-vibe-cli">released today</a> alongside Devstral 2.</p>
+<p>It's a neat implementation of the now standard terminal coding agent pattern, built in Python on top of Pydantic and Rich/Textual (here are <a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/pyproject.toml#L29-L46">the dependencies</a>.) <a href="https://github.com/google-gemini/gemini-cli">Gemini CLI</a> is TypeScript, Claude Code is closed source (TypeScript, now <a href="https://simonwillison.net/2025/Dec/2/anthropic-acquires-bun/">on top of Bun</a>), OpenAI's <a href="https://github.com/openai/codex">Codex CLI</a> is Rust. <a href="https://github.com/OpenHands/OpenHands">OpenHands</a> is the other major Python coding agent I know of, but I'm likely missing some others.</p>
+<p>The Vibe source code is pleasant to read and the crucial prompts are neatly extracted out into Markdown files. Some key places to look:</p>
+<ul>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/prompts/cli.md">core/prompts/cli.md</a> is the main system prompt ("You are operating as and within Mistral Vibe, a CLI coding-agent built by Mistral AI...")</li>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/prompts/compact.md">core/prompts/compact.md</a> is the prompt used to generate compacted summaries of conversations ("Create a comprehensive summary of our entire conversation that will serve as complete context for continuing this work...")</li>
+<li>Each of the core tools has its own prompt file:<ul>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/tools/builtins/prompts/bash.md">.../prompts/bash.md</a></li>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/tools/builtins/prompts/grep.md">.../prompts/grep.md</a></li>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/tools/builtins/prompts/read_file.md">.../prompts/read_file.md</a></li>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/tools/builtins/prompts/write_file.md">.../prompts/write_file.md</a></li>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/tools/builtins/prompts/search_replace.md">.../prompts/search_replace.md</a></li>
+<li><a href="https://github.com/mistralai/mistral-vibe/blob/v1.0.4/vibe/core/tools/builtins/prompts/todo.md">.../prompts/todo.md</a></li>
+</ul>
+</li>
+</ul>
+<p>The Python implementations of those tools <a href="https://github.com/mistralai/mistral-vibe/tree/v1.0.4/vibe/core/tools/builtins">can be found here</a>.</p>
+<p>I tried it out and had it build me a Space Invaders game using three.js with the following prompt:</p>
+<blockquote>
+<p><code>make me a space invaders game as HTML with three.js loaded from a CDN</code></p>
+</blockquote>
+<p><img alt="Animated screenshot demo of Mistral Vibe running in a terminal. The text reads: I've created a Space Invaders game using HTML and Three. js loaded from a CDN. The game is now available in the file space_invaders.html in your current directory. Here's how to play: 1. Open the space_invaders.html file in a web browser 2. Use the left and right arrow keys to move your player (green rectangle) 3. Press the spacebar to shoot at the invaders (red rectangles) 4. Try to get the highest score before the invaders reach you or hit you with their bullets The game features: © Player movement with arrow keys © Shooting mechanics with spacebar © Enemy invaders that move back and forth © Collision detection « Score tracking * Game over screen © Increasing difficulty Writing file (64s esc to interrupt) »» auto-approve on (shift-tab to toggle) - 7% of 100k tokens" src="https://static.simonwillison.net/static/2025/vibe.gif" /></p>
+<p>Here's <a href="https://github.com/simonw/space-invaders-by-llms/blob/main/mistral-vibe-devstral-2/index.html">the source code</a>  and <a href="https://space-invaders.simonwillison.net/mistral-vibe-devstral-2/">the live game</a> (hosted in my new <a href="https://github.com/simonw/space-invaders-by-llms">space-invaders-by-llms</a> repo). It did OK.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/textual">textual</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/pydantic">pydantic</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/system-prompts">system-prompts</a>, <a href="https://simonwillison.net/tags/space-invaders">space-invaders</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[npm classic tokens revoked, session-based auth and CLI token management now available]]></title>
+        <id>https://github.blog/changelog/2025-12-08-npm-classic-tokens-revoked-session-based-auth-and-cli-token-management-now-available</id>
+        <link href="https://github.blog/changelog/2025-12-09-npm-classic-tokens-revoked-session-based-auth-and-cli-token-management-now-available"/>
+        <updated>2025-12-09T16:21:59.000Z</updated>
+        <summary type="html"><![CDATA[As previously announced, we’re completing the npm classic token deprecation today. This marks a major milestone in the security hardening initiative to strengthen npm’s authentication system. What’s changing today (December…
+The post npm classic tokens revoked, session-based auth and CLI token management now available appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dependabot-based dependency graphs for Go]]></title>
+        <id>https://github.blog/changelog/2025-12-01-dependabot-based-dependency-graphs-for-go</id>
+        <link href="https://github.blog/changelog/2025-12-09-dependabot-dgs-for-go"/>
+        <updated>2025-12-09T15:54:48.000Z</updated>
+        <summary type="html"><![CDATA[Continuing the supply chain security theme of continually improving our package ecosystem support, Go projects will now see more complete and accurate transitive dependency trees in their dependency graphs and…
+The post Dependabot-based dependency graphs for Go appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Claude]]></title>
         <id>https://simonwillison.net/2025/Dec/9/claude/#atom-everything</id>
