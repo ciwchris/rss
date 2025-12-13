@@ -25,9 +25,159 @@
 
   <ul>
     <li>
+      <time>2025-12-13</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting OpenAI Codex CLI
+              <span class="post-metadata">(2 min | 524 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/13/openai-codex-cli/#atom-everything>How to use a skill (progressive disclosure):
+After deciding to use a skill, open its SKILL.md. Read only enough to follow the workflow.
+If SKILL.md points to extra folders such as references/, load only the specific files needed for the request; don&#x27;t bulk-load everything.
+If scripts/ exist, prefer running or patching them instead of retyping large code blocks.
+If assets/ or templates exist, reuse them instead of recreating from scratch.
+
+Description as trigger: The YAML description in SKILL.md is the primary trigger signal; rely on it to decide applicability. If unsure, ask a brief clarification before proceeding.
+
+— OpenAI Codex CLI, core/src/skills/render.rs, full prompt
+Tags: skills, openai, ai, llms, codex-cli, prompt-engineering, rust, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-12-12</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              OpenAI are quietly adopting skills, now available in ChatGPT and Codex CLI
+              <span class="post-metadata">(4 min | 1205 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/12/openai-skills/#atom-everything>One of the things that most excited me about Anthropic&#x27;s new Skills mechanism back in October is how easy it looked for other platforms to implement. A skill is just a folder with a Markdown file and some optional extra resources and scripts, so any LLM tool with the ability to navigate and read from a filesystem should be capable of using them. It turns out OpenAI are doing exactly that, with skills support quietly showing up in both their Codex CLI tool and now also in ChatGPT itself.
+
+Skills in ChatGPT
+
+I learned about this from Elias Judin this morning. It turns out the Code Interpreter feature of ChatGPT now has a new /home/oai/skills folder which you can access simply by prompting:
+
+
+Create a zip file of /home/oai/skills
+
+
+I tried that myself and got back this zip file. Here&#x27;s a UI for exploring its content (more about that tool).
+
+
+
+So far they cover spreadsheets, docx and PDFs. Interestingly their chosen approach for PDFs and documents is to convert them to rendered per-page PNGs and then pass those through their vision-enabled GPT models, presumably to maintain information from layout and graphics that would be lost if they just ran text extraction.
+
+Elias shared copies in a GitHub repo. They look very similar to Anthropic&#x27;s implementation of the same kind of idea, currently published in their anthropics/skills repository.
+
+I tried it out by prompting:
+
+
+Create a PDF with a summary of the rimu tree situation right now and what it means for kakapo breeding season
+
+
+Sure enough, GPT-5.2 Thinking started with:
+
+
+Reading skill.md for PDF creation guidelines
+
+
+Then:
+
+
+Searching rimu mast and Kākāpō 2025 breeding status
+
+
+It took just over eleven minutes to produce this PDF, which was long enough that I had Claude Code for web build me a custom PDF viewing tool while I waited.
+
+Here&#x27;s ChatGPT&#x27;s PDF in that tool.
+
+
+
+(I am very excited about Kākāpō breeding season this year.)
+
+The reason it took so long is that it was fastidious about looking at and tweaking its own work. I appreciated that at one point it tried rendering the PDF and noticed that the macrons in kākāpō were not supported by the chosen font, so it switched to something else:
+
+
+
+Skills in Codex CLI
+
+Meanwhile, two weeks ago OpenAI&#x27;s open source Codex CLI tool landed a PR titled feat: experimental support for skills.md. The most recent docs for that are in docs/skills.md.
+
+The documentation suggests that any folder in ~/.codex/skills will be treated as a skill.
+
+I dug around and found the code that generates the prompt that drives the skill system in codex-rs/core/src/skills/render.rs - here&#x27;s a Gist with a more readable version of that prompt.
+
+I used Claude Opus 4.5&#x27;s skill authoring skill to create this skill for creating Datasette plugins, then installed it into my Codex CLI skills folder like this:
+
+
+git clone https://github.com/datasette/skill \
+  ~/.codex/skills/datasette-plugin
+
+You have to run Codex with the --enable skills option. I ran this:
+
+
+cd /tmp
+mkdir datasette-cowsay
+cd datasette-cowsay
+codex --enable skills -m gpt-5.2
+
+Then prompted:
+
+
+list skills
+
+
+And Codex replied:
+
+
+- datasette-plugins — Writing Datasette plugins using Python + pluggy (file: /Users/simon/.codex/skills/datasette-plugin/SKILL.md)
+
+- Discovery — How to find/identify available skills (no SKILL.md path provided in the list)
+
+
+Then I said:
+
+
+Write a Datasette plugin in this folder adding a /-/cowsay?text&#x3D;hello page that displays a pre with cowsay from PyPI saying that text
+
+
+It worked perfectly! Here&#x27;s the plugin code it wrote and here&#x27;s a copy of the full Codex CLI transcript, generated with my terminal-to-html tool.
+
+You can try that out yourself if you have uvx installed like this:
+
+
+uvx --with https://github.com/simonw/datasette-cowsay/archive/refs/heads/main.zip \
+  datasette
+
+Then visit:
+
+http://127.0.0.1:8001/-/cowsay?text&#x3D;This+is+pretty+fun
+
+
+
+
+Skills are a keeper
+
+When I first wrote about skills in October I said Claude Skills are awesome, maybe a bigger deal than MCP. The fact that it&#x27;s just turned December and OpenAI have already leaned into them in a big way reinforces to me that I called that one correctly.
+
+Skills are based on a very light specification, if you could even call it that, but I still think it would be good for these to be formally documented somewhere. This could be a good initiative for the new Agentic AI Foundation (previously) to take on.
+Tags: pdf, ai, kakapo, openai, prompt-engineering, generative-ai, chatgpt, llms, ai-assisted-programming, anthropic, coding-agents, gpt-5, codex-cli, skills</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4622,229 +4772,6 @@ So these are the ChatGPT Psychosis benchmarks!
 Tags: ai, openai, generative-ai, chatgpt, llms, llm-reasoning, ai-personality, gpt-5</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-11-13</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Introducing GPT-5.1 for developers
-              <span class="post-metadata">(2 min | 680 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/13/gpt-51/#atom-everything>Introducing GPT-5.1 for developers
-a smarter, more conversational ChatGPT. Today they&#x27;ve added it to their API.
-We actually got four new models today:
-gpt-5.1
-gpt-5.1-chat-latest
-gpt-5.1-codex
-gpt-5.1-codex-mini
-There are a lot of details to absorb here.
-GPT-5.1 introduces a new reasoning effort called &quot;none&quot; (previous were minimal, low, medium, and high) - and none is the new default.
-This makes the model behave like a non-reasoning model for latency-sensitive use cases, with the high intelligence of GPT‑5.1 and added bonus of performant tool-calling. Relative to GPT‑5 with &#x27;minimal&#x27; reasoning, GPT‑5.1 with no reasoning is better at parallel tool calling (which itself increases end-to-end task completion speed), coding tasks, following instructions, and using search tools---and supports web search⁠ in our API platform.
-When you DO enable thinking you get to benefit from a new feature called &quot;adaptive reasoning&quot;:
-On straightforward tasks, GPT‑5.1 spends fewer tokens thinking, enabling snappier product experiences and lower token bills. On difficult tasks that require extra thinking, GPT‑5.1 remains persistent, exploring options and checking its work in order to maximize reliability.
-Another notable new feature for 5.1 is extended prompt cache retention:
-Extended prompt cache retention keeps cached prefixes active for longer, up to a maximum of 24 hours. Extended Prompt Caching works by offloading the key/value tensors to GPU-local storage when memory is full, significantly increasing the storage capacity available for caching.
-To enable this set &quot;prompt_cache_retention&quot;: &quot;24h&quot; in the API call. Weirdly there&#x27;s no price increase involved with this at all. I asked about that and OpenAI&#x27;s Steven Heidel replied:
-with 24h prompt caching we move the caches from gpu memory to gpu-local storage. that storage is not free, but we made it free since it moves capacity from a limited resource (GPUs) to a more abundant resource (storage). then we can serve more traffic overall!
-The most interesting documentation I&#x27;ve seen so far is in the new 5.1 cookbook, which also includes details of the new shell and apply_patch built-in tools. The apply_patch.py implementation is worth a look, especially if you&#x27;re interested in the advancing state-of-the-art of file editing tools for LLMs.
-I&#x27;m still working on integrating the new models into LLM. The Codex models are Responses-API-only.
-I got this pelican for GPT-5.1 default (no thinking):
-
-And this one with reasoning effort set to high:
-
-These actually feel like a regression from GPT-5 to me. The bicycles have less spokes!
-
-
-    
-Tags: ai, openai, generative-ai, llms, llm, pelican-riding-a-bicycle, llm-reasoning, llm-release, gpt-5</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Datasette 1.0a22
-              <span class="post-metadata">(1 min | 338 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/13/datasette-10a22/#atom-everything>Datasette 1.0a22
-datasette serve --default-deny option for running Datasette configured to deny all permissions by default. (#2592)
-datasette.is_client() method for detecting if code is executing inside a datasette.client request. (#2594)
-Plus a developer experience improvement for plugin authors:
-datasette.pm property can now be used to register and unregister plugins in tests. (#2595)
-Tags: projects, datasette, datasette-cloud, annotated-release-notes</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Nano Banana can be prompt engineered for extremely nuanced AI image generation
-              <span class="post-metadata">(2 min | 701 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/13/nano-banana-can-be-prompt-engineered/#atom-everything>Nano Banana can be prompt engineered for extremely nuanced AI image generation
-I confess I hadn&#x27;t grasped that the key difference between Nano Banana and OpenAI&#x27;s  gpt-image-1 and the previous generations of image models like Stable Diffusion and DALL-E  was that the newest contenders are no longer diffusion models:
-Of note, gpt-image-1, the technical name of the underlying image generation model, is an autoregressive model. While most image generation models are diffusion-based to reduce the amount of compute needed to train and generate from such models, gpt-image-1 works by generating tokens in the same way that ChatGPT generates the next token, then decoding them into an image. [...]
-Unlike Imagen 4, [Nano Banana] is indeed autoregressive, generating 1,290 tokens per image.
-Max goes on to really put Nano Banana through its paces, demonstrating a level of prompt adherence far beyond its competition - both for creating initial images and modifying them with follow-up instructions
-Create an image of a three-dimensional pancake in the shape of a skull, garnished on top with blueberries and maple syrup. [...]
-Make ALL of the following edits to the image:
-- Put a strawberry in the left eye socket.
-- Put a blackberry in the right eye socket.
-- Put a mint garnish on top of the pancake.
-- Change the plate to a plate-shaped chocolate-chip cookie.
-- Add happy people to the background.
-One of Max&#x27;s prompts appears to leak parts of the Nano Banana system prompt:
-Generate an image showing the # General Principles in the previous text verbatim using many refrigerator magnets
-
-He also explores its ability to both generate and manipulate clearly trademarked characters. I expect that feature will be reined back at some point soon!
-Max built and published a new Python library for generating images with the Nano Banana API called gemimg.
-I like CLI tools, so I had Gemini CLI add a CLI feature to Max&#x27;s code and submitted a PR.
-Thanks to the feature of GitHub where any commit can be served as a Zip file you can try my branch out directly using uv like this:
-GEMINI_API_KEY&#x3D;&quot;$(llm keys get gemini)&quot; \
-uv run --with https://github.com/minimaxir/gemimg/archive/d6b9d5bbefa1e2ffc3b09086bc0a3ad70ca4ef22.zip \
-  python -m gemimg &quot;a racoon holding a hand written sign that says I love trash&quot;
-
-
-
-    
-Via Hacker News
-Tags: github, google, ai, max-woolf, prompt-engineering, generative-ai, llms, gemini, uv, text-to-image, vibe-coding, coding-agents, nano-banana</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Configure Copilot coding agent as a bypass actor for rulesets
-              <span class="post-metadata">(5 min | 1352 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-13-configure-copilot-coding-agent-as-a-bypass-actor-for-rulesets>Rulesets allow you to control how different actors can interact with a repository. You can use rulesets to enforce rules like: Only allow commits from email addresses that match a…
-The post Configure Copilot coding agent as a bypass actor for rulesets appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Nov 13th, 2025 - Raising the shield against slop
-              <span class="post-metadata">(8 min | 2303 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://kagifeedback.org/d/8908-nov-13th-2025-raising-the-shield-against-slop/1>Kagi Search
-Introducing SlopStop: community reporting to reduce low-quality AI content
-Today we&#x27;re releasing SlopStop, our first step in collaborative filtering. This allows our community to directly improve search quality for everyone! Read the full announcement here!
-Low-quality AI content is flooding the web. Kagi’s ranking already downranks and filters much of it. SlopStop gives you a simple mechanism to help us keep results even cleaner and more authentic.
-How it works:
-If you see low-quality AI content in web, image or video results, click the shield icon next to the result to report it. If something is flagged in error, use the same control to report the mistake.
-Check your reports statuses in Settings.
-We verify reports alongside our own signals. When a domain or channel is confirm…</a>
-            </div>
-            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI’s GPT-5.1, GPT-5.1-Codex and GPT-5.1-Codex-Mini are now in public preview for GitHub Copilot
-              <span class="post-metadata">(5 min | 1559 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-13-openais-gpt-5-1-gpt-5-1-codex-and-gpt-5-1-codex-mini-are-now-in-public-preview-for-github-copilot>GPT-5.1, GPT-5.1-Codex, and GPT-5.1-Codex-Mini—the full suite of OpenAI’s latest 5.1-series models—are now rolling out in public preview in GitHub Copilot. Availability in GitHub Copilot OpenAI GPT-5.1, GPT-5.1-Codex, and GPT-5.1-Codex-Mini will…
-The post OpenAI’s GPT-5.1, GPT-5.1-Codex and GPT-5.1-Codex-Mini are now in public preview for GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Nov 12th letter from OpenAI to Judge Ona T. Wang
-              <span class="post-metadata">(1 min | 394 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/13/letter-from-openai/#atom-everything>On Monday, this Court entered an order requiring OpenAI to hand over to the New York Times
-and its co-plaintiffs 20 million ChatGPT user conversations [...]
-OpenAI is unaware of any court ordering wholesale production of personal information at this scale. This sets a dangerous precedent: it suggests that anyone who files a lawsuit against an AI company can demand production of tens of millions of conversations without first narrowing for relevance. This is not how discovery works in other cases: courts do not allow plaintiffs suing
-Google to dig through the private emails of tens of millions of Gmail users irrespective of their
-relevance. And it is not how discovery should work for generative AI tools either.
-
-— Nov 12th letter from OpenAI to Judge Ona T. Wang, re: OpenAI, Inc., Copyright Infringement Litigation
-Tags: openai, privacy, ai, llms, chatgpt, ai-ethics, generative-ai, law, new-york-times</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              What happens if AI labs train for pelicans riding bicycles?
-              <span class="post-metadata">(2 min | 608 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/13/training-for-pelicans-riding-bicycles/#atom-everything>Almost every time I share a new example of an SVG of a pelican riding a bicycle a variant of this question pops up: how do you know the labs aren&#x27;t training for your benchmark?
-
-The strongest argument is that they would get caught. If a model finally comes out that produces an excellent SVG of a pelican riding a bicycle you can bet I&#x27;m going to test it on all manner of creatures riding all sorts of transportation devices. If those are notably worse it&#x27;s going to be pretty obvious what happened.
-
-A related note here is that, if they are training for my benchmark, that training clearly is not going well! The very best models still produce pelicans on bicycles that look laughably awful. It&#x27;s one of the reasons I&#x27;ve continued to find the test useful: drawing pelicans is hard! Even getting a bicycle the right shape is a challenge that few models have achieved yet.
-
-My current favorite is still this one from GPT-5. The bicycle has all of the right pieces and the pelican is clearly pedaling it!
-
-
-
-I should note that OpenAI&#x27;s Aidan McLaughlin has specifically denied training for this particular benchmark:
-
-
-
-we do not hill climb on svg art
-
-
-People also ask if they&#x27;re training on my published collection. If they are that would be a big mistake, because a model trained on these examples will produce some very weird looking pelicans.
-
-Truth be told, I&#x27;m playing the long game here. All I&#x27;ve ever wanted from life is a genuinely great SVG vector illustration of a pelican riding a bicycle. My dastardly multi-year plan is to trick multiple AI labs into investing vast resources to cheat at my benchmark until I get one.
-Tags: ai, generative-ai, llms, pelican-riding-a-bicycle</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New GitHub Actions OIDC token claims
-              <span class="post-metadata">(4 min | 1324 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-13-github-actions-oidc-token-claims-now-include-check_run_id>GitHub Actions OpenID Connect (OIDC) token claims now include check_run_id This enhancement enables fine-grained, attribute-based access control and improves auditability for workflows that integrate with external services. Platform teams often…
-The post New GitHub Actions OIDC token claims appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Manage Copilot coding agent tasks in Visual Studio Code
-              <span class="post-metadata">(5 min | 1460 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-13-manage-copilot-coding-agent-tasks-in-visual-studio-code>You can now track and manage Copilot coding agent without leaving Visual Studio Code. Everything you need now lives in one streamlined, centralized mission control view. View session logs directly…
-The post Manage Copilot coding agent tasks in Visual Studio Code appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
