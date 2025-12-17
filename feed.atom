@@ -2,10 +2,207 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-12-16T21:11:48.380Z</updated>
+    <updated>2025-12-17T14:13:00.551Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[firefox parser/html/java/README.txt]]></title>
+        <id>https://simonwillison.net/2025/Dec/17/firefox-parser/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/17/firefox-parser/#atom-everything"/>
+        <updated>2025-12-17T01:48:54.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/mozilla-firefox/firefox/tree/main/parser/html/java">firefox parser/html/java/README.txt</a></strong></p>
+TIL (or TIR - <a href="https://simonwillison.net/2009/Jul/11/john/">Today I was Reminded</a>) that the HTML5 Parser used by Firefox is maintained as Java code (<a href="https://github.com/mozilla-firefox/firefox/commits/main/parser/html/javasrc">commit history here</a>) and converted to C++ using a custom translation script.</p>
+<p>You can see that in action by checking out the ~8GB Firefox repository and running:</p>
+<pre><code>cd parser/html/java
+make sync
+make translate
+</code></pre>
+<p>Here's <a href="http://gistpreview.github.io/?e53ff836cb44816670adddc3a518b3cc">a terminal session where I did that</a>, including the output of <code>git diff</code> showing the updated C++ files.</p>
+<p>I did some digging and found that the code that does the translation work lives, weirdly, in the <a href="https://github.com/validator/validator">Nu Html Checker</a> repository on GitHub which powers the W3C's <a href="https://validator.w3.org/nu/">validator.w3.org/nu/</a> validation service!</p>
+<p>Here's a snippet from <a href="https://github.com/validator/validator/blob/dfd1948624259c63027bc5953e89bdeee81fb7b0/htmlparser/translator-src/nu/validator/htmlparser/cpptranslate/CppVisitor.java#L421-L442">htmlparser/cpptranslate/CppVisitor.java</a> showing how a class declaration is converted into C++:</p>
+<pre>    <span class="pl-k">protected</span> <span class="pl-smi">void</span> <span class="pl-en">startClassDeclaration</span>() {
+        <span class="pl-s1">printer</span>.<span class="pl-en">print</span>(<span class="pl-s">"#define "</span>);
+        <span class="pl-s1">printer</span>.<span class="pl-en">print</span>(<span class="pl-s1">className</span>);
+        <span class="pl-s1">printer</span>.<span class="pl-en">printLn</span>(<span class="pl-s">"_cpp__"</span>);
+        <span class="pl-s1">printer</span>.<span class="pl-en">printLn</span>();
+
+        <span class="pl-k">for</span> (<span class="pl-smi">int</span> <span class="pl-s1">i</span> = <span class="pl-c1">0</span>; <span class="pl-s1">i</span> &lt; <span class="pl-smi">Main</span>.<span class="pl-c1">H_LIST</span>.<span class="pl-s1">length</span>; <span class="pl-s1">i</span>++) {
+            <span class="pl-smi">String</span> <span class="pl-s1">klazz</span> = <span class="pl-smi">Main</span>.<span class="pl-c1">H_LIST</span>[<span class="pl-s1">i</span>];
+            <span class="pl-k">if</span> (!<span class="pl-s1">klazz</span>.<span class="pl-en">equals</span>(<span class="pl-s1">javaClassName</span>)) {
+                <span class="pl-s1">printer</span>.<span class="pl-en">print</span>(<span class="pl-s">"#include <span class="pl-cce">\"</span>"</span>);
+                <span class="pl-s1">printer</span>.<span class="pl-en">print</span>(<span class="pl-s1">cppTypes</span>.<span class="pl-en">classPrefix</span>());
+                <span class="pl-s1">printer</span>.<span class="pl-en">print</span>(<span class="pl-s1">klazz</span>);
+                <span class="pl-s1">printer</span>.<span class="pl-en">printLn</span>(<span class="pl-s">".h<span class="pl-cce">\"</span>"</span>);
+            }
+        }
+
+        <span class="pl-s1">printer</span>.<span class="pl-en">printLn</span>();
+        <span class="pl-s1">printer</span>.<span class="pl-en">print</span>(<span class="pl-s">"#include <span class="pl-cce">\"</span>"</span>);
+        <span class="pl-s1">printer</span>.<span class="pl-en">print</span>(<span class="pl-s1">className</span>);
+        <span class="pl-s1">printer</span>.<span class="pl-en">printLn</span>(<span class="pl-s">".h<span class="pl-cce">\"</span>"</span>);
+        <span class="pl-s1">printer</span>.<span class="pl-en">printLn</span>();
+    }</pre>
+
+<p>Here's a <a href="https://johnresig.com/blog/html-5-parsing/">fascinating blog post</a> from John Resig explaining how validator author Henri Sivonen introduced the new parser into Firefox in 2009.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=46295771#46296888">Hacker News conversation</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/c-plus-plus">c-plus-plus</a>, <a href="https://simonwillison.net/tags/firefox2">firefox2</a>, <a href="https://simonwillison.net/tags/henri-sivonen">henri-sivonen</a>, <a href="https://simonwillison.net/tags/java">java</a>, <a href="https://simonwillison.net/tags/john-resig">john-resig</a>, <a href="https://simonwillison.net/tags/mozilla">mozilla</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The new ChatGPT Images is here]]></title>
+        <id>https://simonwillison.net/2025/Dec/16/new-chatgpt-images/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/16/new-chatgpt-images/#atom-everything"/>
+        <updated>2025-12-16T23:59:22.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://openai.com/index/new-chatgpt-images-is-here/">The new ChatGPT Images is here</a></strong></p>
+OpenAI shipped an update to their ChatGPT Images feature - the feature that <a href="https://simonwillison.net/2025/May/13/launching-chatgpt-images/">gained them 100 million new users</a> in a week when they first launched it back in March, but has since been eclipsed by Google's Nano Banana and then further by Nana Banana Pro <a href="https://simonwillison.net/2025/Nov/20/nano-banana-pro/">in November</a>.</p>
+<p>The focus for the new ChatGPT Images is speed and instruction following:</p>
+<blockquote>
+<p>It makes precise edits while keeping details intact, and generates images up to 4x faster</p>
+</blockquote>
+<p>It's also a little cheaper: OpenAI say that the new <a href="https://platform.openai.com/docs/models/gpt-image-1.5">gpt-image-1.5</a> API model makes image input and output "20% cheaper in GPT Image 1.5 as compared to GPT Image 1". </p>
+<p>I tried a new test prompt against a photo I took of Natalie's ceramic stand at the farmers market a few weeks ago:</p>
+<blockquote>
+<p>Add two kakapos inspecting the pots</p>
+<p><img alt="Outdoor craft market booth displaying handmade ceramics and jewelry on a navy tablecloth with &quot;NATBAT CREATIONS CALIFORNIA USA&quot; logo. Items include colorful glazed ceramic cups in blue, orange, and black; decorative bowls including a rainbow-striped piece; jewelry pendants and earrings on wooden display stands; ceramic plant markers in various colors labeled &quot;Artichoke&quot;, &quot;Cilantro&quot;, &quot;Chili&quot;, &quot;Oregano&quot;, &quot;Potato&quot;, &quot;Pumpkin&quot;, &quot;Sage&quot;." src="https://static.simonwillison.net/static/2025/pots-q80-half.jpg" /></p>
+</blockquote>
+<p>Here's the result from the new ChatGPT Images model:</p>
+<p><img alt="Same craft market booth as previous image, now with two large olive-green Kākāpō parrots perched on the table among the ceramics, one investigating the blue glazed cups and the other examining an orange cup." src="https://static.simonwillison.net/static/2025/pots-chatgpt-q80-half.jpg" /></p>
+<p>And here's what I got from Nano Banana Pro:</p>
+<p><img alt="Same craft market booth with two Kākāpō now in different positions: one remains center-table peering into the ceramic cups near the rainbow pot, while the second has moved to the right edge of the table near the plant markers, appearing to examine or possibly chew on items at the table's corner. They are both a little smaller than in the first image." src="https://static.simonwillison.net/static/2025/pots-nano-banana-q80-half.jpg" /></p>
+<p>The ChatGPT Kākāpō are a little chonkier, which I think counts as a win.</p>
+<p>I was a little less impressed by the result I got for an infographic from the prompt "Infographic explaining how the Datasette open source project works" followed by "Run some extensive searches and gather a bunch of relevant information and then try again" (<a href="https://chatgpt.com/share/6941f249-cbd0-8006-b9ff-5a19167206bc">transcript</a>):</p>
+<p><img alt="Infographic titled &quot;HOW DATASETTE WORKS&quot; with subtitle &quot;THE OPEN SOURCE DATA PLATFORM&quot; showing a four-step workflow. STEP 1 (orange): &quot;LOAD YOUR DATA&quot; - &quot;CSV, JSON, XLSX, SQLite, PostgreSQL, etc.&quot; with icons of file types flowing into a laptop. Below: &quot;IMPORT DATASETS - Turn your structured data into SQLite databases and .db files.&quot; with checkmarks for &quot;Datasette Desktop App for local deployment&quot;, &quot;CLI tool for command-line imports&quot;, &quot;Automatic CSV import tool&quot;. STEP 2 (green): &quot;PUBLISH &amp; DEPLOY&quot; - &quot;HOST DATASETS ONLINE&quot; with cloud and server icons labeled &quot;DEPLOY&quot;. Below: &quot;SHARE ONLINE - Deploy your Datasette instance to a public server.&quot; with checkmarks for &quot;Datasette Cloud - Free hosting service&quot;, &quot;Deploy anywhere via plugins&quot;, &quot;Configurable API tools&quot;. STEP 3 (purple): &quot;EXPLORE &amp; QUERY&quot; - &quot;BROWSE, SEARCH &amp; VISUALIZE&quot; with database and browser window icons. Below: &quot;SQL QUERIES &amp; SEARCH - Browse, filter, search, and visualize your data with an interactive web interface.&quot; with checkmarks for &quot;Perform SQL queries directly from the browser&quot;, &quot;Filter, sort, and facet data&quot;, &quot;Generate custom visualizations and charts&quot;. STEP 4 (red): &quot;BUILD &amp; EXTEND&quot; - &quot;PLUGINS, APIS &amp; INTEGRATIONS&quot; with gear and wrench icons labeled &quot;API&quot;. Below: &quot;CUSTOMIZE &amp; DEVELOP&quot; with bullets &quot;Develop custom plugins for added functionality&quot;, &quot;Access JSON API for programmatic queries&quot;, &quot;Embed and integrate Datasette into other applications&quot;. Bottom banner shows four features: &quot;OPEN DATA PLATFORM - Widely used for visualizing, sharing and building applications with SQLite backed data&quot;, &quot;EXTENSIBLE PLUGINS - 100+ plugins available, inc uding chaps, charts authentication, and more&quot;, &quot;ACCESS CONTROL - Granular permissions for controlling who s an access and interact with your data&quot;, &quot;OPEN SOURCE PROJECT - Actively developed open source project with a vibrant community of contributors&quot;." src="https://static.simonwillison.net/static/2025/chatgpt-infographic.jpg" /></p>
+<p>See <a href="https://simonwillison.net/2025/Nov/20/nano-banana-pro/#creating-an-infographic">my Nano Banana Pro post</a> for comparison.</p>
+<p>Both models are clearly now usable for text-heavy graphics though, which makes them far more useful than previous generations of this technology.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/kakapo">kakapo</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/text-to-image">text-to-image</a>, <a href="https://simonwillison.net/tags/nano-banana">nano-banana</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[s3-credentials 0.17]]></title>
+        <id>https://simonwillison.net/2025/Dec/16/s3-credentials/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/16/s3-credentials/#atom-everything"/>
+        <updated>2025-12-16T23:40:31.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/s3-credentials/releases/tag/0.17">s3-credentials 0.17</a></strong></p>
+New release of my <a href="https://s3-credentials.readthedocs.io/">s3-credentials</a> CLI tool for managing credentials needed to access just one S3 bucket. Here are the release notes in full:</p>
+<blockquote>
+<ul>
+<li>New commands <code>get-bucket-policy</code> and <code>set-bucket-policy</code>. <a href="https://github.com/simonw/s3-credentials/issues/91">#91</a></li>
+<li>New commands <code>get-public-access-block</code> and <code>set-public-access-block</code>. <a href="https://github.com/simonw/s3-credentials/issues/92">#92</a></li>
+<li>New <code>localserver</code> command for starting a web server that makes time limited credentials accessible via a JSON API. <a href="https://github.com/simonw/s3-credentials/pull/93">#93</a></li>
+</ul>
+</blockquote>
+<p>That <code>s3-credentials localserver</code> command (<a href="https://s3-credentials.readthedocs.io/en/stable/localserver.html">documented here</a>) is a little obscure, but I found myself wanting something like that to help me test out a new feature I'm building to help create temporary Litestream credentials using Amazon STS.</p>
+<p>Most of that new feature was <a href="https://gistpreview.github.io/?500add71f397874ebadb8e04e8a33b53">built by Claude Code</a> from the following starting prompt:</p>
+<blockquote>
+<p><code>Add a feature s3-credentials localserver which starts a localhost weberver running (using the Python standard library stuff) on port 8094 by default but -p/--port can set a different port and otherwise takes an option that names a bucket and then takes the same options for read--write/read-only etc as other commands. It also takes a required --refresh-interval option which can be set as 5m or 10h or 30s. All this thing does is reply on / to a GET request with the IAM expiring credentials that allow access to that bucket with that policy for that specified amount of time. It caches internally the credentials it generates and will return the exact same data up until they expire (it also tracks expected expiry time) after which it will generate new credentials (avoiding dog pile effects if multiple requests ask at the same time) and return and cache those instead.</code></p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/aws">aws</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/s3">s3</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/annotated-release-notes">annotated-release-notes</a>, <a href="https://simonwillison.net/tags/s3-credentials">s3-credentials</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ty: An extremely fast Python type checker and LSP]]></title>
+        <id>https://simonwillison.net/2025/Dec/16/ty/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/16/ty/#atom-everything"/>
+        <updated>2025-12-16T23:35:33.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://astral.sh/blog/ty">ty: An extremely fast Python type checker and LSP</a></strong></p>
+The team at Astral have been working on this for quite a long time, and are finally releasing the first beta.  They have some big performance claims:</p>
+<blockquote>
+<p>Without caching, ty is consistently between 10x and 60x faster than mypy and Pyright. When run in an editor, the gap is even more dramatic. As an example, after editing a load-bearing file in the PyTorch repository, ty recomputes diagnostics in 4.7ms: 80x faster than Pyright (386ms) and 500x faster than Pyrefly (2.38 seconds). ty is very fast!</p>
+</blockquote>
+<p>The easiest way to try it out is via <code>uvx</code>:</p>
+<pre><code>cd my-python-project/
+uvx ty check
+</code></pre>
+<p>I <a href="https://gistpreview.github.io/?a3aff6768e85168d89d4515e3dbcb7d2">tried it</a> against <a href="https://sqlite-utils.datasette.io/">sqlite-utils</a> and it turns out I have quite a lot of work to do!</p>
+<p>Astral also released a new <a href="https://marketplace.visualstudio.com/items?itemName=astral-sh.ty">VS Code extension</a> adding ty-powered language server features like go to definition. I'm still getting my head around how this works and what it can do.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=46294289">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/vs-code">vs-code</a>, <a href="https://simonwillison.net/tags/astral">astral</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Poe the Poet]]></title>
+        <id>https://simonwillison.net/2025/Dec/16/poe-the-poet/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/16/poe-the-poet/#atom-everything"/>
+        <updated>2025-12-16T22:57:02.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://poethepoet.natn.io/">Poe the Poet</a></strong></p>
+I was looking for a way to specify additional commands in my <code>pyproject.toml</code> file to execute using <code>uv</code>. There's an <a href="https://github.com/astral-sh/uv/issues/5903">enormous issue thread</a> on this in the <code>uv</code> issue tracker (300+ comments dating back to August 2024) and from there I learned of several options including this one, Poe the Poet.</p>
+<p>It's neat. I added it to my <a href="https://github.com/simonw/s3-credentials">s3-credentials</a> project just now and the following now works for running the live preview server for the documentation:</p>
+<pre><code>uv run poe livehtml
+</code></pre>
+<p>Here's the snippet of TOML I added to my <code>pyproject.toml</code>:</p>
+<pre>[<span class="pl-en">dependency-groups</span>]
+<span class="pl-smi">test</span> = [
+    <span class="pl-s"><span class="pl-pds">"</span>pytest<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>pytest-mock<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>cogapp<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>moto&gt;=5.0.4<span class="pl-pds">"</span></span>,
+]
+<span class="pl-smi">docs</span> = [
+    <span class="pl-s"><span class="pl-pds">"</span>furo<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>sphinx-autobuild<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>myst-parser<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>cogapp<span class="pl-pds">"</span></span>,
+]
+<span class="pl-smi">dev</span> = [
+    {<span class="pl-smi">include-group</span> = <span class="pl-s"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>},
+    {<span class="pl-smi">include-group</span> = <span class="pl-s"><span class="pl-pds">"</span>docs<span class="pl-pds">"</span></span>},
+    <span class="pl-s"><span class="pl-pds">"</span>poethepoet&gt;=0.38.0<span class="pl-pds">"</span></span>,
+]
+
+[<span class="pl-en">tool</span>.<span class="pl-en">poe</span>.<span class="pl-en">tasks</span>]
+<span class="pl-smi">docs</span> = <span class="pl-s"><span class="pl-pds">"</span>sphinx-build -M html docs docs/_build<span class="pl-pds">"</span></span>
+<span class="pl-smi">livehtml</span> = <span class="pl-s"><span class="pl-pds">"</span>sphinx-autobuild -b html docs docs/_build<span class="pl-pds">"</span></span>
+<span class="pl-smi">cog</span> = <span class="pl-s"><span class="pl-pds">"</span>cog -r docs/*.md<span class="pl-pds">"</span></span></pre>
+
+<p>Since <code>poethepoet</code> is in the <code>dev=</code> dependency group any time I run <code>uv run ...</code> it will be available in the environment.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/packaging">packaging</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/s3-credentials">s3-credentials</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Enterprise governance and policy improvements for secret scanning]]></title>
+        <id>https://github.blog/changelog/2025-12-16-enterprise-governance-and-policy-improvements-for-secret-scanning-now-generally-available</id>
+        <link href="https://github.blog/changelog/2025-12-16-enterprise-governance-and-policy-improvements-for-secret-scanning-now-generally-available"/>
+        <updated>2025-12-16T20:46:09.000Z</updated>
+        <summary type="html"><![CDATA[At GitHub, we care deeply about ensuring enterprise-readiness of our products. From recent improvements including enterprise-level delegated bypass controls for push protection, to support for the new Enterprise Security Manager…
+The post Enterprise governance and policy improvements for secret scanning appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[C++ code editing tools for GitHub Copilot in public preview]]></title>
+        <id>https://github.blog/changelog/2025-12-16-c-code-editing-tools-for-github-copilot-in-public-preview</id>
+        <link href="https://github.blog/changelog/2025-12-16-c-code-editing-tools-for-github-copilot-in-public-preview"/>
+        <updated>2025-12-16T18:28:30.000Z</updated>
+        <summary type="html"><![CDATA[C++ code editing tools for GitHub Copilot are now in public preview in the latest Visual Studio 2026 Insiders release. These tools extend Copilot’s ability to understand and modify C++…
+The post C++ code editing tools for GitHub Copilot in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Conda ecosystem support for Dependabot version updates now generally available]]></title>
         <id>https://github.blog/changelog/2025-09-16-conda-ecosystem-support-for-dependabot-now-generally-available</id>
@@ -3939,111 +4136,6 @@ The post Plan mode in GitHub Copilot now in public preview in JetBrains, Eclipse
         <summary type="html"><![CDATA[From chatbots to agents]]></summary>
         <author>
             <name>Ethan Mollick</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[The fate of “small” open source]]></title>
-        <id>https://simonwillison.net/2025/Nov/17/the-fate-of-small-open-source/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/17/the-fate-of-small-open-source/#atom-everything"/>
-        <updated>2025-11-17T23:24:44.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://nolanlawson.com/2025/11/16/the-fate-of-small-open-source/">The fate of “small” open source</a></strong></p>
-Nolan Lawson asks if LLM assistance means that the category of tiny open source libraries like his own <a href="https://github.com/nolanlawson/blob-util">blob-util</a> is destined to fade away.</p>
-<p>Why take on additional supply chain risks adding another dependency when an LLM can likely kick out the subset of functionality needed by your own code to-order?</p>
-<blockquote>
-<p>I still believe in open source, and I’m still doing it (in fits and starts). But one thing has become clear to me: the era of small, low-value libraries like <code>blob-util</code> is over. They were already on their way out thanks to Node.js and the browser taking on more and more of their functionality (see <code>node:glob</code>, <code>structuredClone</code>, etc.), but LLMs are the final nail in the coffin.</p>
-</blockquote>
-<p>I've been thinking about a similar issue myself recently as well.</p>
-<p>Quite a few of my own open source projects exist to solve problems that are frustratingly hard to figure out. <a href="https://github.com/simonw/s3-credentials">s3-credentials</a> is a great example of this: it solves the problem of creating read-only or read-write credentials for an S3 bucket - something that I've always found infuriatingly difficult since you need to know to craft an IAM policy that looks something <a href="https://s3-credentials.readthedocs.io/en/stable/policy-documents.html#read-only">like this</a>:</p>
-<pre><code>{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:ListBucket",
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-s3-bucket"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:GetObjectAcl",
-        "s3:GetObjectLegalHold",
-        "s3:GetObjectRetention",
-        "s3:GetObjectTagging"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-s3-bucket/*"
-      ]
-    }
-  ]
-}
-</code></pre>
-<p>Modern LLMs are very good at S3 IAM polices, to the point that if I needed to solve this problem today I doubt I would find it frustrating enough to justify finding or creating a reusable library to help.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/nolan-lawson">nolan-lawson</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Migrating repositories with GitHub-owned blob storage is now generally available]]></title>
-        <id>https://github.blog/changelog/2025-11-17-migrating-repositories-with-github-owned-blob-storage-is-now-generally-available</id>
-        <link href="https://github.blog/changelog/2025-11-17-migrating-repositories-with-github-owned-blob-storage-is-now-generally-available"/>
-        <updated>2025-11-17T20:36:15.000Z</updated>
-        <summary type="html"><![CDATA[You can now migrate repositories to GitHub Enterprise Cloud (GHEC) with GitHub Enterprise Importer (GEI) using GitHub-owned blob storage. You no longer need to provide GEI with shared access keys…
-The post Migrating repositories with GitHub-owned blob storage is now generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Improved enterprise license consumption reporting for outside collaborators now generally available]]></title>
-        <id>https://github.blog/changelog/2025-11-17-improved-enterprise-license-consumption-reporting-for-outside-collaborators-now-generally-available</id>
-        <link href="https://github.blog/changelog/2025-11-17-improved-enterprise-license-consumption-reporting-for-outside-collaborators-now-generally-available"/>
-        <updated>2025-11-17T18:47:08.000Z</updated>
-        <summary type="html"><![CDATA[We’ve made a key improvement to the enterprise licensing CSV export to help enterprises better track license consumption of outside collaborators across organizations. What’s new? – Outside collaborators are now…
-The post Improved enterprise license consumption reporting for outside collaborators now generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Billing date standardized to the first of the month for self-serve credit card metered Enterprise customers now generally available]]></title>
-        <id>https://github.blog/changelog/2025-11-17-billing-date-standardized-to-the-first-of-the-month-for-self-serve-credit-card-metered-enterprise-customers-now-generally-available</id>
-        <link href="https://github.blog/changelog/2025-11-17-billing-date-standardized-to-the-first-of-the-month-for-self-serve-credit-card-metered-enterprise-customers-now-generally-available"/>
-        <updated>2025-11-17T18:08:50.000Z</updated>
-        <summary type="html"><![CDATA[Starting December 1, 2025, all usage-based GitHub products paid by credit card will be billed on the first of each month. Your billing period will remain the calendar month. No…
-The post Billing date standardized to the first of the month for self-serve credit card metered Enterprise customers now generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Block repository administrators from installing GitHub Apps on their own now in public preview]]></title>
-        <id>https://github.blog/changelog/2025-11-17-block-repository-administrators-from-installing-github-apps-on-their-own-now-in-public-preview</id>
-        <link href="https://github.blog/changelog/2025-11-17-block-repository-administrators-from-installing-github-apps-on-their-own-now-in-public-preview"/>
-        <updated>2025-11-17T17:24:55.000Z</updated>
-        <summary type="html"><![CDATA[Organization owners can now better control which users are allowed to install GitHub Apps across their repositories with a new setting, available in public preview. Previously, any user with admin…
-The post Block repository administrators from installing GitHub Apps on their own now in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Fine-grain permissions for Copilot usage metrics now available]]></title>
-        <id>https://github.blog/changelog/2025-11-17-fine-grain-permissions-for-copilot-usage-metrics-now-available</id>
-        <link href="https://github.blog/changelog/2025-11-17-fine-grain-permissions-for-copilot-usage-metrics-now-available"/>
-        <updated>2025-11-17T16:57:55.000Z</updated>
-        <summary type="html"><![CDATA[What’s new? Enterprise role: View enterprise Copilot metrics You can now access the Copilot Usage Metrics APIs and Dashboard if you are assigned the new enterprise role: View enterprise Copilot…
-The post Fine-grain permissions for Copilot usage metrics now available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
 </feed>

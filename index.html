@@ -25,9 +25,210 @@
 
   <ul>
     <li>
+      <time>2025-12-17</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              firefox parser/html/java/README.txt
+              <span class="post-metadata">(2 min | 640 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/17/firefox-parser/#atom-everything>firefox parser/html/java/README.txt
+Today I was Reminded) that the HTML5 Parser used by Firefox is maintained as Java code (commit history here) and converted to C++ using a custom translation script.
+You can see that in action by checking out the ~8GB Firefox repository and running:
+cd parser/html/java
+make sync
+make translate
+
+Here&#x27;s a terminal session where I did that, including the output of git diff showing the updated C++ files.
+I did some digging and found that the code that does the translation work lives, weirdly, in the Nu Html Checker repository on GitHub which powers the W3C&#x27;s validator.w3.org/nu/ validation service!
+Here&#x27;s a snippet from htmlparser/cpptranslate/CppVisitor.java showing how a class declaration is converted into C++:
+    protected void startClassDeclaration() {
+        printer.print(&quot;#define &quot;);
+        printer.print(className);
+        printer.printLn(&quot;_cpp__&quot;);
+        printer.printLn();
+
+        for (int i &#x3D; 0; i &lt; Main.H_LIST.length; i++) {
+            String klazz &#x3D; Main.H_LIST[i];
+            if (!klazz.equals(javaClassName)) {
+                printer.print(&quot;#include \&quot;&quot;);
+                printer.print(cppTypes.classPrefix());
+                printer.print(klazz);
+                printer.printLn(&quot;.h\&quot;&quot;);
+            }
+        }
+
+        printer.printLn();
+        printer.print(&quot;#include \&quot;&quot;);
+        printer.print(className);
+        printer.printLn(&quot;.h\&quot;&quot;);
+        printer.printLn();
+    }
+Here&#x27;s a fascinating blog post from John Resig explaining how validator author Henri Sivonen introduced the new parser into Firefox in 2009.
+
+    
+Via Hacker News conversation
+Tags: c-plus-plus, firefox2, henri-sivonen, java, john-resig, mozilla</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-12-16</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              The new ChatGPT Images is here
+              <span class="post-metadata">(2 min | 708 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/16/new-chatgpt-images/#atom-everything>The new ChatGPT Images is here
+gained them 100 million new users in a week when they first launched it back in March, but has since been eclipsed by Google&#x27;s Nano Banana and then further by Nana Banana Pro in November.
+The focus for the new ChatGPT Images is speed and instruction following:
+It makes precise edits while keeping details intact, and generates images up to 4x faster
+It&#x27;s also a little cheaper: OpenAI say that the new gpt-image-1.5 API model makes image input and output &quot;20% cheaper in GPT Image 1.5 as compared to GPT Image 1&quot;. 
+I tried a new test prompt against a photo I took of Natalie&#x27;s ceramic stand at the farmers market a few weeks ago:
+Add two kakapos inspecting the pots
+
+Here&#x27;s the result from the new ChatGPT Images model:
+
+And here&#x27;s what I got from Nano Banana Pro:
+
+The ChatGPT Kākāpō are a little chonkier, which I think counts as a win.
+I was a little less impressed by the result I got for an infographic from the prompt &quot;Infographic explaining how the Datasette open source project works&quot; followed by &quot;Run some extensive searches and gather a bunch of relevant information and then try again&quot; (transcript):
+
+See my Nano Banana Pro post for comparison.
+Both models are clearly now usable for text-heavy graphics though, which makes them far more useful than previous generations of this technology.
+
+
+    
+Tags: ai, kakapo, openai, generative-ai, text-to-image, nano-banana</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              s3-credentials 0.17
+              <span class="post-metadata">(2 min | 725 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/16/s3-credentials/#atom-everything>s3-credentials 0.17
+s3-credentials CLI tool for managing credentials needed to access just one S3 bucket. Here are the release notes in full:
+New commands get-bucket-policy and set-bucket-policy. #91
+New commands get-public-access-block and set-public-access-block. #92
+New localserver command for starting a web server that makes time limited credentials accessible via a JSON API. #93
+That s3-credentials localserver command (documented here) is a little obscure, but I found myself wanting something like that to help me test out a new feature I&#x27;m building to help create temporary Litestream credentials using Amazon STS.
+Most of that new feature was built by Claude Code from the following starting prompt:
+Add a feature s3-credentials localserver which starts a localhost weberver running (using the Python standard library stuff) on port 8094 by default but -p/--port can set a different port and otherwise takes an option that names a bucket and then takes the same options for read--write/read-only etc as other commands. It also takes a required --refresh-interval option which can be set as 5m or 10h or 30s. All this thing does is reply on / to a GET request with the IAM expiring credentials that allow access to that bucket with that policy for that specified amount of time. It caches internally the credentials it generates and will return the exact same data up until they expire (it also tracks expected expiry time) after which it will generate new credentials (avoiding dog pile effects if multiple requests ask at the same time) and return and cache those instead.
+Tags: aws, projects, s3, ai, annotated-release-notes, s3-credentials, prompt-engineering, generative-ai, llms, coding-agents, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              ty: An extremely fast Python type checker and LSP
+              <span class="post-metadata">(2 min | 618 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/16/ty/#atom-everything>ty: An extremely fast Python type checker and LSP
+Without caching, ty is consistently between 10x and 60x faster than mypy and Pyright. When run in an editor, the gap is even more dramatic. As an example, after editing a load-bearing file in the PyTorch repository, ty recomputes diagnostics in 4.7ms: 80x faster than Pyright (386ms) and 500x faster than Pyrefly (2.38 seconds). ty is very fast!
+The easiest way to try it out is via uvx:
+cd my-python-project/
+uvx ty check
+
+I tried it against sqlite-utils and it turns out I have quite a lot of work to do!
+Astral also released a new VS Code extension adding ty-powered language server features like go to definition. I&#x27;m still getting my head around how this works and what it can do.
+
+    
+Via Hacker News
+Tags: python, vs-code, astral</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Poe the Poet
+              <span class="post-metadata">(2 min | 618 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/16/poe-the-poet/#atom-everything>Poe the Poet
+pyproject.toml file to execute using uv. There&#x27;s an enormous issue thread on this in the uv issue tracker (300+ comments dating back to August 2024) and from there I learned of several options including this one, Poe the Poet.
+It&#x27;s neat. I added it to my s3-credentials project just now and the following now works for running the live preview server for the documentation:
+uv run poe livehtml
+
+Here&#x27;s the snippet of TOML I added to my pyproject.toml:
+[dependency-groups]
+test &#x3D; [
+    &quot;pytest&quot;,
+    &quot;pytest-mock&quot;,
+    &quot;cogapp&quot;,
+    &quot;moto&gt;&#x3D;5.0.4&quot;,
+]
+docs &#x3D; [
+    &quot;furo&quot;,
+    &quot;sphinx-autobuild&quot;,
+    &quot;myst-parser&quot;,
+    &quot;cogapp&quot;,
+]
+dev &#x3D; [
+    {include-group &#x3D; &quot;test&quot;},
+    {include-group &#x3D; &quot;docs&quot;},
+    &quot;poethepoet&gt;&#x3D;0.38.0&quot;,
+]
+
+[tool.poe.tasks]
+docs &#x3D; &quot;sphinx-build -M html docs docs/_build&quot;
+livehtml &#x3D; &quot;sphinx-autobuild -b html docs docs/_build&quot;
+cog &#x3D; &quot;cog -r docs/*.md&quot;
+Since poethepoet is in the dev&#x3D; dependency group any time I run uv run ... it will be available in the environment.
+
+
+    
+Tags: packaging, python, s3-credentials, uv</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enterprise governance and policy improvements for secret scanning
+              <span class="post-metadata">(6 min | 1707 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-12-16-enterprise-governance-and-policy-improvements-for-secret-scanning-now-generally-available>At GitHub, we care deeply about ensuring enterprise-readiness of our products. From recent improvements including enterprise-level delegated bypass controls for push protection, to support for the new Enterprise Security Manager…
+The post Enterprise governance and policy improvements for secret scanning appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              C++ code editing tools for GitHub Copilot in public preview
+              <span class="post-metadata">(5 min | 1482 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2025-12-16-c-code-editing-tools-for-github-copilot-in-public-preview>C++ code editing tools for GitHub Copilot are now in public preview in the latest Visual Studio 2026 Insiders release. These tools extend Copilot’s ability to understand and modify C++…
+The post C++ code editing tools for GitHub Copilot in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5112,129 +5313,6 @@ The post Plan mode in GitHub Copilot now in public preview in JetBrains, Eclipse
               <a target="_blank" href=https://www.oneusefulthing.org/p/three-years-from-gpt-3-to-gemini>From chatbots to agents</a>
             </div>
             <!-- <p class="post-source">One Useful Thing</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-11-17</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              The fate of “small” open source
-              <span class="post-metadata">(2 min | 540 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/17/the-fate-of-small-open-source/#atom-everything>The fate of “small” open source
-blob-util is destined to fade away.
-Why take on additional supply chain risks adding another dependency when an LLM can likely kick out the subset of functionality needed by your own code to-order?
-I still believe in open source, and I’m still doing it (in fits and starts). But one thing has become clear to me: the era of small, low-value libraries like blob-util is over. They were already on their way out thanks to Node.js and the browser taking on more and more of their functionality (see node:glob, structuredClone, etc.), but LLMs are the final nail in the coffin.
-I&#x27;ve been thinking about a similar issue myself recently as well.
-Quite a few of my own open source projects exist to solve problems that are frustratingly hard to figure out. s3-credentials is a great example of this: it solves the problem of creating read-only or read-write credentials for an S3 bucket - something that I&#x27;ve always found infuriatingly difficult since you need to know to craft an IAM policy that looks something like this:
-{
-  &quot;Version&quot;: &quot;2012-10-17&quot;,
-  &quot;Statement&quot;: [
-    {
-      &quot;Effect&quot;: &quot;Allow&quot;,
-      &quot;Action&quot;: [
-        &quot;s3:ListBucket&quot;,
-        &quot;s3:GetBucketLocation&quot;
-      ],
-      &quot;Resource&quot;: [
-        &quot;arn:aws:s3:::my-s3-bucket&quot;
-      ]
-    },
-    {
-      &quot;Effect&quot;: &quot;Allow&quot;,
-      &quot;Action&quot;: [
-        &quot;s3:GetObject&quot;,
-        &quot;s3:GetObjectAcl&quot;,
-        &quot;s3:GetObjectLegalHold&quot;,
-        &quot;s3:GetObjectRetention&quot;,
-        &quot;s3:GetObjectTagging&quot;
-      ],
-      &quot;Resource&quot;: [
-        &quot;arn:aws:s3:::my-s3-bucket/*&quot;
-      ]
-    }
-  ]
-}
-
-Modern LLMs are very good at S3 IAM polices, to the point that if I needed to solve this problem today I doubt I would find it frustrating enough to justify finding or creating a reusable library to help.
-
-
-    
-Tags: open-source, ai, generative-ai, llms, ai-assisted-programming, nolan-lawson</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Migrating repositories with GitHub-owned blob storage is now generally available
-              <span class="post-metadata">(5 min | 1388 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-17-migrating-repositories-with-github-owned-blob-storage-is-now-generally-available>You can now migrate repositories to GitHub Enterprise Cloud (GHEC) with GitHub Enterprise Importer (GEI) using GitHub-owned blob storage. You no longer need to provide GEI with shared access keys…
-The post Migrating repositories with GitHub-owned blob storage is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Improved enterprise license consumption reporting for outside collaborators now generally available
-              <span class="post-metadata">(5 min | 1366 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-17-improved-enterprise-license-consumption-reporting-for-outside-collaborators-now-generally-available>We’ve made a key improvement to the enterprise licensing CSV export to help enterprises better track license consumption of outside collaborators across organizations. What’s new? – Outside collaborators are now…
-The post Improved enterprise license consumption reporting for outside collaborators now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Billing date standardized to the first of the month for self-serve credit card metered Enterprise customers now generally available
-              <span class="post-metadata">(5 min | 1460 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-17-billing-date-standardized-to-the-first-of-the-month-for-self-serve-credit-card-metered-enterprise-customers-now-generally-available>Starting December 1, 2025, all usage-based GitHub products paid by credit card will be billed on the first of each month. Your billing period will remain the calendar month. No…
-The post Billing date standardized to the first of the month for self-serve credit card metered Enterprise customers now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Block repository administrators from installing GitHub Apps on their own now in public preview
-              <span class="post-metadata">(5 min | 1469 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-17-block-repository-administrators-from-installing-github-apps-on-their-own-now-in-public-preview>Organization owners can now better control which users are allowed to install GitHub Apps across their repositories with a new setting, available in public preview. Previously, any user with admin…
-The post Block repository administrators from installing GitHub Apps on their own now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Fine-grain permissions for Copilot usage metrics now available
-              <span class="post-metadata">(5 min | 1423 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-17-fine-grain-permissions-for-copilot-usage-metrics-now-available>What’s new? Enterprise role: View enterprise Copilot metrics You can now access the Copilot Usage Metrics APIs and Dashboard if you are assigned the new enterprise role: View enterprise Copilot…
-The post Fine-grain permissions for Copilot usage metrics now available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
           </details>
       </article>
 
