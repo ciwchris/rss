@@ -2,10 +2,93 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2025-12-18T21:10:37.002Z</updated>
+    <updated>2025-12-19T14:12:20.151Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Introducing GPT-5.2-Codex]]></title>
+        <id>https://simonwillison.net/2025/Dec/19/introducing-gpt-52-codex/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/19/introducing-gpt-52-codex/#atom-everything"/>
+        <updated>2025-12-19T05:21:17.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://openai.com/index/introducing-gpt-5-2-codex/">Introducing GPT-5.2-Codex</a></strong></p>
+The latest in OpenAI's <a href="https://simonwillison.net/tags/gpt-codex/">Codex family of models</a> (not the same thing as their Codex CLI or Codex Cloud coding agent tools).</p>
+<blockquote>
+<p>GPT‑5.2-Codex is a version of <a href="https://openai.com/index/introducing-gpt-5-2/">GPT‑5.2⁠</a> further optimized for agentic coding in Codex, including improvements on long-horizon work through context compaction, stronger performance on large code changes like refactors and migrations, improved performance in Windows environments, and significantly stronger cybersecurity capabilities.</p>
+</blockquote>
+<p>As with some previous Codex models this one is available via their Codex coding agents now and will be coming to the API "in the coming weeks". Unlike previous models there's a new invite-only preview process for vetted cybersecurity professionals for "more permissive models".</p>
+<p>I've been very impressed recently with GPT 5.2's ability to <a href="https://simonwillison.net/2025/Dec/15/porting-justhtml/">tackle multi-hour agentic coding challenges</a>. 5.2 Codex scores 64% on the Terminal-Bench 2.0 benchmark that GPT-5.2 scored 62.2% on. I'm not sure how concrete that 1.8% improvement will be!</p>
+<p>I didn't hack API access together this time (see <a href="https://simonwillison.net/2025/Nov/9/gpt-5-codex-mini/">previous attempts</a>), instead opting to just ask Codex CLI to "Generate an SVG of a pelican riding a bicycle" while running the new model (effort medium). <a href="https://tools.simonwillison.net/codex-timeline?url=https://gist.githubusercontent.com/simonw/10ad81e82889a97a7d28827e0ea6d768/raw/d749473b37d86d519b4c3fa0892b5e54b5941b38/rollout-2025-12-18T16-09-10-019b33f0-6111-7840-89b0-aedf755a6e10.jsonl#tz=local&amp;q=&amp;type=all&amp;payload=all&amp;role=all&amp;hide=1&amp;truncate=1&amp;sel=3">Here's the transcript</a> in my new Codex CLI timeline viewer, and here's the pelican it drew:</p>
+<p><img alt="Alt text by GPT-5.2-Codex: A minimalist illustration of a white pelican with a large orange beak riding a teal bicycle across a sandy strip of ground. The pelican leans forward as if pedaling, its wings tucked back and legs reaching toward the pedals. Simple gray motion lines trail behind it, and a pale yellow sun sits in the top‑right against a warm beige sky." src="https://static.simonwillison.net/static/2025/5.2-codex-pelican.png" />
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a>, <a href="https://simonwillison.net/tags/gpt-codex">gpt-codex</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Agent Skills]]></title>
+        <id>https://simonwillison.net/2025/Dec/19/agent-skills/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/19/agent-skills/#atom-everything"/>
+        <updated>2025-12-19T01:09:18.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://agentskills.io/">Agent Skills</a></strong></p>
+Anthropic have turned their <a href="https://simonwillison.net/tags/skills/">skills mechanism</a> into an "open standard", which I guess means it lives in an independent <a href="https://github.com/agentskills/agentskills">agentskills/agentskills</a> GitHub repository now? I wouldn't be surprised to see this end up <a href="https://simonwillison.net/2025/Dec/9/agentic-ai-foundation/">in the AAIF</a>, recently the new home of the MCP specification.</p>
+<p>The specification itself lives at <a href="https://agentskills.io/specification">agentskills.io/specification</a>, published from <a href="https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx">docs/specification.mdx</a> in the repo.</p>
+<p>It is a deliciously tiny specification - you can read the entire thing in just a few minutes. It's also quite heavily under-specified - for example, there's a <code>metadata</code> field described like this:</p>
+<blockquote>
+<p>Clients can use this to store additional properties not defined by the Agent Skills spec</p>
+<p>We recommend making your key names reasonably unique to avoid accidental conflicts</p>
+</blockquote>
+<p>And an <code>allowed-skills</code> field:</p>
+<blockquote>
+<p>Experimental. Support for this field may vary between agent implementations</p>
+<p>Example:</p>
+<pre><code>allowed-tools: Bash(git:*) Bash(jq:*) Read
+</code></pre>
+</blockquote>
+<p>The Agent Skills homepage promotes adoption by OpenCode, Cursor,Amp, Letta, goose, GitHub, and VS Code. Notably absent is OpenAI, who are <a href="https://simonwillison.net/2025/Dec/12/openai-skills/">quietly tinkering with skills</a> but don't appear to have formally announced their support just yet.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/skills">skills</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[swift-justhtml]]></title>
+        <id>https://simonwillison.net/2025/Dec/18/swift-justhtml/#atom-everything</id>
+        <link href="https://simonwillison.net/2025/Dec/18/swift-justhtml/#atom-everything"/>
+        <updated>2025-12-18T23:57:58.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/kylehowells/swift-justhtml">swift-justhtml</a></strong></p>
+First there was Emil Stenström's <a href="https://simonwillison.net/2025/Dec/14/justhtml/">JustHTML in Python</a>, then my <a href="https://simonwillison.net/2025/Dec/15/porting-justhtml/">justjshtml in JavaScript</a>, then Anil Madhavapeddy's <a href="https://simonwillison.net/2025/Dec/17/vibespiling/">html5rw in OCaml</a>, and now Kyle Howells has built a vibespiled dependency-free HTML5 parser for Swift using the same coding agent tricks against the <a href="https://github.com/html5lib/html5lib-tests">html5lib-tests</a> test suite.</p>
+<p>Kyle ran <a href="https://github.com/kylehowells/swift-justhtml/blob/master/Benchmarks/BENCHMARK_RESULTS.md#performance-comparison">some benchmarks</a> to compare the different implementations:</p>
+<blockquote>
+<ul>
+<li><strong>Rust (html5ever)</strong> total parse time: 303 ms</li>
+<li><strong>Swift</strong> total parse time: 1313 ms</li>
+<li><strong>JavaScript</strong> total parse time: 1035 ms</li>
+<li><strong>Python</strong> total parse time: 4189 ms</li>
+</ul>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/html5">html5</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/swift">swift</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[CodeQL 2.23.7 and 2.23.8 add security queries for Go and Rust]]></title>
+        <id>https://github.blog/changelog/2025-12-18-codeql-2-23-7-and-2-23-8-add-security-queries-for-go-and-rust</id>
+        <link href="https://github.blog/changelog/2025-12-18-codeql-2-23-7-and-2-23-8-add-security-queries-for-go-and-rust"/>
+        <updated>2025-12-18T23:03:15.000Z</updated>
+        <summary type="html"><![CDATA[CodeQL is the static analysis engine behind GitHub’s Code Scanning and Code Quality products, which find and remediate issues relating to code quality and security. We’ve recently released CodeQL 2.23.7…
+The post CodeQL 2.23.7 and 2.23.8 add security queries for Go and Rust appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Assigning GitHub Copilot to an issue now adds you as an assignee]]></title>
         <id>https://github.blog/changelog/2025-12-18-assigning-github-copilot-to-an-issue-now-adds-you-as-an-assignee</id>
@@ -158,6 +241,16 @@ with ability to Report Map Issues to OpenStreetMap directly. A new "Report an is
 The post Enterprise-level pull request activity now included in Copilot Usage Metrics in public preview appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[functiongemma]]></title>
+        <id>https://ollama.com/library/functiongemma</id>
+        <link href="https://ollama.com/library/functiongemma"/>
+        <updated>2025-12-18T07:03:00.000Z</updated>
+        <summary type="html"><![CDATA[FunctionGemma is a specialized version of Google's Gemma 3 270M model fine-tuned explicitly for function calling.]]></summary>
+        <author>
+            <name>Ollama models</name>
         </author>
     </entry>
     <entry>
@@ -3785,215 +3878,6 @@ The post Linter integration with Copilot code review now in public preview appea
 The post Enterprise bring your own key (BYOK) for GitHub Copilot is now in public preview appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Nicholas Carlini]]></title>
-        <id>https://simonwillison.net/2025/Nov/20/nicholas-carlini/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/20/nicholas-carlini/#atom-everything"/>
-        <updated>2025-11-20T01:01:44.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://nicholas.carlini.com/writing/2025/are-llms-worth-it.html"><p>Previously, when malware developers wanted to go and monetize their exploits, they would do exactly one thing: encrypt every file on a person's computer and request a ransome to decrypt the files. In the future I think this will change.</p>
-<p>LLMs allow attackers to instead process every file on the victim's computer, and tailor a blackmail letter specifically towards that person. One person may be having an affair on their spouse. Another may have lied on their resume. A third may have cheated on an exam at school. It is unlikely that any one person has done any of these specific things, but it is very likely that there exists something that is blackmailable for every person. Malware + LLMs, given access to a person's computer, can find that and monetize it.</p></blockquote>
-<p class="cite">&mdash; <a href="https://nicholas.carlini.com/writing/2025/are-llms-worth-it.html">Nicholas Carlini</a>, Are large language models worth it? Misuse: malware at scale</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/nicholas-carlini">nicholas-carlini</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Building more with GPT-5.1-Codex-Max]]></title>
-        <id>https://simonwillison.net/2025/Nov/19/gpt-51-codex-max/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/19/gpt-51-codex-max/#atom-everything"/>
-        <updated>2025-11-19T23:15:10.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://openai.com/index/gpt-5-1-codex-max/">Building more with GPT-5.1-Codex-Max</a></strong></p>
-Hot on the heels of yesterday's <a href="https://simonwillison.net/2025/Nov/18/gemini-3/">Gemini 3 Pro release</a> comes a new model from OpenAI called GPT-5.1-Codex-Max.</p>
-<p>(Remember when GPT-5 was meant to bring in a new era of less confusing model names? That didn't last!)</p>
-<p>It's currently only available through their <a href="https://developers.openai.com/codex/cli/">Codex CLI coding agent</a>, where it's the new default model:</p>
-<blockquote>
-<p>Starting today, GPT‑5.1-Codex-Max will replace GPT‑5.1-Codex as the default model in Codex surfaces. Unlike GPT‑5.1, which is a general-purpose model, we recommend using GPT‑5.1-Codex-Max and the Codex family of models only for agentic coding tasks in Codex or Codex-like environments.</p>
-</blockquote>
-<p>It's not available via the API yet but should be shortly.</p>
-<p>The timing of this release is interesting given that Gemini 3 Pro appears to have <a href="https://simonwillison.net/2025/Nov/18/gemini-3/#benchmarks">aced almost all of the benchmarks</a> just yesterday. It's reminiscent of the period in 2024 when OpenAI consistently made big announcements that happened to coincide with Gemini releases.</p>
-<p>OpenAI's self-reported <a href="https://openai.com/index/introducing-swe-bench-verified/">SWE-Bench Verified</a> score is particularly notable: 76.5% for thinking level "high" and 77.9% for the new "xhigh". That was the one benchmark where Gemini 3 Pro was out-performed by Claude Sonnet 4.5 - Gemini 3 Pro got 76.2% and Sonnet 4.5 got 77.2%. OpenAI now have the highest scoring model there by a full .7 of a percentage point!</p>
-<p>They also report a score of 58.1% on <a href="https://www.tbench.ai/leaderboard/terminal-bench/2.0">Terminal Bench 2.0</a>, beating Gemini 3 Pro's 54.2% (and Sonnet 4.5's 42.8%.)</p>
-<p>The most intriguing part of this announcement concerns the model's approach to long context problems:</p>
-<blockquote>
-<p>GPT‑5.1-Codex-Max is built for long-running, detailed work. It’s our first model natively trained to operate across multiple context windows through a process called <em>compaction</em>, coherently working over millions of tokens in a single task. [...]</p>
-<p>Compaction enables GPT‑5.1-Codex-Max to complete tasks that would have previously failed due to context-window limits, such as complex refactors and long-running agent loops by pruning its history while preserving the most important context over long horizons. In Codex applications, GPT‑5.1-Codex-Max automatically compacts its session when it approaches its context window limit, giving it a fresh context window. It repeats this process until the task is completed.</p>
-</blockquote>
-<p>There's a lot of confusion <a href="https://news.ycombinator.com/item?id=45982649">on Hacker News</a> about what this actually means. Claude Code already does a version of compaction, automatically summarizing previous turns when the context runs out. Does this just mean that Codex-Max is better at that process?</p>
-<p>I had it draw me a couple of pelicans by typing "Generate an SVG of a pelican riding a bicycle" directly into the Codex CLI tool. Here's thinking level medium:</p>
-<p><img alt="A flat-style illustration shows a white, round-bodied bird with an orange beak pedaling a red-framed bicycle with thin black wheels along a sandy beach, with a calm blue ocean and clear sky in the background." src="https://static.simonwillison.net/static/2025/codex-max-medium.jpg" /></p>
-<p>And here's thinking level "xhigh":</p>
-<p><img alt="A plump white bird with an orange beak and small black eyes crouches low on a blue bicycle with oversized dark wheels, shown racing forward with motion lines against a soft gradient blue sky." src="https://static.simonwillison.net/static/2025/codex-max-xhigh.jpg" /></p>
-<p>I also tried xhigh on the my <a href="https://simonwillison.net/2025/Nov/18/gemini-3/#and-a-new-pelican-benchmark">longer pelican test prompt</a>, which came out like this:</p>
-<p><img alt="A stylized dark gray bird with layered wings, a yellow head crest, and a long brown beak leans forward in a racing pose on a black-framed bicycle, riding across a glossy blue surface under a pale sky." src="https://static.simonwillison.net/static/2025/codex-breeding-max-xhigh.jpg" /></p>
-<p>Also today: <a href="https://x.com/openai/status/1991266192905179613">GPT-5.1 Pro is rolling out today to all Pro users</a>. According to the <a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes">ChatGPT release notes</a>:</p>
-<blockquote>
-<p>GPT-5.1 Pro is rolling out today for all ChatGPT Pro users and is available in the model picker. GPT-5 Pro will remain available as a legacy model for 90 days before being retired.</p>
-</blockquote>
-<p>That's a pretty fast deprecation cycle for the GPT-5 Pro model that was released just three months ago.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=45982649">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/gpt-5">gpt-5</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[How I automate my Substack newsletter with content from my blog]]></title>
-        <id>https://simonwillison.net/2025/Nov/19/how-i-automate-my-substack-newsletter/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Nov/19/how-i-automate-my-substack-newsletter/#atom-everything"/>
-        <updated>2025-11-19T22:00:34.000Z</updated>
-        <summary type="html"><![CDATA[<p>I sent out <a href="https://simonw.substack.com/p/trying-out-gemini-3-pro-with-audio">my weekly-ish Substack newsletter</a> this morning and took the opportunity to record <a href="https://www.youtube.com/watch?v=BoPZltKDM-s">a YouTube video</a> demonstrating my process and describing the different components that make it work. There's a <em>lot</em> of digital duct tape involved, taking the content from Django+Heroku+PostgreSQL to GitHub Actions to SQLite+Datasette+Fly.io to JavaScript+Observable and finally to Substack.</p>
-
-<p><lite-youtube videoid="BoPZltKDM-s" js-api="js-api"
-  title="How I automate my Substack newsletter with content from my blog"
-  playlabel="Play: How I automate my Substack newsletter with content from my blog"
-> </lite-youtube></p>
-
-<p>The core process is the same as I described <a href="https://simonwillison.net/2023/Apr/4/substack-observable/">back in 2023</a>. I have an Observable notebook called <a href="https://observablehq.com/@simonw/blog-to-newsletter">blog-to-newsletter</a> which fetches content from my blog's database, filters out anything that has been in the newsletter before, formats what's left as HTML and offers a big "Copy rich text newsletter to clipboard" button.</p>
-<p><img src="https://static.simonwillison.net/static/2025/copy-to-newsletter.jpg" alt="Screenshot of the interface. An item in a list says 9080: Trying out Gemini 3 Pro with audio transcription and a new pelican benchmark. A huge button reads Copy rich text newsletter to clipboard - below is a smaller button that says Copy just the links/quotes/TILs. A Last X days slider is set to 2. There are checkboxes for SKip content sent in prior newsletters and only include post content prior to the cutoff comment." style="max-width: 100%;" /></p>
-<p>I click that button, paste the result into the Substack editor, tweak a few things and hit send. The whole process usually takes just a few minutes.</p>
-<p>I make very minor edits:</p>
-<ul>
-<li>I set the title and the subheading for the newsletter. This is often a direct copy of the title of the featured blog post.</li>
-<li>Substack turns YouTube URLs into embeds, which often isn't what I want - especially if I have a YouTube URL inside a code example.</li>
-<li>Blocks of preformatted text often have an extra blank line at the end, which I remove.</li>
-<li>Occasionally I'll make a content edit - removing a piece of content that doesn't fit the newsletter, or fixing a time reference like "yesterday" that doesn't make sense any more.</li>
-<li>I pick the featured image for the newsletter and add some tags.</li>
-</ul>
-<p>That's the whole process!</p>
-<h4 id="the-observable-notebook">The Observable notebook</h4>
-<p>The most important cell in the Observable notebook is this one:</p>
-<div class="highlight highlight-source-js"><pre><span class="pl-s1">raw_content</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
-  <span class="pl-c1">return</span> <span class="pl-s1">await</span> <span class="pl-kos">(</span>
-    <span class="pl-k">await</span> <span class="pl-en">fetch</span><span class="pl-kos">(</span>
-      <span class="pl-s">`https://datasette.simonwillison.net/simonwillisonblog.json?sql=<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-en">encodeURIComponent</span><span class="pl-kos">(</span></span></span>
-<span class="pl-s"><span class="pl-s1">        <span class="pl-s1">sql</span></span></span>
-<span class="pl-s"><span class="pl-s1">      <span class="pl-kos">)</span><span class="pl-kos">}</span></span>&amp;_shape=array&amp;numdays=<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">numDays</span><span class="pl-kos">}</span></span>`</span>
-    <span class="pl-kos">)</span>
-  <span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">json</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-<span class="pl-kos">}</span></pre></div>
-<p>This uses the JavaScript <code>fetch()</code> function to pull data from my blog's Datasette instance, using a very complex SQL query that is composed elsewhere in the notebook.</p>
-<p>Here's a link to <a href="https://datasette.simonwillison.net/simonwillisonblog?sql=with+content+as+%28%0D%0A++select%0D%0A++++id%2C%0D%0A++++%27entry%27+as+type%2C%0D%0A++++title%2C%0D%0A++++created%2C%0D%0A++++slug%2C%0D%0A++++%27%3Ch3%3E%3Ca+href%3D%22%27+%7C%7C+%27https%3A%2F%2Fsimonwillison.net%2F%27+%7C%7C+strftime%28%27%25Y%2F%27%2C+created%29%0D%0A++++++%7C%7C+substr%28%27JanFebMarAprMayJunJulAugSepOctNovDec%27%2C+%28strftime%28%27%25m%27%2C+created%29+-+1%29+*+3+%2B+1%2C+3%29+%0D%0A++++++%7C%7C+%27%2F%27+%7C%7C+cast%28strftime%28%27%25d%27%2C+created%29+as+integer%29+%7C%7C+%27%2F%27+%7C%7C+slug+%7C%7C+%27%2F%27+%7C%7C+%27%22%3E%27+%0D%0A++++++%7C%7C+title+%7C%7C+%27%3C%2Fa%3E+-+%27+%7C%7C+date%28created%29+%7C%7C+%27%3C%2Fh3%3E%27+%7C%7C+body%0D%0A++++++as+html%2C%0D%0A++++%27null%27+as+json%2C%0D%0A++++%27%27+as+external_url%0D%0A++from+blog_entry%0D%0A++union+all%0D%0A++select%0D%0A++++id%2C%0D%0A++++%27blogmark%27+as+type%2C%0D%0A++++link_title%2C%0D%0A++++created%2C%0D%0A++++slug%2C%0D%0A++++%27%3Cp%3E%3Cstrong%3ELink%3C%2Fstrong%3E+%27+%7C%7C+date%28created%29+%7C%7C+%27+%3Ca+href%3D%22%27%7C%7C+link_url+%7C%7C+%27%22%3E%27%0D%0A++++++%7C%7C+link_title+%7C%7C+%27%3C%2Fa%3E%3A%3C%2Fp%3E%3Cp%3E%27+%7C%7C+%27+%27+%7C%7C+replace%28commentary%2C+%27%0D%0A%27%2C+%27%3Cbr%3E%27%29+%7C%7C+%27%3C%2Fp%3E%27%0D%0A++++++as+html%2C%0D%0A++++json_object%28%0D%0A++++++%27created%27%2C+date%28created%29%2C%0D%0A++++++%27link_url%27%2C+link_url%2C%0D%0A++++++%27link_title%27%2C+link_title%2C%0D%0A++++++%27commentary%27%2C+commentary%2C%0D%0A++++++%27use_markdown%27%2C+use_markdown%0D%0A++++%29+as+json%2C%0D%0A++link_url+as+external_url%0D%0A++from+blog_blogmark%0D%0A++union+all%0D%0A++select%0D%0A++++id%2C%0D%0A++++%27quotation%27+as+type%2C%0D%0A++++source%2C%0D%0A++++created%2C%0D%0A++++slug%2C%0D%0A++++%27%3Cstrong%3Equote%3C%2Fstrong%3E+%27+%7C%7C+date%28created%29+%7C%7C%0D%0A++++%27%3Cblockquote%3E%3Cp%3E%3Cem%3E%27+%7C%7C%0D%0A++++replace%28quotation%2C+%27%0D%0A%27%2C+%27%3Cbr%3E%27%29+%7C%7C+%0D%0A++++%27%3C%2Fem%3E%3C%2Fp%3E%3C%2Fblockquote%3E%3Cp%3E%3Ca+href%3D%22%27+%7C%7C%0D%0A++++coalesce%28source_url%2C+%27%23%27%29+%7C%7C+%27%22%3E%27+%7C%7C+source+%7C%7C+%27%3C%2Fa%3E%27+%7C%7C%0D%0A++++case+%0D%0A++++++++when+nullif%28trim%28context%29%2C+%27%27%29+is+not+null+%0D%0A++++++++then+%27%2C+%27+%7C%7C+context+%0D%0A++++++++else+%27%27+%0D%0A++++end+%7C%7C%0D%0A++++%27%3C%2Fp%3E%27+as+html%2C%0D%0A++++%27null%27+as+json%2C%0D%0A++++source_url+as+external_url%0D%0A++from+blog_quotation%0D%0A++union+all%0D%0A++select%0D%0A++++id%2C%0D%0A++++%27note%27+as+type%2C%0D%0A++++case%0D%0A++++++when+title+is+not+null+and+title+%3C%3E+%27%27+then+title%0D%0A++++++else+%27Note+on+%27+%7C%7C+date%28created%29%0D%0A++++end%2C%0D%0A++++created%2C%0D%0A++++slug%2C%0D%0A++++%27No+HTML%27%2C%0D%0A++++json_object%28%0D%0A++++++%27created%27%2C+date%28created%29%2C%0D%0A++++++%27link_url%27%2C+%27https%3A%2F%2Fsimonwillison.net%2F%27+%7C%7C+strftime%28%27%25Y%2F%27%2C+created%29%0D%0A++++++%7C%7C+substr%28%27JanFebMarAprMayJunJulAugSepOctNovDec%27%2C+%28strftime%28%27%25m%27%2C+created%29+-+1%29+*+3+%2B+1%2C+3%29+%0D%0A++++++%7C%7C+%27%2F%27+%7C%7C+cast%28strftime%28%27%25d%27%2C+created%29+as+integer%29+%7C%7C+%27%2F%27+%7C%7C+slug+%7C%7C+%27%2F%27%2C%0D%0A++++++%27link_title%27%2C+%27%27%2C%0D%0A++++++%27commentary%27%2C+body%2C%0D%0A++++++%27use_markdown%27%2C+1%0D%0A++++%29%2C%0D%0A++++%27%27+as+external_url%0D%0A++from+blog_note%0D%0A++union+all%0D%0A++select%0D%0A++++rowid%2C%0D%0A++++%27til%27+as+type%2C%0D%0A++++title%2C%0D%0A++++created%2C%0D%0A++++%27null%27+as+slug%2C%0D%0A++++%27%3Cp%3E%3Cstrong%3ETIL%3C%2Fstrong%3E+%27+%7C%7C+date%28created%29+%7C%7C+%27+%3Ca+href%3D%22%27%7C%7C+%27https%3A%2F%2Ftil.simonwillison.net%2F%27+%7C%7C+topic+%7C%7C+%27%2F%27+%7C%7C+slug+%7C%7C+%27%22%3E%27+%7C%7C+title+%7C%7C+%27%3C%2Fa%3E%3A%27+%7C%7C+%27+%27+%7C%7C+substr%28html%2C+1%2C+instr%28html%2C+%27%3C%2Fp%3E%27%29+-+1%29+%7C%7C+%27+%26%238230%3B%3C%2Fp%3E%27+as+html%2C%0D%0A++++%27null%27+as+json%2C%0D%0A++++%27https%3A%2F%2Ftil.simonwillison.net%2F%27+%7C%7C+topic+%7C%7C+%27%2F%27+%7C%7C+slug+as+external_url%0D%0A++from+til%0D%0A%29%2C%0D%0Acollected+as+%28%0D%0A++select%0D%0A++++id%2C%0D%0A++++type%2C%0D%0A++++title%2C%0D%0A++++case%0D%0A++++++when+type+%3D+%27til%27%0D%0A++++++then+external_url%0D%0A++++++else+%27https%3A%2F%2Fsimonwillison.net%2F%27+%7C%7C+strftime%28%27%25Y%2F%27%2C+created%29%0D%0A++++++%7C%7C+substr%28%27JanFebMarAprMayJunJulAugSepOctNovDec%27%2C+%28strftime%28%27%25m%27%2C+created%29+-+1%29+*+3+%2B+1%2C+3%29+%7C%7C+%0D%0A++++++%27%2F%27+%7C%7C+cast%28strftime%28%27%25d%27%2C+created%29+as+integer%29+%7C%7C+%27%2F%27+%7C%7C+slug+%7C%7C+%27%2F%27%0D%0A++++++end+as+url%2C%0D%0A++++created%2C%0D%0A++++html%2C%0D%0A++++json%2C%0D%0A++++external_url%2C%0D%0A++++case%0D%0A++++++when+type+%3D+%27entry%27+then+%28%0D%0A++++++++select+json_group_array%28tag%29%0D%0A++++++++from+blog_tag%0D%0A++++++++join+blog_entry_tags+on+blog_tag.id+%3D+blog_entry_tags.tag_id%0D%0A++++++++where+blog_entry_tags.entry_id+%3D+content.id%0D%0A++++++%29%0D%0A++++++when+type+%3D+%27blogmark%27+then+%28%0D%0A++++++++select+json_group_array%28tag%29%0D%0A++++++++from+blog_tag%0D%0A++++++++join+blog_blogmark_tags+on+blog_tag.id+%3D+blog_blogmark_tags.tag_id%0D%0A++++++++where+blog_blogmark_tags.blogmark_id+%3D+content.id%0D%0A++++++%29%0D%0A++++++when+type+%3D+%27quotation%27+then+%28%0D%0A++++++++select+json_group_array%28tag%29%0D%0A++++++++from+blog_tag%0D%0A++++++++join+blog_quotation_tags+on+blog_tag.id+%3D+blog_quotation_tags.tag_id%0D%0A++++++++where+blog_quotation_tags.quotation_id+%3D+content.id%0D%0A++++++%29%0D%0A++++++else+%27%5B%5D%27%0D%0A++++end+as+tags%0D%0A++from+content%0D%0A++where+created+%3E%3D+date%28%27now%27%2C+%27-%27+%7C%7C+%3Anumdays+%7C%7C+%27+days%27%29+++%0D%0A++order+by+created+desc%0D%0A%29%0D%0Aselect+id%2C+type%2C+title%2C+url%2C+created%2C+html%2C+json%2C+external_url%2C+tags%0D%0Afrom+collected+%0D%0Aorder+by+%0D%0A++case+type+%0D%0A++++when+%27entry%27+then+0+%0D%0A++++else+1+%0D%0A++end%2C%0D%0A++case+type+%0D%0A++++when+%27entry%27+then+created+%0D%0A++++else+-strftime%28%27%25s%27%2C+created%29+%0D%0A++end+desc%3B&amp;numdays=7">see and execute that query</a> directly in Datasette. It's 143 lines of convoluted SQL that assembles most of the HTML for the newsletter using SQLite string concatenation! An illustrative snippet:</p>
-<div class="highlight highlight-source-sql"><pre>with content <span class="pl-k">as</span> (
-  <span class="pl-k">select</span>
-    id,
-    <span class="pl-s"><span class="pl-pds">'</span>entry<span class="pl-pds">'</span></span> <span class="pl-k">as</span> type,
-    title,
-    created,
-    slug,
-    <span class="pl-s"><span class="pl-pds">'</span>&lt;h3&gt;&lt;a href="<span class="pl-pds">'</span></span> <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span>https://simonwillison.net/<span class="pl-pds">'</span></span> <span class="pl-k">||</span> strftime(<span class="pl-s"><span class="pl-pds">'</span>%Y/<span class="pl-pds">'</span></span>, created)
-      <span class="pl-k">||</span> substr(<span class="pl-s"><span class="pl-pds">'</span>JanFebMarAprMayJunJulAugSepOctNovDec<span class="pl-pds">'</span></span>, (strftime(<span class="pl-s"><span class="pl-pds">'</span>%m<span class="pl-pds">'</span></span>, created) <span class="pl-k">-</span> <span class="pl-c1">1</span>) <span class="pl-k">*</span> <span class="pl-c1">3</span> <span class="pl-k">+</span> <span class="pl-c1">1</span>, <span class="pl-c1">3</span>) 
-      <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span> <span class="pl-k">||</span> cast(strftime(<span class="pl-s"><span class="pl-pds">'</span>%d<span class="pl-pds">'</span></span>, created) <span class="pl-k">as</span> <span class="pl-k">integer</span>) <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span> <span class="pl-k">||</span> slug <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span> <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span>"&gt;<span class="pl-pds">'</span></span> 
-      <span class="pl-k">||</span> title <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;/a&gt; - <span class="pl-pds">'</span></span> <span class="pl-k">||</span> <span class="pl-k">date</span>(created) <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;/h3&gt;<span class="pl-pds">'</span></span> <span class="pl-k">||</span> body
-      <span class="pl-k">as</span> html,
-    <span class="pl-s"><span class="pl-pds">'</span>null<span class="pl-pds">'</span></span> <span class="pl-k">as</span> json,
-    <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span> <span class="pl-k">as</span> external_url
-  <span class="pl-k">from</span> blog_entry
-  <span class="pl-k">union all</span>
-  <span class="pl-c"><span class="pl-c">#</span> ...</span></pre></div>
-<p>My blog's URLs look like <code>/2025/Nov/18/gemini-3/</code> - this SQL constructs that three letter month abbreviation from the month number using a substring operation.</p>
-<p>This is a <em>terrible</em> way to assemble HTML, but I've stuck with it because it amuses me.</p>
-<p>The rest of the Observable notebook takes that data, filters out anything that links to content mentioned in the previous newsletters and composes it into a block of HTML that can be copied using that big button.</p>
-<p>Here's the recipe it uses to turn HTML into rich text content on a clipboard suitable for Substack. I can't remember how I figured this out but it's very effective:</p>
-<div class="highlight highlight-source-js"><pre><span class="pl-v">Object</span><span class="pl-kos">.</span><span class="pl-en">assign</span><span class="pl-kos">(</span>
-  <span class="pl-en">html</span><span class="pl-s">`<span class="pl-kos">&lt;</span><span class="pl-ent">button</span> <span class="pl-c1">style</span>="<span class="pl-s">font-size: 1.4em; padding: 0.3em 1em; font-weight: bold;</span>"<span class="pl-kos">&gt;</span>Copy rich text newsletter to clipboard`</span><span class="pl-kos">,</span>
-  <span class="pl-kos">{</span>
-    <span class="pl-en">onclick</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
-      <span class="pl-k">const</span> <span class="pl-s1">htmlContent</span> <span class="pl-c1">=</span> <span class="pl-s1">newsletterHTML</span><span class="pl-kos">;</span>
-      <span class="pl-c">// Create a temporary element to hold the HTML content</span>
-      <span class="pl-k">const</span> <span class="pl-s1">tempElement</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"div"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-s1">tempElement</span><span class="pl-kos">.</span><span class="pl-c1">innerHTML</span> <span class="pl-c1">=</span> <span class="pl-s1">htmlContent</span><span class="pl-kos">;</span>
-      <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">tempElement</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-c">// Select the HTML content</span>
-      <span class="pl-k">const</span> <span class="pl-s1">range</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createRange</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-s1">range</span><span class="pl-kos">.</span><span class="pl-en">selectNode</span><span class="pl-kos">(</span><span class="pl-s1">tempElement</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-c">// Copy the selected HTML content to the clipboard</span>
-      <span class="pl-k">const</span> <span class="pl-s1">selection</span> <span class="pl-c1">=</span> <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">getSelection</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-s1">selection</span><span class="pl-kos">.</span><span class="pl-en">removeAllRanges</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-s1">selection</span><span class="pl-kos">.</span><span class="pl-en">addRange</span><span class="pl-kos">(</span><span class="pl-s1">range</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">execCommand</span><span class="pl-kos">(</span><span class="pl-s">"copy"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-s1">selection</span><span class="pl-kos">.</span><span class="pl-en">removeAllRanges</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-      <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">.</span><span class="pl-en">removeChild</span><span class="pl-kos">(</span><span class="pl-s1">tempElement</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-    <span class="pl-kos">}</span>
-  <span class="pl-kos">}</span>
-<span class="pl-kos">)</span></pre></div>
-<h4 id="from-django-postgresql-to-datasette-sqlite">From Django+Postgresql to Datasette+SQLite</h4>
-<p>My blog itself is a Django application hosted on Heroku, with data stored in Heroku PostgreSQL. Here's <a href="https://github.com/simonw/simonwillisonblog">the source code for that Django application</a>. I use the Django admin as my CMS.</p>
-<p><a href="https://datasette.io/">Datasette</a> provides a JSON API over a SQLite database... which means something needs to convert that PostgreSQL database into a SQLite database that Datasette can use.</p>
-<p>My system for doing that lives in the <a href="https://github.com/simonw/simonwillisonblog-backup">simonw/simonwillisonblog-backup</a> GitHub repository. It uses GitHub Actions on a schedule that executes every two hours, fetching the latest data from PostgreSQL and converting that to SQLite.</p>
-<p>My <a href="https://github.com/simonw/db-to-sqlite">db-to-sqlite</a> tool is responsible for that conversion. I call it <a href="https://github.com/simonw/simonwillisonblog-backup/blob/dc5b9df272134ce051a5280b4de6d4daa9b2a9fc/.github/workflows/backup.yml#L44-L62">like this</a>:</p>
-<div class="highlight highlight-source-shell"><pre>db-to-sqlite \
-  <span class="pl-s"><span class="pl-pds">$(</span>heroku config:get DATABASE_URL -a simonwillisonblog <span class="pl-k">|</span> sed s/postgres:/postgresql+psycopg2:/<span class="pl-pds">)</span></span> \
-  simonwillisonblog.db \
-  --table auth_permission \
-  --table auth_user \
-  --table blog_blogmark \
-  --table blog_blogmark_tags \
-  --table blog_entry \
-  --table blog_entry_tags \
-  --table blog_quotation \
-  --table blog_quotation_tags \
-  --table blog_note \
-  --table blog_note_tags \
-  --table blog_tag \
-  --table blog_previoustagname \
-  --table blog_series \
-  --table django_content_type \
-  --table redirects_redirect</pre></div>
-<p>That <code>heroku config:get DATABASE_URL</code> command uses Heroku credentials in an environment variable to fetch the database connection URL for my blog's PostgreSQL database (and fixes a small difference in the URL scheme).</p>
-<p><code>db-to-sqlite</code> can then export that data and write it to a SQLite database file called <code>simonwillisonblog.db</code>.</p>
-<p>The <code>--table</code> options specify the tables that should be included in the export.</p>
-<p>The repository does more than just that conversion: it also exports the resulting data to JSON files that live in the repository, which gives me a <a href="https://github.com/simonw/simonwillisonblog-backup/commits/main/simonwillisonblog">commit history</a> of changes I make to my content. This is a cheap way to get a revision history of my blog content without having to mess around with detailed history tracking inside the Django application itself.</p>
-<p>At the <a href="https://github.com/simonw/simonwillisonblog-backup/blob/dc5b9df272134ce051a5280b4de6d4daa9b2a9fc/.github/workflows/backup.yml#L200-L204">end of my GitHub Actions workflow</a> is this code that publishes the resulting database to Datasette running on <a href="https://fly.io/">Fly.io</a> using the <a href="https://datasette.io/plugins/datasette-publish-fly">datasette publish fly</a> plugin:</p>
-<div class="highlight highlight-source-shell"><pre>datasette publish fly simonwillisonblog.db \
-  -m metadata.yml \
-  --app simonwillisonblog-backup \
-  --branch 1.0a2 \
-  --extra-options <span class="pl-s"><span class="pl-pds">"</span>--setting sql_time_limit_ms 15000 --setting truncate_cells_html 10000 --setting allow_facet off<span class="pl-pds">"</span></span> \
-  --install datasette-block-robots \
-  <span class="pl-c"><span class="pl-c">#</span> ... more plugins</span></pre></div>
-<p>As you can see, there are a lot of moving parts! Surprisingly it all mostly just works - I rarely have to intervene in the process, and the cost of those different components is pleasantly low.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/django">django</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/postgresql">postgresql</a>, <a href="https://simonwillison.net/tags/sql">sql</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/youtube">youtube</a>, <a href="https://simonwillison.net/tags/heroku">heroku</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/observable">observable</a>, <a href="https://simonwillison.net/tags/github-actions">github-actions</a>, <a href="https://simonwillison.net/tags/fly">fly</a>, <a href="https://simonwillison.net/tags/newsletter">newsletter</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[deepseek-ocr]]></title>
-        <id>https://ollama.com/library/deepseek-ocr</id>
-        <link href="https://ollama.com/library/deepseek-ocr"/>
-        <updated>2025-11-19T20:26:00.000Z</updated>
-        <summary type="html"><![CDATA[DeepSeek-OCR is a vision-language model that can perform token-efficient OCR.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[CodeQL 2.23.5 adds support for Swift 6.2, new Java queries, and improved analysis accuracy]]></title>
-        <id>https://github.blog/changelog/2025-11-19-codeql-2-23-5-adds-support-for-swift-6-2-new-java-queries-and-improved-analysis-accuracy</id>
-        <link href="https://github.blog/changelog/2025-11-19-codeql-2-23-5-adds-support-for-swift-6-2-new-java-queries-and-improved-analysis-accuracy"/>
-        <updated>2025-11-19T19:43:03.000Z</updated>
-        <summary type="html"><![CDATA[CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.23.5, introducing three new Java security queries…
-The post CodeQL 2.23.5 adds support for Swift 6.2, new Java queries, and improved analysis accuracy appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[cogito-2.1]]></title>
-        <id>https://ollama.com/library/cogito-2.1</id>
-        <link href="https://ollama.com/library/cogito-2.1"/>
-        <updated>2025-11-19T18:22:00.000Z</updated>
-        <summary type="html"><![CDATA[The Cogito v2.1 LLMs are instruction tuned generative models. All models are released under MIT license for commercial use.]]></summary>
-        <author>
-            <name>Ollama models</name>
         </author>
     </entry>
 </feed>
