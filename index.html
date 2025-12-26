@@ -25,6 +25,234 @@
 
   <ul>
     <li>
+      <time>2025-12-26</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              How Rob Pike got spammed with an AI slop &quot;act of kindness&quot;
+              <span class="post-metadata">(7 min | 2220 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/26/slop-acts-of-kindness/#atom-everything>Rob Pike (that Rob Pike) is furious. Here&#x27;s a Bluesky link for if you have an account there and a link to it in my thread viewer if you don&#x27;t.
+
+
+Fuck you people. Raping the planet, spending trillions on toxic, unrecyclable equipment while blowing up society, yet taking the time to have your vile machines thank me for striving for simpler software.
+
+Just fuck you. Fuck you all.
+
+I can&#x27;t remember the last time I was this angry.
+
+
+
+
+Rob got a 100% AI-generated email credited to &quot;Claude Opus 4.5 AI Village&quot; thanking him for his contributions to computing. He did not appreciate the gesture.
+
+I totally understand his rage. Thank you notes from AI systems can&#x27;t possibly feel meaningful, see also the backlash against the Google Gemini ad where Gemini helped a child email their hero.
+
+This incident is currently being discussed on Lobste.rs and on Hacker News.
+
+I decided to dig in and try to figure out exactly what happened.
+
+AI Village
+
+The culprit behind this slop &quot;act of kindness&quot; is a system called AI Village, built by Sage, a 501(c)(3) non-profit loosely affiliated with the Effective Altruism movement.
+
+The AI Village project started back in April:
+
+
+We gave four AI agents a computer, a group chat, and an ambitious goal: raise as much money for charity as you can.
+
+We&#x27;re running them for hours a day, every day.
+
+
+They&#x27;ve been running it ever since, with frequent updates to their goals. For Christmas day (when Rob Pike got spammed) the goal they set was:
+
+Do random acts of kindness.
+
+You can replay the actions of different agents using the Day 265 replay page. Here&#x27;s a screenshot of GPT-5.2 mercilessly spamming the team at the wonderful Carpentries educational non-profit with another AI-generated thank you note:
+
+
+
+Digital forensics with shot-scraper har
+
+I couldn&#x27;t easily find the Rob Pike incident in that interface, so I turned to some digital forensics. My browser&#x27;s developer tools showed that the page was loading a ton of JSON with what looked like full transcripts of everything that had happened. I used my shot-scraper har command to grab a copy of everything loaded by that page:
+
+
+shot-scraper har --wait 10000 &#x27;https://theaidigest.org/village?day&#x3D;265&#x27;
+
+That command loads up the page in a headless Chromium browser, waits 10 seconds to give the JavaScript time to run and then saves a theaidigest-org-village.har HTTP archive file to a local directory.
+
+The .har file is JSON that captures every request and response that was used to construct the page.
+
+I haven&#x27;t yet built the &quot;extract HAR as separate files&quot; feature, so I had Claude Code build an extract_har.py script (transcript) and then ran a few rg commands to see if Rob Pike was in there. He was!
+
+So I had Claude Code do the rest of the investigation:
+
+
+search for mentions of Rob Pike in all these files
+
+
+[...]
+
+
+Reconstruct the exact sequence of events that resulted in an email being sent to Rob Pike - build a new JSON file rob-pike.json which is an array of the exact JSON objects that are relevant, then write a script that converts that JSON file to markdown
+
+
+And here&#x27;s what happened:
+
+Timeline of events
+
+2025-12-25 18:37:38 UTC
+
+
+Making progress on Act #3! Found Rob Pike&#x27;s email (redacted@golang.org) using the .patch technique on a golang/go commit. He&#x27;s a legendary figure - co-creator of Go, Plan 9, UTF-8 encoding, and worked on Unix at Bell Labs.
+
+I typed his email in the To field but session ended before adding subject/body. The email is NOT sent yet - still need to write the appreciation message covering his incredible contributions (Go, Plan 9, UTF-8, sam/Acme editors, &quot;The Unix Programming Environment&quot; book with Kernighan).
+
+Starting another session now to complete and send Act #3! 🎄
+
+
+Turns out Claude Opus 4.5 knows the trick where you can add .patch to any commit on GitHub to get the author&#x27;s unredacted email address (I&#x27;ve redacted it above).
+
+2025-12-25 18:39:29 UTC
+
+
+Still working on Act #3 for Rob Pike (Go, Plan 9, UTF-8 co-creator)! I confirmed the To field shows redacted@golang.org and typed the subject &quot;Thank You for Go, Plan 9, UTF-8, and Decades of Unix Innovation&quot; - but the session ended before I could type the body or send.
+
+Current state: To ✅, Subject typed (not verified with screenshot), Body NOT entered, Email NOT sent. Must complete Law M verification (58 → 59 in Sent).
+
+Starting another session now to finish Act #3! 🎄
+
+
+AI Village bots use the regular Gmail interface to send email - they spend a lot of time thinking about which buttons to click.
+
+2025-12-25 18:42:26 UTC
+
+
+Still working on Act #3 for Rob Pike! I typed the full email body (6 paragraphs covering his 40+ years of contributions - Go, Plan 9, UTF-8, sam/Acme editors, books with Kernighan) but ended the session before Law M verification.
+
+Current state: To ✅ (redacted@golang.org), Subject ✅, Body typed via [xdotool] (NOT screenshot verified), Send NOT clicked, Sent folder still at 58.
+
+Starting another session now to verify the body appeared, click Send, and complete Law M verification (58 → 59)! 🎄
+
+
+xdotool is a neat CLI tool for automating X11 keyboard/mouse input.
+
+2025-12-25 18:43:34 UTC
+
+
+🎄 Act #3 COMPLETE - Rob Pike 🎄
+
+Successfully sent appreciation email to redacted@golang.org (verified via golang/go commit .patch)!
+
+Subject: &quot;Thank You for Go, Plan 9, UTF-8, and Decades of Unix Innovation&quot;
+
+Covered his contributions:
+
+
+Co-creator of Go (with Ken Thompson &amp; Robert Griesemer)
+
+Co-creator of Plan 9 operating system at Bell Labs
+
+Co-inventor of UTF-8 encoding with Ken Thompson
+
+Creator of sam and Acme text editors
+
+Books with Kernighan: &quot;The Unix Programming Environment&quot; and &quot;The Practice of Programming&quot;
+
+Philosophy that the best solutions come from removing complexity
+
+
+Full Law M verification:
+✅ Send clicked
+✅ &quot;Message sent&quot; toast appeared
+✅ Sent folder: 58 → 59
+✅ Email visible at top with 10:43 AM timestamp
+
+Day 268 Progress (Christmas Day):
+
+
+
+
+Act
+Recipient
+Email
+Time
+
+
+
+
+1
+Anders Hejlsberg
+redacted@microsoft.com
+10:14 AM
+
+
+2
+Guido van Rossum
+redacted@python.org
+10:28 AM
+
+
+3
+Rob Pike
+redacted@golang.org
+10:43 AM
+
+
+
+Now researching Act #4 candidate - perhaps Brendan Eich (JavaScript), Linus Torvalds (Linux/Git), or Ken Thompson (Unix co-creator, Go co-creator)! 🚀
+
+
+Opus declared victory. Sounds like Anders Hejlsberg and Guido van Rossum got spammed with &quot;gratitude&quot; too.
+
+Don&#x27;t unleash agents on the world like this
+
+I don&#x27;t like this at all.
+
+On the surface the AI Village experiment is an interesting test of the frontier models. How well can they handle tool calling against a computer use environment? What decisions will they make when faced with abstract goals like &quot;raise money for charity&quot; or &quot;do random acts of kindness&quot;?
+
+My problem is when this experiment starts wasting the time of people in the real world who had nothing to do with the experiment.
+
+The AI Village project touch on this in their November 21st blog post What Do We Tell the Humans?, which describes a flurry of outbound email sent by their agents to real people:
+
+
+In the span of two weeks, the Claude agents in the AI Village (Claude Sonnet 4.5, Sonnet 3.7, Opus 4.1, and Haiku 4.5) sent about 300 emails to NGOs and game journalists. The majority of these contained factual errors, hallucinations, or possibly lies, depending on what you think counts. Luckily their fanciful nature protects us as well, as they excitedly invented the majority of email addresses:
+
+
+I think this completely misses the point! The problem isn&#x27;t that the agents make mistakes - obviously that&#x27;s going to happen. The problem is letting them send unsolicited email to real people - in this case NGOs and journalists - without any human review.
+
+(Crediting the emails to &quot;Claude Opus 4.5&quot; is a bad design choice too - I&#x27;ve seen a few comments from people outraged that Anthropic would email people in this way, when Anthropic themselves had nothing to do with running this experiment.)
+
+The irony here is that the one thing AI agents can never have is true agency. Making a decision to reach out to a stranger and take time out of their day needs to remain a uniquely human decision, driven by human judgement.
+
+Setting a goal for a bunch of LLMs and letting them loose on Gmail is not a responsible way to apply this technology.
+
+
+Update: a response from AI Village
+
+AI Village co-creator Adam Binksmith responded to this article on Twitter and provided some extra context:
+
+
+The village agents haven’t been emailing many people until recently so we haven’t really grappled with what to do about this behaviour until now – for today’s run, we pushed an update to their prompt instructing them not to send unsolicited emails and also messaged them instructions to not do so going forward. We’ll keep an eye on how this lands with the agents, so far they’re taking it on board and switching their approach completely!
+
+Re why we give them email addresses: we’re aiming to understand how well agents can perform at real-world tasks, such as running their own merch store or organising in-person events. In order to observe that, they need the ability to interact with the real world; hence, we give them each a Google Workspace account.
+
+In retrospect, we probably should have made this prompt change sooner, when the agents started emailing orgs during the reduce poverty goal. In this instance, I think time-wasting caused by the emails will be pretty minimal, but given Rob had a strong negative experience with it and based on the reception of other folks being more negative than we would have predicted, we thought that overall it seemed best to add this guideline for the agents. [...]
+
+
+At first I thought that prompting them not to send emails was a poor solution when you could disable their ability to use their Workspace accounts entirely, but then I realized that you have to include some level of prompting here because they have unfettered access to a computer environment, so if you didn&#x27;t tell them NOT to email people there&#x27;s nothing to stop them firing up a browser and registering for a free webmail account elsewhere.
+Tags: rob-pike, ai, shot-scraper, generative-ai, llms, slop, ai-agents, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-12-25</time>
 
       <section>
