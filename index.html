@@ -25,9 +25,102 @@
 
   <ul>
     <li>
+      <time>2025-12-27</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              textarea.my on GitHub
+              <span class="post-metadata">(3 min | 896 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/27/textarea-my/#atom-everything>textarea.my on GitHub
+textarea.my, which he describes as:
+A minimalist text editor that lives entirely in your browser and stores everything in the URL hash.
+It&#x27;s ~160 lines of HTML, CSS and JavaScript and it&#x27;s worth reading the whole thing. I picked up a bunch of neat tricks from this!
+&lt;article contenteditable&#x3D;&quot;plaintext-only&quot;&gt; - I did not know about the plaintext-only value, supported across all the modern browsers.
+It uses new CompressionStream(&#x27;deflate-raw&#x27;) to compress the editor state so it can fit in a shorter fragment URL.
+It has a neat custom save option which triggers if you hit ((e.metaKey || e.ctrlKey) &amp;&amp; e.key &#x3D;&#x3D;&#x3D; &#x27;s&#x27;) - on browsers that support it (mainly Chrome variants) this uses window.showSaveFilePicker(), other browsers get a straight download - in both cases generated using URL.createObjectURL(new Blob([html], {type: &#x27;text/html&#x27;}))
+The debounce() function it uses deserves a special note:
+function debounce(ms, fn) {
+  let timer
+  return (...args) &#x3D;&gt; {
+    clearTimeout(timer)
+    timer &#x3D; setTimeout(() &#x3D;&gt; fn(...args), ms)
+  }
+}
+That&#x27;s really elegant. The goal of debounce(ms, fn) is to take a function and a timeout (e.g. 100ms) and ensure that the function runs at most once every 100ms.
+This one works using a closure variable timer to capture the setTimeout time ID. On subsequent calls that timer is cancelled and a new one is created - so if you call the function five times in quick succession it will execute just once, 100ms after the last of that sequence of calls.
+
+    
+Via lobste.rs
+Tags: javascript</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-12-26</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              How uv got so fast
+              <span class="post-metadata">(4 min | 1099 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/26/how-uv-got-so-fast/#atom-everything>How uv got so fast
+uv is so much faster than pip. It&#x27;s not nearly as simple as just &quot;they rewrote it in Rust&quot; - uv gets to skip a huge amount of Python packaging history (which pip needs to implement for backwards compatibility) and benefits enormously from work over recent years that makes it possible to resolve dependencies across most packages without having to execute the code in setup.py using a Python interpreter.
+Two notes that caught my eye that I hadn&#x27;t understood before:
+HTTP range requests for metadata. Wheel files are zip archives, and zip archives put their file listing at the end. uv tries PEP 658 metadata first, falls back to HTTP range requests for the zip central directory, then full wheel download, then building from source. Each step is slower and riskier. The design makes the fast path cover 99% of cases. None of this requires Rust.
+[...]
+Compact version representation. uv packs versions into u64 integers where possible, making comparison and hashing fast. Over 90% of versions fit in one u64. This is micro-optimization that compounds across millions of comparisons.
+I wanted to learn more about these tricks, so I fired up an asynchronous research task and told it to checkout the astral-sh/uv repo, find the Rust code for both of those features and try porting it to Python to help me understand how it works.
+Here&#x27;s the report that it wrote for me, the prompts I used and the Claude Code transcript.
+You can try the script it wrote for extracting metadata from a wheel using HTTP range requests like this:
+uv run --with httpx https://raw.githubusercontent.com/simonw/research/refs/heads/main/http-range-wheel-metadata/wheel_metadata.py https://files.pythonhosted.org/packages/8b/04/ef95b67e1ff59c080b2effd1a9a96984d6953f667c91dfe9d77c838fc956/playwright-1.57.0-py3-none-macosx_11_0_arm64.whl -v
+The Playwright wheel there is ~40MB. Adding -v at the end causes the script to spit out verbose details of how it fetched the data - which looks like this.
+Key extract from that output:
+[1] HEAD request to get file size...
+    File size: 40,775,575 bytes
+[2] Fetching last 16,384 bytes (EOCD + central directory)...
+    Received 16,384 bytes
+[3] Parsed EOCD:
+    Central directory offset: 40,731,572
+    Central directory size: 43,981
+    Total entries: 453
+[4] Fetching complete central directory...
+    ...
+[6] Found METADATA: playwright-1.57.0.dist-info/METADATA
+    Offset: 40,706,744
+    Compressed size: 1,286
+    Compression method: 8
+[7] Fetching METADATA content (2,376 bytes)...
+[8] Decompressed METADATA: 3,453 bytes
+
+Total bytes fetched: 18,760 / 40,775,575 (100.0% savings)
+
+The section of the report on compact version representation is interesting too. Here&#x27;s how it illustrates sorting version numbers correctly based on their custom u64 representation:
+Sorted order (by integer comparison of packed u64):
+  1.0.0a1 (repr&#x3D;0x0001000000200001)
+  1.0.0b1 (repr&#x3D;0x0001000000300001)
+  1.0.0rc1 (repr&#x3D;0x0001000000400001)
+  1.0.0 (repr&#x3D;0x0001000000500000)
+  1.0.0.post1 (repr&#x3D;0x0001000000700001)
+  1.0.1 (repr&#x3D;0x0001000100500000)
+  2.0.0.dev1 (repr&#x3D;0x0002000000100001)
+  2.0.0 (repr&#x3D;0x0002000000500000)
+
+Tags: performance, python, rust, uv</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4336,52 +4429,6 @@ Bluesky is a lot of fun to build tools like this against because the API support
 
     
 Tags: projects, tools, ai, generative-ai, llms, cors, bluesky, vibe-coding, coding-agents, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-11-27</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Qwen3-VL Technical Report
-              <span class="post-metadata">(1 min | 359 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/27/qwen3-vl-technical-report/#atom-everything>To evaluate the model’s capability in processing long-context inputs, we construct a video “Needle-in-
-a-Haystack” evaluation on Qwen3-VL-235B-A22B-Instruct. In this task, a semantically salient “needle”
-frame—containing critical visual evidence—is inserted at varying temporal positions within a long video.
-The model is then tasked with accurately locating the target frame from the long video and answering the
-corresponding question. [...]
-As shown in Figure 3, the model achieves a perfect 100% accuracy on videos up to 30 minutes in
-duration—corresponding to a context length of 256K tokens. Remarkably, even when extrapolating to
-sequences of up to 1M tokens (approximately 2 hours of video) via YaRN-based positional extension,
-the model retains a high accuracy of 99.5%.
-
-— Qwen3-VL Technical Report, 5.12.3: Needle-in-a-Haystack
-Tags: vision-llms, evals, generative-ai, ai-in-china, ai, qwen, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              deepseek-ai/DeepSeek-Math-V2
-              <span class="post-metadata">(1 min | 363 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Nov/27/deepseek-math-v2/#atom-everything>deepseek-ai/DeepSeek-Math-V2
-achieved gold medal scores on the International Mathematical Olympiad earlier this year.
-We now have an open weights (Apache 2 licensed) 685B, 689GB model that can achieve the same. From the accompanying paper:
-DeepSeekMath-V2 demonstrates strong performance on competition mathematics. With scaled test-time compute, it achieved gold-medal scores in high-school competitions including IMO 2025 and CMO 2024, and a near-perfect score on the undergraduate Putnam 2024 competition.
-Tags: mathematics, ai, generative-ai, llms, llm-reasoning, deepseek, llm-release, ai-in-china</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
