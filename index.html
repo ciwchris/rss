@@ -25,6 +25,31 @@
 
   <ul>
     <li>
+      <time>2025-12-30</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Liz Fong-Jones
+              <span class="post-metadata">(3 min | 820 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2025/Dec/30/liz-fong-jones/#atom-everything>In essence a language model changes you from a programmer who writes lines of code, to a programmer that manages the context the model has access to, prunes irrelevant things, adds useful material to context, and writes detailed specifications. If that doesn&#x27;t sound fun to you, you won&#x27;t enjoy it.
+Think about it as if it is a junior developer that has read every textbook in the world but has 0 practical experience with your specific codebase, and is prone to forgetting anything but the most recent hour of things you&#x27;ve told it. What do you want to tell that intern to help them progress?
+Eg you might put sticky notes on their desk to remind them of where your style guide lives, what the API documentation is for the APIs you use, some checklists of what is done and what is left to do, etc.
+But the intern gets confused easily if it keeps accumulating sticky notes and there are now 100 sticky notes, so you have to periodically clear out irrelevant stickies and replace them with new stickies.
+
+— Liz Fong-Jones, thread on Bluesky
+Tags: bluesky, ai-assisted-programming, generative-ai, ai, llms, context-engineering</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2025-12-29</time>
 
       <section>
@@ -4439,39 +4464,6 @@ The post Block repository administrators from installing GitHub Apps on their ow
 
 — David Bauder, AP News, A lost generation of news consumers? Survey shows how teenagers dislike the news media
 Tags: journalism</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              YouTube embeds fail with a 153 error
-              <span class="post-metadata">(2 min | 557 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/1/youtube-embed-153-error/#atom-everything>YouTube embeds fail with a 153 error
-this one) on this site. After some digging it turns out the culprit was this HTTP header, which Django&#x27;s SecurityMiddleware was sending by default:
-Referrer-Policy: same-origin
-
-YouTube&#x27;s embedded player terms documentation explains why this broke:
-API Clients that use the YouTube embedded player (including the YouTube IFrame Player API) must provide identification through the HTTP Referer request header. In some environments, the browser will automatically set HTTP Referer, and API Clients need only ensure they are not setting the Referrer-Policy in a way that suppresses the Referer value. YouTube recommends using strict-origin-when-cross-origin Referrer-Policy, which is already the default in many browsers.
-The fix, which I outsourced to GitHub Copilot agent since I was on my phone, was to add this to my settings.py:
-SECURE_REFERRER_POLICY &#x3D; &quot;strict-origin-when-cross-origin&quot;
-
-This explainer on the Chrome blog describes what the header means:
-strict-origin-when-cross-origin offers more privacy. With this policy, only the origin is sent in the Referer header of cross-origin requests.
-This prevents leaks of private data that may be accessible from other parts of the full URL such as the path and query string.
-Effectively it means that any time you follow a link from my site to somewhere else they&#x27;ll see this in the incoming HTTP headers even if you followed the link from a page other than my homepage:
-Referer: https://simonwillison.net/
-
-The previous header, same-origin, is explained by MDN here:
-Send the origin, path, and query string for same-origin requests. Don&#x27;t send the Referer header for cross-origin requests.
-This meant that previously traffic from my site wasn&#x27;t sending any HTTP referer at all!
-
-
-    
-Tags: django, http, privacy, youtube</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
