@@ -25,9 +25,173 @@
 
   <ul>
     <li>
+      <time>2026-01-02</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              December 2025 sponsors-only newsletter
+              <span class="post-metadata">(2 min | 743 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/2/december/#atom-everything>I sent the December edition of my sponsors-only monthly newsletter. If you are a sponsor (or if you start a sponsorship now) you can access a copy here. In the newsletter this month:
+An in-depth review of LLMs in 2025
+My coding agent projects in December
+New models for December 2025
+Skills are an open standard now
+Claude&#x27;s &quot;Soul Document&quot;
+Tools I&#x27;m using at the moment
+Here&#x27;s a copy of the November newsletter as a preview of what you&#x27;ll get. Pay $10/month to stay a month ahead of the free copy!
+Tags: newsletter</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Ben Werdmuller
+              <span class="post-metadata">(2 min | 710 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/2/ben-werdmuller/#atom-everything>[Claude Code] has the potential to transform all of tech. I also think we’re going to see a real split in the tech industry (and everywhere code is written) between people who are outcome-driven and are excited to get to the part where they can test their work with users faster, and people who are process-driven and get their meaning from the engineering itself and are upset about having that taken away.
+
+— Ben Werdmuller
+Tags: coding-agents, ai-assisted-programming, claude-code, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-01-01</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Introducing gisthost.github.io
+              <span class="post-metadata">(5 min | 1434 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/1/gisthost/#atom-everything>I am a huge fan of gistpreview.github.io, the site by Leon Huang that lets you append ?GIST_id to see a browser-rendered version of an HTML page that you have saved to a Gist. The last commit was ten years ago and I needed a couple of small changes so I&#x27;ve forked it and deployed an updated version at gisthost.github.io.
+
+Some background on gistpreview
+
+The genius thing about gistpreview.github.io is that it&#x27;s a core piece of GitHub infrastructure, hosted and cost-covered entirely by GitHub, that wasn&#x27;t built with any involvement from GitHub at all.
+
+To understand how it works we need to first talk about Gists.
+
+Any file hosted in a GitHub Gist can be accessed via a direct URL that looks like this:
+
+https://gist.githubusercontent.com/simonw/d168778e8e62f65886000f3f314d63e3/raw/79e58f90821aeb8b538116066311e7ca30c870c9/index.html
+
+That URL is served with a few key HTTP headers:
+
+Content-Type: text/plain; charset&#x3D;utf-8
+X-Content-Type-Options: nosniff
+
+
+These ensure that every file is treated by browsers as plan text, so HTML file will not be rendered even by older browsers that attempt to guess the content type based on the content.
+
+Via: 1.1 varnish
+Cache-Control: max-age&#x3D;300
+X-Served-By: cache-sjc1000085-SJC
+
+
+These confirm that the file is sever via GitHub&#x27;s caching CDN, which means I don&#x27;t feel guilty about linking to them for potentially high traffic scenarios.
+
+Access-Control-Allow-Origin: *
+
+
+This is my favorite HTTP header! It means I can hit these files with a fetch() call from any domain on the internet, which is fantastic for building HTML tools that do useful things with content hosted in a Gist.
+
+The one big catch is that Content-Type header. It means you can&#x27;t use a Gist to serve HTML files that people can view.
+
+That&#x27;s where gistpreview comes in. The gistpreview.github.io site belongs to the dedicated gistpreview GitHub organization, and is served out of the github.com/gistpreview/gistpreview.github.io repository by GitHub Pages.
+
+It&#x27;s not much code. The key functionality is this snippet of JavaScript from main.js:
+
+
+fetch(&#x27;https://api.github.com/gists/&#x27; + gistId)
+.then(function (res) {
+  return res.json().then(function (body) {
+    if (res.status &#x3D;&#x3D;&#x3D; 200) {
+      return body;
+    }
+    console.log(res, body); // debug
+    throw new Error(&#x27;Gist &lt;strong&gt;&#x27; + gistId + &#x27;&lt;/strong&gt;, &#x27; + body.message.replace(/\(.*\)/, &#x27;&#x27;));
+  });
+})
+.then(function (info) {
+  if (fileName &#x3D;&#x3D;&#x3D; &#x27;&#x27;) {
+    for (var file in info.files) {
+      // index.html or the first file
+      if (fileName &#x3D;&#x3D;&#x3D; &#x27;&#x27; || file &#x3D;&#x3D;&#x3D; &#x27;index.html&#x27;) {
+        fileName &#x3D; file;
+      }
+    }
+  }
+  if (info.files.hasOwnProperty(fileName) &#x3D;&#x3D;&#x3D; false) {
+    throw new Error(&#x27;File &lt;strong&gt;&#x27; + fileName + &#x27;&lt;/strong&gt; is not exist&#x27;);
+  }
+  var content &#x3D; info.files[fileName].content;
+  document.write(content);
+})
+
+This chain of promises fetches the Gist content from the GitHub API, finds the section of that JSON corresponding to the requested file name and then outputs it to the page like this:
+
+
+document.write(content);
+
+This is smart. Injecting the content using document.body.innerHTML &#x3D; content would fail to execute inline scripts. Using document.write() causes the browser to treat the HTML as if it was directly part of the parent page.
+
+That&#x27;s pretty much the whole trick! Read the Gist ID from the query string, fetch the content via the JSON API and document.write() it into the page.
+
+Here&#x27;s a demo:
+
+https://gistpreview.github.io/?d168778e8e62f65886000f3f314d63e3
+
+Fixes for gisthost.github.io
+
+I forked gistpreview to add two new features:
+
+
+A workaround for Substack mangling the URLs
+
+The ability to serve larger files that get truncated in the JSON API
+
+
+I also removed some dependencies (jQuery and Bootstrap and an old fetch() polyfill) and inlined the JavaScript into a single index.html file.
+
+The Substack issue was small but frustrating. If you email out a link to a gistpreview page via Substack it modifies the URL to look like this:
+
+https://gistpreview.github.io/?f40971b693024fbe984a68b73cc283d2&#x3D;&amp;utm_source&#x3D;substack&amp;utm_medium&#x3D;email
+
+This breaks gistpreview because it treats f40971b693024fbe984a68b73cc283d2&#x3D;&amp;utm_source... as the Gist ID.
+
+The fix is to read everything up to that equals sign. I submitted a PR for that back in November.
+
+The second issue around truncated files was reported against my claude-code-transcripts project a few days ago.
+
+That project provides a CLI tool for exporting HTML rendered versions of Claude Code sessions. It includes a --gist option which uses the gh CLI tool to publish the resulting HTML to a Gist and returns a gistpreview URL that the user can share.
+
+These exports can get pretty big, and some of the resulting HTML was past the size limit of what comes back from the Gist API.
+
+As of claude-code-transcripts 0.5 the --gist option now publishes to gisthost.github.io instead, fixing both bugs.
+
+Here&#x27;s the Claude Code transcript that refactored Gist Host to remove those dependencies, which I published to Gist Host using the following command:
+
+uvx claude-code-transcripts web --gist
+
+Tags: github, http, javascript, projects, ai-assisted-programming, cors</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4896,69 +5060,6 @@ The post OpenAI’s GPT-5.1-Codex-Max is now in public preview for GitHub Copilo
 The post CodeQL 2.23.6 adds Swift 6.2.1 and new C# security queries appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-03</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot in Visual Studio — November update
-              <span class="post-metadata">(5 min | 1516 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-03-github-copilot-in-visual-studio-november-update>November 2025 brought the general availability of Visual Studio 2026, new Copilot actions, and more. Highlights Here’s what’s new with GitHub Copilot in Visual Studio 2026: Visual Studio 2026 general…
-The post GitHub Copilot in Visual Studio — November update appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Claude Opus 4.5 is now available in Visual Studio, JetBrains IDEs, Xcode, and Eclipse
-              <span class="post-metadata">(5 min | 1418 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-03-claude-opus-4-5-is-now-available-in-visual-studio-jetbrains-ides-xcode-and-eclipse>Claude Opus 4.5 is available in public preview to Copilot Enterprise, Copilot Business, Copilot Pro, and Copilot Pro+. You’ll now be able to access the model in GitHub Copilot Chat…
-The post Claude Opus 4.5 is now available in Visual Studio, JetBrains IDEs, Xcode, and Eclipse appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Assign issues to Copilot using the API
-              <span class="post-metadata">(4 min | 1348 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-03-assign-issues-to-copilot-using-the-api>You can now assign issues to Copilot using both GraphQL and the REST API. You can also configure the target repository, base branch, custom instructions, and custom agents. GraphQL support…
-The post Assign issues to Copilot using the API appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Mitchell Hashimoto
-              <span class="post-metadata">(1 min | 364 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/3/mitchell-hashimoto/#atom-everything>Since the beginning of the project in 2023 and the private beta days of Ghostty, I&#x27;ve repeatedly expressed my intention that Ghostty legally become a non-profit. [...]
-I want to squelch any possible concerns about a &quot;rug pull&quot;. A non-profit structure provides enforceable assurances: the mission cannot be quietly changed, funds cannot be diverted to private benefit, and the project cannot be sold off or repurposed for commercial gain. The structure legally binds Ghostty to the public-benefit purpose it was created to serve. [...]
-I believe infrastructure of this kind should be stewarded by a mission-driven, non-commercial entity that prioritizes public benefit over private profit. That structure increases trust, encourages adoption, and creates the conditions for Ghostty to grow into a widely used and impactful piece of open-source infrastructure.
-
-— Mitchell Hashimoto, Ghostty is now Non-Profit
-Tags: open-source, mitchell-hashimoto</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
