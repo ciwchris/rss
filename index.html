@@ -31,6 +31,76 @@
       <article>
           <details>
             <summary>
+              Quoting Will Larson
+              <span class="post-metadata">(2 min | 732 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/2/will-larson/#atom-everything>My experience is that real AI adoption on real problems is a complex blend of: domain context on the problem, domain experience with AI tooling, and old-fashioned IT issues. I’m deeply skeptical of any initiative for internal AI adoption that doesn’t anchor on all three of those. This is an advantage of earlier stage companies, because you can often find aspects of all three of those in a single person, or at least across two people. In larger companies, you need three different organizations doing this work together, this is just objectively hard
+
+— Will Larson, Facilitating AI adoption at Imprint
+Tags: leadership, llms, ai, will-larson</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              The most popular blogs of Hacker News in 2025
+              <span class="post-metadata">(3 min | 999 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/2/most-popular-blogs-of-hacker-news/#atom-everything>The most popular blogs of Hacker News in 2025
+HN Popularity Contest, a site that tracks personal blogs on Hacker News and scores them based on how well they perform on that platform.
+The engine behind the project is the domain-meta.csv CSV on GiHub, a hand-curated list of known personal blogs with author and bio and tag metadata, which Michael uses to separate out personal blog posts from other types of content.
+I came top of the rankings in 2023, 2024 and 2025 but I&#x27;m listed in third place for all time behind Paul Graham and Brian Krebs.
+I dug around in the browser inspector and was delighted to find that the data powering the site is served with open CORS headers, which means you can easily explore it with external services like Datasette Lite.
+Here&#x27;s a convoluted window function query Claude Opus 4.5 wrote for me which, for a given domain, shows where that domain ranked for each year since it first appeared in the dataset:
+with yearly_scores as (
+  select 
+    domain,
+    strftime(&#x27;%Y&#x27;, date) as year,
+    sum(score) as total_score,
+    count(distinct date) as days_mentioned
+  from &quot;hn-data&quot;
+  group by domain, strftime(&#x27;%Y&#x27;, date)
+),
+ranked as (
+  select 
+    domain,
+    year,
+    total_score,
+    days_mentioned,
+    rank() over (partition by year order by total_score desc) as rank
+  from yearly_scores
+)
+select 
+  r.year,
+  r.total_score,
+  r.rank,
+  r.days_mentioned
+from ranked r
+where r.domain &#x3D; :domain
+  and r.year &gt;&#x3D; (
+    select min(strftime(&#x27;%Y&#x27;, date)) 
+    from &quot;hn-data&quot;
+    where domain &#x3D; :domain
+  )
+order by r.year desc
+(I just noticed that the last and r.year &gt;&#x3D; ( clause isn&#x27;t actually needed here.)
+My simonwillison.net results show me ranked 3rd in 2022, 30th in 2021 and 85th back in 2007 - though I expect there are many personal blogs from that year which haven&#x27;t yet been manually added to Michael&#x27;s list.
+Also useful is that every domain gets its own CORS-enabled CSV file with details of the actual Hacker News submitted from that domain, e.g. https://hn-popularity.cdn.refactoringenglish.com/domains/simonwillison.net.csv. Here&#x27;s that one in Datasette Lite.
+
+    
+Via Hacker News
+Tags: hacker-news, sql, sqlite, datasette, datasette-lite, cors</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               December 2025 sponsors-only newsletter
               <span class="post-metadata">(2 min | 743 words)</span> 
             </summary>
