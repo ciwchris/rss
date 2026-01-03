@@ -1247,26 +1247,6 @@
           "wordCount": 299,
           "title": "Quoting Daniel Lemire",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Dec/5/til-pytest-subtests/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://til.simonwillison.net/pytest/subtests\">TIL: Subtests in pytest 9.0.0+</a></strong></p>\nI spotted an interesting new feature <a href=\"https://docs.pytest.org/en/stable/changelog.html#pytest-9-0-0-2025-11-05\">in the release notes for pytest 9.0.0</a>: <a href=\"https://docs.pytest.org/en/stable/how-to/subtests.html#subtests\">subtests</a>.</p>\n<p>I'm a <em>big</em> user of the <a href=\"https://docs.pytest.org/en/stable/example/parametrize.html\">pytest.mark.parametrize</a> decorator - see <a href=\"https://simonwillison.net/2018/Jul/28/documentation-unit-tests/\">Documentation unit tests</a> from 2018 - so I thought it would be interesting to try out subtests and see if they're a useful alternative.</p>\n<p>Short version: this parameterized test:</p>\n<pre><span class=\"pl-en\">@<span class=\"pl-s1\">pytest</span>.<span class=\"pl-c1\">mark</span>.<span class=\"pl-c1\">parametrize</span>(<span class=\"pl-s\">\"setting\"</span>, <span class=\"pl-s1\">app</span>.<span class=\"pl-c1\">SETTINGS</span>)</span>\n<span class=\"pl-k\">def</span> <span class=\"pl-en\">test_settings_are_documented</span>(<span class=\"pl-s1\">settings_headings</span>, <span class=\"pl-s1\">setting</span>):\n    <span class=\"pl-k\">assert</span> <span class=\"pl-s1\">setting</span>.<span class=\"pl-c1\">name</span> <span class=\"pl-c1\">in</span> <span class=\"pl-s1\">settings_headings</span></pre>\n<p>Becomes this using subtests instead:</p>\n<pre><span class=\"pl-k\">def</span> <span class=\"pl-en\">test_settings_are_documented</span>(<span class=\"pl-s1\">settings_headings</span>, <span class=\"pl-s1\">subtests</span>):\n    <span class=\"pl-k\">for</span> <span class=\"pl-s1\">setting</span> <span class=\"pl-c1\">in</span> <span class=\"pl-s1\">app</span>.<span class=\"pl-c1\">SETTINGS</span>:\n        <span class=\"pl-k\">with</span> <span class=\"pl-s1\">subtests</span>.<span class=\"pl-c1\">test</span>(<span class=\"pl-s1\">setting</span><span class=\"pl-c1\">=</span><span class=\"pl-s1\">setting</span>.<span class=\"pl-c1\">name</span>):\n            <span class=\"pl-k\">assert</span> <span class=\"pl-s1\">setting</span>.<span class=\"pl-c1\">name</span> <span class=\"pl-c1\">in</span> <span class=\"pl-s1\">settings_headings</span></pre>\n<p>Why is this better? Two reasons:</p>\n<ol>\n<li>It appears to run a bit faster</li>\n<li>Subtests can be created programatically after running some setup code first</li>\n</ol>\n<p>I <a href=\"https://gistpreview.github.io/?0487e5bb12bcbed850790a6324788e1b\">had Claude Code</a> port <a href=\"https://github.com/simonw/datasette/pull/2609/files\">several tests</a> to the new pattern. I like it.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/python\">python</a>, <a href=\"https://simonwillison.net/tags/testing\">testing</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/pytest\">pytest</a>, <a href=\"https://simonwillison.net/tags/til\">til</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/claude-code\">claude-code</a></p>",
-          "link": "https://simonwillison.net/2025/Dec/5/til-pytest-subtests/#atom-everything",
-          "publishedOn": "2025-12-05T06:03:29.000Z",
-          "wordCount": 395,
-          "title": "TIL: Subtests in pytest 9.0.0+",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2025/Dec/5/go-vs-rust-vs-zig/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://sinclairtarget.com/blog/2025/08/thoughts-on-go-vs.-rust-vs.-zig/\">Thoughts on Go vs. Rust vs. Zig</a></strong></p>\nThoughtful commentary on Go, Rust, and Zig by Sinclair Target. I haven't seen a single comparison that covers all three before and I learned a lot from reading this.</p>\n<p>One thing that I hadn't noticed before is that none of these three languages implement class-based OOP.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=46153466\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/go\">go</a>, <a href=\"https://simonwillison.net/tags/object-oriented-programming\">object-oriented-programming</a>, <a href=\"https://simonwillison.net/tags/programming-languages\">programming-languages</a>, <a href=\"https://simonwillison.net/tags/rust\">rust</a>, <a href=\"https://simonwillison.net/tags/zig\">zig</a></p>",
-          "link": "https://simonwillison.net/2025/Dec/5/go-vs-rust-vs-zig/#atom-everything",
-          "publishedOn": "2025-12-05T04:28:05.000Z",
-          "wordCount": 318,
-          "title": "Thoughts on Go vs. Rust vs. Zig",
-          "imageUrl": null
         }
       ]
     },
