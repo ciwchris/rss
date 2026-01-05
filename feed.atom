@@ -2,10 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-01-04T21:10:07.595Z</updated>
+    <updated>2026-01-05T14:15:45.132Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[The November 2025 inflection point]]></title>
+        <id>https://simonwillison.net/2026/Jan/4/inflection/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jan/4/inflection/#atom-everything"/>
+        <updated>2026-01-04T23:21:42.000Z</updated>
+        <summary type="html"><![CDATA[<p>It genuinely feels to me like GPT-5.2 and Opus 4.5 in November represent an inflection point - one of those moments where the models get incrementally better in a way that tips across an invisible capability line where suddenly a whole bunch of much harder coding problems open up.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/gpt-5">gpt-5</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/claude-4">claude-4</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Addy Osmani]]></title>
         <id>https://simonwillison.net/2026/Jan/4/addy-osmani/#atom-everything</id>
@@ -3586,48 +3598,6 @@ Thoughtful guidance from Bryan Cantrill, who evaluates applications of LLMs agai
 <p class="cite">&mdash; <a href="https://gist.github.com/david-crespo/5c5eaf36a2d20be8a3013ba3c7c265d9">David Crespo</a>, Oxide's internal tips on LLM use</p>
 
     <p>Tags: <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/oxide">oxide</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[The Unexpected Effectiveness of One-Shot Decompilation with Claude]]></title>
-        <id>https://simonwillison.net/2025/Dec/6/one-shot-decompilation/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/6/one-shot-decompilation/#atom-everything"/>
-        <updated>2025-12-06T18:30:56.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://blog.chrislewis.au/the-unexpected-effectiveness-of-one-shot-decompilation-with-claude/">The Unexpected Effectiveness of One-Shot Decompilation with Claude</a></strong></p>
-Chris Lewis decompiles N64 games. He wrote about this previously in <a href="https://blog.chrislewis.au/using-coding-agents-to-decompile-nintendo-64-games/">Using Coding Agents to Decompile Nintendo 64 Games</a>, describing his efforts to decompile Snowboard Kids 2 (<a href="https://en.wikipedia.org/wiki/Snowboard_Kids_2">released in 1999</a>) using a "matching" process:</p>
-<blockquote>
-<p>The matching decompilation process involves analysing the MIPS assembly, inferring its behaviour, and writing C that, when compiled with the same toolchain and settings, reproduces the exact code: same registers, delay slots, and instruction order. [...]</p>
-<p>A good match is more than just C code that compiles to the right bytes. It should look like something an N64-era developer would plausibly have written: simple, idiomatic C control flow and sensible data structures.</p>
-</blockquote>
-<p>Chris was getting some useful results from coding agents earlier on, but this <a href="https://blog.chrislewis.au/the-unexpected-effectiveness-of-one-shot-decompilation-with-claude/">new post</a> describes how a switching to a new processing Claude Opus 4.5 and Claude Code has massively accelerated the project - as demonstrated started by this chart on <a href="https://decomp.dev/cdlewis/snowboardkids2-decomp?mode=history">the decomp.dev page</a> for his project:</p>
-<p><img alt="Chart showing progress in matching code for Snowboard Kids 2. It slowly climbs from 20% to 25% from 3rd September to 17th November, then rises quickly to 45% by 2nd December" src="https://static.simonwillison.net/static/2025/decomp-progress.jpg" /></p>
-<p>Here's <a href="https://github.com/cdlewis/snowboardkids2-decomp/blob/852f47a4905a08d5d652387597bc5b47d29582f2/CLAUDE.md">the prompt he was using</a>.</p>
-<p>The big productivity boost was unlocked by switching to use Claude Code in non-interactive mode and having it tackle the less complicated functions (aka the lowest hanging fruit) first. Here's the relevant code from the <a href="https://github.com/cdlewis/snowboardkids2-decomp/blob/785db3cb0ce356e57ea5016835499fd6b393c490/tools/vacuum.sh#L44-L54">driving Bash script</a>:</p>
-<pre>simplest_func=<span class="pl-s"><span class="pl-pds">$(</span>python3 tools/score_functions.py asm/nonmatchings/ <span class="pl-k">2&gt;&amp;1</span><span class="pl-pds">)</span></span>
-<span class="pl-c"><span class="pl-c">#</span> ...</span>
-output=<span class="pl-s"><span class="pl-pds">$(</span>claude -p <span class="pl-s"><span class="pl-pds">"</span>decompile the function <span class="pl-smi">$simplest_func</span><span class="pl-pds">"</span></span> <span class="pl-k">2&gt;&amp;1</span> <span class="pl-k">|</span> tee -a tools/vacuum.log<span class="pl-pds">)</span></span></pre>
-
-<p><a href="https://github.com/cdlewis/snowboardkids2-decomp/blob/785db3cb0ce356e57ea5016835499fd6b393c490/tools/score_functions.py">score_functions.py</a> uses some heuristics to decide which of the remaining un-matched functions look to be the least complex.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=46080498">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/games">games</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Daniel Lemire]]></title>
-        <id>https://simonwillison.net/2025/Dec/6/daniel-lemire/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/6/daniel-lemire/#atom-everything"/>
-        <updated>2025-12-06T14:40:46.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://lemire.me/blog/2025/12/05/why-speed-matters/"><p>If you work slowly, you will be more likely to stick with your slightly obsolete work. You know that professor who spent seven years preparing lecture notes twenty years ago? He is not going to throw them away and start again, as that would be a new seven-year project. So he will keep teaching using aging lecture notes until he retires and someone finally updates the course.</p></blockquote>
-<p class="cite">&mdash; <a href="https://lemire.me/blog/2025/12/05/why-speed-matters/">Daniel Lemire</a>, Why speed matters</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/productivity">productivity</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
