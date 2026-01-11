@@ -25,6 +25,53 @@
 
   <ul>
     <li>
+      <time>2026-01-11</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Linus Torvalds
+              <span class="post-metadata">(2 min | 714 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/11/linus-torvalds/#atom-everything>Also note that the python visualizer tool has been basically written by vibe-coding. I know more about analog filters -- and that&#x27;s not saying much -- than I do about python. It started out as my typical &quot;google and do the monkey-see-monkey-do&quot; kind of programming, but then I cut out the middle-man -- me -- and just used Google Antigravity to do the audio sample visualizer.
+
+— Linus Torvalds, Another silly guitar-pedal-related repo
+Tags: ai, vibe-coding, linus-torvalds, python, llms, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2026-01-10</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              A Software Library with No Code
+              <span class="post-metadata">(3 min | 773 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/10/a-software-library-with-no-code/#atom-everything>A Software Library with No Code
+Pass that to your coding agent of choice, tell it what language you need and it will write it for you on demand!
+This meshes nearly with my recent interest in conformance suites. If you publish good enough language-independent tests it&#x27;s pretty astonishing how far today&#x27;s coding agents can take you!
+
+
+    
+Tags: testing, ai, generative-ai, llms, ai-assisted-programming, drew-breunig, coding-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-01-09</time>
 
       <section>
@@ -4096,214 +4143,6 @@ Description as trigger: The YAML description in SKILL.md is the primary trigger 
 Tags: skills, openai, ai, llms, codex-cli, prompt-engineering, rust, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              ministral-3
-              <span class="post-metadata">(8 min | 2454 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/ministral-3>The Ministral 3 family is designed for edge deployment, capable of running on a wide range of hardware.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-12</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              rnj-1
-              <span class="post-metadata">(10 min | 3023 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/rnj-1>Rnj-1 is a family of 8B parameter open-weight, dense models trained from scratch by Essential AI, optimized for code and STEM with capabilities on par with SOTA open-weight models.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI are quietly adopting skills, now available in ChatGPT and Codex CLI
-              <span class="post-metadata">(4 min | 1205 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/12/openai-skills/#atom-everything>One of the things that most excited me about Anthropic&#x27;s new Skills mechanism back in October is how easy it looked for other platforms to implement. A skill is just a folder with a Markdown file and some optional extra resources and scripts, so any LLM tool with the ability to navigate and read from a filesystem should be capable of using them. It turns out OpenAI are doing exactly that, with skills support quietly showing up in both their Codex CLI tool and now also in ChatGPT itself.
-
-Skills in ChatGPT
-
-I learned about this from Elias Judin this morning. It turns out the Code Interpreter feature of ChatGPT now has a new /home/oai/skills folder which you can access simply by prompting:
-
-
-Create a zip file of /home/oai/skills
-
-
-I tried that myself and got back this zip file. Here&#x27;s a UI for exploring its content (more about that tool).
-
-
-
-So far they cover spreadsheets, docx and PDFs. Interestingly their chosen approach for PDFs and documents is to convert them to rendered per-page PNGs and then pass those through their vision-enabled GPT models, presumably to maintain information from layout and graphics that would be lost if they just ran text extraction.
-
-Elias shared copies in a GitHub repo. They look very similar to Anthropic&#x27;s implementation of the same kind of idea, currently published in their anthropics/skills repository.
-
-I tried it out by prompting:
-
-
-Create a PDF with a summary of the rimu tree situation right now and what it means for kakapo breeding season
-
-
-Sure enough, GPT-5.2 Thinking started with:
-
-
-Reading skill.md for PDF creation guidelines
-
-
-Then:
-
-
-Searching rimu mast and Kākāpō 2025 breeding status
-
-
-It took just over eleven minutes to produce this PDF, which was long enough that I had Claude Code for web build me a custom PDF viewing tool while I waited.
-
-Here&#x27;s ChatGPT&#x27;s PDF in that tool.
-
-
-
-(I am very excited about Kākāpō breeding season this year.)
-
-The reason it took so long is that it was fastidious about looking at and tweaking its own work. I appreciated that at one point it tried rendering the PDF and noticed that the macrons in kākāpō were not supported by the chosen font, so it switched to something else:
-
-
-
-Skills in Codex CLI
-
-Meanwhile, two weeks ago OpenAI&#x27;s open source Codex CLI tool landed a PR titled feat: experimental support for skills.md. The most recent docs for that are in docs/skills.md.
-
-The documentation suggests that any folder in ~/.codex/skills will be treated as a skill.
-
-I dug around and found the code that generates the prompt that drives the skill system in codex-rs/core/src/skills/render.rs - here&#x27;s a Gist with a more readable version of that prompt.
-
-I used Claude Opus 4.5&#x27;s skill authoring skill to create this skill for creating Datasette plugins, then installed it into my Codex CLI skills folder like this:
-
-
-git clone https://github.com/datasette/skill \
-  ~/.codex/skills/datasette-plugin
-
-You have to run Codex with the --enable skills option. I ran this:
-
-
-cd /tmp
-mkdir datasette-cowsay
-cd datasette-cowsay
-codex --enable skills -m gpt-5.2
-
-Then prompted:
-
-
-list skills
-
-
-And Codex replied:
-
-
-- datasette-plugins — Writing Datasette plugins using Python + pluggy (file: /Users/simon/.codex/skills/datasette-plugin/SKILL.md)
-
-- Discovery — How to find/identify available skills (no SKILL.md path provided in the list)
-
-
-Then I said:
-
-
-Write a Datasette plugin in this folder adding a /-/cowsay?text&#x3D;hello page that displays a pre with cowsay from PyPI saying that text
-
-
-It worked perfectly! Here&#x27;s the plugin code it wrote and here&#x27;s a copy of the full Codex CLI transcript, generated with my terminal-to-html tool.
-
-You can try that out yourself if you have uvx installed like this:
-
-
-uvx --with https://github.com/simonw/datasette-cowsay/archive/refs/heads/main.zip \
-  datasette
-
-Then visit:
-
-http://127.0.0.1:8001/-/cowsay?text&#x3D;This+is+pretty+fun
-
-
-
-
-Skills are a keeper
-
-When I first wrote about skills in October I said Claude Skills are awesome, maybe a bigger deal than MCP. The fact that it&#x27;s just turned December and OpenAI have already leaned into them in a big way reinforces to me that I called that one correctly.
-
-Skills are based on a very light specification, if you could even call it that, but I still think it would be good for these to be formally documented somewhere. This could be a good initiative for the new Agentic AI Foundation (previously) to take on.
-Tags: pdf, ai, kakapo, openai, prompt-engineering, generative-ai, chatgpt, llms, ai-assisted-programming, anthropic, coding-agents, gpt-5, codex-cli, skills</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Gemini 3 Pro is now available in Visual Studio, JetBrains IDEs, Xcode, and Eclipse
-              <span class="post-metadata">(5 min | 1483 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-12-gemini-3-pro-is-now-available-in-visual-studio-jetbrains-ides-xcode-and-eclipse>Gemini 3 Pro is available in public preview to Copilot Enterprise, Copilot Business, Copilot Pro and Copilot Pro+. You’ll now be able to access the model in GitHub Copilot Chat…
-The post Gemini 3 Pro is now available in Visual Studio, JetBrains IDEs, Xcode, and Eclipse appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              LLM 0.28
-              <span class="post-metadata">(2 min | 645 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/12/llm-028/#atom-everything>LLM 0.28
-LLM Python library and CLI tool for interacting with Large Language Models. Highlights from the release notes:
-New OpenAI models: gpt-5.1, gpt-5.1-chat-latest, gpt-5.2 and gpt-5.2-chat-latest. #1300, #1317
-When fetching URLs as fragments using llm -f URL, the request now includes a custom user-agent header: llm/VERSION (https://llm.datasette.io/). #1309
-Fixed a bug where fragments were not correctly registered with their source when using llm chat. Thanks, Giuseppe Rota. #1316
-Fixed some file descriptor leak warnings. Thanks, Eric Bloch. #1313
-Type annotations for the OpenAI Chat, AsyncChat and Completion execute() methods. Thanks, Arjan Mossel. #1315
-The project now uses uv and dependency groups for development. See the updated contributing documentation. #1318
-That last bullet point about uv relates to the dependency groups pattern I wrote about in a recent TIL. I&#x27;m currently working through applying it to my other projects - the net result is that running the test suite is as simple as doing:
-git clone https://github.com/simonw/llm
-cd llm
-uv run pytest
-
-The new dev dependency group defined in pyproject.toml is automatically installed by uv run in a new virtual environment which means everything needed to run pytest is available without needing to add any extra commands.
-
-
-    
-Tags: projects, python, ai, annotated-release-notes, generative-ai, llms, llm, uv</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Better diagnostics for VNET injected runners and required self-hosted runner upgrades
-              <span class="post-metadata">(7 min | 2078 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-12-better-diagnostics-for-vnet-injected-runners-and-required-self-hosted-runner-upgrades>GitHub-hosted larger runners with Azure private networking (Azure VNET-injection) now display detailed network diagnostics when connectivity issues occur. Instead of generic pool errors, you’ll see: Per-endpoint visibility: Drill down into…
-The post Better diagnostics for VNET injected runners and required self-hosted runner upgrades appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
