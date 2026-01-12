@@ -31,6 +31,85 @@
       <article>
           <details>
             <summary>
+              Don&#x27;t fall into the anti-AI hype
+              <span class="post-metadata">(3 min | 928 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/11/dont-fall-into-the-anti-ai-hype/#atom-everything>Don&#x27;t fall into the anti-AI hype
+lot of anti-AI sentiment in the software development community these days. Much of it is justified, but if you let people convince you that AI isn&#x27;t genuinely useful for software developers or that this whole thing will blow over soon it&#x27;s becoming clear that you&#x27;re taking on a very real risk to your future career.
+As Salvatore Sanfilippo puts it:
+It does not matter if AI companies will not be able to get their money back and the stock market will crash. All that is irrelevant, in the long run. It does not matter if this or the other CEO of some unicorn is telling you something that is off putting, or absurd. Programming changed forever, anyway.
+I do like this hopeful positive outlook on what this could all mean, emphasis mine:
+How do I feel, about all the code I wrote that was ingested by LLMs? I feel great to be part of that, because I see this as a continuation of what I tried to do all my life: democratizing code, systems, knowledge. LLMs are going to help us to write better software, faster, and will allow small teams to have a chance to compete with bigger companies. The same thing open source software did in the 90s.
+This post has been the subject of heated discussions all day today on both Hacker News and Lobste.rs.
+
+
+    
+Tags: salvatore-sanfilippo, ai, generative-ai, llms, ai-assisted-programming, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              My answers to the questions I posed about porting open source code with LLMs
+              <span class="post-metadata">(6 min | 1757 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/11/answers/#atom-everything>Last month I wrote about porting JustHTML from Python to JavaScript using Codex CLI and GPT-5.2 in a few hours while also buying a Christmas tree and watching Knives Out 3. I ended that post with a series of open questions about the ethics and legality of this style of work. Alexander Petros on lobste.rs just challenged me to answer them, which is fair enough! Here&#x27;s my attempt at that.
+
+You can read the original post for background, but the short version is that it&#x27;s now possible to point a coding agent at some other open source project and effectively tell it &quot;port this to language X and make sure the tests still pass&quot; and have it do exactly that.
+
+Here are the questions I posed along with my answers based on my current thinking. Extra context is that I&#x27;ve since tried variations on a similar theme a few more times using Claude Code and Opus 4.5 and found it to be astonishingly effective.
+
+Does this library represent a legal violation of copyright of either the Rust library or the Python one?
+
+I decided that the right thing to do here was to keep the open source license and copyright statement from the Python library author and treat what I had built as a derivative work, which is the entire point of open source.
+
+Even if this is legal, is it ethical to build a library in this way?
+
+After sitting on this for a while I&#x27;ve come down on yes, provided full credit is given and the license is carefully considered. Open source allows and encourages further derivative works! I never got upset at some university student forking one of my projects on GitHub and hacking in a new feature that they used. I don&#x27;t think this is materially different, although a port to another language entirely does feel like a slightly different shape.
+
+Does this format of development hurt the open source ecosystem?
+
+Now this one is complicated!
+
+It definitely hurts some projects because there are open source maintainers out there who say things like &quot;I&#x27;m not going to release any open source code any more because I don&#x27;t want it used for training&quot; - I expect some of those would be equally angered by LLM-driven derived works as well.
+
+I don&#x27;t know how serious this problem is - I&#x27;ve seen angry comments from anonymous usernames, but do they represent genuine open source contributions or are they just angry anonymous usernames?
+
+If we assume this is real, does the loss of those individuals get balanced out by the increase in individuals who CAN contribute to open source because they can now get work done in a few hours that might previously have taken them a few days that they didn&#x27;t have to spare?
+
+I&#x27;ll be brutally honest about that question: I think that if &quot;they might train on my code / build a derived version with an LLM&quot; is enough to drive you away from open source, your open source values are distinct enough from mine that I&#x27;m not ready to invest significantly in keeping you. I&#x27;ll put that effort into welcoming the newcomers instead.
+
+The much bigger concern for me is the impact of generative AI on demand for open source. The recent Tailwind story is a visible example of this - while Tailwind blamed LLMs for reduced traffic to their documentation resulting in fewer conversions to their paid component library, I&#x27;m suspicious that the reduced demand there is because LLMs make building good-enough versions of those components for free easy enough that people do that instead.
+
+I&#x27;ve found myself affected by this for open source dependencies too. The other day I wanted to parse a cron expression in some Go code. Usually I&#x27;d go looking for an existing library for cron expression parsing - but this time I hardly thought about that for a second before prompting one (complete with extensive tests) into existence instead.
+
+I expect that this is going to quite radically impact the shape of the open source library world over the next few years. Is that &quot;harmful to open source&quot;? It may well be. I&#x27;m hoping that whatever new shape comes out of this has its own merits, but I don&#x27;t know what those would be.
+
+Can I even assert copyright over this, given how much of the work was produced by the LLM?
+
+I&#x27;m not a lawyer so I don&#x27;t feel credible to comment on this one. My loose hunch is that I&#x27;m still putting enough creative control in through the way I direct the models for that to count as enough human intervention, at least under US law, but I have no idea.
+
+Is it responsible to publish software libraries built in this way?
+
+I&#x27;ve come down on &quot;yes&quot; here, again because I never thought it was irresponsible for some random university student to slap an Apache license on some bad code they just coughed up on GitHub.
+
+What&#x27;s important here is making it very clear to potential users what they should expect from that software. I&#x27;ve started publishing my AI-generated and not 100% reviewed libraries as alphas, which I&#x27;m tentatively thinking of as &quot;alpha slop&quot;. I&#x27;ll take the alpha label off once I&#x27;ve used them in production to the point that I&#x27;m willing to stake my reputation on them being decent implementations, and I&#x27;ll ship a 1.0 version when I&#x27;m confident that they are a solid bet for other people to depend on. I think that&#x27;s the responsible way to handle this.
+
+How much better would this library be if an expert team hand crafted it over the course of several months?
+
+That one was a deliberately provocative question, because for a new HTML5 parsing library that passes 9,200 tests you would need a very good reason to hire an expert team for two months (at a cost of hundreds of thousands of dollars) to write such a thing. And honestly, thanks to the existing conformance suites this kind of library is simple enough that you may find their results weren&#x27;t notably better than the one written by the coding agent.
+Tags: definitions, open-source, ai, generative-ai, llms, ai-assisted-programming, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Linus Torvalds
               <span class="post-metadata">(2 min | 714 words)</span> 
             </summary>
@@ -4085,29 +4164,6 @@ The big question for me is if a new AI-infested economy creates new jobs that ar
 
     
 Tags: copywriting, careers, ai, ai-ethics</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-13</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Obie Fernandez
-              <span class="post-metadata">(2 min | 558 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/13/obie-fernandez/#atom-everything>If the part of programming you enjoy most is the physical act of writing code, then agents will feel beside the point. You’re already where you want to be, even just with some Copilot or Cursor-style intelligent code auto completion, which makes you faster while still leaving you fully in the driver’s seat about the code that gets written.
-But if the part you care about is the decision-making around the code, agents feel like they clear space. They take care of the mechanical expression and leave you with judgment, tradeoffs, and intent. Because truly, for someone at my experience level, that is my core value offering anyway. When I spend time actually typing code these days with my own fingers, it feels like a waste of my time.
-
-— Obie Fernandez, What happens when the coding becomes the least interesting part of the work
-Tags: careers, ai-assisted-programming, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
