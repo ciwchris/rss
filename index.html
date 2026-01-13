@@ -25,9 +25,235 @@
 
   <ul>
     <li>
+      <time>2026-01-13</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              New fine-grained permission for artifact metadata is now generally available
+              <span class="post-metadata">(4 min | 1287 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-01-13-new-fine-grained-permission-for-artifact-metadata-is-now-generally-available>GitHub has introduced a new artifact_metadata permission to give you more precise control over API access to artifact-related metadata. This permission replaces the broader contents:read and contents:write permissions for the…
+The post New fine-grained permission for artifact metadata is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-01-12</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Superhuman AI Exfiltrates Emails
+              <span class="post-metadata">(3 min | 784 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/12/superhuman-ai-exfiltrates-emails/#atom-everything>Superhuman AI Exfiltrates Emails
+When asked to summarize the user’s recent mail, a prompt injection in an untrusted email manipulated Superhuman AI to submit content from dozens of other sensitive emails (including financial, legal, and medical information) in the user’s inbox to an attacker’s Google Form.
+To Superhuman&#x27;s credit they treated this as the high priority incident it is and issued a fix.
+The root cause was a CSP rule that allowed markdown images to be loaded from docs.google.com - it turns out Google Forms on that domain will persist data fed to them via a GET request!
+
+    
+Via Hacker News
+Tags: security, ai, prompt-injection, generative-ai, llms, exfiltration-attacks, content-security-policy</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Selectively showing &quot;act on your behalf&quot; warning for GitHub Apps is in public preview
+              <span class="post-metadata">(5 min | 1538 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-01-12-selectively-showing-act-on-your-behalf-warning-for-github-apps-is-in-public-preview>Today we’ve released an update to the consent page to be less alarming when using GitHub Apps only as a form of sign-in. The consent page for GitHub Apps, where…
+The post Selectively showing &quot;act on your behalf&quot; warning for GitHub Apps is in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              First impressions of Claude Cowork, Anthropic&#x27;s general agent
+              <span class="post-metadata">(7 min | 2021 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/12/claude-cowork/#atom-everything>New from Anthropic today is Claude Cowork, a &quot;research preview&quot; that they describe as &quot;Claude Code for the rest of your work&quot;. It&#x27;s currently available only to Max subscribers ($100 or $200 per month plans) as part of the updated Claude Desktop macOS application.
+
+I&#x27;ve been saying for a while now that Claude Code is a &quot;general agent&quot; disguised as a developer tool. It can help you with any computer task that can be achieved by executing code or running terminal commands... which covers almost anything, provided you know what you&#x27;re doing with it! What it really needs is a UI that doesn&#x27;t involve the terminal and a name that doesn&#x27;t scare away non-developers.
+
+&quot;Cowork&quot; is a pretty solid choice on the name front!
+
+What it looks like
+
+The interface for Cowork is a new tab in the Claude desktop app, called Cowork. It sits next to the existing Chat and Code tabs.
+
+It looks very similar to the desktop interface for regular Claude Code. You start with a prompt, optionally attaching a folder of files. It then starts work.
+
+I tried it out against my perpetually growing &quot;blog-drafts&quot; folder with the following prompt:
+
+
+Look at my drafts that were started within the last three months and then check that I didn&#x27;t publish them on simonwillison.net using a search against content on that site and then suggest the ones that are most close to being ready
+
+
+
+
+It started by running this command:
+
+
+find /sessions/zealous-bold-ramanujan/mnt/blog-drafts \
+  -type f \( -name &quot;*.md&quot; -o -name &quot;*.txt&quot; -o -name &quot;*.html&quot; \) \
+  -mtime -90 -exec ls -la {} \;
+
+That /sessions/zealous-bold-ramanujan/mnt/blog-drafts path instantly caught my eye. Anthropic say that Cowork can only access files you grant it access to - it looks to me like they&#x27;re mounting those files into a containerized environment, which should mean we can trust Cowork not to be able to access anything outside of that sandbox.
+
+It turns out I have 46 draft files from the past three months. Claude then went to work with its search tool, running 44 individual searches against site:simonwillison.net to figure out which of my drafts had already been published.
+
+Here&#x27;s the eventual reply:
+
+
+Based on my analysis, here are your unpublished drafts that appear closest to being ready for publication:
+
+
+🔥 Most Ready to Publish (substantial content, not yet published)
+
+
+
+freq-argued-llms.md - &quot;Frequently Argued Questions about LLMs&quot; (22,602 bytes)
+
+This is a meaty piece documenting common arguments about LLMs with your counterpoints
+
+Well-structured with a TL;DR and multiple sections
+
+No matching published article found on your site
+
+
+Very close to ready - just needs a final review pass
+
+
+
+
+claude-code-timeline.md - &quot;Claude Code Timeline and Codex Timeline&quot; (3,075 bytes)
+
+About viewing JSONL session logs from Claude Code and Codex
+
+You published claude-code-transcripts on Dec 25, but this appears to be a different/earlier piece about timeline viewing tools
+
+Shorter but seems complete
+
+
+
+
+datasette-1a20-upgrade-instructions.md - Plugin Upgrade Guide (3,147 bytes)
+
+Technical guide for plugin authors
+
+You published the main 1.0a20 announcement but this companion upgrade guide appears unpublished
+
+Would be valuable for plugin maintainers
+
+
+
+
+
+That&#x27;s a good response! It found exactly what I needed to see, although those upgrade instructions are actually published elsewhere now (in the Datasette docs) and weren&#x27;t actually intended for my blog.
+
+Just for fun, and because I really like artifacts, I asked for a follow-up:
+
+
+Make me an artifact with exciting animated encouragements to get me to do it
+
+
+Here&#x27;s what I got:
+
+
+
+I couldn&#x27;t figure out how to close the right sidebar so the artifact ended up cramped into a thin column but it did work. I expect Anthropic will fix that display bug pretty quickly.
+
+Isn&#x27;t this just Claude Code?
+
+I&#x27;ve seen a few people ask what the difference between this and regular Claude Code is. The answer is not a lot. As far as I can tell Claude Cowork is regular Claude Code wrapped in a less intimidating default interface and with a filesystem sandbox configured for you without you needing to know what a &quot;filesystem sandbox&quot; is.
+
+Update: It&#x27;s more than just a filesystem sandbox - I had Claude Code reverse engineer the Claude app and it found out that Claude uses VZVirtualMachine - the Apple Virtualization Framework - and downloads and boots a custom Linux root filesystem.
+
+I think that&#x27;s a really smart product. Claude Code has an enormous amount of value that hasn&#x27;t yet been unlocked for a general audience, and this seems like a pragmatic approach.
+
+
+The ever-present threat of prompt injection
+
+With a feature like this, my first thought always jumps straight to security. How big is the risk that someone using this might be hit by hidden malicious instruction somewhere that break their computer or steal their data?
+
+Anthropic touch on that directly in the announcement:
+
+
+You should also be aware of the risk of &quot;prompt injections&quot;: attempts by attackers to alter Claude&#x27;s plans through content it might encounter on the internet. We&#x27;ve built sophisticated defenses against prompt injections, but agent safety---that is, the task of securing Claude&#x27;s real-world actions---is still an active area of development in the industry.
+
+These risks aren&#x27;t new with Cowork, but it might be the first time you&#x27;re using a more advanced tool that moves beyond a simple conversation. We recommend taking precautions, particularly while you learn how it works. We provide more detail in our Help Center.
+
+
+That help page includes the following tips:
+
+
+To minimize risks:
+
+
+Avoid granting access to local files with sensitive information, like financial documents.
+
+When using the Claude in Chrome extension, limit access to trusted sites.
+
+If you chose to extend Claude’s default internet access settings, be careful to only extend internet access to sites you trust.
+
+Monitor Claude for suspicious actions that may indicate prompt injection.
+
+
+
+I do not think it is fair to tell regular non-programmer users to watch out for &quot;suspicious actions that may indicate prompt injection&quot;!
+
+I&#x27;m sure they have some impressive mitigations going on behind the scenes. I recently learned that the summarization applied by the WebFetch function in Claude Code and now in Cowork is partly intended as a prompt injection protection layer via this tweet from Claude Code creator Boris Cherny:
+
+
+Summarization is one thing we do to reduce prompt injection risk. Are you running into specific issues with it?
+
+
+But Anthropic are being honest here with their warnings: they can attempt to filter out potential attacks all they like but the one thing they can&#x27;t provide is guarantees that no future attack will be found that sneaks through their defenses and steals your data (see the lethal trifecta for more on this.)
+
+The problem with prompt injection remains that until there&#x27;s a high profile incident it&#x27;s really hard to get people to take it seriously. I myself have all sorts of Claude Code usage that could cause havoc if a malicious injection got in. Cowork does at least run in a filesystem sandbox by default, which is more than can be said for my claude --dangerously-skip-permissions habit!
+
+I wrote more about this in my 2025 round-up: The year of YOLO and the Normalization of Deviance.
+
+This is still a strong signal of the future
+
+Security worries aside, Cowork represents something really interesting. This is a general agent that looks well positioned to bring the wildly powerful capabilities of Claude Code to a wider audience.
+
+I would be very surprised if Gemini and OpenAI don&#x27;t follow suit with their own offerings in this category.
+
+I imagine OpenAI are already regretting burning the name &quot;ChatGPT Agent&quot; on their janky, experimental and mostly forgotten browser automation tool back in August!
+
+Bonus: and a silly logo
+
+bashtoni on Hacker News:
+
+
+Simple suggestion: logo should be a cow and and orc to match how I originally read the product name.
+
+
+I couldn&#x27;t resist throwing that one at Nano Banana:
+
+
+Tags: sandboxing, ai, prompt-injection, generative-ai, llms, anthropic, claude, ai-agents, claude-code, lethal-trifecta</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -136,6 +362,23 @@ How much better would this library be if an expert team hand crafted it over the
 
 That one was a deliberately provocative question, because for a new HTML5 parsing library that passes 9,200 tests you would need a very good reason to hire an expert team for two months (at a cost of hundreds of thousands of dollars) to write such a thing. And honestly, thanks to the existing conformance suites this kind of library is simple enough that you may find their results weren&#x27;t notably better than the one written by the coding agent.
 Tags: definitions, open-source, ai, generative-ai, llms, ai-assisted-programming, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              TIL from taking Neon I at the Crucible
+              <span class="post-metadata">(2 min | 702 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/11/neon-i-at-the-crucible/#atom-everything>TIL from taking Neon I at the Crucible
+the Crucible in Oakland.
+
+
+    
+Tags: art, til</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
@@ -4075,110 +4318,6 @@ Tags: definitions, ai, generative-ai, slop, ai-ethics</a>
 The post The .NET Pipeline That Makes Source Generators Feel Instant first appeared on Roxeem.</a>
             </div>
             <!-- <p class="post-source">Roxeem</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-14</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              JustHTML is a fascinating example of vibe engineering in action
-              <span class="post-metadata">(4 min | 1349 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/14/justhtml/#atom-everything>I recently came across JustHTML, a new Python library for parsing HTML released by Emil Stenström. It&#x27;s a very interesting piece of software, both as a useful library and as a case study in sophisticated AI-assisted programming.
-
-First impressions of JustHTML
-
-I didn&#x27;t initially know that JustHTML had been written with AI assistance at all. The README caught my eye due to some attractive characteristics:
-
-
-It&#x27;s pure Python. I like libraries that are pure Python (no C extensions or similar) because it makes them easy to use in less conventional Python environments, including Pyodide.
-
-&quot;Passes all 9,200+ tests in the official html5lib-tests suite (used by browser vendors)&quot; - this instantly caught my attention! HTML5 is a big, complicated but meticulously written specification.
-
-100% test coverage. That&#x27;s not something you see every day.
-
-CSS selector queries as a feature. I built a Python library for this many years ago and I&#x27;m always interested in seeing new implementations of that pattern.
-
-html5lib has been inconsistently maintained over the last few years, leaving me interested in potential alternatives.
-
-It&#x27;s only 3,000 lines of implementation code (and another ~11,000 of tests.)
-
-
-I was out and about without a laptop so I decided to put JustHTML through its paces on my phone. I prompted Claude Code for web on my phone and had it build this Pyodide-powered HTML tool for trying it out:
-
-
-
-This was enough for me to convince myself that the core functionality worked as advertised. It&#x27;s a neat piece of code!
-
-Turns out it was almost all built by LLMs
-
-At this point I went looking for some more background information on the library and found Emil&#x27;s blog entry about it: How I wrote JustHTML using coding agents:
-
-
-Writing a full HTML5 parser is not a short one-shot problem. I have been working on this project for a couple of months on off-hours.
-
-Tooling: I used plain VS Code with Github Copilot in Agent mode. I enabled automatic approval of all commands, and then added a blacklist of commands that I always wanted to approve manually. I wrote an agent instruction that told it to keep working, and don&#x27;t stop to ask questions. Worked well!
-
-
-Emil used several different models - an advantage of working in VS Code Agent mode rather than a provider-locked coding agent like Claude Code or Codex CLI. Claude Sonnet 3.7, Gemini 3 Pro and Claude Opus all get a mention.
-
-Vibe engineering, not vibe coding
-
-What&#x27;s most interesting about Emil&#x27;s 17 step account covering those several months of work is how much software engineering was involved, independent of typing out the actual code.
-
-I wrote about vibe engineering a while ago as an alternative to vibe coding.
-
-Vibe coding is when you have an LLM knock out code without any semblance of code review - great for prototypes and toy projects, definitely not an approach to use for serious libraries or production code.
-
-I proposed &quot;vibe engineering&quot; as the grown up version of vibe coding, where expert programmers use coding agents in a professional and responsible way to produce high quality, reliable results.
-
-You should absolutely read Emil&#x27;s account in full. A few highlights:
-
-
-He hooked in the 9,200 test html5lib-tests conformance suite almost from the start. There&#x27;s no better way to construct a new HTML5 parser than using the test suite that the browsers themselves use.
-
-He picked the core API design himself - a TagHandler base class with handle_start() etc. methods - and told the model to implement that.
-
-He added a comparative benchmark to track performance compared to existing libraries like html5lib, then experimented with a Rust optimization based on those initial numbers.
-
-He threw the original code away and started from scratch as a rough port of Servo&#x27;s excellent html5ever Rust library.
-
-He built a custom profiler and new benchmark and let Gemini 3 Pro loose on it, finally achieving micro-optimizations to beat the existing Pure Python libraries.
-
-He used coverage to identify and remove unnecessary code.
-
-He had his agent build a custom fuzzer to generate vast numbers of invalid HTML documents and harden the parser against them.
-
-
-This represents a lot of sophisticated development practices, tapping into Emil&#x27;s deep experience as a software engineer. As described, this feels to me more like a lead architect role than a hands-on coder.
-
-It perfectly fits what I was thinking about when I described vibe engineering.
-
-Setting the coding agent up with the html5lib-tests suite is also a great example of designing an agentic loop.
-
-&quot;The agent did the typing&quot;
-
-Emil concluded his article like this:
-
-
-JustHTML is about 3,000 lines of Python with 8,500+ tests passing. I couldn&#x27;t have written it this quickly without the agent.
-
-But &quot;quickly&quot; doesn&#x27;t mean &quot;without thinking.&quot; I spent a lot of time reviewing code, making design decisions, and steering the agent in the right direction. The agent did the typing; I did the thinking.
-
-That&#x27;s probably the right division of labor.
-
-
-I couldn&#x27;t agree more. Coding agents replace the part of my job that involves typing the code into a computer. I find what&#x27;s left to be a much more valuable use of my time.
-Tags: html, python, ai, generative-ai, llms, ai-assisted-programming, vibe-coding, coding-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
