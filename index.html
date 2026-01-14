@@ -31,6 +31,23 @@
       <article>
           <details>
             <summary>
+              Anthropic invests $1.5 million in the Python Software Foundation and open source security
+              <span class="post-metadata">(3 min | 848 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/13/anthropic-invests-15-million-in-the-python-software-foundation-a/#atom-everything>Anthropic invests $1.5 million in the Python Software Foundation and open source security
+back in October.
+We are thrilled to announce that Anthropic has entered into a two-year partnership with the Python Software Foundation (PSF) to contribute a landmark total of $1.5 million to support the foundation’s work, with an emphasis on Python ecosystem security. This investment will enable the PSF to make crucial security advances to CPython and the Python Package Index (PyPI) benefiting all users, and it will also sustain the foundation’s core work supporting the Python language, ecosystem, and global community.
+Note that while security is a focus these funds will also support other aspects of the PSF&#x27;s work:
+Anthropic’s support will also go towards the PSF’s core work, including the Developer in Residence program driving contributions to CPython, community support through grants and other programs, running core infrastructure such as PyPI, and more.
+Tags: open-source, python, ai, psf, anthropic</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Upcoming deprecation of select GitHub Copilot models from Claude, Google, and OpenAI
               <span class="post-metadata">(5 min | 1404 words)</span> 
             </summary>
@@ -4077,260 +4094,6 @@ The post Code scanning alert assignees are now generally available appeared firs
 Tags: gemini, ai-personality, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Kent Beck
-              <span class="post-metadata">(2 min | 569 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/16/kent-beck/#atom-everything>I’ve been watching junior developers use AI coding assistants well. Not vibe coding—not accepting whatever the AI spits out. Augmented coding: using AI to accelerate learning while maintaining quality. [...]
-The juniors working this way compress their ramp dramatically. Tasks that used to take days take hours. Not because the AI does the work, but because the AI collapses the search space. Instead of spending three hours figuring out which API to use, they spend twenty minutes evaluating options the AI surfaced. The time freed this way isn’t invested in another unprofitable feature, though, it’s invested in learning. [...]
-If you’re an engineering manager thinking about hiring: The junior bet has gotten better. Not because juniors have changed, but because the genie, used well, accelerates learning.
-
-— Kent Beck, The Bet On Juniors Just Got Better
-Tags: careers, ai-assisted-programming, generative-ai, ai, llms, kent-beck</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-15</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              I ported JustHTML from Python to JavaScript with Codex CLI and GPT-5.2 in 4.5 hours
-              <span class="post-metadata">(7 min | 2181 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/15/porting-justhtml/#atom-everything>I wrote about JustHTML yesterday - Emil Stenström&#x27;s project to build a new standards compliant HTML5 parser in pure Python code using coding agents running against the comprehensive html5lib-tests testing library. Last night, purely out of curiosity, I decided to try porting JustHTML from Python to JavaScript with the least amount of effort possible, using Codex CLI and GPT-5.2. It worked beyond my expectations.
-
-TL;DR
-
-I built simonw/justjshtml, a dependency-free HTML5 parsing library in JavaScript which passes 9,200 tests from the html5lib-tests suite and imitates the API design of Emil&#x27;s JustHTML library.
-
-It took two initial prompts and a few tiny follow-ups. GPT-5.2 running in Codex CLI ran uninterrupted for several hours, burned through 1,464,295 input tokens, 97,122,176 cached input tokens and 625,563 output tokens and ended up producing 9,000 lines of fully tested JavaScript across 43 commits.
-
-Time elapsed from project idea to finished library: about 4 hours, during which I also bought and decorated a Christmas tree with family and watched the latest Knives Out movie.
-
-Some background
-
-One of the most important contributions of the HTML5 specification ten years ago was the way it precisely specified how invalid HTML should be parsed. The world is full of invalid documents and having a specification that covers those means browsers can treat them in the same way - there&#x27;s no more &quot;undefined behavior&quot; to worry about when building parsing software.
-
-Unsurprisingly, those invalid parsing rules are pretty complex! The free online book Idiosyncrasies of the HTML parser by Simon Pieters is an excellent deep dive into this topic, in particular Chapter 3. The HTML parser.
-
-The Python html5lib project started the html5lib-tests repository with a set of implementation-independent tests. These have since become the gold standard for interoperability testing of HTML5 parsers, and are used by projects such as Servo which used them to help build html5ever, a &quot;high-performance browser-grade HTML5 parser&quot; written in Rust.
-
-Emil Stenström&#x27;s JustHTML project is a pure-Python implementation of an HTML5 parser that passes the full html5lib-tests suite. Emil spent a couple of months working on this as a side project, deliberately picking a problem with a comprehensive existing test suite to see how far he could get with coding agents.
-
-At one point he had the agents rewrite it based on a close inspection of the Rust html5ever library. I don&#x27;t know how much of this was direct translation versus inspiration (here&#x27;s Emil&#x27;s commentary on that) - his project has 1,215 commits total so it appears to have included a huge amount of iteration, not just a straight port.
-
-My project is a straight port. I instructed Codex CLI to build a JavaScript version of Emil&#x27;s Python code.
-
-The process in detail
-
-I started with a bit of mise en place. I checked out two repos and created an empty third directory for the new project:
-
-
-cd ~/dev
-git clone https://github.com/EmilStenstrom/justhtml
-git clone https://github.com/html5lib/html5lib-tests
-mkdir justjshtml
-cd justjshtml
-
-Then I started Codex CLI for GPT-5.2 like this:
-
-
-codex --yolo -m gpt-5.2
-
-That --yolo flag is a shortcut for --dangerously-bypass-approvals-and-sandbox, which is every bit as dangerous as it sounds.
-
-My first prompt told Codex to inspect the existing code and use it to build a specification for the new JavaScript library:
-
-
-We are going to create a JavaScript port of ~/dev/justhtml - an HTML parsing library that passes the full ~/dev/html5lib-tests test suite. It is going to have a similar API to the Python library but in JavaScript. It will have no dependencies other than raw JavaScript, hence it will work great in the browser and node.js and other environments. Start by reading ~/dev/justhtml and designing the user-facing API for the new library - create a spec.md containing your plan.
-
-
-I reviewed the spec, which included a set of proposed milestones, and told it to add another:
-
-
-Add an early step to the roadmap that involves an initial version that parses a simple example document that is valid and returns the right results. Then add and commit the spec.md file.
-
-
-Here&#x27;s the resulting spec.md file. My request for that initial version became &quot;Milestone 0.5&quot; which looked like this:
-
-
-Milestone 0.5 — End-to-end smoke parse (single valid document)
-
-
-Implement the smallest end-to-end slice so the public API is real early:
-
-
-new JustHTML(&quot;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;) returns a tree with the expected tag structure and text nodes.
-
-
-doc.toText() returns &quot;Hello&quot; and doc.errors is empty for this valid input.
-
-
-
-Add scripts/smoke.js (no deps) that runs the example and asserts the expected structure/output.
-
-Gate: node scripts/smoke.js passes.
-
-
-
-Then I told it:
-
-
-Implement Milestone 0.5
-
-
-And off it went. The resulting code appeared to work so I said:
-
-
-Configure GitHub Actions test.yml to run that on every commit, then commit and push
-
-
-I ran git init and created a private GitHub repository for this project at this point, and set up the local directory to push to that remote.
-
-Here&#x27;s that initial push. Then I told it:
-
-
-OK do the rest, commit and push often
-
-
-And that was almost it!
-
-I set my laptop to not fall asleep and left it to its devices while we went off to buy a Christmas tree. The &quot;commit and push often&quot; meant I could monitor its progress on my phone by refreshing the commit log on GitHub.
-
-I was running this against my $20/month ChatGPT Plus account, which has a five hour token allowance window for Codex CLI. That ran out at 6:35pm and Codex paused, so I waited until the reset point at 7:14pm and typed:
-
-
-Keep going
-
-
-At 9:30pm it declared itself done with the following summary message:
-
-• What’s Done
-
-  - html5lib-tests now run in CI and pass: tokenizer 6810/6810, tree 1770/1782
-    (12 skipped: #script-on), serializer 230/230, encoding 82/83 (1 skipped:
-    scripted) (.github/workflows/test.yml:1).
-  - Public API expanded: stream() (src/stream.js:1), CSS selectors query()/
-    matches() (src/selector.js:1), and toMarkdown() (src/markdown.js:1), all
-    exported via src/index.js:1.
-  - Added no-deps unit scripts for selectors/stream/markdown (scripts/run-
-    selector-tests.js:1, scripts/run-stream-tests.js:1, scripts/run-markdown-
-    tests.js:1) and wired them into CI.
-  - Fixed TreeBuilder so &lt;br&gt; no longer closes &lt;p&gt; (src/treebuilder.js:647).
-
-
-As a finishing touch, I had it add a playground interface so I could try out the new library in my browser. I prompted:
-
-
-Add a playground.html in the top level folder which loads the necessary ES modules from ./src/... and implements the exact same functionality as seen on https://tools.simonwillison.net/justhtml but using the JavaScript library instead of Pyodide
-
-
-It fetched my existing JustHTML playground page (described here) using curl and built a new playground.html file that loaded the new JavaScript code instead. This worked perfectly.
-
-
-I enabled GitHub Pages for my still-private repo which meant I could access the new playground at this URL:
-
-https://simonw.github.io/justjshtml/playground.html
-
-
-
-All it needed now was some documentation:
-
-
-Add a comprehensive README with full usage instructions including attribution plus how this was built plus how to use in in HTML plus how to use it in Node.js
-
-
-You can read the result here.
-
-We are now at eight prompts total, running for just over four hours and I&#x27;ve decorated for Christmas and watched Wake Up Dead Man on Netflix.
-
-According to Codex CLI:
-
-
-Token usage: total&#x3D;2,089,858 input&#x3D;1,464,295 (+ 97,122,176 cached) output&#x3D;625,563 (reasoning 437,010)
-
-
-My llm-prices.com calculator estimates that at $29.41 if I was paying for those tokens at API prices, but they were included in my $20/month ChatGPT Plus subscription so the actual extra cost to me was zero.
-
-What can we learn from this?
-
-I&#x27;m sharing this project because I think it demonstrates a bunch of interesting things about the state of LLMs in December 2025.
-
-
-Frontier LLMs really can perform complex, multi-hour tasks with hundreds of tool calls and minimal supervision. I used GPT-5.2 for this but I have no reason to believe that Claude Opus 4.5 or Gemini 3 Pro would not be able to achieve the same thing - the only reason I haven&#x27;t tried is that I don&#x27;t want to burn another 4 hours of time and several million tokens on more runs.
-
-If you can reduce a problem to a robust test suite you can set a coding agent loop loose on it with a high degree of confidence that it will eventually succeed. I called this designing the agentic loop a few months ago. I think it&#x27;s the key skill to unlocking the potential of LLMs for complex tasks.
-
-Porting entire open source libraries from one language to another via a coding agent works extremely well.
-
-Code is so cheap it&#x27;s practically free. Code that works continues to carry a cost, but that cost has plummeted now that coding agents can check their work as they go.
-
-We haven&#x27;t even begun to unpack the etiquette and ethics around this style of development. Is it responsible and appropriate to churn out a direct port of a library like this in a few hours while watching a movie? What would it take for code built like this to be trusted in production?
-
-
-I&#x27;ll end with some open questions:
-
-
-
-Does this library represent a legal violation of copyright of either the Rust library or the Python one?
-
-Even if this is legal, is it ethical to build a library in this way?
-
-Does this format of development hurt the open source ecosystem?
-
-Can I even assert copyright over this, given how much of the work was produced by the LLM?
-
-Is it responsible to publish software libraries built in this way?
-
-How much better would this library be if an expert team hand crafted it over the course of several months?
-
-
-    
-        
-Tags: html, javascript, python, ai, generative-ai, llms, ai-assisted-programming, gpt-5, codex-cli</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              2025 Word of the Year: Slop
-              <span class="post-metadata">(2 min | 507 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/15/2025-word-of-the-year-slop/#atom-everything>2025 Word of the Year: Slop
-Oxford Word of the Year 2024 but it&#x27;s finally made it this year thanks to Merriam-Webster!
-Merriam-Webster’s human editors have chosen slop as the 2025 Word of the Year. We define slop as “digital content of low quality that is produced usually in quantity by means of artificial intelligence.”
-Tags: definitions, ai, generative-ai, slop, ai-ethics</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The .NET Pipeline That Makes Source Generators Feel Instant
-              <span class="post-metadata">(17 min | 4962 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://roxeem.com/2025/12/15/the-net-pipeline-that-makes-source-generators-feel-instant/>Deep dive into .NET source generators, and understand how to design efficient pipelines that minimize recompilation and boost codegen performance.
-The post The .NET Pipeline That Makes Source Generators Feel Instant first appeared on Roxeem.</a>
-            </div>
-            <!-- <p class="post-source">Roxeem</p> -->
           </details>
       </article>
 
