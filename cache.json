@@ -6,6 +6,26 @@
       "siteUrl": "https://github.blog/changelog/",
       "articles": [
         {
+          "id": "https://github.blog/changelog/2026-01-15-hierarchy-view-now-available-in-github-projects",
+          "author": "Allison",
+          "description": "Hierarchy view for GitHub Projects is now available in public preview. You can now view your full issue hierarchy directly in project table views, giving you clear visibility into complex…\nThe post Hierarchy view now available in GitHub Projects appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2026-01-15-hierarchy-view-now-available-in-github-projects",
+          "publishedOn": "2026-01-15T20:19:53.000Z",
+          "wordCount": 1671,
+          "title": "Hierarchy view now available in GitHub Projects",
+          "imageUrl": "https://github.blog/wp-content/uploads/2026/01/535299363-02435785-c68c-47e6-a5a7-87cadd5c0fc4.png"
+        },
+        {
+          "id": "https://github.blog/changelog/2026-01-15-github-copilot-bring-your-own-key-byok-enhancements",
+          "author": "Allison",
+          "description": "Bring your own key (BYOK) for GitHub Copilot now supports additional APIs, new configuration options, and more provider integrations. With this update, enterprises can connect models that use the Responses…\nThe post GitHub Copilot bring your own key (BYOK) enhancements appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2026-01-15-github-copilot-bring-your-own-key-byok-enhancements",
+          "publishedOn": "2026-01-15T20:01:40.000Z",
+          "wordCount": 1512,
+          "title": "GitHub Copilot bring your own key (BYOK) enhancements",
+          "imageUrl": "https://github.blog/wp-content/uploads/2026/01/BYOKenhance_OAI_Social_01.jpg"
+        },
+        {
           "id": "https://github.blog/changelog/2026-01-14-copilot-sdk-in-technical-preview",
           "author": "Allison",
           "description": "The Copilot SDK is now available in technical preview, providing language-specific SDKs for programmatic access to the GitHub Copilot CLI. Available SDKs The Copilot SDK is available in four languages:…\nThe post Copilot SDK in technical preview appeared first on The GitHub Blog.",
@@ -313,6 +333,16 @@
       "siteUrl": "https://kagifeedback.org/atom/t/release-notes",
       "articles": [
         {
+          "id": "https://kagifeedback.org/d/9561-jan-15th-2026-new-year-tune-up-smoother-everything/1",
+          "author": null,
+          "description": "Kagi Search\nKagi Search Android app\nWe’ve made meaningful improvements to the Kagi Search app — faster performance, smoother overall experience. If you’re on Android, give the update a try.\n \n\n\nWe also hope this makes it even easier to share Kagi with the people you care about. Let us know what you think!\nImproved app startup time\nUpdated search home screen with native text editing\nUpdated home screen widgets with faster access to Translate, Summarize and Assistant\nAdd settings to Kagi Search app to autofocus the search bar on launch and to move the search bar to the bottom #9042 @conradsrc\nImprovements/fixes to the Android app screenshots #5019 @Niraj\nAndroid app: Pressing Enter on a physical keyboard should search #8838 @ItsHarper\nAndroid app: image, news... etc don't stay selected in th…",
+          "link": "https://kagifeedback.org/d/9561-jan-15th-2026-new-year-tune-up-smoother-everything/1",
+          "publishedOn": "2026-01-15T14:39:33.000Z",
+          "wordCount": 3313,
+          "title": "Jan 15th, 2026 - New Year tune-up: smoother everything!",
+          "imageUrl": null
+        },
+        {
           "id": "https://kagifeedback.org/d/9294-dec-18th-2025-popular-areas-land-in-kagi-maps/1",
           "author": null,
           "description": "Kagi Maps\nWe're continuously improving Kagi Maps, and with the latest release we've added a new data layer: Popular Areas. It highlights the busiest and most frequented spots when you're exploring a new city.\n\nNew Global Map Layer:\nHighlights most popular areas where people congregate near Cafes/Restaurants/Shops/Cultural-Centers\n\n\nPOI Infoboxes have more 3rd party external links:\nOpenStreetMap, Wikipedia, Google Maps, Apple Maps\nReviews on Yelp and TripAdvisor\nSocial media profiles (Facebook, Instagram, Twitter)\nReservations via OpenTable\neasier-to-read opening hours with weekly schedules\nDirect links to restaurant menus when available\n\n\nStrengthening ties to OpenStreetMap Community:\nwith ability to Report Map Issues to OpenStreetMap directly. A new \"Report an issue\" option in Infobox con…",
@@ -374,6 +404,16 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2026/Jan/15/the-design-implementation-of-sprites/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://fly.io/blog/design-and-implementation/\">The Design &amp; Implementation of Sprites</a></strong></p>\nI <a href=\"https://simonwillison.net/2026/Jan/9/sprites-dev/\">wrote about Sprites last week</a> Here's Thomas Ptacek from Fly with the insider details on how they work under the hood.</p>\n<p>I like this framing of them as \"disposable computers\":</p>\n<blockquote>\n<p>Sprites are ball-point disposable computers. Whatever mark you mean to make, we’ve rigged it so you’re never more than a second or two away from having a Sprite to do it with.</p>\n</blockquote>\n<p>I've noticed that new Fly Machines can take a while (up to around a minute) to provision. Sprites solve that by keeping warm pools of unused machines in multiple regions, which is enabled by them all using the same container:</p>\n<blockquote>\n<p>Now, today, under the hood, Sprites are still Fly Machines. But they all run from a standard container. Every physical worker knows exactly what container the next Sprite is going to start with, so it’s easy for us to keep pools of “empty” Sprites standing by. The result: a Sprite create doesn’t have any heavy lifting to do; it’s basically just doing the stuff we do when we start a Fly Machine.</p>\n</blockquote>\n<p>The most interesting detail is how the persistence layer works. Sprites only charge you for data you have written that differs from the base image and provide ~300ms checkpointing and restores - it turns out that's power by a custom filesystem on top of S3-compatible storage coordinated by Litestream-replicated local SQLite metadata:</p>\n<blockquote>\n<p>We still exploit NVMe, but not as the root of storage. Instead, it’s a read-through cache for a blob on object storage. S3-compatible object stores are the most trustworthy storage technology we have. I can feel my blood pressure dropping just typing the words “Sprites are backed by object storage.” [...]</p>\n<p>The Sprite storage stack is organized around the JuiceFS model (in fact, we currently use a very hacked-up JuiceFS, with a rewritten SQLite metadata backend). It works by splitting storage into data (“chunks”) and metadata (a map of where the “chunks” are). Data chunks live on object stores; metadata lives in fast local storage. In our case, that metadata store is <a href=\"https://litestream.io\">kept durable with Litestream</a>. Nothing depends on local storage.</p>\n</blockquote>\n\n    <p><small></small>Via <a href=\"https://twitter.com/tqbf/status/2011823480673624434\">@tqbf</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/architecture\">architecture</a>, <a href=\"https://simonwillison.net/tags/sandboxing\">sandboxing</a>, <a href=\"https://simonwillison.net/tags/sqlite\">sqlite</a>, <a href=\"https://simonwillison.net/tags/thomas-ptacek\">thomas-ptacek</a>, <a href=\"https://simonwillison.net/tags/fly\">fly</a>, <a href=\"https://simonwillison.net/tags/litestream\">litestream</a></p>",
+          "link": "https://simonwillison.net/2026/Jan/15/the-design-implementation-of-sprites/#atom-everything",
+          "publishedOn": "2026-01-15T16:08:27.000Z",
+          "wordCount": 1036,
+          "title": "The Design & Implementation of Sprites",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2026/Jan/15/boaz-barak-gabriel-wu-jeremy-chen-and-manas-joglekar/#atom-everything",
           "author": null,
