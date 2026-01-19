@@ -25,6 +25,78 @@
 
   <ul>
     <li>
+      <time>2026-01-19</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Scaling long-running autonomous coding
+              <span class="post-metadata">(4 min | 1180 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/19/scaling-long-running-autonomous-coding/#atom-everything>Scaling long-running autonomous coding
+This post describes what we&#x27;ve learned from running hundreds of concurrent agents on a single project, coordinating their work, and watching them write over a million lines of code and trillions of tokens.
+They ended up running planners and sub-planners to create tasks, then having workers execute on those tasks - similar to how Claude Code uses sub-agents. Each cycle ended with a judge agent deciding if the project was completed or not.
+In my predictions for 2026 the other day I said that by 2029:
+I think somebody will have built a full web browser mostly using AI assistance, and it won’t even be surprising. Rolling a new web browser is one of the most complicated software projects I can imagine[...] the cheat code is the conformance suites. If there are existing tests that it’ll get so much easier.
+I may have been off by three years, because Cursor chose &quot;building a web browser from scratch&quot; as their test case for their agent swarm approach:
+To test this system, we pointed it at an ambitious goal: building a web browser from scratch. The agents ran for close to a week, writing over 1 million lines of code across 1,000 files. You can explore the source code on GitHub.
+But how well did they do? Their initial announcement a couple of days ago was met with unsurprising skepticism, especially when it became apparent that their GitHub Actions CI was failing and there were no build instructions in the repo.
+It looks like they addressed that within the past 24 hours. The latest README includes build instructions which I followed on macOS like this:
+cd /tmp
+git clone https://github.com/wilsonzlin/fastrender
+cd fastrender
+git submodule update --init vendor/ecma-rs
+cargo run --release --features browser_ui --bin browser
+
+This got me a working browser window! Here are screenshots I took of google.com and my own website:
+
+
+Honestly those are very impressive! You can tell they&#x27;re not just wrapping an existing rendering engine because of those very obvious rendering glitches, but the pages are legible and look mostly correct.
+The FastRender repo even uses Git submodules to include various WhatWG and CSS-WG specifications in the repo, which is a smart way to make sure the agents have access to the reference materials that they might need.
+This is the second attempt I&#x27;ve seen at building a full web browser using AI-assisted coding in the past two weeks - the first was HiWave browser, a new browser engine in Rust first announced in this Reddit thread.
+When I made my 2029 prediction this is more-or-less the quality of result I had in mind. I don&#x27;t think we&#x27;ll see projects of this nature compete with Chrome or Firefox or WebKit any time soon but I have to admit I&#x27;m very surprised to see something this capable emerge so quickly.
+
+
+    
+Tags: browsers, ai, generative-ai, llms, ai-assisted-programming, coding-agents, cursor, conformance-suites</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2026-01-18</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              FLUX.2-klein-4B Pure C Implementation
+              <span class="post-metadata">(3 min | 856 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/18/flux2-klein-4b/#atom-everything>FLUX.2-klein-4B Pure C Implementation
+black-forest-labs/FLUX.2-klein-4B - an Apache 2.0 licensed 4 billion parameter version of their FLUX.2 family.
+Salvatore Sanfilippo (antirez) decided to build a pure C and dependency-free implementation to run the model, with assistance from Claude Code and Claude Opus 4.5.
+Salvatore shared this note on Hacker News:
+Something that may be interesting for the reader of this thread: this project was possible only once I started to tell Opus that it needed to take a file with all the implementation notes, and also accumulating all the things we discovered during the development process. And also, the file had clear instructions to be taken updated, and to be processed ASAP after context compaction. This kinda enabled Opus to do such a big coding task in a reasonable amount of time without loosing track. Check the file IMPLEMENTATION_NOTES.md in the GitHub repo for more info.
+Here&#x27;s that IMPLEMENTATION_NOTES.md file.
+
+    
+Via Hacker News
+Tags: c, salvatore-sanfilippo, ai, stable-diffusion, generative-ai, llms, ai-assisted-programming, text-to-image, coding-agents, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-01-17</time>
 
       <section>
@@ -3350,37 +3422,6 @@ The post Control who can request apps for your organization now in public previe
 Tags: teaching</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-20</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              gemini-3-flash-preview
-              <span class="post-metadata">(8 min | 2392 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/gemini-3-flash-preview>Gemini 3 Flash offers frontier intelligence built for speed at a fraction of the cost.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The Shape of AI: Jaggedness, Bottlenecks and Salients
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/the-shape-of-ai-jaggedness-bottlenecks>And why Nano Banana Pro is such a big deal</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
           </details>
       </article>
 

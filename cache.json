@@ -240,22 +240,6 @@
             "type": "image/jpeg"
           },
           "imageUrl": "https://substackcdn.com/image/fetch/$s_!ek1Q!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb4826ad4-f6bc-4b3f-bb8b-8f4f1ec1fa1e_2624x1632.jpeg"
-        },
-        {
-          "id": "https://www.oneusefulthing.org/p/the-shape-of-ai-jaggedness-bottlenecks",
-          "author": "Ethan Mollick",
-          "description": "And why Nano Banana Pro is such a big deal",
-          "link": "https://www.oneusefulthing.org/p/the-shape-of-ai-jaggedness-bottlenecks",
-          "publishedOn": "2025-12-20T17:32:02.000Z",
-          "wordCount": null,
-          "title": "The Shape of AI: Jaggedness, Bottlenecks and Salients",
-          "itunes": {},
-          "enclosure": {
-            "url": "https://substackcdn.com/image/fetch/$s_!B1Pw!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2279cb92-460a-4f73-8594-33fca151925c_2432x1728.jpeg",
-            "length": "0",
-            "type": "image/jpeg"
-          },
-          "imageUrl": "https://substackcdn.com/image/fetch/$s_!B1Pw!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2279cb92-460a-4f73-8594-33fca151925c_2432x1728.jpeg"
         }
       ]
     },
@@ -264,6 +248,26 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2026/Jan/19/scaling-long-running-autonomous-coding/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://cursor.com/blog/scaling-agents\">Scaling long-running autonomous coding</a></strong></p>\nWilson Lin at Cursor has been doing some experiments to see how far you can push a large fleet of \"autonomous\" coding agents:</p>\n<blockquote>\n<p>This post describes what we've learned from running hundreds of concurrent agents on a single project, coordinating their work, and watching them write over a million lines of code and trillions of tokens.</p>\n</blockquote>\n<p>They ended up running planners and sub-planners to create tasks, then having workers execute on those tasks - similar to how Claude Code uses sub-agents. Each cycle ended with a judge agent deciding if the project was completed or not.</p>\n<p>In my predictions for 2026 <a href=\"https://simonwillison.net/2026/Jan/8/llm-predictions-for-2026/#3-years-someone-will-build-a-new-browser-using-mainly-ai-assisted-coding-and-it-won-t-even-be-a-surprise\">the other day</a> I said that by 2029:</p>\n<blockquote>\n<p>I think somebody will have built a full web browser mostly using AI assistance, and it won’t even be surprising. Rolling a new web browser is one of the most complicated software projects I can imagine[...] the cheat code is the conformance suites. If there are existing tests that it’ll get so much easier.</p>\n</blockquote>\n<p>I may have been off by three years, because Cursor chose \"building a web browser from scratch\" as their test case for their agent swarm approach:</p>\n<blockquote>\n<p>To test this system, we pointed it at an ambitious goal: building a web browser from scratch. The agents ran for close to a week, writing over 1 million lines of code across 1,000 files. You can explore <a href=\"https://github.com/wilsonzlin/fastrender\">the source code on GitHub</a>.</p>\n</blockquote>\n<p>But how well did they do? Their initial announcement a couple of days ago was met with <a href=\"https://embedding-shapes.github.io/cursor-implied-success-without-evidence/\">unsurprising skepticism</a>, especially when it became apparent that their GitHub Actions CI was failing and there were no build instructions in the repo.</p>\n<p>It looks like they addressed that within the past 24 hours. The <a href=\"https://github.com/wilsonzlin/fastrender/blob/main/README.md#build-requirements\">latest README</a> includes build instructions which I followed on macOS like this:</p>\n<pre><code>cd /tmp\ngit clone https://github.com/wilsonzlin/fastrender\ncd fastrender\ngit submodule update --init vendor/ecma-rs\ncargo run --release --features browser_ui --bin browser\n</code></pre>\n<p>This got me a working browser window! Here are screenshots I took of google.com and my own website:</p>\n<p><img alt=\"The browser chrome is neat but has a garbled tab name at the top. The Google homepage looks mostly correct but the buttons are not styled correctly and the Google Search one has a huge plus icon floating near it.\" src=\"https://static.simonwillison.net/static/2026/cursor-google.png\" /></p>\n<p><img alt=\"My blog looks mostly correct, but the right closing quotation mark on a quotation (which is implemented as a background image on the final paragraph) is displayed incorrectly multiple times.\" src=\"https://static.simonwillison.net/static/2026/cursor-simonwillison.jpg\" /></p>\n<p>Honestly those are very impressive! You can tell they're not just wrapping an existing rendering engine because of those very obvious rendering glitches, but the pages are legible and look mostly correct.</p>\n<p>The FastRender repo even uses Git submodules <a href=\"https://github.com/wilsonzlin/fastrender/tree/main/specs\">to include various WhatWG and CSS-WG specifications</a> in the repo, which is a smart way to make sure the agents have access to the reference materials that they might need.</p>\n<p>This is the second attempt I've seen at building a full web browser using AI-assisted coding in the past two weeks - the first was <a href=\"https://github.com/hiwavebrowser/hiwave\">HiWave browser</a>, a new browser engine in Rust first announced <a href=\"https://www.reddit.com/r/Anthropic/comments/1q4xfm0/over_christmas_break_i_wrote_a_fully_functional/\">in this Reddit thread</a>.</p>\n<p>When I made my 2029 prediction this is more-or-less the quality of result I had in mind. I don't think we'll see projects of this nature compete with Chrome or Firefox or WebKit any time soon but I have to admit I'm very surprised to see something this capable emerge so quickly.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/browsers\">browsers</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/cursor\">cursor</a>, <a href=\"https://simonwillison.net/tags/conformance-suites\">conformance-suites</a></p>",
+          "link": "https://simonwillison.net/2026/Jan/19/scaling-long-running-autonomous-coding/#atom-everything",
+          "publishedOn": "2026-01-19T05:12:51.000Z",
+          "wordCount": 1180,
+          "title": "Scaling long-running autonomous coding",
+          "imageUrl": "https://static.simonwillison.net/static/2026/cursor-social-card.jpg"
+        },
+        {
+          "id": "https://simonwillison.net/2026/Jan/18/flux2-klein-4b/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://github.com/antirez/flux2.c\">FLUX.2-klein-4B Pure C Implementation</a></strong></p>\nOn 15th January Black Forest Labs, a lab formed by the creators of the original Stable Diffusion, released <a href=\"https://huggingface.co/black-forest-labs/FLUX.2-klein-4B\">black-forest-labs/FLUX.2-klein-4B</a> - an Apache 2.0 licensed 4 billion parameter version of their FLUX.2 family.</p>\n<p>Salvatore Sanfilippo (antirez) decided to build a pure C and dependency-free implementation to run the model, with assistance from Claude Code and Claude Opus 4.5.</p>\n<p>Salvatore shared <a href=\"https://news.ycombinator.com/item?id=46670279#46671233\">this note</a> on Hacker News:</p>\n<blockquote>\n<p>Something that may be interesting for the reader of this thread: this project was possible only once I started to tell Opus that it <em>needed</em> to take a file with all the implementation notes, and also accumulating all the things we discovered during the development process. And also, the file had clear instructions to be taken updated, and to be processed ASAP after context compaction. This kinda enabled Opus to do such a big coding task in a reasonable amount of time without loosing track. Check the file IMPLEMENTATION_NOTES.md in the GitHub repo for more info.</p>\n</blockquote>\n<p>Here's that <a href=\"https://github.com/antirez/flux2.c/blob/main/IMPLEMENTATION_NOTES.md\">IMPLEMENTATION_NOTES.md</a> file.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=46670279\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/c\">c</a>, <a href=\"https://simonwillison.net/tags/salvatore-sanfilippo\">salvatore-sanfilippo</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/stable-diffusion\">stable-diffusion</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/text-to-image\">text-to-image</a>, <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/claude-code\">claude-code</a></p>",
+          "link": "https://simonwillison.net/2026/Jan/18/flux2-klein-4b/#atom-everything",
+          "publishedOn": "2026-01-18T23:58:58.000Z",
+          "wordCount": 856,
+          "title": "FLUX.2-klein-4B Pure C Implementation",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2026/Jan/17/jeremy-daer/#atom-everything",
           "author": null,
@@ -859,16 +863,6 @@
           "publishedOn": "2025-12-23T03:19:00.000Z",
           "wordCount": 3829,
           "title": "minimax-m2.1",
-          "imageUrl": "https://ollama.com/public/og.png"
-        },
-        {
-          "id": "https://ollama.com/library/gemini-3-flash-preview",
-          "author": null,
-          "description": "Gemini 3 Flash offers frontier intelligence built for speed at a fraction of the cost.",
-          "link": "https://ollama.com/library/gemini-3-flash-preview",
-          "publishedOn": "2025-12-20T20:44:00.000Z",
-          "wordCount": 2392,
-          "title": "gemini-3-flash-preview",
           "imageUrl": "https://ollama.com/public/og.png"
         }
       ]
