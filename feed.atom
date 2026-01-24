@@ -2,10 +2,128 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-01-23T21:11:57.583Z</updated>
+    <updated>2026-01-24T14:11:11.267Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Wilson Lin on FastRender: a browser built by thousands of parallel agents]]></title>
+        <id>https://simonwillison.net/2026/Jan/23/fastrender/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jan/23/fastrender/#atom-everything"/>
+        <updated>2026-01-23T21:26:10.000Z</updated>
+        <summary type="html"><![CDATA[<p>Last week Cursor published <a href="https://cursor.com/blog/scaling-agents">Scaling long-running autonomous coding</a>, an article describing their research efforts into coordinating large numbers of autonomous coding agents. One of the projects mentioned in the article was <a href="https://github.com/wilsonzlin/fastrender">FastRender</a>, a web browser they built from scratch using their agent swarms. I wanted to learn more so I asked Wilson Lin, the engineer behind FastRender, if we could record a conversation about the project. That 47 minute video is <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4">now available on YouTube</a>. I've included some of the highlights below.</p>
+
+<iframe style="margin-top: 1.5em; margin-bottom: 1.5em;" width="560" height="315" src="https://www.youtube-nocookie.com/embed/bKrAcTf2pL4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="allowfullscreen"> </iframe>
+
+<p>See my <a href="https://simonwillison.net/2026/Jan/19/scaling-long-running-autonomous-coding/">previous post</a> for my notes and screenshots from trying out FastRender myself.</p>
+
+
+<h4 id="what-fastrender-can-do-right-now">What FastRender can do right now</h4>
+<p>We started the conversation with a demo of FastRender loading different pages (<a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=195s">03:15</a>). The JavaScript engine isn't working yet so we instead loaded <a href="https://github.com/wilsonzlin/fastrender">github.com/wilsonzlin/fastrender</a>, <a href="https://en.wikipedia.org/">Wikipedia</a> and <a href="https://cnn.com">CNN</a> - all of which were usable, if a little slow to display.</p>
+<p>JavaScript had been disabled by one of the agents, which decided to add a feature flag! <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=242s">04:02</a></p>
+<blockquote>
+<p>JavaScript is disabled right now. The agents made a decision as they were currently still implementing the engine and making progress towards other parts... they decided to turn it off or put it behind a feature flag, technically.</p>
+</blockquote>
+<h4 id="from-side-project-to-core-research">From side-project to core research</h4>
+<p>Wilson started what become FastRender as a personal side-project to explore the capabilities of the latest generation of frontier models - Claude Opus 4.5, GPT-5.1, and GPT-5.2. <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=56s">00:56</a></p>
+<blockquote>
+<p>FastRender was a personal project of mine from, I'd say, November. It was an experiment to see how well frontier models like Opus 4.5 and back then GPT-5.1 could do with much more complex, difficult tasks.</p>
+</blockquote>
+<p>A browser rendering engine was the ideal choice for this, because it's both <em>extremely</em> ambitious and complex but also well specified. And you can visually see how well it's working! <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=117s">01:57</a></p>
+<blockquote>
+<p>As that experiment progressed, I was seeing better and better results from single agents that were able to actually make good progress on this project. And at that point, I wanted to see, well, what's the next level? How do I push this even further?</p>
+</blockquote>
+<p>Once it became clear that this was an opportunity to try multiple agents working together it graduated to an official Cursor research project, and available resources were amplified.</p>
+<p>The goal of FastRender was never to build a browser to compete with the likes of Chrome. <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=2512s">41:52</a></p>
+<blockquote>
+<p>We never intended for it to be a production software or usable, but we wanted to observe behaviors of this harness of multiple agents, to see how they could work at scale.</p>
+</blockquote>
+<p>The great thing about a browser is that it has such a large scope that it can keep serving experiments in this space for many years to come. JavaScript, then WebAssembly, then WebGPU... it could take many years to run out of new challenges for the agents to tackle.</p>
+<h4 id="running-thousands-of-agents-at-once">Running thousands of agents at once</h4>
+<p>The most interesting thing about FastRender is the way the project used multiple agents working in parallel to build different parts of the browser. I asked how many agents were running at once: <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=324s">05:24</a></p>
+<blockquote>
+<p>At the peak, when we had the stable system running for one week continuously, there were approximately 2,000 agents running concurrently at one time. And they were making, I believe, thousands of commits per hour.</p>
+</blockquote>
+<p>The project has <a href="https://github.com/wilsonzlin/fastrender/commits/main/">nearly 30,000 commits</a>!</p>
+<p>How do you run 2,000 agents at once? They used <em>really big machines</em>. <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=356s">05:56</a></p>
+<blockquote>
+<p>The simple approach we took with the infrastructure was to have a large machine run one of these multi-agent harnesses. Each machine had ample resources, and it would run about 300 agents concurrently on each. This was able to scale and run reasonably well, as agents spend a lot of time thinking, and not just running tools.</p>
+</blockquote>
+<p>At this point we switched to a live demo of the harness running on one of those big machines (<a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=392s">06:32</a>). The agents are arranged in a tree structure, with planning agents firing up tasks and worker agents then carrying them out. <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=434s">07:14</a></p>
+<p><img src="https://static.simonwillison.net/static/2026/wilson-lin-agents.jpg" alt="Terminal window showing a tmux session running &quot;grind-swarm&quot; task manager with RUNNING status. Header shows &quot;grind-swarm – 45:54:15&quot; with stats &quot;planners: 9 (0 done) | tasks: 111 working, 0 pending, 232 done | 12900.9M↑ 514.1M↓&quot;. Task list includes: p1 Root (main), p2 CSS selector matching performance + bloom filter integration, p3 CSS stylesheet parsing semantics &amp; at-rule handling, p4 Custom properties (@property) + var() resolution + incremental recompute/invalidation, p37 CSS at-rule artifact integration, p50 Selector engine correctness &amp; spec coverage, p51 Computed-value + property coverage across css-cascade, p105 Style sharing / computed style caching in fastrender-style, p289 CSS cascade layers (@layer) global ordering, w5 Fix workspace lockfile drift, w7 Implement computed-style snapshot sharing, w15 Fix css-properties namespace handling, w17 (Stretch) Enable bloom fast-reject in HTML quirks mode, w18 Refactor css-properties stylesheet parsing. Activity log shows shell commands including cargo check, git status, git push origin main, and various test runs. Bottom status bar shows &quot;grind-css0:target/release/grind-swarm*&quot; and &quot;streamyard.com is sharing your screen&quot; notification with timestamp &quot;12:02 22-Jan-26&quot;." style="max-width: 100%;" /></p>
+<blockquote>
+<p>This cluster of agents is working towards building out the CSS aspects of the browser, whether that's parsing, selector engine, those features. We managed to push this even further by splitting out the browser project into multiple instructions or work streams and have each one run one of these harnesses on their own machine, so that was able to further parallelize and increase throughput.</p>
+</blockquote>
+<p>But don't all of these agents working on the same codebase result in a huge amount of merge conflicts? Apparently not: <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=501s">08:21</a></p>
+<blockquote>
+<p>We've noticed that most commits do not have merge conflicts. The reason is the harness itself is able to quite effectively split out and divide the scope and tasks such that it tries to minimize the amount of overlap of work. That's also reflected in the code structure—commits will be made at various times and they don't tend to touch each other at the same time.</p>
+</blockquote>
+<p>This appears to be the key trick for unlocking benefits from parallel agents: if planning agents do a good enough job of breaking up the work into non-overlapping chunks you can bring hundreds or even thousands of agents to bear on a problem at once.</p>
+<p>Surprisingly, Wilson found that GPT-5.1 and GPT-5.2 were a better fit for this work than the coding specialist GPT-5.1-Codex: <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=1048s">17:28</a></p>
+<blockquote>
+<p>Some initial findings were that the instructions here were more expansive than merely coding. For example, how to operate and interact within a harness, or how to operate autonomously without interacting with the user or having a lot of user feedback. These kinds of instructions we found worked better with the general models.</p>
+</blockquote>
+<p>I asked what the longest they've seen this system run without human intervention: <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=1108s">18:28</a></p>
+<blockquote>
+<p>So this system, once you give an instruction, there's actually no way to steer it, you can't prompt it, you're going to adjust how it goes. The only thing you can do is stop it. So our longest run, all the runs are basically autonomous. We don't alter the trajectory while executing. [...]</p>
+<p>And so the longest at the time of the post was about a week and that's pretty close to the longest. Of course the research project itself was only about three weeks so you know we probably can go longer.</p>
+</blockquote>
+<h4 id="specifications-and-feedback-loops">Specifications and feedback loops</h4>
+<p>An interesting aspect of this project design is feedback loops. For agents to work autonomously for long periods of time they need as much useful context about the problem they are solving as possible, combined with effective feedback loops to help them make decisions.</p>
+<p>The FastRender repo <a href="https://github.com/wilsonzlin/fastrender/tree/19bf1036105d4eeb8bf3330678b7cb11c1490bdc/specs">uses git submodules to include relevant specifications</a>, including csswg-drafts, tc39-ecma262 for JavaScript, whatwg-dom, whatwg-html and more. <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=846s">14:06</a></p>
+<blockquote>
+<p>Feedback loops to the system are very important. Agents are working for very long periods continuously, and without guardrails and feedback to know whether what they're doing is right or wrong it can have a big impact over a long rollout. Specs are definitely an important part—you can see lots of comments in the code base that AI wrote referring specifically to specs that they found in the specs submodules.</p>
+</blockquote>
+<p>GPT-5.2 is a vision-capable model, and part of the feedback loop for FastRender included taking screenshots of the rendering results and feeding those back into the model:
+<a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=983s">16:23</a></p>
+<blockquote>
+<p>In the earlier evolution of this project, when it was just doing the static renderings of screenshots, this was definitely a very explicit thing we taught it to do. And these models are visual models, so they do have that ability. We have progress indicators to tell it to compare the diff against a golden sample.</p>
+</blockquote>
+<p>The strictness of the Rust compiler helped provide a feedback loop as well: <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=952s">15:52</a></p>
+<blockquote>
+<p>The nice thing about Rust is you can get a lot of verification just from compilation, and that is not as available in other languages.</p>
+</blockquote>
+<h4 id="the-agents-chose-the-dependencies">The agents chose the dependencies</h4>
+<p>We talked about the <a href="https://github.com/wilsonzlin/fastrender/blob/19bf1036105d4eeb8bf3330678b7cb11c1490bdc/Cargo.toml">Cargo.toml dependencies</a> that the project had accumulated, almost all of which had been selected by the agents themselves.</p>
+<p>Some of these, like <a href="https://skia.org/">Skia</a> for 2D graphics rendering or <a href="https://github.com/harfbuzz/harfbuzz">HarfBuzz</a> for text shaping, were obvious choices. Others such as <a href="https://github.com/DioxusLabs/taffy">Taffy</a> felt like they might go against the from-scratch goals of the project, since that library implements CSS flexbox and grid layout algorithms directly. This was not an intended outcome. <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=1673s">27:53</a></p>
+<blockquote>
+<p>Similarly these are dependencies that the agent picked to use for small parts of the engine and perhaps should have actually implemented itself. I think this reflects on the importance of the instructions, because I actually never encoded specifically the level of dependencies we should be implementing ourselves.</p>
+</blockquote>
+<p>The agents vendored in Taffy and <a href="https://github.com/wilsonzlin/fastrender/commits/main/vendor/taffy">applied a stream of changes</a> to that vendored copy.
+<a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=1878s">31:18</a></p>
+<blockquote>
+<p>It's currently vendored. And as the agents work on it, they do make changes to it. This was actually an artifact from the very early days of the project before it was a fully fledged browser... it's implementing things like the flex and grid layers, but there are other layout methods like inline, block, and table, and in our new experiment, we're removing that completely.</p>
+</blockquote>
+<p>The inclusion of QuickJS despite the presence of a home-grown ecma-rs implementation has a fun origin story:
+<a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=2115s">35:15</a></p>
+<blockquote>
+<p>I believe it mentioned that it pulled in the QuickJS because it knew that other agents were working on the JavaScript engine, and it needed to unblock itself quickly. [...]</p>
+<p>It was like, eventually, once that's finished, let's remove it and replace with the proper engine.</p>
+</blockquote>
+<p>I love how similar this is to the dynamics of a large-scale human engineering team, where you could absolutely see one engineer getting frustrated at another team not having delivered yet and unblocking themselves by pulling in a third-party library.</p>
+<h4 id="intermittent-errors-are-ok-actually">Intermittent errors are OK, actually</h4>
+<p>Here's something I found really surprising: the agents were allowed to introduce small errors into the codebase as they worked! <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=2382s">39:42</a></p>
+<blockquote>
+<p>One of the trade-offs was: if you wanted every single commit to be a hundred percent perfect, make sure it can always compile every time, that might be a synchronization bottleneck. [...]</p>
+<p>Especially as you break up the system into more modularized aspects, you can see that errors get introduced, but small errors, right? An API change or some syntax error, but then they get fixed really quickly after a few commits. So there's a little bit of slack in the system to allow these temporary errors so that the overall system can continue to make progress at a really high throughput. [...]</p>
+<p>People may say, well, that's not correct code. But it's not that the errors are accumulating. It's a stable rate of errors. [...] That seems like a worthwhile trade-off.</p>
+</blockquote>
+<p>If you're going to have thousands of agents working in parallel optimizing for throughput over correctness turns out to be a strategy worth exploring.</p>
+<h4 id="a-single-engineer-plus-a-swarm-of-agents-in-january-2026">A single engineer plus a swarm of agents in January 2026</h4>
+<p>The thing I find most interesting about FastRender is how it demonstrates the extreme edge of what a single engineer can achieve in early 2026 with the assistance of a swarm of agents.</p>
+<p>FastRender may not be a production-ready browser, but it represents over a million lines of Rust code, written in a few weeks, that can already render real web pages to a usable degree.</p>
+<p>A browser really is the ideal research project to experiment with this new, weirdly shaped form of software engineering.</p>
+<p>I asked Wilson how much mental effort he had invested in browser rendering compared to agent co-ordination. <a href="https://www.youtube.com/watch?v=bKrAcTf2pL4&amp;t=694s">11:34</a></p>
+<blockquote>
+<p>The browser and this project were co-developed and very symbiotic, only because the browser was a very useful objective for us to measure and iterate the progress of the harness. The goal was to iterate on and research the multi-agent harness—the browser was just the research example or objective.</p>
+</blockquote>
+<p>FastRender is effectively using a full browser rendering engine as a "hello world" exercise for multi-agent coordination!</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/browsers">browsers</a>, <a href="https://simonwillison.net/tags/youtube">youtube</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/cursor">cursor</a>, <a href="https://simonwillison.net/tags/parallel-agents">parallel-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Theia Vogel]]></title>
         <id>https://simonwillison.net/2026/Jan/23/theia-vogel/#atom-everything</id>
@@ -2405,93 +2523,6 @@ Total bytes fetched: 18,760 / 40,775,575 (100.0% savings)
 <p>At first I thought that prompting them not to send emails was a poor solution when you could disable their ability to use their Workspace accounts entirely, but then I realized that you have to include some level of prompting here because they have unfettered access to a computer environment, so if you didn't tell them NOT to email people there's nothing to stop them firing up a browser and registering for a free webmail account elsewhere.</p>
     
         <p>Tags: <a href="https://simonwillison.net/tags/rob-pike">rob-pike</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/shot-scraper">shot-scraper</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A new way to extract detailed transcripts from Claude Code]]></title>
-        <id>https://simonwillison.net/2025/Dec/25/claude-code-transcripts/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/25/claude-code-transcripts/#atom-everything"/>
-        <updated>2025-12-25T23:52:17.000Z</updated>
-        <summary type="html"><![CDATA[<p>I've released <a href="https://github.com/simonw/claude-code-transcripts">claude-code-transcripts</a>, a new Python CLI tool for converting <a href="https://claude.ai/code">Claude Code</a> transcripts to detailed HTML pages that provide a better interface for understanding what Claude Code has done than even Claude Code itself. The resulting transcripts are also designed to be shared, using any static HTML hosting or even via GitHub Gists.</p>
-<p>Here's the quick start, with no installation required if you already have <a href="https://docs.astral.sh/uv/">uv</a>:</p>
-<pre><code>uvx claude-code-transcripts
-</code></pre>
-<p>(Or you could <code>uv tool install claude-code-transcripts</code> or <code>pip install claude-code-transcripts</code> first, if you like.)</p>
-<p>This will bring up a list of your local Claude Code sessions. Hit up and down to select one, then hit <code>&lt;enter&gt;</code>. The tool will create a new folder with an <code>index.html</code> file showing a summary of the transcript and one or more <code>page_x.html</code> files with the full details of everything that happened.</p>
-<p>Visit <a href="https://static.simonwillison.net/static/2025/claude-code-microjs/index.html">this example page</a> to see a lengthy (12 page) transcript produced using this tool.</p>
-<p><img src="https://static.simonwillison.net/static/2025/claude-code-transcripts-example.jpg" alt="Screenshot of a claude code transcript spanning 12 pages - the first page shows a summary starting with the first user prompt to clone bellard/quickjs to /tmp" style="max-width: 100%;" /></p>
-<p>If you have the <a href="https://cli.github.com/">gh CLI tool</a> installed and authenticated you can add the <code>--gist</code> option - the transcript you select will then be automatically shared to a new Gist and a link provided to <code>gistpreview.github.io</code> to view it.</p>
-<p><code>claude-code-transcripts</code> can also fetch sessions from Claude Code for web. I reverse-engineered the private API for this (so I hope it continues to work), but right now you can run:</p>
-<pre><code>uvx claude-code-transcripts web --gist
-</code></pre>
-<p>Then select a Claude Code for web session and have that converted to HTML and published as a Gist as well.</p>
-<p>The <a href="https://github.com/simonw/claude-code-transcripts/blob/main/README.md">claude-code-transcripts README</a> has full details of the other options provided by the tool.</p>
-<h4 id="why-i-built-this">Why I built this</h4>
-<p>These days I'm writing significantly more code via Claude Code than by typing text into a text editor myself. I'm actually getting more coding work done <em>on my phone</em> than on my laptop, thanks to the Claude Code interface in Anthropic's Claude iPhone app.</p>
-<p>Being able to have an idea on a walk and turn that into working, tested and documented code from a couple of prompts on my phone is a truly science fiction way of working. I'm enjoying it a lot.</p>
-<p>There's one problem: the actual <em>work</em> that I do is now increasingly represented by these Claude conversations. Those transcripts capture extremely important context about my projects: what I asked for, what Claude suggested, decisions I made, and Claude's own justification for the decisions it made while implementing a feature.</p>
-<p>I value these transcripts a lot! They help me figure out which prompting strategies work, and they provide an invaluable record of the decisions that went into building features.</p>
-<p>In the pre-LLM era I relied on issues and issue comments to record all of this extra project context, but now those conversations are happening in the Claude Code interface instead.</p>
-<p>I've made several past attempts at solving this problem. The first was pasting Claude Code terminal sessions into a shareable format - I <a href="https://simonwillison.net/2025/Oct/23/claude-code-for-web-video/">built a custom tool for that</a> (called <a href="https://tools.simonwillison.net/terminal-to-html/">terminal-to-html</a> and I've used it a lot, but it misses a bunch of detail - including the default-invisible thinking traces that Claude Code generates while working on a task.</p>
-<p>I've also built <a href="https://tools.simonwillison.net/colophon#claude-code-timeline.html">claude-code-timeline</a> and <a href="https://tools.simonwillison.net/colophon#codex-timeline.html">codex-timeline</a> as HTML tool viewers for JSON transcripts from both Claude Code and Codex. Those work pretty well, but still are not quite as human-friendly as I'd like.</p>
-<p>An even bigger problem is Claude Code for web - Anthropic's asynchronous coding agent, which is the thing I've been using from my phone. Getting transcripts out of that is even harder! I've been synchronizing them down to my laptop just so I can copy and paste from the terminal but that's a pretty inelegant solution.</p>
-<h4 id="how-i-built-claude-code-transcripts">How I built claude-code-transcripts</h4>
-<p>You won't be surprised to hear that every inch of this new tool was built using Claude.</p>
-<p>You can browse <a href="https://github.com/simonw/claude-code-transcripts/commits/main/">the commit log</a> to find links to the transcripts for each commit, many of them published using the tool itself.</p>
-<p>Here are some recent examples:</p>
-<ul>
-<li>
-<a href="https://github.com/simonw/claude-code-transcripts/commit/c80b1dee9429637318f4fae3e5d733ae5c05ab2c">c80b1dee</a> Rename tool from claude-code-publish to claude-code-transcripts - <a href="https://gistpreview.github.io/?814530b3a70af8408f3bb8ca10f70d57/index.html">transcript</a>
-</li>
-<li>
-<a href="https://github.com/simonw/claude-code-transcripts/commit/ad3e9a05058c583bf7327421f727ba08c15aa8a0">ad3e9a05</a> Update README for latest changes - <a href="https://gistpreview.github.io/?9b3fe747343d32c95a8565ef1f8b6e11/index.html">transcript</a>
-</li>
-<li>
-<a href="https://github.com/simonw/claude-code-transcripts/commit/e1013c54a601e79e62a9bf204c5a94acc8845c5f">e1013c54</a> Add autouse fixture to mock webbrowser.open in tests - <a href="https://gistpreview.github.io/?1671b49de273d80280ab2ceab690db8c/index.html">transcript</a>
-</li>
-<li>
-<a href="https://github.com/simonw/claude-code-transcripts/commit/77512e5d6905ee8ba678af0e30bcee2dccb549f3">77512e5d</a> Add Jinja2 templates for HTML generation (#2) - <a href="https://gistpreview.github.io/?ffc01d1c04e47ed7934a58ae04a066d1/index.html">transcript</a>
-</li>
-<li>
-<a href="https://github.com/simonw/claude-code-transcripts/commit/b3e038adeac56e81d7c7558f0a7d39a8d44d9534">b3e038ad</a> Add version flag to CLI (#1) - <a href="https://gistpreview.github.io/?7bdf1535f7bf897fb475be6ff5da2e1c/index.html">transcript</a>
-</li>
-</ul>
-<p>I had Claude use the following dependencies:</p>
-<ul>
-<li>
-<a href="https://pypi.org/project/click/">click</a> and <a href="https://pypi.org/project/click-default-group/">click-default-group</a> for building the CLI</li>
-<li>
-<a href="https://pypi.org/project/Jinja2/">Jinja2</a> for HTML templating - a late refactoring, the initial system used Python string concatenation</li>
-<li>
-<a href="https://pypi.org/project/httpx/">httpx</a> for making HTTP requests</li>
-<li>
-<a href="https://pypi.org/project/Markdown/">markdown</a> for converting Markdown to HTML</li>
-<li>
-<a href="https://pypi.org/project/questionary/">questionary</a> - new to me, suggested by Claude - to implement the interactive list selection UI</li>
-</ul>
-<p>And for development dependencies:</p>
-<ul>
-<li>
-<a href="https://pypi.org/project/pytest/">pytest</a> - always</li>
-<li>
-<a href="https://pypi.org/project/pytest-httpx/">pytest-httpx</a> to mock HTTP requests in tests</li>
-<li>
-<a href="https://pypi.org/project/syrupy/">syrupy</a> for snapshot testing - with a tool like this that generates complex HTML snapshot testing is a great way to keep the tests robust and simple. Here's <a href="https://github.com/simonw/claude-code-transcripts/tree/main/tests/__snapshots__/test_generate_html">that collection of snapshots</a>.</li>
-</ul>
-<p>The one bit that wasn't done with Claude Code was reverse engineering Claude Code itself to figure out how to retrieve session JSON from Claude Code for web.</p>
-<p>I know Claude Code can reverse engineer itself, but it felt a bit more subversive to have OpenAI Codex CLI do it instead. <a href="https://gistpreview.github.io/?e4159193cd2468060d91289b5ccdece3">Here's that transcript</a> - I had Codex use <code>npx prettier</code> to pretty-print the obfuscated Claude Code JavaScript, then asked it to dig out the API and authentication details.</p>
-<p>Codex came up with this <em>beautiful</em> <code>curl</code> command:</p>
-<div class="highlight highlight-source-shell"><pre>curl -sS -f \
-    -H <span class="pl-s"><span class="pl-pds">"</span>Authorization: Bearer <span class="pl-s"><span class="pl-pds">$(</span>security find-generic-password -a <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$USER</span><span class="pl-pds">"</span></span> -w -s <span class="pl-s"><span class="pl-pds">"</span>Claude Code-credentials<span class="pl-pds">"</span></span> <span class="pl-k">|</span> jq-r .claudeAiOauth.accessToken<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>  \
-    -H <span class="pl-s"><span class="pl-pds">"</span>anthropic-version: 2023-06-01<span class="pl-pds">"</span></span> \
-    -H <span class="pl-s"><span class="pl-pds">"</span>Content-Type: application/json<span class="pl-pds">"</span></span> \
-    -H <span class="pl-s"><span class="pl-pds">"</span>x-organization-uuid: <span class="pl-s"><span class="pl-pds">$(</span>jq -r <span class="pl-s"><span class="pl-pds">'</span>.oauthAccount.organizationUuid<span class="pl-pds">'</span></span> <span class="pl-k">~</span>/.claude.json<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span> \
-    <span class="pl-s"><span class="pl-pds">"</span>https://api.anthropic.com/v1/sessions<span class="pl-pds">"</span></span></pre></div>
-<p>The really neat trick there is the way it extracts Claude Code's OAuth token from the macOS Keychain using the <code>security find-generic-password</code> command. I ended up using that trick in <code>claude-code-transcripts</code> itself!</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

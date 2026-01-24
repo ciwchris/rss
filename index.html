@@ -31,6 +31,187 @@
       <article>
           <details>
             <summary>
+              Wilson Lin on FastRender: a browser built by thousands of parallel agents
+              <span class="post-metadata">(9 min | 2792 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/23/fastrender/#atom-everything>Last week Cursor published Scaling long-running autonomous coding, an article describing their research efforts into coordinating large numbers of autonomous coding agents. One of the projects mentioned in the article was FastRender, a web browser they built from scratch using their agent swarms. I wanted to learn more so I asked Wilson Lin, the engineer behind FastRender, if we could record a conversation about the project. That 47 minute video is now available on YouTube. I&#x27;ve included some of the highlights below.
+
+
+ 
+
+See my previous post for my notes and screenshots from trying out FastRender myself.
+
+
+
+What FastRender can do right now
+
+We started the conversation with a demo of FastRender loading different pages (03:15). The JavaScript engine isn&#x27;t working yet so we instead loaded github.com/wilsonzlin/fastrender, Wikipedia and CNN - all of which were usable, if a little slow to display.
+
+JavaScript had been disabled by one of the agents, which decided to add a feature flag! 04:02
+
+
+JavaScript is disabled right now. The agents made a decision as they were currently still implementing the engine and making progress towards other parts... they decided to turn it off or put it behind a feature flag, technically.
+
+
+From side-project to core research
+
+Wilson started what become FastRender as a personal side-project to explore the capabilities of the latest generation of frontier models - Claude Opus 4.5, GPT-5.1, and GPT-5.2. 00:56
+
+
+FastRender was a personal project of mine from, I&#x27;d say, November. It was an experiment to see how well frontier models like Opus 4.5 and back then GPT-5.1 could do with much more complex, difficult tasks.
+
+
+A browser rendering engine was the ideal choice for this, because it&#x27;s both extremely ambitious and complex but also well specified. And you can visually see how well it&#x27;s working! 01:57
+
+
+As that experiment progressed, I was seeing better and better results from single agents that were able to actually make good progress on this project. And at that point, I wanted to see, well, what&#x27;s the next level? How do I push this even further?
+
+
+Once it became clear that this was an opportunity to try multiple agents working together it graduated to an official Cursor research project, and available resources were amplified.
+
+The goal of FastRender was never to build a browser to compete with the likes of Chrome. 41:52
+
+
+We never intended for it to be a production software or usable, but we wanted to observe behaviors of this harness of multiple agents, to see how they could work at scale.
+
+
+The great thing about a browser is that it has such a large scope that it can keep serving experiments in this space for many years to come. JavaScript, then WebAssembly, then WebGPU... it could take many years to run out of new challenges for the agents to tackle.
+
+Running thousands of agents at once
+
+The most interesting thing about FastRender is the way the project used multiple agents working in parallel to build different parts of the browser. I asked how many agents were running at once: 05:24
+
+
+At the peak, when we had the stable system running for one week continuously, there were approximately 2,000 agents running concurrently at one time. And they were making, I believe, thousands of commits per hour.
+
+
+The project has nearly 30,000 commits!
+
+How do you run 2,000 agents at once? They used really big machines. 05:56
+
+
+The simple approach we took with the infrastructure was to have a large machine run one of these multi-agent harnesses. Each machine had ample resources, and it would run about 300 agents concurrently on each. This was able to scale and run reasonably well, as agents spend a lot of time thinking, and not just running tools.
+
+
+At this point we switched to a live demo of the harness running on one of those big machines (06:32). The agents are arranged in a tree structure, with planning agents firing up tasks and worker agents then carrying them out. 07:14
+
+
+
+
+This cluster of agents is working towards building out the CSS aspects of the browser, whether that&#x27;s parsing, selector engine, those features. We managed to push this even further by splitting out the browser project into multiple instructions or work streams and have each one run one of these harnesses on their own machine, so that was able to further parallelize and increase throughput.
+
+
+But don&#x27;t all of these agents working on the same codebase result in a huge amount of merge conflicts? Apparently not: 08:21
+
+
+We&#x27;ve noticed that most commits do not have merge conflicts. The reason is the harness itself is able to quite effectively split out and divide the scope and tasks such that it tries to minimize the amount of overlap of work. That&#x27;s also reflected in the code structure—commits will be made at various times and they don&#x27;t tend to touch each other at the same time.
+
+
+This appears to be the key trick for unlocking benefits from parallel agents: if planning agents do a good enough job of breaking up the work into non-overlapping chunks you can bring hundreds or even thousands of agents to bear on a problem at once.
+
+Surprisingly, Wilson found that GPT-5.1 and GPT-5.2 were a better fit for this work than the coding specialist GPT-5.1-Codex: 17:28
+
+
+Some initial findings were that the instructions here were more expansive than merely coding. For example, how to operate and interact within a harness, or how to operate autonomously without interacting with the user or having a lot of user feedback. These kinds of instructions we found worked better with the general models.
+
+
+I asked what the longest they&#x27;ve seen this system run without human intervention: 18:28
+
+
+So this system, once you give an instruction, there&#x27;s actually no way to steer it, you can&#x27;t prompt it, you&#x27;re going to adjust how it goes. The only thing you can do is stop it. So our longest run, all the runs are basically autonomous. We don&#x27;t alter the trajectory while executing. [...]
+
+And so the longest at the time of the post was about a week and that&#x27;s pretty close to the longest. Of course the research project itself was only about three weeks so you know we probably can go longer.
+
+
+Specifications and feedback loops
+
+An interesting aspect of this project design is feedback loops. For agents to work autonomously for long periods of time they need as much useful context about the problem they are solving as possible, combined with effective feedback loops to help them make decisions.
+
+The FastRender repo uses git submodules to include relevant specifications, including csswg-drafts, tc39-ecma262 for JavaScript, whatwg-dom, whatwg-html and more. 14:06
+
+
+Feedback loops to the system are very important. Agents are working for very long periods continuously, and without guardrails and feedback to know whether what they&#x27;re doing is right or wrong it can have a big impact over a long rollout. Specs are definitely an important part—you can see lots of comments in the code base that AI wrote referring specifically to specs that they found in the specs submodules.
+
+
+GPT-5.2 is a vision-capable model, and part of the feedback loop for FastRender included taking screenshots of the rendering results and feeding those back into the model:
+16:23
+
+
+In the earlier evolution of this project, when it was just doing the static renderings of screenshots, this was definitely a very explicit thing we taught it to do. And these models are visual models, so they do have that ability. We have progress indicators to tell it to compare the diff against a golden sample.
+
+
+The strictness of the Rust compiler helped provide a feedback loop as well: 15:52
+
+
+The nice thing about Rust is you can get a lot of verification just from compilation, and that is not as available in other languages.
+
+
+The agents chose the dependencies
+
+We talked about the Cargo.toml dependencies that the project had accumulated, almost all of which had been selected by the agents themselves.
+
+Some of these, like Skia for 2D graphics rendering or HarfBuzz for text shaping, were obvious choices. Others such as Taffy felt like they might go against the from-scratch goals of the project, since that library implements CSS flexbox and grid layout algorithms directly. This was not an intended outcome. 27:53
+
+
+Similarly these are dependencies that the agent picked to use for small parts of the engine and perhaps should have actually implemented itself. I think this reflects on the importance of the instructions, because I actually never encoded specifically the level of dependencies we should be implementing ourselves.
+
+
+The agents vendored in Taffy and applied a stream of changes to that vendored copy.
+31:18
+
+
+It&#x27;s currently vendored. And as the agents work on it, they do make changes to it. This was actually an artifact from the very early days of the project before it was a fully fledged browser... it&#x27;s implementing things like the flex and grid layers, but there are other layout methods like inline, block, and table, and in our new experiment, we&#x27;re removing that completely.
+
+
+The inclusion of QuickJS despite the presence of a home-grown ecma-rs implementation has a fun origin story:
+35:15
+
+
+I believe it mentioned that it pulled in the QuickJS because it knew that other agents were working on the JavaScript engine, and it needed to unblock itself quickly. [...]
+
+It was like, eventually, once that&#x27;s finished, let&#x27;s remove it and replace with the proper engine.
+
+
+I love how similar this is to the dynamics of a large-scale human engineering team, where you could absolutely see one engineer getting frustrated at another team not having delivered yet and unblocking themselves by pulling in a third-party library.
+
+Intermittent errors are OK, actually
+
+Here&#x27;s something I found really surprising: the agents were allowed to introduce small errors into the codebase as they worked! 39:42
+
+
+One of the trade-offs was: if you wanted every single commit to be a hundred percent perfect, make sure it can always compile every time, that might be a synchronization bottleneck. [...]
+
+Especially as you break up the system into more modularized aspects, you can see that errors get introduced, but small errors, right? An API change or some syntax error, but then they get fixed really quickly after a few commits. So there&#x27;s a little bit of slack in the system to allow these temporary errors so that the overall system can continue to make progress at a really high throughput. [...]
+
+People may say, well, that&#x27;s not correct code. But it&#x27;s not that the errors are accumulating. It&#x27;s a stable rate of errors. [...] That seems like a worthwhile trade-off.
+
+
+If you&#x27;re going to have thousands of agents working in parallel optimizing for throughput over correctness turns out to be a strategy worth exploring.
+
+A single engineer plus a swarm of agents in January 2026
+
+The thing I find most interesting about FastRender is how it demonstrates the extreme edge of what a single engineer can achieve in early 2026 with the assistance of a swarm of agents.
+
+FastRender may not be a production-ready browser, but it represents over a million lines of Rust code, written in a few weeks, that can already render real web pages to a usable degree.
+
+A browser really is the ideal research project to experiment with this new, weirdly shaped form of software engineering.
+
+I asked Wilson how much mental effort he had invested in browser rendering compared to agent co-ordination. 11:34
+
+
+The browser and this project were co-developed and very symbiotic, only because the browser was a very useful objective for us to measure and iterate the progress of the harness. The goal was to iterate on and research the multi-agent harness—the browser was just the research example or objective.
+
+
+FastRender is effectively using a full browser rendering engine as a &quot;hello world&quot; exercise for multi-agent coordination!
+Tags: browsers, youtube, ai, generative-ai, llms, ai-assisted-programming, coding-agents, cursor, parallel-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Theia Vogel
               <span class="post-metadata">(3 min | 767 words)</span> 
             </summary>
@@ -3332,141 +3513,6 @@ In retrospect, we probably should have made this prompt change sooner, when the 
 
 At first I thought that prompting them not to send emails was a poor solution when you could disable their ability to use their Workspace accounts entirely, but then I realized that you have to include some level of prompting here because they have unfettered access to a computer environment, so if you didn&#x27;t tell them NOT to email people there&#x27;s nothing to stop them firing up a browser and registering for a free webmail account elsewhere.
 Tags: rob-pike, ai, shot-scraper, generative-ai, llms, slop, ai-agents, ai-ethics</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-25</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              A new way to extract detailed transcripts from Claude Code
-              <span class="post-metadata">(5 min | 1430 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/25/claude-code-transcripts/#atom-everything>I&#x27;ve released claude-code-transcripts, a new Python CLI tool for converting Claude Code transcripts to detailed HTML pages that provide a better interface for understanding what Claude Code has done than even Claude Code itself. The resulting transcripts are also designed to be shared, using any static HTML hosting or even via GitHub Gists.
-
-Here&#x27;s the quick start, with no installation required if you already have uv:
-
-uvx claude-code-transcripts
-
-
-(Or you could uv tool install claude-code-transcripts or pip install claude-code-transcripts first, if you like.)
-
-This will bring up a list of your local Claude Code sessions. Hit up and down to select one, then hit &lt;enter&gt;. The tool will create a new folder with an index.html file showing a summary of the transcript and one or more page_x.html files with the full details of everything that happened.
-
-Visit this example page to see a lengthy (12 page) transcript produced using this tool.
-
-
-
-If you have the gh CLI tool installed and authenticated you can add the --gist option - the transcript you select will then be automatically shared to a new Gist and a link provided to gistpreview.github.io to view it.
-
-claude-code-transcripts can also fetch sessions from Claude Code for web. I reverse-engineered the private API for this (so I hope it continues to work), but right now you can run:
-
-uvx claude-code-transcripts web --gist
-
-
-Then select a Claude Code for web session and have that converted to HTML and published as a Gist as well.
-
-The claude-code-transcripts README has full details of the other options provided by the tool.
-
-Why I built this
-
-These days I&#x27;m writing significantly more code via Claude Code than by typing text into a text editor myself. I&#x27;m actually getting more coding work done on my phone than on my laptop, thanks to the Claude Code interface in Anthropic&#x27;s Claude iPhone app.
-
-Being able to have an idea on a walk and turn that into working, tested and documented code from a couple of prompts on my phone is a truly science fiction way of working. I&#x27;m enjoying it a lot.
-
-There&#x27;s one problem: the actual work that I do is now increasingly represented by these Claude conversations. Those transcripts capture extremely important context about my projects: what I asked for, what Claude suggested, decisions I made, and Claude&#x27;s own justification for the decisions it made while implementing a feature.
-
-I value these transcripts a lot! They help me figure out which prompting strategies work, and they provide an invaluable record of the decisions that went into building features.
-
-In the pre-LLM era I relied on issues and issue comments to record all of this extra project context, but now those conversations are happening in the Claude Code interface instead.
-
-I&#x27;ve made several past attempts at solving this problem. The first was pasting Claude Code terminal sessions into a shareable format - I built a custom tool for that (called terminal-to-html and I&#x27;ve used it a lot, but it misses a bunch of detail - including the default-invisible thinking traces that Claude Code generates while working on a task.
-
-I&#x27;ve also built claude-code-timeline and codex-timeline as HTML tool viewers for JSON transcripts from both Claude Code and Codex. Those work pretty well, but still are not quite as human-friendly as I&#x27;d like.
-
-An even bigger problem is Claude Code for web - Anthropic&#x27;s asynchronous coding agent, which is the thing I&#x27;ve been using from my phone. Getting transcripts out of that is even harder! I&#x27;ve been synchronizing them down to my laptop just so I can copy and paste from the terminal but that&#x27;s a pretty inelegant solution.
-
-How I built claude-code-transcripts
-
-You won&#x27;t be surprised to hear that every inch of this new tool was built using Claude.
-
-You can browse the commit log to find links to the transcripts for each commit, many of them published using the tool itself.
-
-Here are some recent examples:
-
-
-
-c80b1dee Rename tool from claude-code-publish to claude-code-transcripts - transcript
-
-
-ad3e9a05 Update README for latest changes - transcript
-
-
-e1013c54 Add autouse fixture to mock webbrowser.open in tests - transcript
-
-
-77512e5d Add Jinja2 templates for HTML generation (#2) - transcript
-
-
-b3e038ad Add version flag to CLI (#1) - transcript
-
-
-I had Claude use the following dependencies:
-
-
-
-click and click-default-group for building the CLI
-
-
-Jinja2 for HTML templating - a late refactoring, the initial system used Python string concatenation
-
-
-httpx for making HTTP requests
-
-
-markdown for converting Markdown to HTML
-
-
-questionary - new to me, suggested by Claude - to implement the interactive list selection UI
-
-
-And for development dependencies:
-
-
-
-pytest - always
-
-
-pytest-httpx to mock HTTP requests in tests
-
-
-syrupy for snapshot testing - with a tool like this that generates complex HTML snapshot testing is a great way to keep the tests robust and simple. Here&#x27;s that collection of snapshots.
-
-
-The one bit that wasn&#x27;t done with Claude Code was reverse engineering Claude Code itself to figure out how to retrieve session JSON from Claude Code for web.
-
-I know Claude Code can reverse engineer itself, but it felt a bit more subversive to have OpenAI Codex CLI do it instead. Here&#x27;s that transcript - I had Codex use npx prettier to pretty-print the obfuscated Claude Code JavaScript, then asked it to dig out the API and authentication details.
-
-Codex came up with this beautiful curl command:
-
-
-curl -sS -f \
-    -H &quot;Authorization: Bearer $(security find-generic-password -a &quot;$USER&quot; -w -s &quot;Claude Code-credentials&quot; | jq-r .claudeAiOauth.accessToken)&quot;  \
-    -H &quot;anthropic-version: 2023-06-01&quot; \
-    -H &quot;Content-Type: application/json&quot; \
-    -H &quot;x-organization-uuid: $(jq -r &#x27;.oauthAccount.organizationUuid&#x27; ~/.claude.json)&quot; \
-    &quot;https://api.anthropic.com/v1/sessions&quot;
-
-The really neat trick there is the way it extracts Claude Code&#x27;s OAuth token from the macOS Keychain using the security find-generic-password command. I ended up using that trick in claude-code-transcripts itself!
-Tags: projects, ai, generative-ai, llms, ai-assisted-programming, anthropic, claude, coding-agents, claude-code</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
