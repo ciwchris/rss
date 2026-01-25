@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-01-25T14:11:03.517Z</updated>
+    <updated>2026-01-25T21:10:44.796Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
@@ -2644,42 +2644,6 @@ Today in extremely niche projects, I got fed up of Claude Code creating GitHub A
 <p class="cite">&mdash; <a href="https://twitter.com/bcherny/status/2004887829252317325">Boris Cherny</a>, creator of Claude Code</p>
 
     <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[textarea.my on GitHub]]></title>
-        <id>https://simonwillison.net/2025/Dec/27/textarea-my/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/27/textarea-my/#atom-everything"/>
-        <updated>2025-12-27T03:23:34.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/antonmedv/textarea">textarea.my on GitHub</a></strong></p>
-Anton Medvedev built <a href="https://textarea.my/">textarea.my</a>, which he describes as:</p>
-<blockquote>
-<p>A <em>minimalist</em> text editor that lives entirely in your browser and stores everything in the URL hash.</p>
-</blockquote>
-<p>It's ~160 lines of HTML, CSS and JavaScript and it's worth reading the whole thing. I picked up a bunch of neat tricks from this!</p>
-<ul>
-<li><code>&lt;article contenteditable="plaintext-only"&gt;</code> - I did not know about the <code>plaintext-only</code> value, supported across <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/contentEditable">all the modern browsers</a>.</li>
-<li>It uses <code>new CompressionStream('deflate-raw')</code> to compress the editor state so it can fit in a shorter fragment URL.</li>
-<li>It has a neat custom save option which triggers if you hit <code>((e.metaKey || e.ctrlKey) &amp;&amp; e.key === 's')</code> - on <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker">browsers that support it</a> (mainly Chrome variants) this uses <code>window.showSaveFilePicker()</code>, other browsers get a straight download - in both cases generated using <code>URL.createObjectURL(new Blob([html], {type: 'text/html'}))</code></li>
-</ul>
-<p>The <code>debounce()</code> function it uses deserves a special note:</p>
-<pre><span class="pl-k">function</span> <span class="pl-en">debounce</span><span class="pl-kos">(</span><span class="pl-s1">ms</span><span class="pl-kos">,</span> <span class="pl-s1">fn</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
-  <span class="pl-k">let</span> <span class="pl-s1">timer</span>
-  <span class="pl-k">return</span> <span class="pl-kos">(</span>...<span class="pl-s1">args</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
-    <span class="pl-en">clearTimeout</span><span class="pl-kos">(</span><span class="pl-s1">timer</span><span class="pl-kos">)</span>
-    <span class="pl-s1">timer</span> <span class="pl-c1">=</span> <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">fn</span><span class="pl-kos">(</span>...<span class="pl-s1">args</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-s1">ms</span><span class="pl-kos">)</span>
-  <span class="pl-kos">}</span>
-<span class="pl-kos">}</span></pre>
-
-<p>That's really elegant. The goal of <code>debounce(ms, fn)</code> is to take a function and a timeout (e.g. 100ms) and ensure that the function runs at most once every 100ms.</p>
-<p>This one works using a closure variable <code>timer</code> to capture the <code>setTimeout</code> time ID. On subsequent calls that timer is cancelled and a new one is created - so if you call the function five times in quick succession it will execute just once, 100ms after the last of that sequence of calls.
-
-    <p><small></small>Via <a href="https://lobste.rs/s/st1mpl/lightest_notes_app_implementation_111">lobste.rs</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/javascript">javascript</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

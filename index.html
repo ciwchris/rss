@@ -3624,38 +3624,6 @@ Tags: anthropic, claude, ai, claude-code, llms, coding-agents, ai-assisted-progr
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
-      <article>
-          <details>
-            <summary>
-              textarea.my on GitHub
-              <span class="post-metadata">(3 min | 896 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/27/textarea-my/#atom-everything>textarea.my on GitHub
-textarea.my, which he describes as:
-A minimalist text editor that lives entirely in your browser and stores everything in the URL hash.
-It&#x27;s ~160 lines of HTML, CSS and JavaScript and it&#x27;s worth reading the whole thing. I picked up a bunch of neat tricks from this!
-&lt;article contenteditable&#x3D;&quot;plaintext-only&quot;&gt; - I did not know about the plaintext-only value, supported across all the modern browsers.
-It uses new CompressionStream(&#x27;deflate-raw&#x27;) to compress the editor state so it can fit in a shorter fragment URL.
-It has a neat custom save option which triggers if you hit ((e.metaKey || e.ctrlKey) &amp;&amp; e.key &#x3D;&#x3D;&#x3D; &#x27;s&#x27;) - on browsers that support it (mainly Chrome variants) this uses window.showSaveFilePicker(), other browsers get a straight download - in both cases generated using URL.createObjectURL(new Blob([html], {type: &#x27;text/html&#x27;}))
-The debounce() function it uses deserves a special note:
-function debounce(ms, fn) {
-  let timer
-  return (...args) &#x3D;&gt; {
-    clearTimeout(timer)
-    timer &#x3D; setTimeout(() &#x3D;&gt; fn(...args), ms)
-  }
-}
-That&#x27;s really elegant. The goal of debounce(ms, fn) is to take a function and a timeout (e.g. 100ms) and ensure that the function runs at most once every 100ms.
-This one works using a closure variable timer to capture the setTimeout time ID. On subsequent calls that timer is cancelled and a new one is created - so if you call the function five times in quick succession it will execute just once, 100ms after the last of that sequence of calls.
-
-    
-Via lobste.rs
-Tags: javascript</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
 
       </section>
     </li>
