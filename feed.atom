@@ -2,10 +2,35 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-01-25T21:10:44.796Z</updated>
+    <updated>2026-01-26T14:19:27.500Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[the browser is the sandbox]]></title>
+        <id>https://simonwillison.net/2026/Jan/25/the-browser-is-the-sandbox/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jan/25/the-browser-is-the-sandbox/#atom-everything"/>
+        <updated>2026-01-25T23:51:32.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://aifoc.us/the-browser-is-the-sandbox/">the browser is the sandbox</a></strong></p>
+Paul Kinlan is a web platform developer advocate at Google and recently turned his attention to coding agents. He quickly identified the importance of a robust sandbox for agents to operate in and put together these detailed notes on how the web browser can help:</p>
+<blockquote>
+<p>This got me thinking about the browser. Over the last 30 years, we have built a sandbox specifically designed to run incredibly hostile, untrusted code from anywhere on the web, the instant a user taps a URL. [...]</p>
+<p>Could you build something like Cowork in the browser? Maybe. To find out, I built a demo called <a href="http://co-do.xyz">Co-do</a> that tests this hypothesis. In this post I want to discuss the research I've done to see how far we can get, and determine if the browser's ability to run untrusted code is useful (and good enough) for enabling software to do more for us directly on our computer.</p>
+</blockquote>
+<p>Paul then describes how the three key aspects of a sandbox - filesystem, network access and safe code execution - can be handled by browser technologies: the <a href="https://developer.chrome.com/docs/capabilities/web-apis/file-system-access">File System Access API</a> (still Chrome-only as far as I can tell), CSP headers with <code>&lt;iframe sandbox&gt;</code> and WebAssembly in Web Workers.</p>
+<p>Co-do is a very interesting demo that illustrates all of these ideas in a single application:</p>
+<p><img alt="Screenshot of Co-do application interface with robot logo. Left sidebar shows WORKSPACE section with &quot;Select Folder&quot; button, &quot;Selected folder: blog-drafts (Live updates enabled)&quot; in green text, and FILES list including gtr-t5-large.md, chatgpt.md, llm-digest-october-2..., weeknotes-2024-04-23..., lmarena-april-2025.md, weeknotes-chatgpt-fo..., tests-not-optional-c..., weeknotes-13-mar-202..., issue-for-notes.md, workshop-git-scrapin.... Main chat area shows user message &quot;Three most recently edited files?&quot; in orange bubble, &quot;Using 26 tools...&quot; dropdown, and AI response: &quot;Now I need to get the metadata for these files to find the most recently edited ones. Since there are many files, let me get metadata for a sample of them to find the recent ones:Based on the metadata I've gathered, the three most recently edited files are:&quot; followed by table with columns File and Last Modified showing predictions-2026.md (Jan 8, 2026), december-2025.md (Jan 2, 2026), gemini-3-flash.md (Dec 17, 2025). Green &quot;Response complete&quot; banner at bottom with input field placeholder &quot;Ask me to help with your files...&quot; and notice &quot;File contents are sent to your selected AI provider&quot;." src="https://static.simonwillison.net/static/2026/codo.jpg" /></p>
+<p>You select a folder full of files and configure an LLM provider and set an API key, Co-do then uses CSP-approved API calls to interact with that provider and provides a chat interface with tools for interacting with those files. It does indeed feel similar to <a href="https://simonwillison.net/2026/Jan/12/claude-cowork/">Claude Cowork</a> but without running a multi-GB local container to provide the sandbox.</p>
+<p>My biggest complaint about <code>&lt;iframe sandbox&gt;</code> remains how thinly documented it is, especially across different browsers. Paul's post has all sorts of useful details on that which I've not encountered elsewhere, including a complex <a href="https://aifoc.us/the-browser-is-the-sandbox/#the-double-iframe-technique">double-iframe technique</a> to help apply network rules to the inner of the two frames.</p>
+<p>Thanks to this post I also learned about the <code>&lt;input type="file" webkitdirectory&gt;</code> tag which turns out to work on Firefox, Safari <em>and</em> Chrome and allows a browser read-only access to a full directory of files at once. I had Claude knock up a <a href="https://tools.simonwillison.net/webkitdirectory">webkitdirectory demo</a> to try it out and I'll certainly be using it for projects in the future.</p>
+<p><img alt="Screenshot of a dark-themed file explorer application. Top stats bar shows: 12179 TOTAL FILES, 2079 FOLDERS, 244 MB TOTAL SIZE, 97 FILE TYPES in cyan text. Search bar with placeholder &quot;Search files...&quot; and &quot;All types&quot; dropdown. Left panel labeled &quot;File tree&quot; (showing 12179) displays folder hierarchy: datasette &gt; .claude &gt; skills &gt; building-datasette-plugins containing HOOKS.md (10.7 KB, selected/highlighted), INTERNALS.md (10.1 KB), SKILL.md (3.7 KB), TESTING.md (8.4 KB), settings.local.json (280 B); also shows .eggs folder with pytest_runner-6.0.1-py3.9.egg. Right panel &quot;File preview&quot; shows selected file details: Name: HOOKS.md, Path: datasette/.claude/skills/building-datasette-plugins/HOOKS.md, Size: 10.7 KB, Type: text/markdown, Last modified: 12/20/2025, 9:28:59 AM. Preview content shows: &quot;# Plugin Hooks Reference&quot; followed by &quot;All hooks use the @hookimpl decorator. Accept only the parameters you need.&quot; then &quot;## Database Connection Hooks&quot; and &quot;### prepare_connection(conn, database, datasette)&quot; with description &quot;Called when a new SQLite connection is created. Use to register custom SQL functions.&quot; Bottom section &quot;File type distribution&quot; shows horizontal bar chart: .py (4439), .no ext (3358), .dat (1068), .pyc (925), .txt (332), .mo (321), .po (321), .html (249)." src="https://static.simonwillison.net/static/2026/webkit-file-tree.jpg" />
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/browsers">browsers</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/sandboxing">sandboxing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Kākāpō Cam: Rakiura live stream]]></title>
         <id>https://simonwillison.net/2026/Jan/25/kakapo-cam/#atom-everything</id>
@@ -2613,37 +2638,6 @@ Today in extremely niche projects, I got fed up of Claude Code creating GitHub A
 <p>Deleting that annotated example exploit allowed me to send the letter!</p>
 
     <p>Tags: <a href="https://simonwillison.net/tags/sql-injection">sql-injection</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/newsletter">newsletter</a>, <a href="https://simonwillison.net/tags/substack">substack</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Pluribus training data]]></title>
-        <id>https://simonwillison.net/2025/Dec/27/john-cena/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/27/john-cena/#atom-everything"/>
-        <updated>2025-12-27T15:43:34.000Z</updated>
-        <summary type="html"><![CDATA[<p>In advocating for LLMs as useful and important technology despite how they're trained I'm beginning to feel a little bit like John Cena in <a href="https://m.imdb.com/title/tt22202452/">Pluribus</a>.</p>
-<details style="margin-bottom: 1em"><summary>Pluribus spoiler (episode 6)</summary>
-
-<blockquote>Given our druthers, would we choose to consume HDP? No. Throughout history, most cultures, though not all, have taken a dim view of anthropophagy. Honestly, we're not that keen on it ourselves. But we're left with little choice.</blockquore>
-
-</details>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/tv">tv</a>, <a href="https://simonwillison.net/tags/training-data">training-data</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Boris Cherny]]></title>
-        <id>https://simonwillison.net/2025/Dec/27/boris-cherny/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/27/boris-cherny/#atom-everything"/>
-        <updated>2025-12-27T14:13:43.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://twitter.com/bcherny/status/2004887829252317325"><p>A year ago, Claude struggled to generate bash commands without escaping issues. It worked for seconds or minutes at a time. We saw early signs that it may become broadly useful for coding one day.</p>
-<p>Fast forward to today. In the last thirty days, I landed 259 PRs -- 497 commits, 40k lines added, 38k lines removed. Every single line was written by Claude Code + Opus 4.5.</p></blockquote>
-<p class="cite">&mdash; <a href="https://twitter.com/bcherny/status/2004887829252317325">Boris Cherny</a>, creator of Claude Code</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
