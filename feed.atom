@@ -2,10 +2,121 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-01-28T21:20:11.848Z</updated>
+    <updated>2026-01-29T14:31:24.371Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Adding dynamic features to an aggressively cached website]]></title>
+        <id>https://simonwillison.net/2026/Jan/28/dynamic-features-static-site/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jan/28/dynamic-features-static-site/#atom-everything"/>
+        <updated>2026-01-28T22:10:08.000Z</updated>
+        <summary type="html"><![CDATA[<p>My blog uses aggressive caching: it sits behind Cloudflare with a 15 minute cache header, which guarantees it can survive even the largest traffic spike to any given page. I've recently added a couple of dynamic features that work in spite of that full-page caching. Here's how those work.</p>
+<h4 id="edit-links-that-are-visible-only-to-me">Edit links that are visible only to me</h4>
+<p>This is a Django site and I manage it through the Django admin.</p>
+<p>I have <a href="https://github.com/simonw/simonwillisonblog/blob/b8066f870a94d149f5e8cee6e787d3377c0b9507/blog/models.py#L254-L449">four types of content</a> - entries, link posts (aka blogmarks), quotations and notes. Each of those has a different model and hence a different Django admin area.</p>
+<p>I wanted an "edit" link on the public pages that was only visible to me.</p>
+<p>The button looks like this:</p>
+<p><img src="https://static.simonwillison.net/static/2026/edit-link.jpg" alt="Entry footer - it says Posted 27th January 2026 at 9:44 p.m. followed by a square Edit button with an icon." style="max-width: 100%;" /></p>
+<p>I solved conditional display of this button with <code>localStorage</code>. I have a <a href="https://github.com/simonw/simonwillisonblog/blob/b8066f870a94d149f5e8cee6e787d3377c0b9507/templates/base.html#L89-L105">tiny bit of JavaScript</a> which checks to see if the <code>localStorage</code> key <code>ADMIN</code> is set and, if it is, displays an edit link based on a data attribute:</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'DOMContentLoaded'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">localStorage</span><span class="pl-kos">.</span><span class="pl-en">getItem</span><span class="pl-kos">(</span><span class="pl-s">'ADMIN'</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">'.edit-page-link'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">url</span> <span class="pl-c1">=</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">'data-admin-url'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">url</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-k">const</span> <span class="pl-s1">a</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">'a'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-s1">a</span><span class="pl-kos">.</span><span class="pl-c1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">url</span><span class="pl-kos">;</span>
+        <span class="pl-s1">a</span><span class="pl-kos">.</span><span class="pl-c1">className</span> <span class="pl-c1">=</span> <span class="pl-s">'edit-link'</span><span class="pl-kos">;</span>
+        <span class="pl-s1">a</span><span class="pl-kos">.</span><span class="pl-c1">innerHTML</span> <span class="pl-c1">=</span> <span class="pl-s">'&lt;svg&gt;...&lt;/svg&gt; Edit'</span><span class="pl-kos">;</span>
+        <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">a</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">display</span> <span class="pl-c1">=</span> <span class="pl-s">'block'</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>If you want to see my edit links you can run this snippet of JavaScript:</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-s1">localStorage</span><span class="pl-kos">.</span><span class="pl-en">setItem</span><span class="pl-kos">(</span><span class="pl-s">'ADMIN'</span><span class="pl-kos">,</span> <span class="pl-s">'1'</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>My Django admin dashboard has <a href="https://github.com/simonw/simonwillisonblog/blob/b8066f870a94d149f5e8cee6e787d3377c0b9507/templates/admin/index.html#L18-L39">a custom checkbox</a> I can click to turn this option on and off in my own browser:</p>
+<p><img src="https://static.simonwillison.net/static/2026/edit-toggle.jpg" alt="Screenshot of a Tools settings panel with a teal header reading &quot;Tools&quot; followed by three linked options: &quot;Bulk Tag Tool - Add tags to multiple items at once&quot;, &quot;Merge Tags - Merge multiple tags into one&quot;, &quot;SQL Dashboard - Run SQL queries against the database&quot;, and a checked checkbox labeled &quot;Show &quot;Edit&quot; links on public pages&quot;" style="max-width: 100%;" /></p>
+<h4 id="random-navigation-within-a-tag">Random navigation within a tag</h4>
+<p>Those admin edit links are a very simple pattern. A more interesting one is a feature I added recently for navigating randomly within a tag.</p>
+<p>Here's an animated GIF showing those random tag navigations in action (<a href="https://simonwillison.net/tag/ai-ethics/">try it here</a>):</p>
+<p><img src="https://static.simonwillison.net/static/2026/random-by-tag.gif" alt="Animated demo. Starts on the ai-ethics tag page where a new Random button sits next to the feed icon. Clicking that button jumps to a post with that tag and moves the button into the site header - clicking it multiple times jumps to more random items." style="max-width: 100%;" /></p>
+<p>On any of my blog's tag pages you can click the "Random" button to bounce to a random post with that tag. That random button then persists in the header of the page and you can click it to continue bouncing to random items in that same tag.</p>
+<p>A post can have multiple tags, so there needs to be a little bit of persistent magic to remember which tag you are navigating and display the relevant button in the header.</p>
+<p>Once again, this uses <code>localStorage</code>. Any click to a random button records both the tag and the current timestamp to the <code>random_tag</code> key in <code>localStorage</code> before redirecting the user to the <code>/random/name-of-tag/</code> page, which selects a random post and redirects them there.</p>
+<p>Any time a new page loads, JavaScript checks if that <code>random_tag</code> key has a value that was recorded within the past 5 seconds. If so, that random button is appended to the header.</p>
+<p>This means that, provided the page loads within 5 seconds of the user clicking the button, the random tag navigation will persist on the page.</p>
+<p>You can <a href="https://github.com/simonw/simonwillisonblog/blob/b8066f870a94d149f5e8cee6e787d3377c0b9507/templates/base.html#L106-L147">see the code for that here</a>.</p>
+<h4 id="and-the-prompts">And the prompts</h4>
+<p>I built the random tag feature entirely using Claude Code for web, prompted from my iPhone. I started with the <code>/random/TAG/</code> endpoint (<a href="https://gistpreview.github.io/?2e7de58a779271aa5eb6f4abcd412d72/index.html">full transcript</a>):</p>
+<blockquote>
+<p>Build /random/TAG/ - a page which picks a random post (could be an entry or blogmark or note or quote) that has that tag and sends a 302 redirect to it, marked as no-cache so Cloudflare does not cache it</p>
+<p>Use a union to build a list of every content type (a string representing the table out of the four types) and primary key for every item tagged with that tag, then order by random and return the first one</p>
+<p>Then inflate the type and ID into an object and load it and redirect to the URL</p>
+<p>Include tests - it should work by setting up a tag with one of each of the content types and then running in a loop calling that endpoint until it has either returned one of each of the four types or it hits 1000 loops at which point fail with an error</p>
+</blockquote>
+<p>Then:</p>
+<blockquote>
+<p>I do not like that solution, some of my tags have thousands of items</p>
+<p>Can we do something clever with a CTE?</p>
+</blockquote>
+<p>Here's the <a href="https://github.com/simonw/simonwillisonblog/blob/b8066f870a94d149f5e8cee6e787d3377c0b9507/blog/views.py#L737-L762">something clever with a CTE</a> solution we ended up with.</p>
+<p>For the "Random post" button (<a href="https://gistpreview.github.io/?d2d3abe380080ceb9e7fb854fa197bff/index.html">transcript</a>):</p>
+<blockquote>
+<p>Look at most recent commit, then modify the /tags/xxx/ page to have a "Random post" button which looks good and links to the /random/xxx/ page</p>
+</blockquote>
+<p>Then:</p>
+<blockquote>
+<p>Put it before not after the feed icon. It should only display if a tag has more than 5 posts</p>
+</blockquote>
+<p>And finally, the <code>localStorage</code> implementation that persists a random tag button in the header (<a href="https://gistpreview.github.io/?8405b84f8e53738c8d4377b2e41dcdef/page-001.html">transcript</a>):</p>
+<blockquote>
+<p>Review the last two commits. Make it so clicking the Random button on a tag page sets a localStorage value for random_tag with that tag and a timestamp. On any other page view that uses the base item template add JS that checks for that localStorage value and makes sure the timestamp is within 5 seconds. If it is within 5 seconds it adds a "Random name-of-tag" button to the little top navigation bar, styled like the original Random button, which bumps the localStorage timestamp and then sends the user to /random/name-of-tag/ when they click it. In this way clicking "Random" on a tag page will send the user into an experience where they can keep clicking to keep surfing randomly in that topic.</p>
+</blockquote>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/caching">caching</a>, <a href="https://simonwillison.net/tags/django">django</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/localstorage">localstorage</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/cloudflare">cloudflare</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The Five Levels: from Spicy Autocomplete to the Dark Factory]]></title>
+        <id>https://simonwillison.net/2026/Jan/28/the-five-levels/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jan/28/the-five-levels/#atom-everything"/>
+        <updated>2026-01-28T21:44:29.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/">The Five Levels: from Spicy Autocomplete to the Dark Factory</a></strong></p>
+Dan Shapiro proposes a five level model of AI-assisted programming, inspired by the five (or rather six, it's zero-indexed) <a href="https://www.nhtsa.gov/sites/nhtsa.gov/files/2022-05/Level-of-Automation-052522-tag.pdf">levels of driving automation</a>.</p>
+<ol start="0">
+<li><strong>Spicy autocomplete</strong>, aka original GitHub Copilot or copying and pasting snippets from ChatGPT.</li>
+<li>The <strong>coding intern</strong>, writing unimportant snippets and boilerplate with full human review.</li>
+<li>The <strong>junior developer</strong>, pair programming with the model but still reviewing every line.</li>
+<li>The <strong>developer</strong>. Most code is generated by AI, and you take on the role of full-time code reviewer.</li>
+<li>The <strong>engineering team</strong>. You're more of an engineering manager or product/program/project manager. You collaborate on specs and plans, the agents do the work.</li>
+<li>The <strong>dark software factory</strong>, like a factory run by robots where the lights are out because robots don't need to see.</li>
+</ol>
+
+<p>Dan says about that last category:</p>
+<blockquote>
+<p>At level 5, it's not really a car any more. You're not really running anybody else's software any more. And your software process isn't really a software process any more. It's a black box that turns specs into software.</p>
+<p>Why Dark? Maybe you've heard of the Fanuc Dark Factory, <a href="https://www.organizedergi.com/News/5493/robots-the-maker-of-robots-in-fanuc-s-dark-factory">the robot factory staffed by robots</a>. It's dark, because it's a place where humans are neither needed nor welcome.</p>
+<p>I know a handful of people who are doing this. They're small teams, less than five people. And what they're doing is nearly unbelievable -- and it will likely be our future.</p>
+</blockquote>
+<p>I've talked to one team that's doing the pattern hinted at here. It was <em>fascinating</em>. The key characteristics:</p>
+<ul>
+<li>Nobody reviews AI-produced code, ever. They don't even look at it.</li>
+<li>The goal of the system is to prove that the system works. A huge amount of the coding agent work goes into testing and tooling and simulating related systems and running demos.</li>
+<li>The role of the humans is to design that system - to find new patterns that can help the agents work more effectively and demonstrate that the software they are building is robust and effective.</li>
+</ul>
+<p>It was a tiny team and they stuff they had built in just a few months looked very convincing to me. Some of them had 20+ years of experience as software developers working on systems with high reliability requirements, so they were not approaching this from a naive perspective.</p>
+<p>I'm hoping they come out of stealth soon because I can't really share more details than this.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ACP support in Copilot CLI is now in public preview]]></title>
         <id>https://github.blog/changelog/2026-01-27-acp-support-in-copilot-cli-is-now-in-public-preview</id>
@@ -13,6 +124,17 @@
         <updated>2026-01-28T15:00:30.000Z</updated>
         <summary type="html"><![CDATA[GitHub Copilot CLI now implements the Agent Client Protocol (ACP), an industry-standard protocol for communication between AI agents and clients. This enables third-party tools, IDEs, and automation systems to integrate…
 The post ACP support in Copilot CLI is now in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub MCP Server: New Projects tools, OAuth scope filtering, and new features]]></title>
+        <id>https://github.blog/changelog/2026-01-26-github-mcp-server-new-projects-tools-oauth-scope-filtering-and-new-features</id>
+        <link href="https://github.blog/changelog/2026-01-28-github-mcp-server-new-projects-tools-oauth-scope-filtering-and-new-features"/>
+        <updated>2026-01-28T10:23:45.000Z</updated>
+        <summary type="html"><![CDATA[The GitHub MCP Server has arrived with improved capabilities to manage GitHub Projects with more efficient usage of the context window, automatic tool filtering based on your token’s permissions, and…
+The post GitHub MCP Server: New Projects tools, OAuth scope filtering, and new features appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
         </author>
@@ -2800,54 +2922,6 @@ It looks like OpenAI's <strong>Codex cloud</strong> (the cloud version of their 
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/naming-things">naming-things</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/async-coding-agents">async-coding-agents</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Armin Ronacher]]></title>
-        <id>https://simonwillison.net/2025/Dec/30/armin-ronacher/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/30/armin-ronacher/#atom-everything"/>
-        <updated>2025-12-30T23:54:58.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://lobste.rs/c/xccjtq"><p>[...] The puzzle is still there. What’s gone is the labor. I never enjoyed hitting keys, writing minimal repro cases with little insight, digging through debug logs, or trying to decipher some obscure AWS IAM permission error. That work wasn’t the puzzle for me. It was just friction, laborious and frustrating. The thinking remains; the hitting of the keys and the frustrating is what’s been removed.</p></blockquote>
-<p class="cite">&mdash; <a href="https://lobste.rs/c/xccjtq">Armin Ronacher</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/armin-ronacher">armin-ronacher</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[TIL: Downloading archived Git repositories from archive.softwareheritage.org]]></title>
-        <id>https://simonwillison.net/2025/Dec/30/software-heritage/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/30/software-heritage/#atom-everything"/>
-        <updated>2025-12-30T23:51:33.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://til.simonwillison.net/github/software-archive-recovery">TIL: Downloading archived Git repositories from archive.softwareheritage.org</a></strong></p>
-Back in February I <a href="https://simonwillison.net/2025/Feb/7/sqlite-s3vfs/">blogged about</a> a neat Python library called <code>sqlite-s3vfs</code> for accessing SQLite databases hosted in an S3 bucket, released as MIT licensed open source by the UK government's Department for Business and Trade.</p>
-<p>I went looking for it today and found that the <a href="https://github.com/uktrade/sqlite-s3vfs">github.com/uktrade/sqlite-s3vfs</a> repository is now a 404.</p>
-<p>Since this is taxpayer-funded open source software I saw it as my moral duty to try and restore access! It turns out <a href="https://archive.softwareheritage.org/browse/origin/directory/?origin_url=https://github.com/uktrade/sqlite-s3vfs">a full copy</a> had been captured by <a href="https://archive.softwareheritage.org/">the Software Heritage archive</a>, so I was able to restore  the repository from there. My copy is now archived at <a href="https://github.com/simonw/sqlite-s3vfs">simonw/sqlite-s3vfs</a>.</p>
-<p>The process for retrieving an archive was non-obvious, so I've written up a TIL and also published a new <a href="https://tools.simonwillison.net/software-heritage-repo#https%3A%2F%2Fgithub.com%2Fuktrade%2Fsqlite-s3vfs">Software Heritage Repository Retriever</a> tool which takes advantage of the CORS-enabled APIs provided by Software Heritage. Here's <a href="https://gistpreview.github.io/?3a76a868095c989d159c226b7622b092/index.html">the Claude Code transcript</a> from building that.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=46435308#46438857">Hacker News comment</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/archives">archives</a>, <a href="https://simonwillison.net/tags/git">git</a>, <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/tools">tools</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/til">til</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Liz Fong-Jones]]></title>
-        <id>https://simonwillison.net/2025/Dec/30/liz-fong-jones/#atom-everything</id>
-        <link href="https://simonwillison.net/2025/Dec/30/liz-fong-jones/#atom-everything"/>
-        <updated>2025-12-30T16:05:08.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://bsky.app/profile/lizthegrey.com/post/3mb65fnjiis25"><p>In essence a language model changes you from a programmer who writes lines of code, to a programmer that manages the context the model has access to, prunes irrelevant things, adds useful material to context, and writes detailed specifications. If that doesn't sound fun to you, you won't enjoy it.</p>
-<p>Think about it as if it is a junior developer that has read every textbook in the world but has 0 practical experience with your specific codebase, and is prone to forgetting anything but the most recent hour of things you've told it. What do you want to tell that intern to help them progress?</p>
-<p>Eg you might put sticky notes on their desk to remind them of where your style guide lives, what the API documentation is for the APIs you use, some checklists of what is done and what is left to do, etc.</p>
-<p>But the intern gets confused easily if it keeps accumulating sticky notes and there are now 100 sticky notes, so you have to periodically clear out irrelevant stickies and replace them with new stickies.</p></blockquote>
-<p class="cite">&mdash; <a href="https://bsky.app/profile/lizthegrey.com/post/3mb65fnjiis25">Liz Fong-Jones</a>, thread on Bluesky</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/bluesky">bluesky</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/context-engineering">context-engineering</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

@@ -31,12 +31,176 @@
       <article>
           <details>
             <summary>
+              Adding dynamic features to an aggressively cached website
+              <span class="post-metadata">(5 min | 1593 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/28/dynamic-features-static-site/#atom-everything>My blog uses aggressive caching: it sits behind Cloudflare with a 15 minute cache header, which guarantees it can survive even the largest traffic spike to any given page. I&#x27;ve recently added a couple of dynamic features that work in spite of that full-page caching. Here&#x27;s how those work.
+
+Edit links that are visible only to me
+
+This is a Django site and I manage it through the Django admin.
+
+I have four types of content - entries, link posts (aka blogmarks), quotations and notes. Each of those has a different model and hence a different Django admin area.
+
+I wanted an &quot;edit&quot; link on the public pages that was only visible to me.
+
+The button looks like this:
+
+
+
+I solved conditional display of this button with localStorage. I have a tiny bit of JavaScript which checks to see if the localStorage key ADMIN is set and, if it is, displays an edit link based on a data attribute:
+
+
+document.addEventListener(&#x27;DOMContentLoaded&#x27;, () &#x3D;&gt; {
+  if (window.localStorage.getItem(&#x27;ADMIN&#x27;)) {
+    document.querySelectorAll(&#x27;.edit-page-link&#x27;).forEach(el &#x3D;&gt; {
+      const url &#x3D; el.getAttribute(&#x27;data-admin-url&#x27;);
+      if (url) {
+        const a &#x3D; document.createElement(&#x27;a&#x27;);
+        a.href &#x3D; url;
+        a.className &#x3D; &#x27;edit-link&#x27;;
+        a.innerHTML &#x3D; &#x27;&lt;svg&gt;...&lt;/svg&gt; Edit&#x27;;
+        el.appendChild(a);
+        el.style.display &#x3D; &#x27;block&#x27;;
+      }
+    });
+  }
+});
+
+If you want to see my edit links you can run this snippet of JavaScript:
+
+
+localStorage.setItem(&#x27;ADMIN&#x27;, &#x27;1&#x27;);
+
+My Django admin dashboard has a custom checkbox I can click to turn this option on and off in my own browser:
+
+
+
+Random navigation within a tag
+
+Those admin edit links are a very simple pattern. A more interesting one is a feature I added recently for navigating randomly within a tag.
+
+Here&#x27;s an animated GIF showing those random tag navigations in action (try it here):
+
+
+
+On any of my blog&#x27;s tag pages you can click the &quot;Random&quot; button to bounce to a random post with that tag. That random button then persists in the header of the page and you can click it to continue bouncing to random items in that same tag.
+
+A post can have multiple tags, so there needs to be a little bit of persistent magic to remember which tag you are navigating and display the relevant button in the header.
+
+Once again, this uses localStorage. Any click to a random button records both the tag and the current timestamp to the random_tag key in localStorage before redirecting the user to the /random/name-of-tag/ page, which selects a random post and redirects them there.
+
+Any time a new page loads, JavaScript checks if that random_tag key has a value that was recorded within the past 5 seconds. If so, that random button is appended to the header.
+
+This means that, provided the page loads within 5 seconds of the user clicking the button, the random tag navigation will persist on the page.
+
+You can see the code for that here.
+
+And the prompts
+
+I built the random tag feature entirely using Claude Code for web, prompted from my iPhone. I started with the /random/TAG/ endpoint (full transcript):
+
+
+Build /random/TAG/ - a page which picks a random post (could be an entry or blogmark or note or quote) that has that tag and sends a 302 redirect to it, marked as no-cache so Cloudflare does not cache it
+
+Use a union to build a list of every content type (a string representing the table out of the four types) and primary key for every item tagged with that tag, then order by random and return the first one
+
+Then inflate the type and ID into an object and load it and redirect to the URL
+
+Include tests - it should work by setting up a tag with one of each of the content types and then running in a loop calling that endpoint until it has either returned one of each of the four types or it hits 1000 loops at which point fail with an error
+
+
+Then:
+
+
+I do not like that solution, some of my tags have thousands of items
+
+Can we do something clever with a CTE?
+
+
+Here&#x27;s the something clever with a CTE solution we ended up with.
+
+For the &quot;Random post&quot; button (transcript):
+
+
+Look at most recent commit, then modify the /tags/xxx/ page to have a &quot;Random post&quot; button which looks good and links to the /random/xxx/ page
+
+
+Then:
+
+
+Put it before not after the feed icon. It should only display if a tag has more than 5 posts
+
+
+And finally, the localStorage implementation that persists a random tag button in the header (transcript):
+
+
+Review the last two commits. Make it so clicking the Random button on a tag page sets a localStorage value for random_tag with that tag and a timestamp. On any other page view that uses the base item template add JS that checks for that localStorage value and makes sure the timestamp is within 5 seconds. If it is within 5 seconds it adds a &quot;Random name-of-tag&quot; button to the little top navigation bar, styled like the original Random button, which bumps the localStorage timestamp and then sends the user to /random/name-of-tag/ when they click it. In this way clicking &quot;Random&quot; on a tag page will send the user into an experience where they can keep clicking to keep surfing randomly in that topic.
+
+
+    
+        
+Tags: caching, django, javascript, localstorage, ai, cloudflare, generative-ai, llms, ai-assisted-programming</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              The Five Levels: from Spicy Autocomplete to the Dark Factory
+              <span class="post-metadata">(4 min | 1080 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jan/28/the-five-levels/#atom-everything>The Five Levels: from Spicy Autocomplete to the Dark Factory
+levels of driving automation.
+Spicy autocomplete, aka original GitHub Copilot or copying and pasting snippets from ChatGPT.
+The coding intern, writing unimportant snippets and boilerplate with full human review.
+The junior developer, pair programming with the model but still reviewing every line.
+The developer. Most code is generated by AI, and you take on the role of full-time code reviewer.
+The engineering team. You&#x27;re more of an engineering manager or product/program/project manager. You collaborate on specs and plans, the agents do the work.
+The dark software factory, like a factory run by robots where the lights are out because robots don&#x27;t need to see.
+Dan says about that last category:
+At level 5, it&#x27;s not really a car any more. You&#x27;re not really running anybody else&#x27;s software any more. And your software process isn&#x27;t really a software process any more. It&#x27;s a black box that turns specs into software.
+Why Dark? Maybe you&#x27;ve heard of the Fanuc Dark Factory, the robot factory staffed by robots. It&#x27;s dark, because it&#x27;s a place where humans are neither needed nor welcome.
+I know a handful of people who are doing this. They&#x27;re small teams, less than five people. And what they&#x27;re doing is nearly unbelievable -- and it will likely be our future.
+I&#x27;ve talked to one team that&#x27;s doing the pattern hinted at here. It was fascinating. The key characteristics:
+Nobody reviews AI-produced code, ever. They don&#x27;t even look at it.
+The goal of the system is to prove that the system works. A huge amount of the coding agent work goes into testing and tooling and simulating related systems and running demos.
+The role of the humans is to design that system - to find new patterns that can help the agents work more effectively and demonstrate that the software they are building is robust and effective.
+It was a tiny team and they stuff they had built in just a few months looked very convincing to me. Some of them had 20+ years of experience as software developers working on systems with high reliability requirements, so they were not approaching this from a naive perspective.
+I&#x27;m hoping they come out of stealth soon because I can&#x27;t really share more details than this.
+
+
+    
+Tags: ai, generative-ai, llms, ai-assisted-programming, coding-agents</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               ACP support in Copilot CLI is now in public preview
               <span class="post-metadata">(5 min | 1416 words)</span> 
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2026-01-28-acp-support-in-copilot-cli-is-now-in-public-preview>GitHub Copilot CLI now implements the Agent Client Protocol (ACP), an industry-standard protocol for communication between AI agents and clients. This enables third-party tools, IDEs, and automation systems to integrate…
 The post ACP support in Copilot CLI is now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub MCP Server: New Projects tools, OAuth scope filtering, and new features
+              <span class="post-metadata">(8 min | 2497 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-01-28-github-mcp-server-new-projects-tools-oauth-scope-filtering-and-new-features>The GitHub MCP Server has arrived with improved capabilities to manage GitHub Projects with more efficient usage of the context window, automatic tool filtering based on your token’s permissions, and…
+The post GitHub MCP Server: New Projects tools, OAuth scope filtering, and new features appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
@@ -3848,66 +4012,6 @@ Just aligning the documentation with how folks refer to it. I personally differe
 I asked what they called Codex in the iPhone app and he said:
 Codex iOS
 Tags: naming-things, ai, openai, generative-ai, llms, anthropic, coding-agents, async-coding-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2025-12-30</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Armin Ronacher
-              <span class="post-metadata">(2 min | 701 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/30/armin-ronacher/#atom-everything>[...] The puzzle is still there. What’s gone is the labor. I never enjoyed hitting keys, writing minimal repro cases with little insight, digging through debug logs, or trying to decipher some obscure AWS IAM permission error. That work wasn’t the puzzle for me. It was just friction, laborious and frustrating. The thinking remains; the hitting of the keys and the frustrating is what’s been removed.
-
-— Armin Ronacher
-Tags: ai-assisted-programming, generative-ai, armin-ronacher, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              TIL: Downloading archived Git repositories from archive.softwareheritage.org
-              <span class="post-metadata">(3 min | 827 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/30/software-heritage/#atom-everything>TIL: Downloading archived Git repositories from archive.softwareheritage.org
-blogged about a neat Python library called sqlite-s3vfs for accessing SQLite databases hosted in an S3 bucket, released as MIT licensed open source by the UK government&#x27;s Department for Business and Trade.
-I went looking for it today and found that the github.com/uktrade/sqlite-s3vfs repository is now a 404.
-Since this is taxpayer-funded open source software I saw it as my moral duty to try and restore access! It turns out a full copy had been captured by the Software Heritage archive, so I was able to restore  the repository from there. My copy is now archived at simonw/sqlite-s3vfs.
-The process for retrieving an archive was non-obvious, so I&#x27;ve written up a TIL and also published a new Software Heritage Repository Retriever tool which takes advantage of the CORS-enabled APIs provided by Software Heritage. Here&#x27;s the Claude Code transcript from building that.
-
-    
-Via Hacker News comment
-Tags: archives, git, github, open-source, tools, ai, til, generative-ai, llms, ai-assisted-programming, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Liz Fong-Jones
-              <span class="post-metadata">(3 min | 820 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2025/Dec/30/liz-fong-jones/#atom-everything>In essence a language model changes you from a programmer who writes lines of code, to a programmer that manages the context the model has access to, prunes irrelevant things, adds useful material to context, and writes detailed specifications. If that doesn&#x27;t sound fun to you, you won&#x27;t enjoy it.
-Think about it as if it is a junior developer that has read every textbook in the world but has 0 practical experience with your specific codebase, and is prone to forgetting anything but the most recent hour of things you&#x27;ve told it. What do you want to tell that intern to help them progress?
-Eg you might put sticky notes on their desk to remind them of where your style guide lives, what the API documentation is for the APIs you use, some checklists of what is done and what is left to do, etc.
-But the intern gets confused easily if it keeps accumulating sticky notes and there are now 100 sticky notes, so you have to periodically clear out irrelevant stickies and replace them with new stickies.
-
-— Liz Fong-Jones, thread on Bluesky
-Tags: bluesky, ai-assisted-programming, generative-ai, ai, llms, context-engineering</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
