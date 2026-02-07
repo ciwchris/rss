@@ -25,9 +25,125 @@
 
   <ul>
     <li>
+      <time>2026-02-07</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              CodeQL 2.24.1 improves Maven private registry support and improves query accuracy
+              <span class="post-metadata">(5 min | 1642 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-02-06-codeql-2-24-1-improves-maven-private-registry-support-and-improves-query-accuracy>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.24.1, improving support for Maven private package…
+The post CodeQL 2.24.1 improves Maven private registry support and improves query accuracy appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-02-06</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Tom Dale
+              <span class="post-metadata">(2 min | 728 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/6/tom-dale/#atom-everything>I don&#x27;t know why this week became the tipping point, but nearly every software engineer I&#x27;ve talked to is experiencing some degree of mental health crisis.
+[...] Many people assuming I meant job loss anxiety but that&#x27;s just one presentation. I&#x27;m seeing near-manic episodes triggered by watching software shift from scarce to abundant. Compulsive behaviors around agent usage. Dissociative awe at the temporal compression of change. It&#x27;s not fear necessarily just the cognitive overload from living in an inflection point.
+
+— Tom Dale
+Tags: ai-ethics, careers, coding-agents, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Running Pydantic&#x27;s Monty Rust sandboxed Python subset in WebAssembly
+              <span class="post-metadata">(5 min | 1391 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/6/pydantic-monty/#atom-everything>There&#x27;s a jargon-filled headline for you! Everyone&#x27;s building sandboxes for running untrusted code right now, and Pydantic&#x27;s latest attempt, Monty, provides a custom Python-like language (a subset of Python) in Rust and makes it available as both a Rust library and a Python package. I got it working in WebAssembly, providing a sandbox-in-a-sandbox.
+
+Here&#x27;s how they describe Monty:
+
+
+Monty avoids the cost, latency, complexity and general faff of using full container based sandbox for running LLM generated code.
+
+Instead, it let&#x27;s you safely run Python code written by an LLM embedded in your agent, with startup times measured in single digit microseconds not hundreds of milliseconds.
+
+What Monty can do:
+
+
+Run a reasonable subset of Python code - enough for your agent to express what it wants to do
+
+Completely block access to the host environment: filesystem, env variables and network access are all implemented via external function calls the developer can control
+
+Call functions on the host - only functions you give it access to [...]
+
+
+
+A quick way to try it out is via uv:
+
+uv run --with pydantic-monty python -m asyncio
+
+
+Then paste this into the Python interactive prompt - the -m asyncio enables top-level await:
+
+import pydantic_monty
+code &#x3D; pydantic_monty.Monty(&#x27;print(&quot;hello &quot; + str(4 * 5))&#x27;)
+await pydantic_monty.run_monty_async(code)
+
+Monty supports a very small subset of Python - it doesn&#x27;t even support class declarations yet!
+
+But, given its target use-case, that&#x27;s not actually a problem.
+
+The neat thing about providing tools like this for LLMs is that they&#x27;re really good at iterating against error messages. A coding agent can run some Python code, get an error message telling it that classes aren&#x27;t supported and then try again with a different approach.
+
+I wanted to try this in a browser, so I fired up a code research task in Claude Code for web and kicked it off with the following:
+
+
+Clone https://github.com/pydantic/monty to /tmp and figure out how to compile it into a python WebAssembly wheel that can then be loaded in Pyodide. The wheel file itself should be checked into the repo along with build scripts and passing pytest playwright test scripts that load Pyodide from a CDN and the wheel from a “python -m http.server” localhost and demonstrate it working
+
+
+Then a little later:
+
+
+I want an additional WASM file that works independently of Pyodide, which is also usable in a web browser - build that too along with playwright tests that show it working. Also build two HTML files - one called demo.html and one called pyodide-demo.html - these should work similar to https://tools.simonwillison.net/micropython (download that code with curl to inspect it) - one should load the WASM build, the other should load Pyodide and have it use the WASM wheel. These will be served by GitHub Pages so they can load the WASM and wheel from a relative path since the .html files will be served from the same folder as the wheel and WASM file
+
+
+Here&#x27;s the transcript, and the final research report it produced.
+
+I now have the Monty Rust code compiled to WebAssembly in two different shapes - as a .wasm bundle you can load and call from JavaScript, and as a monty-wasm-pyodide/pydantic_monty-0.0.3-cp313-cp313-emscripten_4_0_9_wasm32.whl wheel file which can be loaded into Pyodide and then called from Python in Pyodide in WebAssembly in a browser.
+
+Here are those two demos, hosted on GitHub Pages:
+
+
+
+Monty WASM demo - a UI over JavaScript that loads the Rust WASM module directly.
+
+
+Monty Pyodide demo - this one provides an identical interface but here the code is loading Pyodide and then installing the Monty WASM wheel.
+
+
+
+
+As a connoisseur of sandboxes - the more options the better! - this new entry from Pydantic ticks a lot of my boxes. It&#x27;s small, fast, widely available (thanks to Rust and WebAssembly) and provides strict limits on memory usage, CPU time and access to disk and network.
+
+It was also a great excuse to spin up another demo showing how easy it is these days to turn compiled code like C or Rust into WebAssembly that runs in both a browser and a Pyodide environment.
+Tags: javascript, python, sandboxing, ai, rust, webassembly, pyodide, generative-ai, llms, ai-assisted-programming, pydantic, coding-agents, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3844,219 +3960,6 @@ Tags: sandboxing, thomas-ptacek, ai, fly, coding-agents</a>
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/stargate-sb-energy-partnership>OpenAI and SoftBank Group partner with SB Energy to develop multi-gigawatt AI data center campuses, including a 1.2 GW Texas facility supporting the Stargate initiative.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Datadog uses Codex for system-level code review
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/datadog>OpenAI and Datadog brand graphic with the OpenAI wordmark on the left, the Datadog logo on the right, and a central abstract brown fur-like texture panel on a white background.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-01-08</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              LLM predictions for 2026, shared with Oxide and Friends
-              <span class="post-metadata">(8 min | 2390 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jan/8/llm-predictions-for-2026/#atom-everything>I joined a recording of the Oxide and Friends podcast on Tuesday to talk about 1, 3 and 6 year predictions for the tech industry. This is my second appearance on their annual predictions episode, you can see my predictions from January 2025 here. Here&#x27;s the page for this year&#x27;s episode, with options to listen in all of your favorite podcast apps or directly on YouTube.
-
-Bryan Cantrill started the episode by declaring that he&#x27;s never been so unsure about what&#x27;s coming in the next year. I share that uncertainty - the significant advances in coding agents just in the last two months have left me certain that things will change significantly, but unclear as to what those changes will be.
-
-Here are the predictions I shared in the episode.
-
-
-  
-1 year: It will become undeniable that LLMs write good code
-
-  
-1 year: We&#x27;re finally going to solve sandboxing
-
-  
-1 year: A &quot;Challenger disaster&quot; for coding agent security
-
-  
-1 year: Kākāpō parrots will have an outstanding breeding season
-
-  
-3 years: the coding agents Jevons paradox for software engineering will resolve, one way or the other
-
-  
-3 years: Someone will build a new browser using mainly AI-assisted coding and it won&#x27;t even be a surprise
-
-  
-6 years: Typing code by hand will go the way of punch cards
-
-
-1 year: It will become undeniable that LLMs write good code ▶ 19:27
-
-
-I think that there are still people out there who are convinced that LLMs cannot write good code. Those people are in for a very nasty shock in 2026. I do not think it will be possible to get to the end of even the next three months while still holding on to that idea that the code they write is all junk and it&#x27;s it&#x27;s likely any decent human programmer will write better code than they will.
-
-
-In 2023, saying that LLMs write garbage code was entirely correct. For most of 2024 that stayed true. In 2025 that changed, but you could be forgiven for continuing to hold out. In 2026 the quality of LLM-generated code will become impossible to deny.
-
-I base this on my own experience - I&#x27;ve spent more time exploring AI-assisted programming than most.
-
-The key change in 2025 (see my overview for the year) was the introduction of &quot;reasoning models&quot; trained specifically against code using Reinforcement Learning. The major labs spent a full year competing with each other on who could get the best code capabilities from their models, and that problem turns out to be perfectly attuned to RL since code challenges come with built-in verifiable success conditions.
-
-Since Claude Opus 4.5 and GPT-5.2 came out in November and December respectively the amount of code I&#x27;ve written by hand has dropped to a single digit percentage of my overall output. The same is true for many other expert programmers I know.
-
-At this point if you continue to argue that LLMs write useless code you&#x27;re damaging your own credibility.
-
-1 year: We&#x27;re finally going to solve sandboxing ▶ 20:05
-
-
-I think this year is the year we&#x27;re going to solve sandboxing. I want to run code other people have written on my computing devices without it destroying my computing devices if it&#x27;s malicious or has bugs. [...] It&#x27;s crazy that it&#x27;s 2026 and I still pip install random code and then execute it in a way that it can steal all of my data and delete all my files. [...] I don&#x27;t want to run a piece of code on any of my devices that somebody else wrote outside of sandbox ever again.
-
-
-This isn&#x27;t just about LLMs, but it becomes even more important now there are so many more people writing code often without knowing what they&#x27;re doing. Sandboxing is also a key part of the battle against prompt injection.
-
-We have a lot of promising technologies in play already for this - containers and WebAssembly being the two I&#x27;m most optimistic about. There&#x27;s real commercial value involved in solving this problem. The pieces are there, what&#x27;s needed is UX work to reduce the friction in using them productively and securely.
-
-1 year: A &quot;Challenger disaster&quot; for coding agent security ▶ 21:21
-
-
-I think we&#x27;re due a Challenger disaster with respect to coding agent security[...] I think so many people, myself included, are running these coding agents practically as root, right? We&#x27;re letting them do all of this stuff. And every time I do it, my computer doesn&#x27;t get wiped. I&#x27;m like, &quot;oh, it&#x27;s fine&quot;.
-
-
-I used this as an opportunity to promote my favourite recent essay about AI security, the Normalization of Deviance in AI by Johann Rehberger.
-
-The Normalization of Deviance describes the phenomenon where people and organizations get used to operating in an unsafe manner because nothing bad has happened to them yet, which can result in enormous problems (like the 1986 Challenger disaster) when their luck runs out.
-
-Every six months I predict that a headline-grabbing prompt injection attack is coming soon, and every six months it doesn&#x27;t happen. This is my most recent version of that prediction!
-
-1 year: Kākāpō parrots will have an outstanding breeding season ▶ 50:06
-
-
-(I dropped this one to lighten the mood after a discussion of the deep sense of existential dread that many programmers are feeling right now!)
-
-
-I think that Kākāpō parrots in New Zealand are going to have an outstanding breeding season. The reason I think this is that the Rimu trees are in fruit right now. There&#x27;s only 250 of them,  and they only breed if the Rimu trees have a good fruiting. The Rimu trees have been terrible since 2019, but this year the Rimu trees were all blooming. There are researchers saying that all 87 females of breeding age might lay an egg. And for a species with only 250 remaining parrots that&#x27;s great news.
-
-
-(I just checked Wikipedia and I was right with the parrot numbers but wrong about the last good breeding season, apparently 2022 was a good year too.)
-
-In a year with precious little in the form of good news I am utterly delighted to share this story. Here&#x27;s more:
-
-
-
-Kākāpō breeding season 2026 introduction from the Department of Conservation from June 2025 .
-
-
-Bumper breeding season for kākāpō on the cards - 3rd December 2025, University of Auckland.
-
-
-I don&#x27;t often use AI-generated images on this blog, but the Kākāpō image the Oxide team created for this episode is just perfect:
-
-
-
-
-3 years: the coding agents Jevons paradox for software engineering will resolve, one way or the other ▶ 54:37
-
-
-
-We will find out if the Jevons paradox saves our careers or not. This is a big question that anyone who&#x27;s a software engineer has right now: we are driving the cost of actually producing working code down to a fraction of what it used to cost. Does that mean that our careers are completely devalued and we all have to learn to live on a tenth of our incomes, or does it mean that the demand for software, for custom software goes up by a factor of 10 and now our skills are even more valuable because you can hire me and I can build you 10 times the software I used to be able to? I think by three years we will know for sure which way that one went.
-
-
-The quote says it all. There are two ways this coding agents thing could go: it could turn out software engineering skills are devalued, or it could turn out we&#x27;re more valuable and effective than ever before.
-
-I&#x27;m crossing my fingers for the latter! So far it feels to me like it&#x27;s working out that way.
-
-
-3 years: Someone will build a new browser using mainly AI-assisted coding and it won&#x27;t even be a surprise ▶ 65:13
-
-
-
-I think somebody will have built a full web browser mostly using AI assistance, and it won&#x27;t even be surprising. Rolling a new web browser is one of the most complicated software projects I can imagine[...] the cheat code is the conformance suites. If there are existing tests that it&#x27;ll get so much easier.
-
-
-A common complaint today from AI coding skeptics is that LLMs are fine for toy projects but can&#x27;t be used for anything large and serious.
-
-I think within 3 years that will be comprehensively proven incorrect, to the point that it won&#x27;t even be controversial anymore.
-
-I picked a web browser here because so much of the work building a browser involves writing code that has to conform to an enormous and daunting selection of both formal tests and informal websites-in-the-wild.
-
-Coding agents are really good at tasks where you can define a concrete goal and then set them to work iterating in that direction.
-
-A web browser is the most ambitious project I can think of that leans into those capabilities.
-
-
-6 years: Typing code by hand will go the way of punch cards ▶ 80:39
-
-
-
-I think the job of being paid money to type code into a computer will go the same way as punching punch cards [...] in six years time, I do not think anyone will be paid to just to do the thing where you type the code. I think software engineering will still be an enormous career. I just think the software engineers won&#x27;t be spending multiple hours of their day in a text editor typing out syntax.
-
-
-The more time I spend on AI-assisted programming the less afraid I am for my job, because it turns out building software - especially at the rate it&#x27;s now possible to build - still requires enormous skill, experience and depth of understanding.
-
-The skills are changing though! Being able to read a detailed specification and transform it into lines of code is the thing that&#x27;s being automated away. What&#x27;s left is everything else, and the more time I spend working with coding agents the larger that &quot;everything else&quot; becomes.
-Tags: predictions, sandboxing, ai, kakapo, generative-ai, llms, ai-assisted-programming, oxide, bryan-cantrill, coding-agents</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How Google Got Its Groove Back and Edged Ahead of OpenAI
-              <span class="post-metadata">(3 min | 953 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jan/8/how-google-got-its-groove-back/#atom-everything>How Google Got Its Groove Back and Edged Ahead of OpenAI
-Here&#x27;s the origin of the name &quot;Nano Banana&quot;:
-Naina Raisinghani, known inside Google for working late into the night, needed a name for the new tool to complete the upload. It was 2:30 a.m., though, and nobody was around. So she just made one up, a mashup of two nicknames friends had given her: Nano Banana.
-The WSJ credit OpenAI&#x27;s Daniel Selsam with un-retiring Sergei Brin:
-Around that time, Google co-founder Sergey Brin, who had recently retired, was at a party chatting with a researcher from OpenAI named Daniel Selsam, according to people familiar with the conversation. Why, Selsam asked him, wasn’t he working full time on AI. Hadn’t the launch of ChatGPT captured his imagination as a computer scientist?
-ChatGPT was on its way to becoming a household name in AI chatbots, while Google was still fumbling to get its product off the ground. Brin decided Selsam had a point and returned to work.
-And we get some rare concrete user numbers:
-By October, Gemini had more than 650 million monthly users, up from 450 million in July.
-The LLM usage number I see cited most often is OpenAI&#x27;s 800 million weekly active users for ChatGPT. That&#x27;s from October 6th at OpenAI DevDay so it&#x27;s comparable to these Gemini numbers, albeit not directly since it&#x27;s weekly rather than monthly actives.
-I&#x27;m also never sure what counts as a &quot;Gemini user&quot; - does interacting via Google Docs or Gmail count or do you need to be using a Gemini chat interface directly?
-
-    
-Via Hacker News
-Tags: google, ai, openai, generative-ai, llms, gemini, nano-banana</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Netomi’s lessons for scaling agentic systems into the enterprise
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/netomi>How Netomi scales enterprise AI agents using GPT-4.1 and GPT-5.2—combining concurrency, governance, and multi-step reasoning for reliable production workflows.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI for Healthcare
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/openai-for-healthcare>OpenAI for Healthcare enables secure, enterprise-grade AI that supports HIPAA compliance—reducing administrative burden and supporting clinical workflows.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
