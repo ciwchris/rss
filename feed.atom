@@ -2,10 +2,134 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-02-11T14:45:22.345Z</updated>
+    <updated>2026-02-11T21:25:06.309Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Andrew Deck for Niemen Lab]]></title>
+        <id>https://simonwillison.net/2026/Feb/11/manosphere-report/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Feb/11/manosphere-report/#atom-everything"/>
+        <updated>2026-02-11T20:59:03.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.niemanlab.org/2026/02/how-the-new-york-times-uses-a-custom-ai-tool-to-track-the-manosphere/"><p>An AI-generated report, delivered directly to the email inboxes of journalists, was an essential tool in the Times’ coverage. It was also one of the first signals that conservative media was turning against the administration [...]</p>
+<p>Built in-house and known internally as the “Manosphere Report,” the tool uses large language models (LLMs) to transcribe and summarize new episodes of dozens of podcasts.</p>
+<p>“The Manosphere Report gave us a really fast and clear signal that this was not going over well with that segment of the President’s base,” said Seward. “There was a direct link between seeing that and then diving in to actually cover it.”</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.niemanlab.org/2026/02/how-the-new-york-times-uses-a-custom-ai-tool-to-track-the-manosphere/">Andrew Deck for Niemen Lab</a>, How The New York Times uses a custom AI tool to track the “manosphere”</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/new-york-times">new-york-times</a>, <a href="https://simonwillison.net/tags/journalism">journalism</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Skills in OpenAI API]]></title>
+        <id>https://simonwillison.net/2026/Feb/11/skills-in-openai-api/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Feb/11/skills-in-openai-api/#atom-everything"/>
+        <updated>2026-02-11T19:19:22.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://developers.openai.com/cookbook/examples/skills_in_api">Skills in OpenAI API</a></strong></p>
+OpenAI's adoption of Skills continues to gain ground. You can now use Skills directly in the OpenAI API with their <a href="https://developers.openai.com/api/docs/guides/tools-shell/">shell tool</a>. You can zip skills up and upload them first, but I think an even neater interface is the ability to send skills with the JSON request as inline base64-encoded zip data, as seen <a href="https://github.com/simonw/research/blob/main/openai-api-skills/openai_inline_skills.py">in this script</a>:</p>
+<pre><span class="pl-s1">r</span> <span class="pl-c1">=</span> <span class="pl-en">OpenAI</span>().<span class="pl-c1">responses</span>.<span class="pl-c1">create</span>(
+    <span class="pl-s1">model</span><span class="pl-c1">=</span><span class="pl-s">"gpt-5.2"</span>,
+    <span class="pl-s1">tools</span><span class="pl-c1">=</span>[
+      {
+        <span class="pl-s">"type"</span>: <span class="pl-s">"shell"</span>,
+        <span class="pl-s">"environment"</span>: {
+          <span class="pl-s">"type"</span>: <span class="pl-s">"container_auto"</span>,
+          <span class="pl-s">"skills"</span>: [
+            {
+              <span class="pl-s">"type"</span>: <span class="pl-s">"inline"</span>,
+              <span class="pl-s">"name"</span>: <span class="pl-s">"wc"</span>,
+              <span class="pl-s">"description"</span>: <span class="pl-s">"Count words in a file."</span>,
+              <span class="pl-s">"source"</span>: {
+                <span class="pl-s">"type"</span>: <span class="pl-s">"base64"</span>,
+                <span class="pl-s">"media_type"</span>: <span class="pl-s">"application/zip"</span>,
+                <span class="pl-s">"data"</span>: <span class="pl-s1">b64_encoded_zip_file</span>,
+              },
+            }
+          ],
+        },
+      }
+    ],
+    <span class="pl-s1">input</span><span class="pl-c1">=</span><span class="pl-s">"Use the wc skill to count words in its own SKILL.md file."</span>,
+)
+<span class="pl-en">print</span>(<span class="pl-s1">r</span>.<span class="pl-c1">output_text</span>)</pre>
+
+<p>I built that example script after first having Claude Code for web use <a href="https://simonwillison.net/2026/Feb/10/showboat-and-rodney/">Showboat</a> to explore the API for me and create <a href="https://github.com/simonw/research/blob/main/openai-api-skills/README.md">this report</a>. My opening prompt for the research project was:</p>
+<blockquote>
+<p><code>Run uvx showboat --help - you will use this tool later</code></p>
+<p><code>Fetch https://developers.openai.com/cookbook/examples/skills_in_api.md to /tmp with curl, then read it</code></p>
+<p><code>Use the OpenAI API key you have in your environment variables</code></p>
+<p><code>Use showboat to build up a detailed demo of this, replaying the examples from the documents and then trying some experiments of your own</code></p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/skills">skills</a>, <a href="https://simonwillison.net/tags/showboat">showboat</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GLM-5: From Vibe Coding to Agentic Engineering]]></title>
+        <id>https://simonwillison.net/2026/Feb/11/glm-5/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Feb/11/glm-5/#atom-everything"/>
+        <updated>2026-02-11T18:56:14.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://z.ai/blog/glm-5">GLM-5: From Vibe Coding to Agentic Engineering</a></strong></p>
+This is a <em>huge</em> new MIT-licensed model: 754B parameters and <a href="https://huggingface.co/zai-org/GLM-5">1.51TB on Hugging Face</a> twice the size of <a href="https://huggingface.co/zai-org/GLM-4.7">GLM-4.7</a> which was 368B and 717GB (4.5 and 4.6 were around that size too).</p>
+<p>It's interesting to see Z.ai take a position on what we should call professional software engineers building with LLMs - I've seen "Agentic Engineering" show up in a few other places recently. most notable <a href="https://twitter.com/karpathy/status/2019137879310836075">from Andrej Karpathy</a> and <a href="https://addyosmani.com/blog/agentic-engineering/">Addy Osmani</a>.</p>
+<p>I ran my "Generate an SVG of a pelican riding a bicycle" prompt through GLM-5 via <a href="https://openrouter.ai/">OpenRouter</a> and got back <a href="https://gist.github.com/simonw/cc4ca7815ae82562e89a9fdd99f0725d">a very good pelican on a disappointing bicycle frame</a>:</p>
+<p><img alt="The pelican is good and has a well defined beak. The bicycle frame is a wonky red triangle. Nice sun and motion lines." src="https://static.simonwillison.net/static/2026/glm-5-pelican.png" />
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=46977210">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/definitions">definitions</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/openrouter">openrouter</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a>, <a href="https://simonwillison.net/tags/glm">glm</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[cysqlite - a new sqlite driver]]></title>
+        <id>https://simonwillison.net/2026/Feb/11/cysqlite/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Feb/11/cysqlite/#atom-everything"/>
+        <updated>2026-02-11T17:34:40.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://charlesleifer.com/blog/cysqlite---a-new-sqlite-driver/">cysqlite - a new sqlite driver</a></strong></p>
+Charles Leifer has been maintaining <a href="https://github.com/coleifer/pysqlite3">pysqlite3</a> - a fork of the Python standard library's <code>sqlite3</code> module that makes it much easier to run upgraded SQLite versions - since 2018.</p>
+<p>He's been working on a ground-up <a href="https://cython.org/">Cython</a> rewrite called <a href="https://github.com/coleifer/cysqlite">cysqlite</a> for almost as long, but it's finally at a stage where it's ready for people to try out.</p>
+<p>The biggest change from the <code>sqlite3</code> module involves transactions. Charles explains his discomfort with the <code>sqlite3</code> implementation at length - that library provides two different variants neither of which exactly match the autocommit mechanism in SQLite itself.</p>
+<p>I'm particularly excited about the support for <a href="https://cysqlite.readthedocs.io/en/latest/api.html#tablefunction">custom virtual tables</a>, a feature I'd love to see in <code>sqlite3</code> itself.</p>
+<p><code>cysqlite</code> provides a Python extension compiled from C, which means it normally wouldn't be available in Pyodide. I <a href="https://github.com/simonw/research/tree/main/cysqlite-wasm-wheel">set Claude Code on it</a> and it built me <a href="https://github.com/simonw/research/blob/main/cysqlite-wasm-wheel/cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.whl">cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.whl</a>, a 688KB wheel file with a WASM build of the library that can be loaded into Pyodide like this:</p>
+<pre><span class="pl-k">import</span> <span class="pl-s1">micropip</span>
+<span class="pl-k">await</span> <span class="pl-s1">micropip</span>.<span class="pl-c1">install</span>(
+    <span class="pl-s">"https://simonw.github.io/research/cysqlite-wasm-wheel/cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.whl"</span>
+)
+<span class="pl-k">import</span> <span class="pl-s1">cysqlite</span>
+<span class="pl-en">print</span>(<span class="pl-s1">cysqlite</span>.<span class="pl-c1">connect</span>(<span class="pl-s">":memory:"</span>).<span class="pl-c1">execute</span>(
+    <span class="pl-s">"select sqlite_version()"</span>
+).<span class="pl-c1">fetchone</span>())</pre>
+
+<p>(I also learned that wheels like this have to be built for the emscripten version used by that edition of Pyodide - my experimental wheel loads in Pyodide 0.25.1 but fails in 0.27.5 with a <code>Wheel was built with Emscripten v3.1.46 but Pyodide was built with Emscripten v3.1.58</code> error.)</p>
+<p>You can try my wheel in <a href="https://7ebbff98.tools-b1q.pages.dev/pyodide-repl">this new Pyodide REPL</a> i had Claude build as a mobile-friendly alternative to Pyodide's <a href="https://pyodide.org/en/stable/console.html">own hosted console</a>.</p>
+<p>I also had Claude build <a href="https://simonw.github.io/research/cysqlite-wasm-wheel/demo.html">this demo page</a> that executes the original test suite in the browser and displays the results:</p>
+<p><img alt="Screenshot of the cysqlite WebAssembly Demo page with a dark theme. Title reads &quot;cysqlite — WebAssembly Demo&quot; with subtitle &quot;Testing cysqlite compiled to WebAssembly via Emscripten, running in Pyodide in the browser.&quot; Environment section shows Pyodide 0.25.1, Python 3.11.3, cysqlite 0.1.4, SQLite 3.51.2, Platform Emscripten-3.1.46-wasm32-32bit, Wheel file cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.wh (truncated). A green progress bar shows &quot;All 115 tests passed! (1 skipped)&quot; at 100%, with Passed: 115, Failed: 0, Errors: 0, Skipped: 1, Total: 116. Test Results section lists TestBackup 1/1 passed, TestBlob 6/6 passed, TestCheckConnection 4/4 passed, TestDataTypesTableFunction 1/1 passed, all with green badges." src="https://static.simonwillison.net/static/2026/cysqlite-tests.jpg" />
+
+    <p><small></small>Via <a href="https://lobste.rs/s/gipvta/cysqlite_new_sqlite_driver">lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/charles-leifer">charles-leifer</a>, <a href="https://simonwillison.net/tags/webassembly">webassembly</a>, <a href="https://simonwillison.net/tags/pyodide">pyodide</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Harness engineering: leveraging Codex in an agent-first world]]></title>
+        <id>https://openai.com/index/harness-engineering</id>
+        <link href="https://openai.com/index/harness-engineering"/>
+        <updated>2026-02-11T09:00:00.000Z</updated>
+        <summary type="html"><![CDATA[By Ryan Lopopolo, Member of the Technical Staff]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Introducing Showboat and Rodney, so agents can demo what they’ve built]]></title>
         <id>https://simonwillison.net/2026/Feb/10/showboat-and-rodney/#atom-everything</id>

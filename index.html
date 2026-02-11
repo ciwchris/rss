@@ -25,6 +25,139 @@
 
   <ul>
     <li>
+      <time>2026-02-11</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Andrew Deck for Niemen Lab
+              <span class="post-metadata">(3 min | 778 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/manosphere-report/#atom-everything>An AI-generated report, delivered directly to the email inboxes of journalists, was an essential tool in the Times’ coverage. It was also one of the first signals that conservative media was turning against the administration [...]
+Built in-house and known internally as the “Manosphere Report,” the tool uses large language models (LLMs) to transcribe and summarize new episodes of dozens of podcasts.
+“The Manosphere Report gave us a really fast and clear signal that this was not going over well with that segment of the President’s base,” said Seward. “There was a direct link between seeing that and then diving in to actually cover it.”
+
+— Andrew Deck for Niemen Lab, How The New York Times uses a custom AI tool to track the “manosphere”
+Tags: generative-ai, new-york-times, journalism, ai, data-journalism, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Skills in OpenAI API
+              <span class="post-metadata">(3 min | 881 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/skills-in-openai-api/#atom-everything>Skills in OpenAI API
+shell tool. You can zip skills up and upload them first, but I think an even neater interface is the ability to send skills with the JSON request as inline base64-encoded zip data, as seen in this script:
+r &#x3D; OpenAI().responses.create(
+    model&#x3D;&quot;gpt-5.2&quot;,
+    tools&#x3D;[
+      {
+        &quot;type&quot;: &quot;shell&quot;,
+        &quot;environment&quot;: {
+          &quot;type&quot;: &quot;container_auto&quot;,
+          &quot;skills&quot;: [
+            {
+              &quot;type&quot;: &quot;inline&quot;,
+              &quot;name&quot;: &quot;wc&quot;,
+              &quot;description&quot;: &quot;Count words in a file.&quot;,
+              &quot;source&quot;: {
+                &quot;type&quot;: &quot;base64&quot;,
+                &quot;media_type&quot;: &quot;application/zip&quot;,
+                &quot;data&quot;: b64_encoded_zip_file,
+              },
+            }
+          ],
+        },
+      }
+    ],
+    input&#x3D;&quot;Use the wc skill to count words in its own SKILL.md file.&quot;,
+)
+print(r.output_text)
+I built that example script after first having Claude Code for web use Showboat to explore the API for me and create this report. My opening prompt for the research project was:
+Run uvx showboat --help - you will use this tool later
+Fetch https://developers.openai.com/cookbook/examples/skills_in_api.md to /tmp with curl, then read it
+Use the OpenAI API key you have in your environment variables
+Use showboat to build up a detailed demo of this, replaying the examples from the documents and then trying some experiments of your own
+Tags: ai, openai, generative-ai, llms, ai-assisted-programming, skills, showboat</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GLM-5: From Vibe Coding to Agentic Engineering
+              <span class="post-metadata">(3 min | 799 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/glm-5/#atom-everything>GLM-5: From Vibe Coding to Agentic Engineering
+huge new MIT-licensed model: 754B parameters and 1.51TB on Hugging Face twice the size of GLM-4.7 which was 368B and 717GB (4.5 and 4.6 were around that size too).
+It&#x27;s interesting to see Z.ai take a position on what we should call professional software engineers building with LLMs - I&#x27;ve seen &quot;Agentic Engineering&quot; show up in a few other places recently. most notable from Andrej Karpathy and Addy Osmani.
+I ran my &quot;Generate an SVG of a pelican riding a bicycle&quot; prompt through GLM-5 via OpenRouter and got back a very good pelican on a disappointing bicycle frame:
+
+
+    
+Via Hacker News
+Tags: definitions, ai, generative-ai, llms, ai-assisted-programming, pelican-riding-a-bicycle, llm-release, vibe-coding, openrouter, ai-in-china, glm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              cysqlite - a new sqlite driver
+              <span class="post-metadata">(3 min | 953 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/cysqlite/#atom-everything>cysqlite - a new sqlite driver
+pysqlite3 - a fork of the Python standard library&#x27;s sqlite3 module that makes it much easier to run upgraded SQLite versions - since 2018.
+He&#x27;s been working on a ground-up Cython rewrite called cysqlite for almost as long, but it&#x27;s finally at a stage where it&#x27;s ready for people to try out.
+The biggest change from the sqlite3 module involves transactions. Charles explains his discomfort with the sqlite3 implementation at length - that library provides two different variants neither of which exactly match the autocommit mechanism in SQLite itself.
+I&#x27;m particularly excited about the support for custom virtual tables, a feature I&#x27;d love to see in sqlite3 itself.
+cysqlite provides a Python extension compiled from C, which means it normally wouldn&#x27;t be available in Pyodide. I set Claude Code on it and it built me cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.whl, a 688KB wheel file with a WASM build of the library that can be loaded into Pyodide like this:
+import micropip
+await micropip.install(
+    &quot;https://simonw.github.io/research/cysqlite-wasm-wheel/cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.whl&quot;
+)
+import cysqlite
+print(cysqlite.connect(&quot;:memory:&quot;).execute(
+    &quot;select sqlite_version()&quot;
+).fetchone())
+(I also learned that wheels like this have to be built for the emscripten version used by that edition of Pyodide - my experimental wheel loads in Pyodide 0.25.1 but fails in 0.27.5 with a Wheel was built with Emscripten v3.1.46 but Pyodide was built with Emscripten v3.1.58 error.)
+You can try my wheel in this new Pyodide REPL i had Claude build as a mobile-friendly alternative to Pyodide&#x27;s own hosted console.
+I also had Claude build this demo page that executes the original test suite in the browser and displays the results:
+
+
+    
+Via lobste.rs
+Tags: python, sqlite, charles-leifer, webassembly, pyodide, ai-assisted-programming, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Harness engineering: leveraging Codex in an agent-first world
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/harness-engineering>By Ryan Lopopolo, Member of the Technical Staff</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-02-10</time>
 
       <section>
