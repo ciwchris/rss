@@ -25,9 +25,140 @@
 
   <ul>
     <li>
+      <time>2026-02-18</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              A Guide to Which AI to Use in the Agentic Era
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://www.oneusefulthing.org/p/a-guide-to-which-ai-to-use-in-the>It&#x27;s not just chatbots anymore</a>
+            </div>
+            <!-- <p class="post-source">One Useful Thing</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-02-17</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Introducing Claude Sonnet 4.6
+              <span class="post-metadata">(4 min | 1149 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/17/claude-sonnet-46/#atom-everything>Introducing Claude Sonnet 4.6
+November&#x27;s Opus 4.5 while maintaining the Sonnet pricing of $3/million input and $15/million output tokens (the Opus models are $5/$25). Here&#x27;s the system card PDF.
+Sonnet 4.6 has a &quot;reliable knowledge cutoff&quot; of August 2025, compared to Opus 4.6&#x27;s May 2025 and Haiku 4.5&#x27;s February 2025. Both Opus and Sonnet default to 200,000 max input tokens but can stretch to 1 million in beta and at a higher cost.
+I just released llm-anthropic 0.24 with support for both Sonnet 4.6 and Opus 4.6. Claude Code did most of the work - the new models had a fiddly amount of extra details around adaptive thinking and no longer supporting prefixes, as described in Anthropic&#x27;s migration guide.
+Here&#x27;s what I got from:
+uvx --with llm-anthropic llm &#x27;Generate an SVG of a pelican riding a bicycle&#x27; -m claude-sonnet-4.6
+
+
+The SVG comments include:
+&lt;!-- Hat (fun accessory) --&gt;
+
+I tried a second time and also got a top hat. Sonnet 4.6 apparently loves top hats!
+For comparison, here&#x27;s the pelican Opus 4.5 drew me in November:
+
+And here&#x27;s Anthropic&#x27;s current best pelican, drawn by Opus 4.6 on February 5th:
+
+Opus 4.6 produces the best pelican beak/pouch. I do think the top hat from Sonnet 4.6 is a nice touch though.
+
+    
+Via Hacker News
+Tags: ai, generative-ai, llms, llm, anthropic, claude, llm-pricing, pelican-riding-a-bicycle, llm-release, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Rodney v0.4.0
+              <span class="post-metadata">(4 min | 1216 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/17/rodney/#atom-everything>Rodney v0.4.0
+Rodney CLI tool for browser automation attracted quite the flurry of PRs since I announced it last week. Here are the release notes for the just-released v0.4.0:
+Errors now use exit code 2, which means exit code 1 is just for for check failures. #15
+New rodney assert command for running JavaScript tests, exit code 1 if they fail. #19
+New directory-scoped sessions with --local/--global flags. #14
+New reload --hard and clear-cache commands. #17
+New rodney start --show option to make the browser window visible. Thanks, Antonio Cuni. #13
+New rodney connect PORT command to debug an already-running Chrome instance. Thanks, Peter Fraenkel. #12
+New RODNEY_HOME environment variable to support custom state directories. Thanks, Senko Rašić. #11
+New --insecure flag to ignore certificate errors. Thanks, Jakub Zgoliński. #10
+Windows support: avoid Setsid on Windows via build-tag helpers. Thanks, adm1neca. #18
+Tests now run on windows-latest and macos-latest in addition to Linux.
+I&#x27;ve been using Showboat to create demos of new features - here those are for rodney assert, rodney reload --hard, rodney exit codes, and rodney start --local.
+The rodney assert command is pretty neat: you can now Rodney to test a web app through multiple steps in a shell script that looks something like this (adapted from the README):
+#!/bin/bash
+set -euo pipefail
+
+FAIL&#x3D;0
+
+check() {
+    if ! &quot;$@&quot;; then
+        echo &quot;FAIL: $*&quot;
+        FAIL&#x3D;1
+    fi
+}
+
+rodney start
+rodney open &quot;https://example.com&quot;
+rodney waitstable
+
+# Assert elements exist
+check rodney exists &quot;h1&quot;
+
+# Assert key elements are visible
+check rodney visible &quot;h1&quot;
+check rodney visible &quot;#main-content&quot;
+
+# Assert JS expressions
+check rodney assert &#x27;document.title&#x27; &#x27;Example Domain&#x27;
+check rodney assert &#x27;document.querySelectorAll(&quot;p&quot;).length&#x27; &#x27;2&#x27;
+
+# Assert accessibility requirements
+check rodney ax-find --role navigation
+
+rodney stop
+
+if [ &quot;$FAIL&quot; -ne 0 ]; then
+    echo &quot;Some checks failed&quot;
+    exit 1
+fi
+echo &quot;All checks passed&quot;
+
+
+
+    
+Tags: browsers, projects, testing, annotated-release-notes, rodney</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              API access to billing usage reports in public preview
+              <span class="post-metadata">(4 min | 1286 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-02-17-api-access-to-billing-usage-reports-in-public-preview>Enterprise administrators can now request and download billing usage reports in .csv format via a new REST API. With this new capability, the same billing reports that are available in…
+The post API access to billing usage reports in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4544,83 +4675,6 @@ The post Strengthen your supply chain with code-to-cloud traceability and SLSA B
               <a target="_blank" href=https://openai.com/index/servicenow-powers-actionable-enterprise-ai-with-openai>ServiceNow expands access to OpenAI frontier models to power AI-driven enterprise workflows, summarization, search, and voice across the ServiceNow Platform.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enterprise-scoped budgets that exclude cost center usage in public preview
-              <span class="post-metadata">(5 min | 1363 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-01-19-enterprise-scoped-budgets-that-exclude-cost-center-usage-in-public-preview>GitHub Enterprise customers can now configure enterprise-scoped budgets that exclude cost center usage, allowing specific portions of an enterprise to incur additional usage while limiting the rest. Previously, this required…
-The post Enterprise-scoped budgets that exclude cost center usage in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Our approach to age prediction
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/our-approach-to-age-prediction>ChatGPT is rolling out age prediction to estimate if accounts are under or over 18, applying safeguards for teens and refining accuracy over time.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-01-19</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              jordanhubbard/nanolang
-              <span class="post-metadata">(3 min | 967 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jan/19/nanolang/#atom-everything>jordanhubbard/nanolang
-co-founder of FreeBSD, with serious stints at Apple and NVIDIA) just released exactly that.
-A minimal, LLM-friendly programming language with mandatory testing and unambiguous syntax.
-NanoLang transpiles to C for native performance while providing a clean, modern syntax optimized for both human readability and AI code generation.
-The syntax strikes me as an interesting mix between C, Lisp and Rust.
-I decided to see if an LLM could produce working code in it directly, given the necessary context. I started with this MEMORY.md file, which begins:
-Purpose: This file is designed specifically for Large Language Model consumption. It contains the essential knowledge needed to generate, debug, and understand NanoLang code. Pair this with spec.json for complete language coverage.
-I ran that using LLM and llm-anthropic like this:
-llm -m claude-opus-4.5 \
-  -s https://raw.githubusercontent.com/jordanhubbard/nanolang/refs/heads/main/MEMORY.md \
-  &#x27;Build me a mandelbrot fractal CLI tool in this language&#x27; 
-  &gt; /tmp/fractal.nano
-
-The resulting code... did not compile.
-I may have been too optimistic expecting a one-shot working program for a new language like this. So I ran a clone of the actual project, copied in my program and had Claude Code take a look at the failing compiler output.
-... and it worked! Claude happily grepped its way through the various examples/ and built me a working program.
-Here&#x27;s the Claude Code transcript - you can see it reading relevant examples here - and here&#x27;s the finished code plus its output.
-I&#x27;ve suspected for a while that LLMs and coding agents might significantly reduce the friction involved in launching a new language. This result reinforces my opinion.
-
-    
-Via Hacker News
-Tags: programming-languages, ai, generative-ai, llms, ai-assisted-programming, llm, coding-agents, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              glm-4.7-flash
-              <span class="post-metadata">(8 min | 2454 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/glm-4.7-flash>As the strongest model in the 30B class, GLM-4.7-Flash offers a new option for lightweight deployment that balances performance and efficiency.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
 
