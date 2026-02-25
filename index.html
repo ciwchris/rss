@@ -31,6 +31,186 @@
       <article>
           <details>
             <summary>
+              tldraw issue: Move tests to closed source repo
+              <span class="post-metadata">(3 min | 859 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/25/closed-tests/#atom-everything>tldraw issue: Move tests to closed source repo
+This has worrying implications for open source projects with commercial business models. Here&#x27;s an example of a response: tldraw, the outstanding collaborative drawing library (see previous coverage), are moving their test suite to a private repository - apparently in response to Cloudflare&#x27;s project to port Next.js to use Vite in a week using AI.
+They also filed a joke issue, now closed to Translate source code to Traditional Chinese:
+The current tldraw codebase is in English, making it easy for external AI coding agents to replicate. It is imperative that we defend our intellectual property.
+Worth noting that tldraw aren&#x27;t technically open source - their custom license requires a commercial license if you want to use it in &quot;production environments&quot;.
+
+    
+Via @steveruizok
+Tags: open-source, cloudflare, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude Code Remote Control
+              <span class="post-metadata">(4 min | 1073 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/25/claude-code-remote-control/#atom-everything>Claude Code Remote Control
+It&#x27;s a little bit janky right now. Initially when I tried it I got the error &quot;Remote Control is not enabled for your account. Contact your administrator.&quot; (but I am my administrator?) - then I logged out and back into the Claude Code terminal app and it started working:
+claude remote-control
+
+You can only run one session on your machine at a time. If you upgrade the Claude iOS app it then shows up as &quot;Remote Control Session (Mac)&quot; in the Code tab.
+It appears not to support the --dangerously-skip-permissions flag (I passed that to claude remote-control and it didn&#x27;t reject the option, but it also appeared to have no effect) - which means you have to approve every new action it takes.
+I also managed to get it to a state where every prompt I tried was met by an API 500 error.
+
+Restarting the program on the machine also causes existing sessions to start returning mysterious API errors rather than neatly explaining that the session has terminated.
+I expect they&#x27;ll iron out all of these issues relatively quickly. It&#x27;s interesting to then contrast this to solutions like OpenClaw, where one of the big selling points is the ability to control your personal device from your phone.
+Claude Code still doesn&#x27;t have a documented mechanism for running things on a schedule, which is the other killer feature of the Claw category of software.
+Update: I spoke too soon: also today Anthropic announced Schedule recurring tasks in Cowork, Claude Code&#x27;s general agent sibling. These do include an important limitation:
+Scheduled tasks only run while your computer is awake and the Claude Desktop app is open. If your computer is asleep or the app is closed when a task is scheduled to run, Cowork will skip the task, then run it automatically once your computer wakes up or you open the desktop app again.
+I really hope they&#x27;re working on a Cowork Cloud product.
+
+    
+Via @claudeai
+Tags: ai, generative-ai, applescript, llms, anthropic, claude, coding-agents, claude-code, openclaw</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot CLI is now generally available
+              <span class="post-metadata">(10 min | 2894 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-02-25-github-copilot-cli-is-now-generally-available>GitHub Copilot CLI—the terminal-native coding agent that brings the power of GitHub Copilot directly to your command line—is now generally available for all paid Copilot subscribers. Since launching in public…
+The post GitHub Copilot CLI is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              I vibe coded my dream macOS presentation app
+              <span class="post-metadata">(7 min | 2007 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Feb/25/present/#atom-everything>I gave a talk this weekend at Social Science FOO Camp in Mountain View. The event was a classic unconference format where anyone could present a talk without needing to propose it in advance. I grabbed a slot for a talk I titled &quot;The State of LLMs, February 2026 edition&quot;, subtitle &quot;It&#x27;s all changed since November!&quot;. I vibe coded a custom macOS app for the presentation the night before.
+
+
+
+I&#x27;ve written about the last twelve months of development in LLMs in December 2023, December 2024 and December 2025. I also presented The last six months in LLMs, illustrated by pelicans on bicycles at the AI Engineer World’s Fair in June 2025. This was my first time dropping the time covered to just three months, which neatly illustrates how much the space keeps accelerating and felt appropriate given the November 2025 inflection point.
+
+(I further illustrated this acceleration by wearing a Gemini 3 sweater to the talk, which I was given a couple of weeks ago and is already out-of-date thanks to Gemini 3.1.)
+
+I always like to have at least one gimmick in any talk I give, based on the STAR moment principle I learned at Stanford - include Something They&#x27;ll Always Remember to try and help your talk stand out.
+
+For this talk I had two gimmicks. I built the first part of the talk around coding agent assisted data analysis of Kākāpō breeding season (which meant I got to show off my mug), then did a quick tour of some new pelicans riding bicycles before ending with the reveal that the entire presentation had been presented using a new macOS app I had vibe coded in ~45 minutes the night before the talk.
+
+Present.app
+
+The app is called Present - literally the first name I thought of. It&#x27;s built using Swift and SwiftUI and weighs in at 355KB, or 76KB compressed. Swift apps are tiny!
+
+It may have been quick to build but the combined set of features is something I&#x27;ve wanted for years.
+
+I usually use Keynote for presentations, but sometimes I like to mix things up by presenting using a sequence of web pages. I do this by loading up a browser window with a tab for each page, then clicking through those tabs in turn while I talk.
+
+This works great, but comes with a very scary disadvantage: if the browser crashes I&#x27;ve just lost my entire deck!
+
+I always have the URLs in a notes file, so I can click back to that and launch them all manually if I need to, but it&#x27;s not something I&#x27;d like to deal with in the middle of a talk.
+
+This was my starting prompt:
+
+
+Build a SwiftUI app for giving presentations where every slide is a URL. The app starts as a window with a webview on the right and a UI on the left for adding, removing and reordering the sequence of URLs. Then you click Play in a menu and the app goes full screen and the left and right keys switch between URLs
+
+
+That produced a plan. You can see the transcript that implemented that plan here.
+
+In Present a talk is an ordered sequence of URLs, with a sidebar UI for adding, removing and reordering those URLs. That&#x27;s the entirety of the editing experience.
+
+
+
+When you select the &quot;Play&quot; option in the menu (or hit Cmd+Shift+P) the app switches to full screen mode. Left and right arrow keys navigate back and forth, and you can bump the font size up and down or scroll the page if you need to. Hit Escape when you&#x27;re done.
+
+Crucially, Present saves your URLs automatically any time you make a change. If the app crashes you can start it back up again and restore your presentation state.
+
+You can also save presentations as a .txt file (literally a newline-delimited sequence of URLs) and load them back up again later.
+
+Remote controlled via my phone
+
+Getting the initial app working took so little time that I decided to get more ambitious.
+
+It&#x27;s neat having a remote control for a presentation...
+
+So I prompted:
+
+
+Add a web server which listens on 0.0.0.0:9123 - the web server serves a single mobile-friendly page with prominent left and right buttons - clicking those buttons switches the slide left and right - there is also a button to start presentation mode or stop depending on the mode it is in.
+
+
+I have Tailscale on my laptop and my phone, which means I don&#x27;t have to worry about Wi-Fi networks blocking access between the two devices. My phone can access http://100.122.231.116:9123/ directly from anywhere in the world and control the presentation running on my laptop.
+
+It took a few more iterative prompts to get to the final interface, which looked like this:
+
+
+
+There&#x27;s a slide indicator at the top, prev and next buttons, a nice big &quot;Start&quot; button and buttons for adjusting the font size.
+
+The most complex feature is that thin bar next to the start button. That&#x27;s a touch-enabled scroll bar - you can slide your finger up and down on it to scroll the currently visible web page up and down on the screen.
+
+It&#x27;s very clunky but it works just well enough to solve the problem of a page loading with most interesting content below the fold.
+
+Learning from the code
+
+I&#x27;d already pushed the code to GitHub (with a big &quot;This app was vibe coded [...] I make no promises other than it worked on my machine!&quot; disclaimer) when I realized I should probably take a look at the code.
+
+I used this as an opportunity to document a recent pattern I&#x27;ve been using: asking the model to present a linear walkthrough of the entire codebase. Here&#x27;s the resulting Linear walkthroughs pattern in my ongoing Agentic Engineering Patterns guide, including the prompt I used.
+
+The resulting walkthrough document is genuinely useful. It turns out Claude Code decided to implement the web server for the remote control feature using socket programming without a library! Here&#x27;s the minimal HTTP parser it used for routing:
+
+
+    private func route(_ raw: String) -&gt; String {
+        let firstLine &#x3D; raw.components(separatedBy: &quot;\r\n&quot;).first ?? &quot;&quot;
+        let parts &#x3D; firstLine.split(separator: &quot; &quot;)
+        let path &#x3D; parts.count &gt;&#x3D; 2 ? String(parts[1]) : &quot;/&quot;
+
+        switch path {
+        case &quot;/next&quot;:
+            state?.goToNext()
+            return jsonResponse(&quot;ok&quot;)
+        case &quot;/prev&quot;:
+            state?.goToPrevious()
+            return jsonResponse(&quot;ok&quot;)
+
+
+Using GET requests for state changes like that opens up some fun CSRF vulnerabilities. For this particular application I don&#x27;t really care.
+
+Expanding our horizons
+
+Vibe coding stories like this are ten a penny these days. I think this one is worth sharing for a few reasons:
+
+
+Swift, a language I don&#x27;t know, was absolutely the right choice here. I wanted a full screen app that embedded web content and could be controlled over the network. Swift had everything I needed.
+
+When I finally did look at the code it was simple, straightforward and did exactly what I needed and not an inch more.
+
+This solved a real problem for me. I&#x27;ve always wanted a good way to serve a presentation as a sequence of pages, and now I have exactly that.
+
+
+This doesn&#x27;t mean native Mac developers are obsolete. I still used a whole bunch of my own accumulated technical knowledge (and the fact that I&#x27;d already installed Xcode and the like) to get this result, and someone who knew what they were doing could have built a far better solution in the same amount of time.
+
+It&#x27;s a neat illustration of how those of us with software engineering experience can expand our horizons in fun and interesting directions. I&#x27;m no longer afraid of Swift! Next time I need a small, personal macOS app I know that it&#x27;s achievable with our existing set of tools.
+Tags: macos, ai, generative-ai, llms, ai-assisted-programming, vibe-coding, swift, agentic-engineering</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Kellan Elliott-McCrea
               <span class="post-metadata">(3 min | 769 words)</span> 
             </summary>
@@ -4777,30 +4957,6 @@ Via Hacker News
 Tags: ai, llms, hugging-face, vision-llms, llm-tool-use, ai-agents, pelican-riding-a-bicycle, llm-release, ai-in-china, moonshot, parallel-agents, kimi, janky-licenses</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              kimi-k2.5
-              <span class="post-metadata">(8 min | 2466 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/kimi-k2.5>Kimi K2.5 is an open-source, native multimodal agentic model that seamlessly integrates vision and language understanding with advanced agentic capabilities, instant and thinking modes, as well as conversational and agentic paradigms.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              PVH reimagines the future of fashion with OpenAI
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/pvh-future-of-fashion>PVH Corp., parent company of Calvin Klein and Tommy Hilfiger, is adopting ChatGPT Enterprise to bring AI into fashion design, supply chain, and consumer engagement.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
