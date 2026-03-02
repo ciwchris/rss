@@ -25,6 +25,157 @@
 
   <ul>
     <li>
+      <time>2026-03-02</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Upcoming deprecation of Gemini 3 Pro and GPT-5.1 models
+              <span class="post-metadata">(5 min | 1416 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-03-02-upcoming-deprecation-of-gemini-3-pro-and-gpt-5-1-models>We will deprecate the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions): Model Deprecation date Suggested alternative Gemini 3…
+The post Upcoming deprecation of Gemini 3 Pro and GPT-5.1 models appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Network configuration changes for Copilot coding agent now in effect
+              <span class="post-metadata">(4 min | 1331 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-03-02-network-configuration-changes-for-copilot-coding-agent-now-in-effect>On February 13, 2026 we announced changes to the required network configuration for Copilot coding agent, taking effect on February 27. These changes only affect teams running Copilot coding agent…
+The post Network configuration changes for Copilot coding agent now in effect appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot metrics now includes plan mode
+              <span class="post-metadata">(5 min | 1403 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-03-02-copilot-metrics-now-includes-plan-mode>Copilot usage metrics now includes plan mode telemetry. Enterprises can track adoption and engagement trends for plan mode alongside existing Copilot metrics, enabling a more complete view of how teams…
+The post Copilot metrics now includes plan mode appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot metrics reports now return consistent usernames for Enterprise Managed Users
+              <span class="post-metadata">(4 min | 1264 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-03-02-copilot-metrics-reports-now-return-consistent-usernames-for-enterprise-managed-users>GitHub Copilot usage metrics reports now return a consistent user_login value for Enterprise Managed Users (EMU). Previously, some reports could include a suffix in user_login, which made it harder to…
+The post Copilot metrics reports now return consistent usernames for Enterprise Managed Users appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GIF optimization tool using WebAssembly and Gifsicle
+              <span class="post-metadata">(7 min | 2099 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/gif-optimization/#atom-everything>Agentic Engineering Patterns &gt;
+I like to include animated GIF demos in my online writing, often recorded using LICEcap. There&#x27;s an example in the Interactive explanations chapter.
+These GIFs can be pretty big. I&#x27;ve tried a few tools for optimizing GIF file size and my favorite is Gifsicle by Eddie Kohler. It compresses GIFs by identifying regions of frames that have not changed and storing only the differences, and can optionally reduce the GIF color palette or apply visible lossy compression for greater size reductions.
+Gifsicle is written in C and the default interface is a command line tool. I wanted a web interface so I could access it in my browser and visually preview and compare the different settings.
+I prompted Claude Code for web (from my iPhone using the Claude iPhone app) against my simonw/tools repo with the following:
+gif-optimizer.html
+
+Compile gifsicle to WASM, then build a web page that lets you open or drag-drop an animated GIF onto it and it then shows you that GIF compressed using gifsicle with a number of different settings, each preview with the size and a download button
+
+Also include controls for the gifsicle options for manual use - each preview has a “tweak these settings” link which sets those manual settings to the ones used for that preview so the user can customize them further
+
+Run “uvx rodney –help” and use that tool to tray your work - use this GIF for testing https://static.simonwillison.net/static/2026/animated-word-cloud-demo.gif
+Here&#x27;s what it built, plus an animated GIF demo that I optimized using the tool:
+
+Let&#x27;s address that prompt piece by piece.
+gif-optimizer.html
+The first line simply tells it the name of the file I want to create. Just a filename is enough here - I know that when Claude runs &quot;ls&quot; on the repo it will understand that every file is a different tool.
+My simonw/tools repo currently lacks a CLAUDE.md or AGENTS.md file. I&#x27;ve found that agents pick up enough of the gist of the repo just from scanning the existing file tree and looking at relevant code in existing files.
+Compile gifsicle to WASM, then build a web page that lets you open or drag-drop an animated GIF onto it and it then shows you that GIF compressed using gifsicle with a number of different settings, each preview with the size and a download button
+I&#x27;m making a bunch of assumptions here about Claude&#x27;s existing knowledge, all of which paid off.
+Gifsicle is nearly 30 years old now and is a widely used piece of software - I was confident that referring to it by name would be enough for Claude to find the code.
+&quot;Compile gifsicle to WASM&quot; is doing a lot of work here.
+WASM is short for WebAssembly, the technology that lets browsers run compiled code safely in a sandbox.
+Compiling a project like Gifsicle to WASM is not a trivial operation, involving a complex toolchain usually involving the Emscripten project. It often requires a lot of trial and error to get everything working.
+Coding agents are fantastic at trial and error! They can often brute force their way to a solution where I would have given up after the fifth inscrutable compiler error.
+I&#x27;ve seen Claude Code figure out WASM builds many times before, so I was quite confident this would work.
+&quot;then build a web page that lets you open or drag-drop an animated GIF onto it&quot; describes a pattern I&#x27;ve used in a lot of my other tools.
+HTML file uploads work fine for selecting files, but a nicer UI, especially on desktop, is to allow users to drag and drop files into a prominent drop zone on a page.
+Setting this up involves a bit of JavaScript to process the events and some CSS for the drop zone. It&#x27;s not complicated but it&#x27;s enough extra work that I might not normally add it myself. With a prompt it&#x27;s almost free.
+Here&#x27;s the resulting UI - which was influenced by Claude taking a peek at my existing image-resize-quality tool:
+
+I didn&#x27;t ask for the GIF URL input and I&#x27;m not keen on it, because it only works against URLs to GIFs that are served with open CORS headers. I&#x27;ll probably remove that in a future update.
+&quot;then shows you that GIF compressed using gifsicle with a number of different settings, each preview with the size and a download button&quot; describes the key feature of the application.
+I didn&#x27;t bother defining the collection of settings I wanted - in my experience Claude has good enough taste at picking those for me, and we can always change them if its first guesses don&#x27;t work.
+Showing the size is important since this is all about optimizing for size.
+I know from past experience that asking for a &quot;download button&quot; gets a button with the right HTML and JavaScript mechanisms set up such that clicking it provides a file save dialog, which is a nice convenience over needing to right-click-save-as.
+Also include controls for the gifsicle options for manual use - each preview has a “tweak these settings” link which sets those manual settings to the ones used for that preview so the user can customize them further
+This is a pretty clumsy prompt - I was typing it in my phone after all - but it expressed my intention well enough for Claude to build what I wanted. 
+Here&#x27;s what that looks like in the resulting tool, this screenshot showing the mobile version. Each image has a &quot;Tweak these settings&quot; button which, when clicked, updates this set of manual settings and sliders:
+
+Run “uvx rodney --help” and use that tool to tray your work - use this GIF for testing https://static.simonwillison.net/static/2026/animated-word-cloud-demo.gif
+Coding agents work so much better if you make sure they have the ability to test their code while they are working.
+There are many different ways to test a web interface - Playwright and Selenium and agent-browser are three solid options.
+Rodney is a browser automation tool I built myself, which is quick to install and has --help output that&#x27;s designed to teach an agent everything it needs to know to use the tool.
+This worked great - in the session transcript you can see Claude using Rodney and fixing some minor bugs that it spotted, for example:
+The CSS display: none is winning over the inline style reset. I need to set display: &#x27;block&#x27; explicitly.
+The follow-up prompts
+When I&#x27;m working with Claude Code I usually keep an eye on what it&#x27;s doing so I can redirect it while it&#x27;s still in flight. I also often come up with new ideas while it&#x27;s working which I then inject into the queue.
+Include the build script and diff against original gifsicle code in the commit in an appropriate subdirectory
+The build script should clone the gifsicle repo to /tmp and switch to a known commit before applying the diff - so no copy of gifsicle in the commit but all the scripts needed to build the wqsm
+I added this when I noticed it was putting a lot of effort into figuring out how to get Gifsicle working with WebAssembly, including patching the original source code. Here&#x27;s the patch and the build script it added to the repo.
+I knew there was a pattern in that repo already for where supporting files lived but I couldn&#x27;t remember what that pattern was. Saying &quot;in an appropriate subdirectory&quot; was enough for Claude to figure out where to put it - it found and used the existing lib/ directory.
+You should include the wasm bundle
+This probably wasn&#x27;t necessary, but I wanted to make absolutely sure that the compiled WASM file (which turned out to be 233KB) was committed to the repo. I serve simonw/tools via GitHub Pages at tools.simonwillison.net and I wanted it to work without needing to be built locally.
+Make sure the HTML page credits gifsicle and links to the repo
+This is just polite! I often build WebAssembly wrappers around other people&#x27;s open source projects and I like to make sure they get credit in the resulting page.
+Claude added this to the footer of the tool:
+Built with gifsicle by Eddie Kohler, compiled to WebAssembly. gifsicle is released under the GNU General Public License, version 2.
+Tags: claude, ai, claude-code, llms, prompt-engineering, webassembly, coding-agents, tools, generative-ai, gif, agentic-engineering</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              February sponsors-only newsletter
+              <span class="post-metadata">(3 min | 814 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/2/february-newsletter/#atom-everything>I just sent the February edition of my sponsors-only monthly newsletter. If you are a sponsor (or if you start a sponsorship now) you can access it here. In this month&#x27;s newsletter:
+More OpenClaw, and Claws in general
+I started a not-quite-a-book about Agentic Engineering
+StrongDM, Showboat and Rodney
+Kākāpō breeding season
+Model releases
+What I&#x27;m using, February 2026 edition
+Here&#x27;s a copy of the January newsletter as a preview of what you&#x27;ll get. Pay $10/month to stay a month ahead of the free copy!
+I use Claude as a proofreader for spelling and grammar via this prompt which also asks it to &quot;Spot any logical errors or factual mistakes&quot;. I&#x27;m delighted to report that Claude Opus 4.6 called me out on this one:
+
+Tags: newsletter, kakapo, claude</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-03-01</time>
 
       <section>
