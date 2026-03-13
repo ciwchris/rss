@@ -25,6 +25,58 @@
 
   <ul>
     <li>
+      <time>2026-03-13</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Updates to GitHub Copilot for students
+              <span class="post-metadata">(6 min | 1761 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-03-13-updates-to-github-copilot-for-students>Starting today, students with GitHub Education benefits are now on the new GitHub Copilot Student plan. As part of this transition, we’ve updated the available model lineup. The new GitHub…
+The post Updates to GitHub Copilot for students appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Shopify/liquid: Performance: 53% faster parse+render, 61% fewer allocations
+              <span class="post-metadata">(4 min | 1135 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/13/liquid/#atom-everything>Shopify/liquid: Performance: 53% faster parse+render, 61% fewer allocations
+back in 2005.
+Tobi found dozens of new performance micro-optimizations using a variant of autoresearch, Andrej Karpathy&#x27;s new system for having a coding agent run hundreds of semi-autonomous experiments to find new effective techniques for training nanochat.
+Tobi&#x27;s implementation started two days ago with this autoresearch.md prompt file and an autoresearch.sh script for the agent to run to execute the test suite and report on benchmark scores.
+The PR now lists 93 commits from around 120 automated experiments. The PR description lists what worked in detail - some examples:
+Replaced StringScanner tokenizer with String#byteindex. Single-byte byteindex searching is ~40% faster than regex-based skip_until. This alone reduced parse time by ~12%.
+Pure-byte parse_tag_token. Eliminated the costly StringScanner#string&#x3D; reset that was called for every {% %} token (878 times). Manual byte scanning for tag name + markup extraction is faster than resetting and re-scanning via StringScanner. [...]
+Cached small integer to_s. Pre-computed frozen strings for 0-999 avoid 267 Integer#to_s allocations per render.
+This all added up to a 53% improvement on benchmarks - truly impressive for a codebase that&#x27;s been tweaked by hundreds of contributors over 20 years.
+I think this illustrates a number of interesting ideas:
+Having a robust test suite - in this case 974 unit tests - is a massive unlock for working with coding agents. This kind of research effort would not be possible without first having a tried and tested suite of tests.
+The autoresearch pattern - where an agent brainstorms a multitude of potential improvements and then experiments with them one at a time - is really effective.
+If you provide an agent with a benchmarking script &quot;make it faster&quot; becomes an actionable goal.
+CEOs can code again! Tobi has always been more hands-on than most, but this is a much more significant contribution than anyone would expect from the leader of a company with 7,500+ employees. I&#x27;ve seen this pattern play out a lot over the past few months: coding agents make it feasible for people in high-interruption roles to productively work with code again.
+Here&#x27;s Tobi&#x27;s GitHub contribution graph for the past year, showing a significant uptick following that November 2025 inflection point when coding agents got really good.
+
+He used Pi as the coding agent and released a new pi-autoresearch plugin in collaboration with David Cortés, which maintains state in an autoresearch.jsonl file like this one.
+
+    
+Via @tobi
+Tags: django, performance, rails, ruby, ai, andrej-karpathy, generative-ai, llms, ai-assisted-programming, coding-agents, agentic-engineering, november-2025-inflection, tobias-lutke</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-03-12</time>
 
       <section>
@@ -4674,152 +4726,6 @@ Tags: language</a>
               <a target="_blank" href=https://ollama.com/library/minimax-m2.5>MiniMax-M2.5 is a state-of-the-art large language model designed for real-world productivity and coding tasks.</a>
             </div>
             <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-02-11</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Andrew Deck for Niemen Lab
-              <span class="post-metadata">(3 min | 778 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/manosphere-report/#atom-everything>An AI-generated report, delivered directly to the email inboxes of journalists, was an essential tool in the Times’ coverage. It was also one of the first signals that conservative media was turning against the administration [...]
-Built in-house and known internally as the “Manosphere Report,” the tool uses large language models (LLMs) to transcribe and summarize new episodes of dozens of podcasts.
-“The Manosphere Report gave us a really fast and clear signal that this was not going over well with that segment of the President’s base,” said Seward. “There was a direct link between seeing that and then diving in to actually cover it.”
-
-— Andrew Deck for Niemen Lab, How The New York Times uses a custom AI tool to track the “manosphere”
-Tags: generative-ai, new-york-times, journalism, ai, data-journalism, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Skills in OpenAI API
-              <span class="post-metadata">(3 min | 881 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/skills-in-openai-api/#atom-everything>Skills in OpenAI API
-shell tool. You can zip skills up and upload them first, but I think an even neater interface is the ability to send skills with the JSON request as inline base64-encoded zip data, as seen in this script:
-r &#x3D; OpenAI().responses.create(
-    model&#x3D;&quot;gpt-5.2&quot;,
-    tools&#x3D;[
-      {
-        &quot;type&quot;: &quot;shell&quot;,
-        &quot;environment&quot;: {
-          &quot;type&quot;: &quot;container_auto&quot;,
-          &quot;skills&quot;: [
-            {
-              &quot;type&quot;: &quot;inline&quot;,
-              &quot;name&quot;: &quot;wc&quot;,
-              &quot;description&quot;: &quot;Count words in a file.&quot;,
-              &quot;source&quot;: {
-                &quot;type&quot;: &quot;base64&quot;,
-                &quot;media_type&quot;: &quot;application/zip&quot;,
-                &quot;data&quot;: b64_encoded_zip_file,
-              },
-            }
-          ],
-        },
-      }
-    ],
-    input&#x3D;&quot;Use the wc skill to count words in its own SKILL.md file.&quot;,
-)
-print(r.output_text)
-I built that example script after first having Claude Code for web use Showboat to explore the API for me and create this report. My opening prompt for the research project was:
-Run uvx showboat --help - you will use this tool later
-Fetch https://developers.openai.com/cookbook/examples/skills_in_api.md to /tmp with curl, then read it
-Use the OpenAI API key you have in your environment variables
-Use showboat to build up a detailed demo of this, replaying the examples from the documents and then trying some experiments of your own
-Tags: ai, openai, generative-ai, llms, ai-assisted-programming, skills, showboat</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GLM-5: From Vibe Coding to Agentic Engineering
-              <span class="post-metadata">(3 min | 799 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/glm-5/#atom-everything>GLM-5: From Vibe Coding to Agentic Engineering
-huge new MIT-licensed model: 754B parameters and 1.51TB on Hugging Face twice the size of GLM-4.7 which was 368B and 717GB (4.5 and 4.6 were around that size too).
-It&#x27;s interesting to see Z.ai take a position on what we should call professional software engineers building with LLMs - I&#x27;ve seen &quot;Agentic Engineering&quot; show up in a few other places recently. most notable from Andrej Karpathy and Addy Osmani.
-I ran my &quot;Generate an SVG of a pelican riding a bicycle&quot; prompt through GLM-5 via OpenRouter and got back a very good pelican on a disappointing bicycle frame:
-
-
-    
-Via Hacker News
-Tags: definitions, ai, generative-ai, llms, ai-assisted-programming, pelican-riding-a-bicycle, llm-release, vibe-coding, openrouter, ai-in-china, glm</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              glm-5
-              <span class="post-metadata">(10 min | 3124 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/glm-5>A strong reasoning and agentic model from Z.ai with 744B total parameters (40B active), built for complex systems engineering and long-horizon tasks.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Mobile: Model picker for Copilot coding agent
-              <span class="post-metadata">(5 min | 1366 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-11-github-mobile-model-picker-for-copilot-coding-agent>Copilot Pro and Pro+ subscribers can now choose a model when starting a Copilot coding agent session in the GitHub Mobile app. You can quickly match the model to the…
-The post GitHub Mobile: Model picker for Copilot coding agent appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              cysqlite - a new sqlite driver
-              <span class="post-metadata">(3 min | 953 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/11/cysqlite/#atom-everything>cysqlite - a new sqlite driver
-pysqlite3 - a fork of the Python standard library&#x27;s sqlite3 module that makes it much easier to run upgraded SQLite versions - since 2018.
-He&#x27;s been working on a ground-up Cython rewrite called cysqlite for almost as long, but it&#x27;s finally at a stage where it&#x27;s ready for people to try out.
-The biggest change from the sqlite3 module involves transactions. Charles explains his discomfort with the sqlite3 implementation at length - that library provides two different variants neither of which exactly match the autocommit mechanism in SQLite itself.
-I&#x27;m particularly excited about the support for custom virtual tables, a feature I&#x27;d love to see in sqlite3 itself.
-cysqlite provides a Python extension compiled from C, which means it normally wouldn&#x27;t be available in Pyodide. I set Claude Code on it and it built me cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.whl, a 688KB wheel file with a WASM build of the library that can be loaded into Pyodide like this:
-import micropip
-await micropip.install(
-    &quot;https://simonw.github.io/research/cysqlite-wasm-wheel/cysqlite-0.1.4-cp311-cp311-emscripten_3_1_46_wasm32.whl&quot;
-)
-import cysqlite
-print(cysqlite.connect(&quot;:memory:&quot;).execute(
-    &quot;select sqlite_version()&quot;
-).fetchone())
-(I also learned that wheels like this have to be built for the emscripten version used by that edition of Pyodide - my experimental wheel loads in Pyodide 0.25.1 but fails in 0.27.5 with a Wheel was built with Emscripten v3.1.46 but Pyodide was built with Emscripten v3.1.58 error.)
-You can try my wheel in this new Pyodide REPL i had Claude build as a mobile-friendly alternative to Pyodide&#x27;s own hosted console.
-I also had Claude build this demo page that executes the original test suite in the browser and displays the results:
-
-
-    
-Via lobste.rs
-Tags: python, sqlite, charles-leifer, webassembly, pyodide, ai-assisted-programming, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
