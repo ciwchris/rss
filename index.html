@@ -25,6 +25,138 @@
 
   <ul>
     <li>
+      <time>2026-03-16</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              How coding agents work
+              <span class="post-metadata">(6 min | 1915 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/how-coding-agents-work/#atom-everything>Agentic Engineering Patterns &gt;
+As with any tool, understanding how coding agents work under the hood can help you make better decisions about how to apply them.
+A coding agent is a piece of software that acts as a harness for an LLM, extending that LLM with additional capabilities that are powered by invisible prompts and implemented as callable tools.
+Large Language Models
+At the heart of any coding agent is a Large Language Model, or LLM. These have names like GPT-5.4 or Claude Opus 4.6 or Gemini 3.1 Pro or Qwen3.5-35B-A3B.
+An LLM is a machine learning model that can complete a sentence of text. Give the model the phrase &quot;the cat sat on the &quot; and it will (almost certainly) suggest &quot;mat&quot; as the next word in the sentence.
+As these models get larger and train on increasing amounts of data, they can complete more complex sentences - like &quot;a python function to download a file from a URL is def download_file(url): &quot;.
+LLMs don&#x27;t actually work directly with words - they work with tokens. A sequence of text is converted into a sequence of integer tokens, so &quot;the cat sat on the &quot; becomes [3086, 9059, 10139, 402, 290, 220]. This is worth understanding because LLM providers charge based on the number of tokens processed, and are limited in how many tokens they can consider at a time.
+You can experiment with the OpenAI tokenizer to see how this works at platform.openai.com/tokenizer.
+The input to an LLM is called the prompt. The text returned by an LLM is called the completion, or sometimes the response.
+Many models today are multimodal, which means they can accept more than just text as input.  Vision LLMs (vLLMs) can accept images as part of the input, which means you can feed them sketches or photos or screenshots. A common misconception is that these are run through a separate process for OCR or image analysis, but these inputs are actually turned into yet more token integers which are processed in the same way as text.
+Chat templated prompts
+The first LLMs worked as completion engines - users were expected to provide a prompt which could then be completed by the model, such as the two examples shown above.
+This wasn&#x27;t particularly user-friendly so models mostly switched to using chat templated prompts instead, which represent communication with the model as a simulated conversation.
+This is actually just a form of completion prompt with a special format that looks something like this.
+user: write a python function to download a file from a URL
+assistant:
+
+
+The natural completion for this prompt is for the assistant (represented by the LLM) to answer the user&#x27;s question with some Python code.
+LLMs are stateless: every time they execute a prompt they start from the same blank slate. 
+To maintain the simulation of a conversation, the software that talks to the model needs to maintain its own state and replay the entire existing conversation every time the user enters a new chat prompt:
+user: write a python function to download a file from a URL
+assistant: def download_url(url):
+    return urllib.request.urlopen(url).read()
+user: use the requests library instead
+assistant:
+
+
+Since providers charge for both input and output tokens, this means that as a conversation gets longer, each prompt becomes more expensive since the number of input tokens grows every time.
+Token caching
+Most model providers offset this somewhat through a cheaper rate for cached input tokens - common token prefixes that have been processed within a short time period can be charged at a lower rate as the underlying infrastructure can cache and then reuse many of the expensive calculations used to process that input.
+Coding agents are designed with this optimization in mind - they avoid modifying earlier conversation content to ensure the cache is used as efficiently as possible.
+Calling tools
+The defining feature of an LLM agent is that agents can call tools. But what is a tool?
+A tool is a function that the agent harness makes available to the LLM.
+At the level of the prompt itself, that looks something like this:
+system: If you need to access the weather, end your turn with &lt;tool&gt;get_weather(city_name)&lt;/tool&gt;
+user: what&#x27;s the weather in San Francisco?
+assistant:
+
+
+Here the assistant might respond with the following text:
+&lt;tool&gt;get_weather(&quot;San Francisco&quot;)&lt;/tool&gt;
+
+
+The model harness software then extracts that function call request from the response - probably with a regular expression - and executes the tool.
+It then returns the result to the model, with a constructed prompt that looks something like this:
+system: If you need to access the weather, end your turn with &lt;tool&gt;get_weather(city_name)&lt;/tool&gt;
+user: what&#x27;s the weather in San Francisco?
+assistant: &lt;tool&gt;get_weather(&quot;San Francisco&quot;)&lt;/tool&gt;
+user: &lt;tool-result&gt;61°, Partly cloudy&lt;/tool-result&gt;
+assistant:
+
+
+The LLM can now use that tool result to help generate an answer to the user&#x27;s question.
+Most coding agents define a dozen or more tools for the agent to call. The most powerful of these allow for code execution - a Bash() tool for executing terminal commands, or a Python() tool for running Python code, for example.
+The system prompt
+In the previous example I included an initial message marked &quot;system&quot; which informed the LLM about the available tool and how to call it.
+Coding agents usually start every conversation with a system prompt like this, which is not shown to the user but provides instructions telling the model how it should behave.
+These system prompts can be hundreds of lines long. Here&#x27;s the system prompt for OpenAI Codex as-of March 2026, which is a useful clear example of the kind of instructions that make these coding agents work.
+Reasoning
+One of the big new advances in 2025 was the introduction of reasoning to the frontier model families.
+Reasoning, sometimes presented as thinking in the UI, is when a model spends additional time generating text that talks through the problem and its potential solutions before presenting a reply to the user.
+This can look similar to a person thinking out loud, and has a similar effect. Crucially it allows models to spend more time (and more tokens) working on a problem in order to hopefully get a better result.
+Reasoning is particularly useful for debugging issues in code as it gives the model an opportunity to navigate more complex code paths, mixing in tool calls and using the reasoning phase to follow function calls back to the potential source of an issue.
+Many coding agents include options for dialing up or down the reasoning effort level, encouraging models to spend more time chewing on harder problems.
+LLM + system prompt + tools in a loop
+Believe it or not, that&#x27;s most of what it takes to build a coding agent!
+If you want to develop a deeper understanding of how these things work, a useful exercise is to try building your own agent from scratch. A simple tool loop can be achieved with a few dozen lines of code on top of an existing LLM API.
+A good tool loop is a great deal more work than that, but the fundamental mechanics are surprisingly straightforward.
+Tags: coding-agents, generative-ai, agentic-engineering, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2026-03-15</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              What is agentic engineering?
+              <span class="post-metadata">(4 min | 1347 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/what-is-agentic-engineering/#atom-everything>Agentic Engineering Patterns &gt;
+I use the term agentic engineering to describe the practice of developing software with the assistance of coding agents.
+What are coding agents? They&#x27;re agents that can both write and execute code. Popular examples include Claude Code, OpenAI Codex, and Gemini CLI.
+What&#x27;s an agent? Clearly defining that term is a challenge that has frustrated AI researchers since at least the 1990s but the definition I&#x27;ve come to accept, at least in the field of Large Language Models (LLMs) like GPT-5 and Gemini and Claude, is this one:
+Agents run tools in a loop to achieve a goal
+The &quot;agent&quot; is software that calls an LLM with your prompt and passes it a set of tool definitions, then calls any tools that the LLM requests and feeds the results back into the LLM.
+For coding agents, those tools include one that can execute code.
+You prompt the coding agent to define a goal. The agent then generates and executes code in a loop until that goal has been met.
+Code execution is the defining capability that makes agentic engineering possible. Without the ability to directly run the code, anything output by an LLM is of limited value. With code execution, these agents can start iterating towards software that demonstrably works.
+Agentic engineering
+Now that we have software that can write working code, what is there left for us humans to do?
+The answer is so much stuff.
+Writing code has never been the sole activity of a software engineer. The craft has always been figuring out what code to write. Any given software problem has dozens of potential solutions, each with their own tradeoffs. Our job is to navigate those options and find the ones that are the best fit for our unique set of circumstances and requirements.
+Getting great results out of coding agents is a deep subject in its own right, especially now as the field continues to evolve at a bewildering rate.
+We need to provide our coding agents with the tools they need to solve our problems, specify those problems in the right level of detail, and verify and iterate on the results until we are confident they address our problems in a robust and credible way.
+LLMs don&#x27;t learn from their past mistakes, but coding agents can, provided we deliberately update our instructions and tool harnesses to account for what we learn along the way.
+Used effectively, coding agents can help us be much more ambitious with the projects we take on. Agentic engineering should help us produce more, better quality code that solves more impactful problems.
+Isn&#x27;t this just vibe coding?
+The term &quot;vibe coding&quot; was coined by Andrej Karpathy in February 2025 - coincidentally just three weeks prior to the original release of Claude Code - to describe prompting LLMs to write code while you &quot;forget that the code even exists&quot;.
+Some people extend that definition to cover any time an LLM is used to produce code at all, but I think that&#x27;s a mistake. Vibe coding is more useful in its original definition - we need a term to describe unreviewed, prototype-quality LLM-generated code that distinguishes it from code that the author has brought up to a production ready standard.
+About this guide
+Just like the field it attempts to cover, Agentic Engineering Patterns is very much a work in progress. My goal is to identify and describe patterns for working with these tools that demonstrably get results, and that are unlikely to become outdated as the tools advance.
+I&#x27;ll continue adding more chapters as new techniques emerge. No chapter should be considered finished. I&#x27;ll be updating existing chapters as our understanding of these patterns evolves.
+Tags: coding-agents, agent-definitions, generative-ai, agentic-engineering, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-03-14</time>
 
       <section>
@@ -4761,28 +4893,6 @@ The feature I&#x27;m most excited about in 2026 is Cross-document View Transitio
 As a keen WebAssembly tinkerer I&#x27;m also intrigued by this one:
 JavaScript Promise Integration for Wasm allows WebAssembly to asynchronously &#x27;suspend&#x27;, waiting on the result of an external promise. This simplifies the compilation of languages like C/C++ which expect APIs to run synchronously.
 Tags: browsers, css, javascript, web-standards, webassembly, jake-archibald</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-02-14</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Boris Cherny
-              <span class="post-metadata">(2 min | 693 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/14/boris/#atom-everything>Someone has to prompt the Claudes, talk to customers, coordinate with other teams, decide what to build next. Engineering is changing and great engineers are more important than ever.
-
-— Boris Cherny, Claude Code creator, on why Anthropic are still hiring developers
-Tags: careers, anthropic, ai, claude-code, llms, coding-agents, ai-assisted-programming, generative-ai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
