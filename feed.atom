@@ -2,10 +2,176 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-03-16T21:28:43.410Z</updated>
+    <updated>2026-03-17T14:48:13.130Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Code Quality permissions removed from security manager role]]></title>
+        <id>https://github.blog/changelog/2026-03-17-code-quality-permissions-removed-from-security-manager-role</id>
+        <link href="https://github.blog/changelog/2026-03-17-code-quality-permissions-removed-from-security-manager-role"/>
+        <updated>2026-03-17T12:44:48.000Z</updated>
+        <summary type="html"><![CDATA[The security manager role can no longer enable or disable GitHub Code Quality for a repository unless they are also an administrator for that repository. Only repository administrators can enable…
+The post Code Quality permissions removed from security manager role appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Subagents]]></title>
+        <id>https://simonwillison.net/guides/agentic-engineering-patterns/subagents/#atom-everything</id>
+        <link href="https://simonwillison.net/guides/agentic-engineering-patterns/subagents/#atom-everything"/>
+        <updated>2026-03-17T12:32:28.000Z</updated>
+        <summary type="html"><![CDATA[<p><em><a href="https://simonwillison.net/guides/agentic-engineering-patterns/">Agentic Engineering Patterns</a> &gt;</em></p>
+    <p>LLMs are restricted by their <strong>context limit</strong> - how many tokens they can fit in their working memory at any given time. These values have not increased much over the past two years even as the LLMs themselves have seen dramatic improvements in their abilities - they generally top out at around 1,000,000, and benchmarks frequently report better quality results below 200,000.</p>
+<p>Carefully managing the context such that it fits within those limits is critical to getting great results out of a model.</p>
+<p><strong>Subagents</strong> provide a simple but effective way to handle larger tasks without burning through too much of the coding agent’s valuable top-level context.</p>
+<p>When a coding agent uses a subagent it effectively dispatches a fresh copy of itself to achieve a specified goal, with a new context window that starts with a fresh prompt.</p>
+<h2 id="claude-codes-explore-subagent">Claude Code’s Explore subagent</h2>
+<p>Claude Code uses subagents extensively as part of its standard way of working. Let's use that as an illustrative example.</p>
+<p>Any time you start a new task against an existing repo Claude Code first needs to explore that repo to figure out its general shape and find relevant information needed to achieve that task.</p>
+<p>It does this by constructing a prompt and dispatching a subagent to perform that exploration and return a description of what it finds.</p>
+<p>I kicked off a Claude Code session with a screenshot of <a href="https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/changes/">a page from my guide</a> and this prompt:</p>
+<blockquote>
+<p>Make the chapter diffs also show which characters have changed in this diff view with a darker color of red or green for the individually changed segments of text within the line</p>
+</blockquote>
+<p>Here's <a href="https://gisthost.github.io/?effbdc564939b88fe5c6299387e217da/index.html">the transcript</a> of that session.</p>
+<p>Claude Code started by running an “Explore” subagent with the following starter prompt:</p>
+<blockquote>
+<p>Find the code that implements the diff view for "chapters" in this Django blog. I need to find:</p>
+<ol>
+<li>Templates that render diffs (look for diff-related HTML/CSS with red/green backgrounds)</li>
+<li>Python code that generates diffs (look for difflib usage or similar)</li>
+<li>Any JavaScript related to diff rendering</li>
+<li>CSS styles for the diff view (red/green line backgrounds)</li>
+</ol>
+<p>Search thoroughly - check templates/, static/, blog/ directories. Look for keywords like "diff", "chapter", "revision", "history", "compare".</p>
+</blockquote>
+<p>Subagents work similar to any other tool call: the parent agent dispatches them just as they would any other tool and waits for the response. It's interesting to see models prompt themselves in this way - they generally have good taste in prompting strategies.</p>
+<p>The Explore subagent churned away for a few seconds and returned a response that started like this:</p>
+<blockquote>
+<p>Perfect! Now let me create a comprehensive summary with all the findings:</p>
+<h3 id="summary-chapter-diff-view-implementation">Summary: Chapter Diff View Implementation</h3>
+<p>I found the complete implementation of the diff view for chapters in this Django blog. Here are the key components:</p>
+<h4 id="1-python-code-diff-generation-homeusersimonwillisonblogguidesviewspy-lines-139-202">1. <strong>Python Code - Diff Generation</strong> (<code>/home/user/simonwillisonblog/guides/views.py</code>, lines 139-202)</h4>
+<p>The <code>chapter_changes()</code> view function uses Python's built-in <code>difflib.unified_diff()</code> to generate diffs: […]</p>
+</blockquote>
+<p>The full subagent response included all of the details the parent agent needed in order to start editing the code to address my original request.</p>
+<h2 id="parallel-subagents">Parallel subagents</h2>
+<p>This Explore subagent is the simplest example of how subagents can work, with the parent agent pausing while the subagent runs. The principle advantage of this kind of subagent is that it can work with a fresh context in a way that avoids spending tokens from the parent’s available limit.</p>
+<p>Subagents can also provide a significant performance boost by having the parent agent run multiple subagents at the same time, potentially also using faster and cheaper models such as Claude Haiku to accelerate those tasks.</p>
+<p>Coding agents that support subagents can use them based on your instructions. Try prompts like this:</p>
+<p><div class="codehilite"><pre><span></span><code>Use subagents to find and update all of the templates that are affected by this change.
+</code></pre></div>
+For tasks that involve editing several files - and where those files are not dependent on each other - this can offer a significant speed boost.</p>
+<h2 id="specialist-subagents">Specialist subagents</h2>
+<p>Some coding agents allow subagents to run with further customizations, often in the form of a custom system prompt or custom tools or both, which allow those subagents to take on a different role.</p>
+<p>These roles can cover a variety of useful specialties:</p>
+<ul>
+<li>A <strong>code reviewer</strong> agent can review code and identify bugs, feature gaps or weaknesses in the design.</li>
+<li>A <strong>test runner</strong> agent can run the test. This is particularly worthwhile if your test suite is large and verbose, as the subagent can hide the full test output from the main coding agent and report back with just details of any failures.</li>
+<li>A <strong>debugger</strong> agent can specialize in debugging problems, spending its token allowance reasoning though the codebase and running snippets of code to help isolate steps to reproduce and determine the root cause of a bug.</li>
+</ul>
+<p>While it can be tempting to go overboard breaking up tasks across dozens of different specialist subagents, it's important to remember that the main value of subagents is in preserving that valuable root context and managing token-heavy operations. Your root coding agent is perfectly capable of debugging or reviewing its own output provided it has the tokens to spare.</p>
+<h2 id="official-documentation">Official documentation</h2>
+<p>Several popular coding agents support subagents, each with their own documentation on how to use them:</p>
+<ul>
+<li><a href="https://developers.openai.com/codex/subagents/">OpenAI Codex subagents</a></li>
+<li><a href="https://code.claude.com/docs/en/sub-agents">Claude subagents</a></li>
+<li><a href="https://geminicli.com/docs/core/subagents/">Gemini CLI subagents</a></li>
+<li><a href="https://docs.mistral.ai/mistral-vibe/agents-skills#agent-selection">Mistral Vibe subagents</a></li>
+<li><a href="https://opencode.ai/docs/agents/">OpenCode agents</a></li>
+<li><a href="https://code.visualstudio.com/docs/copilot/agents/subagents">Subagents in Visual Studio Code</a></li>
+<li><a href="https://cursor.com/docs/subagents">Cursor Subagents</a></li>
+</ul>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/parallel-agents">parallel-agents</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub Code Quality: Batch apply quality suggestions on pull requests]]></title>
+        <id>https://github.blog/changelog/2026-03-17-github-code-quality-batch-apply-quality-suggestions-on-pull-requests</id>
+        <link href="https://github.blog/changelog/2026-03-17-github-code-quality-batch-apply-quality-suggestions-on-pull-requests"/>
+        <updated>2026-03-17T10:01:32.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Code Quality findings on pull requests are now easier to address with bulk actions. You can now apply fixes for Code Quality findings in the Files changed tab by…
+The post GitHub Code Quality: Batch apply quality suggestions on pull requests appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing Mistral Small 4]]></title>
+        <id>https://simonwillison.net/2026/Mar/16/mistral-small-4/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/16/mistral-small-4/#atom-everything"/>
+        <updated>2026-03-16T23:41:17.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/news/mistral-small-4">Introducing Mistral Small 4</a></strong></p>
+Big new release from Mistral today (despite the name) - a new Apache 2 licensed 119B parameter (Mixture-of-Experts, 6B active) model which they describe like this:</p>
+<blockquote>
+<p>Mistral Small 4 is the first Mistral model to unify the capabilities of our flagship models, Magistral for reasoning, Pixtral for multimodal, and Devstral for agentic coding, into a single, versatile model.</p>
+</blockquote>
+<p>It supports <code>reasoning_effort="none"</code> or <code>reasoning_effort="high"</code>, with the latter providing "equivalent verbosity to previous Magistral models". </p>
+<p>The new model is <a href="https://huggingface.co/mistralai/Mistral-Small-4-119B-2603/tree/main">242GB on Hugging Face</a>.</p>
+<p>I <a href="https://gist.github.com/simonw/3dec228577559f15f26204a3cc550583">tried it out</a> via the Mistral API using <a href="https://github.com/simonw/llm-mistral">llm-mistral</a>:</p>
+<pre><code>llm install llm-mistral
+llm mistral refresh
+llm -m mistral/mistral-small-2603 "Generate an SVG of a pelican riding a bicycle"
+</code></pre>
+<p><img alt="The bicycle is upside down and mangled and the pelican is a series of grey curves with a triangular beak." src="https://static.simonwillison.net/static/2026/mistral-small-4.png" /></p>
+<p>I couldn't find a way to set the reasoning effort in their <a href="https://docs.mistral.ai/api/endpoint/chat#operation-chat_completion_v1_chat_completions_post">API documentation</a>, so hopefully that's a feature which will land soon.</p>
+<p>Also from Mistral today and fitting their -stral naming convention is <a href="https://mistral.ai/news/leanstral">Leanstral</a>, an open weight model that is specifically tuned to help output the <a href="https://lean-lang.org/">Lean 4</a> formally verifiable coding language. I haven't explored Lean at all so I have no way to credibly evaluate this, but it's interesting to see them target one specific language in this way.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Use subagents and custom agents in Codex]]></title>
+        <id>https://simonwillison.net/2026/Mar/16/codex-subagents/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/16/codex-subagents/#atom-everything"/>
+        <updated>2026-03-16T23:03:56.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://developers.openai.com/codex/subagents">Use subagents and custom agents in Codex</a></strong></p>
+Subagents were announced in general availability today for OpenAI Codex, after several weeks of preview behind a feature flag.</p>
+<p>They're very similar to the Claude Code implementation, with default subagents for "explorer", "worker" and "default". It's unclear to me what the difference between "worker" and "default" is but based on their CSV example I think "worker" is intended for running large numbers of small tasks in parallel.</p>
+<p>Codex also lets you define custom agents as TOML files in <code>~/.codex/agents/</code>. These can have custom instructions and be assigned to use specific models - including <code>gpt-5.3-codex-spark</code> if you want <a href="https://simonwillison.net/2026/Feb/12/codex-spark/">some raw speed</a>. They can then be referenced by name, as demonstrated by this example prompt from the documentation:</p>
+<blockquote>
+<p><code>Investigate why the settings modal fails to save. Have browser_debugger reproduce it, code_mapper trace the responsible code path, and ui_fixer implement the smallest fix once the failure mode is clear.</code></p>
+</blockquote>
+<p>The subagents pattern is widely supported in coding agents now. Here's documentation across a number of different platforms:</p>
+<ul>
+<li><a href="https://developers.openai.com/codex/subagents/">OpenAI Codex subagents</a></li>
+<li><a href="https://code.claude.com/docs/en/sub-agents">Claude Code subagents</a></li>
+<li><a href="https://geminicli.com/docs/core/subagents/">Gemini CLI subagents</a> (experimental)</li>
+<li><a href="https://docs.mistral.ai/mistral-vibe/agents-skills#agent-selection">Mistral Vibe subagents</a></li>
+<li><a href="https://opencode.ai/docs/agents/">OpenCode agents</a></li>
+<li><a href="https://code.visualstudio.com/docs/copilot/agents/subagents">Subagents in Visual Studio Code</a></li>
+<li><a href="https://cursor.com/docs/subagents">Cursor Subagents</a></li>
+</ul>
+
+    <p><small></small>Via <a href="https://twitter.com/OpenAIDevs/status/2033636701848174967">@OpenAIDevs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a>, <a href="https://simonwillison.net/tags/parallel-agents">parallel-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Quoting A member of Anthropic’s alignment-science team]]></title>
+        <id>https://simonwillison.net/2026/Mar/16/blackmail/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/16/blackmail/#atom-everything"/>
+        <updated>2026-03-16T21:38:55.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://www.newyorker.com/news/annals-of-inquiry/the-pentagon-went-to-war-with-anthropic-whats-really-at-stake?_sp=9a6e0ff7-2bfd-46f8-a9e1-3941ef2003b5.1773495048769"><p>The point of <a href="https://simonwillison.net/2025/Jun/20/agentic-misalignment/">the blackmail exercise</a> was to have something to describe to policymakers—results that are visceral enough to land with people, and make misalignment risk actually salient in practice for people who had never thought about it before.</p></blockquote>
+<p class="cite">&mdash; <a href="https://www.newyorker.com/news/annals-of-inquiry/the-pentagon-went-to-war-with-anthropic-whats-really-at-stake?_sp=9a6e0ff7-2bfd-46f8-a9e1-3941ef2003b5.1773495048769">A member of Anthropic’s alignment-science team</a>, as told to Gideon Lewis-Kraus</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Guilherme Rambo]]></title>
         <id>https://simonwillison.net/2026/Mar/16/guilherme-rambo/#atom-everything</id>
@@ -49,6 +215,16 @@ Here's the handout I prepared for my NICAR 2026 workshop "Coding agents for data
     <p>Tags: <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/geospatial">geospatial</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/speaking">speaking</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/github-codespaces">github-codespaces</a>, <a href="https://simonwillison.net/tags/nicar">nicar</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a>, <a href="https://simonwillison.net/tags/leaflet">leaflet</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[nemotron-3-nano]]></title>
+        <id>https://ollama.com/library/nemotron-3-nano</id>
+        <link href="https://ollama.com/library/nemotron-3-nano"/>
+        <updated>2026-03-16T15:34:00.000Z</updated>
+        <summary type="html"><![CDATA[Nemotron-3-Nano is a new Standard for Efficient, Open, and Intelligent Agentic Models, now updated with a 4B parameter count model.]]></summary>
+        <author>
+            <name>Ollama models</name>
         </author>
     </entry>
     <entry>
@@ -4042,158 +4218,6 @@ menu -  Analyzed menu image file - Bash uvx rodney open &quot;http://localhost:8
         <summary type="html"><![CDATA[The Qwen3.5 series 397B-A17B native vision-language model is built on a hybrid architecture that integrates a linear attention mechanism with a sparse mixture-of-experts model, achieving higher inference efficiency.]]></summary>
         <author>
             <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[The AI Vampire]]></title>
-        <id>https://simonwillison.net/2026/Feb/15/the-ai-vampire/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/15/the-ai-vampire/#atom-everything"/>
-        <updated>2026-02-15T23:59:36.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://steve-yegge.medium.com/the-ai-vampire-eda6e4f07163">The AI Vampire</a></strong></p>
-Steve Yegge's take on agent fatigue, and its relationship to burnout.</p>
-<blockquote>
-<p>Let's pretend you're the only person at your company using AI.</p>
-<p>In Scenario A, you decide you're going to impress your employer, and work for 8 hours a day at 10x productivity. You knock it out of the park and make everyone else look terrible by comparison.</p>
-<p>In that scenario, your employer captures 100% of the value from <em>you</em> adopting AI. You get nothing, or at any rate, it ain't gonna be 9x your salary. And everyone hates you now.</p>
-<p>And you're <em>exhausted.</em> You're tired, Boss. You got nothing for it.</p>
-<p>Congrats, you were just drained by a company. I've been drained to the point of burnout several times in my career, even at Google once or twice. But now with AI, it's oh, so much easier.</p>
-</blockquote>
-<p>Steve reports needing more sleep due to the cognitive burden involved in agentic engineering, and notes that four hours of agent work a day is a more realistic pace:</p>
-<blockquote>
-<p>I’ve argued that AI has turned us all into Jeff Bezos, by automating the easy work, and leaving us with all the difficult decisions, summaries, and problem-solving. I find that I am only really comfortable working at that pace for short bursts of a few hours once or occasionally twice a day, even with lots of practice.</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://cosocial.ca/@timbray/116076167774984883">Tim Bray</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/steve-yegge">steve-yegge</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Em dash]]></title>
-        <id>https://simonwillison.net/2026/Feb/15/em-dashes/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/15/em-dashes/#atom-everything"/>
-        <updated>2026-02-15T21:40:46.000Z</updated>
-        <summary type="html"><![CDATA[<p>I'm occasionally accused of using LLMs to write the content on my blog. I don't do that, and I don't think my writing has much of an LLM smell to it... with one notable exception:</p>
-<pre>    <span class="pl-c"># Finally, do em dashes</span>
-    <span class="pl-s1">s</span> <span class="pl-c1">=</span> <span class="pl-s1">s</span>.<span class="pl-c1">replace</span>(<span class="pl-s">' - '</span>, <span class="pl-s">u'<span class="pl-cce">\u2014</span>'</span>)</pre>
-
-<p>That code to add em dashes to my posts dates back to <a href="https://github.com/simonw/simonwillisonblog/blob/e6d0327b37debdf820b5cfef4fb7d09a9624cea9/blog/templatetags/entry_tags.py#L145-L146">at least 2015</a> when I ported my blog from an older version of Django (in a long-lost Mercurial repository) and started afresh on GitHub.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/typography">typography</a>, <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/python">python</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Deep Blue]]></title>
-        <id>https://simonwillison.net/2026/Feb/15/deep-blue/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/15/deep-blue/#atom-everything"/>
-        <updated>2026-02-15T21:06:44.000Z</updated>
-        <summary type="html"><![CDATA[<p>We coined a new term on the <a href="https://simonwillison.net/2026/Jan/8/llm-predictions-for-2026/">Oxide and Friends podcast</a> last month (primary credit to Adam Leventhal) covering the sense of psychological ennui leading into existential dread that many software developers are feeling thanks to the encroachment of generative AI into their field of work.</p>
-<p>We're calling it <strong>Deep Blue</strong>.</p>
-<p>You can listen to it being coined in real time <a href="https://www.youtube.com/watch?v=lVDhQMiAbR8&amp;t=2835s">from 47:15 in the episode</a>. I've included <a href="https://simonwillison.net/2026/Feb/15/deep-blue/#transcript">a transcript below</a>.</p>
-<p>Deep Blue is a very real issue.</p>
-<p>Becoming a professional software engineer is <em>hard</em>. Getting good enough for people to pay you money to write software takes years of dedicated work. The rewards are significant: this is a well compensated career which opens up a lot of great opportunities.</p>
-<p>It's also a career that's mostly free from gatekeepers and expensive prerequisites. You don't need an expensive degree or accreditation. A laptop, an internet connection and a lot of time and curiosity is enough to get you started.</p>
-<p>And it rewards the nerds! Spending your teenage years tinkering with computers turned out to be a very smart investment in your future.</p>
-<p>The idea that this could all be stripped away by a chatbot is <em>deeply</em> upsetting.</p>
-<p>I've seen signs of Deep Blue in most of the online communities I spend time in. I've even faced accusations from my peers that I am actively harming their future careers through my work helping people understand how well AI-assisted programming can work.</p>
-<p>I think this is an issue which is causing genuine mental anguish for a lot of people in our community. Giving it a name makes it easier for us to have conversations about it.</p>
-<h4 id="my-experiences-of-deep-blue">My experiences of Deep Blue</h4>
-<p>I distinctly remember my first experience of Deep Blue. For me it was triggered by ChatGPT Code Interpreter back in early 2023.</p>
-<p>My primary project is <a href="https://datasette.io/">Datasette</a>, an ecosystem of open source tools for telling stories with data. I had dedicated myself to the challenge of helping people (initially focusing on journalists) clean up, analyze and find meaning in data, in all sorts of shapes and sizes.</p>
-<p>I expected I would need to build a lot of software for this! It felt like a challenge that could keep me happily engaged for many years to come.</p>
-<p>Then I tried uploading a CSV file of <a href="https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-2018-to-Present/wg3w-h783/about_data">San Francisco Police Department Incident Reports</a> - hundreds of thousands of rows - to ChatGPT Code Interpreter and... it did every piece of data cleanup and analysis I had on my napkin roadmap for the next few years with a couple of prompts.</p>
-<p>It even converted the data into a neatly normalized SQLite database and let me download the result!</p>
-<p>I remember having two competing thoughts in parallel.</p>
-<p>On the one hand, as somebody who wants journalists to be able to do more with data, this felt like a <em>huge</em> breakthrough. Imagine giving every journalist in the world an on-demand analyst who could help them tackle any data question they could think of!</p>
-<p>But on the other hand... <em>what was I even for</em>? My confidence in the value of my own projects took a painful hit. Was the path I'd chosen for myself suddenly a dead end?</p>
-<p>I've had some further pangs of Deep Blue just in the past few weeks, thanks to the Claude Opus 4.5/4.6 and GPT-5.2/5.3 coding agent effect. As many other people are also observing, the latest generation of coding agents, given the right prompts, really can churn away for a few minutes to several hours and produce working, documented and fully tested software that exactly matches the criteria they were given.</p>
-<p>"The code they write isn't any good" doesn't really cut it any more.</p>
-<h4 id="transcript">A lightly edited transcript</h4>
-<blockquote>
-<p><strong>Bryan</strong>: I think that we're going to see a real problem with AI induced ennui where software engineers in particular get listless because the AI can do anything. Simon, what do you think about that?</p>
-<p><strong>Simon</strong>: Definitely. Anyone who's paying close attention to coding agents is feeling some of that already. There's an extent where you sort of get over it when you realize that you're still useful, even though your ability to memorize the syntax of program languages is completely irrelevant now.</p>
-<p>Something I see a lot of is people out there who are having existential crises and are very, very unhappy because they're like, "I dedicated my career to learning this thing and now it just does it. What am I even for?". I will very happily try and convince those people that they are for a whole bunch of things and that none of that experience they've accumulated has gone to waste, but psychologically it's a difficult time for software engineers.</p>
-<p>[...]</p>
-<p><strong>Bryan</strong>: Okay, so I'm going to predict that we name that. Whatever that is, we have a name for that kind of feeling and that kind of, whether you want to call it a blueness or a loss of purpose, and that we're kind of trying to address it collectively in a directed way.</p>
-<p><strong>Adam</strong>: Okay, this is your big moment. Pick the name. If you call your shot from here, this is you pointing to the stands. You know, I – Like deep blue, you know.</p>
-<p><strong>Bryan</strong>: Yeah, deep blue. I like that. I like deep blue. Deep blue. Oh, did you walk me into that, you bastard? You just blew out the candles on my birthday cake.</p>
-<p>It wasn't my big moment at all. That was your big moment. No, that is, Adam, that is very good. That is deep blue.</p>
-<p><strong>Simon</strong>: All of the chess players and the Go players went through this a decade ago and they have come out stronger.</p>
-</blockquote>
-<p>Turns out it was more than a decade ago: <a href="https://en.wikipedia.org/wiki/Deep_Blue_versus_Garry_Kasparov">Deep Blue defeated Garry Kasparov in 1997</a>.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/definitions">definitions</a>, <a href="https://simonwillison.net/tags/careers">careers</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/oxide">oxide</a>, <a href="https://simonwillison.net/tags/bryan-cantrill">bryan-cantrill</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Gwtar: a static efficient single-file HTML format]]></title>
-        <id>https://simonwillison.net/2026/Feb/15/gwtar/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/15/gwtar/#atom-everything"/>
-        <updated>2026-02-15T18:26:08.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://gwern.net/gwtar">Gwtar: a static efficient single-file HTML format</a></strong></p>
-Fascinating new project from Gwern Branwen and Said Achmiz that targets the challenge of combining large numbers of assets into a single archived HTML file without that file being inconvenient to view in a browser.</p>
-<p>The key trick it uses is to fire <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/stop">window.stop()</a> early in the page to prevent the browser from downloading the whole thing, then following that call with inline tar uncompressed content.</p>
-<p>It can then make HTTP range requests to fetch content from that tar data on-demand when it is needed by the page.</p>
-<p>The JavaScript that has already loaded rewrites asset URLs to point to <code>https://localhost/</code> purely so that they will fail to load. Then it uses a <a href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver">PerformanceObserver</a> to catch those attempted loads:</p>
-<pre><code>let perfObserver = new PerformanceObserver((entryList, observer) =&gt; {
-    resourceURLStringsHandler(entryList.getEntries().map(entry =&gt; entry.name));
-});
-perfObserver.observe({ entryTypes: [ "resource" ] });
-</code></pre>
-<p>That <code>resourceURLStringsHandler</code> callback finds the resource if it is already loaded or fetches it with an HTTP range request otherwise and then inserts the resource in the right place using a <code>blob:</code> URL.</p>
-<p>Here's what the <code>window.stop()</code> portion of the document looks like if you view the source:</p>
-<p><img alt="Screenshot of a macOS terminal window titled &quot;gw — more big.html — 123×46&quot; showing the source code of a gwtar (self-extracting HTML archive) file. The visible code includes JavaScript with requestIdleCallback(getMainPageHTML);, a &lt;noscript&gt; block with warnings: a &quot;js-disabled-warning&quot; stating &quot;This HTML page requires JavaScript to be enabled to render, as it is a self-extracting gwtar HTML file,&quot; a description of gwtar as &quot;a portable self-contained standalone HTML file which is designed to nevertheless support efficient lazy loading of all assets such as large media files,&quot; with a link to https://gwern.net/gwtar, a &quot;local-file-warning&quot; with a shell command perl -ne'print $_ if $x; $x=1 if /&lt;!-- GWTAR END/' &amp;lt; foo.gwtar.html | tar --extract, and a &quot;server-fail-warning&quot; about misconfigured servers. Below the HTML closing tags and &lt;!-- GWTAR END comment is binary tar archive data with the filename 2010-02-brianmoriarty-thesecretofpsalm46.html, showing null-padded tar header fields including ustar^@00root and octal size/permission values. At the bottom, a SingleFile metadata comment shows url: https://web.archive.org/web/20230512001411/http://ludix.com/moriarty/psalm46.html and saved date: Sat Jan 17 2026 19:26:49 GMT-0800 (Pacific Standard Time)." src="https://static.simonwillison.net/static/2026/gwtar.jpg" /></p>
-<p>Amusingly for an archive format it doesn't actually work if you open the file directly on your own computer. Here's what you see if you try to do that:</p>
-<blockquote>
-<p>You are seeing this message, instead of the page you should be seeing, because <code>gwtar</code> files <strong>cannot be opened locally</strong> (due to web browser security restrictions).</p>
-<p>To open this page on your computer, use the following shell command:</p>
-<p><code>perl -ne'print $_ if $x; $x=1 if /&lt;!-- GWTAR END/' &lt; foo.gwtar.html | tar --extract</code></p>
-<p>Then open the file <code>foo.html</code> in any web browser.</p>
-</blockquote>
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=47024506">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/archiving">archiving</a>, <a href="https://simonwillison.net/tags/html">html</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Three months of OpenClaw]]></title>
-        <id>https://simonwillison.net/2026/Feb/15/openclaw/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/15/openclaw/#atom-everything"/>
-        <updated>2026-02-15T17:23:28.000Z</updated>
-        <summary type="html"><![CDATA[<p>It's wild that the first commit to OpenClaw was <a href="https://github.com/openclaw/openclaw/commit/f6dd362d39b8e30bd79ef7560aab9575712ccc11">on November 25th 2025</a>, and less than three months later it's hit 10,000 commits from 600 contributors, attracted 196,000 GitHub stars and sort-of been featured in an extremely vague <a href="https://www.youtube.com/watch?v=n7I-D4YXbzg">Super Bowl commercial for AI.com</a>.</p>
-<p>Quoting AI.com founder <a href="https://twitter.com/kris/status/2020663711015514399">Kris Marszalek</a>, purchaser of the <a href="https://www.theregister.com/2026/02/09/70m_aicom_domain_sale/">most expensive domain in history</a> for $70m:</p>
-<blockquote>
-<p>ai.com is the world’s first easy-to-use and secure implementation of OpenClaw, the open source agent framework that went viral two weeks ago; we made it easy to use without any technical skills, while hardening security to keep your data safe.</p>
-</blockquote>
-<p>Looks like vaporware to me - all you can do right now is reserve a handle - but it's still remarkable to see an open source project get to <em>that</em> level of hype in such a short space of time.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/openclaw">openclaw</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/domains">domains</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Eric Meyer]]></title>
-        <id>https://simonwillison.net/2026/Feb/15/eric-meyer/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/15/eric-meyer/#atom-everything"/>
-        <updated>2026-02-15T13:36:20.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://mastodon.social/@Meyerweb/116065151451468199"><p>I saw yet another “CSS is a massively bloated mess” whine and I’m like.  My dude.  My brother in Chromium.  It is trying as hard as it can to express the totality of visual presentation and layout design and typography and animation and digital interactivity and a few other things in a human-readable text format.  It’s not bloated, it’s fantastically ambitious.  Its reach is greater than most of us can hope to grasp.  Put some <em>respect</em> on its <em>name</em>.</p></blockquote>
-<p class="cite">&mdash; <a href="https://mastodon.social/@Meyerweb/116065151451468199">Eric Meyer</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/css">css</a>, <a href="https://simonwillison.net/tags/web-standards">web-standards</a>, <a href="https://simonwillison.net/tags/eric-meyer">eric-meyer</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
 </feed>
