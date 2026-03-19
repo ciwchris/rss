@@ -25,9 +25,53 @@
 
   <ul>
     <li>
+      <time>2026-03-19</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              OpenAI to acquire Astral
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/openai-to-acquire-astral>Accelerates Codex growth to power the next generation of Python developer tools</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-03-18</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Autoresearching Apple&#x27;s &quot;LLM in a Flash&quot; to run Qwen 397B locally
+              <span class="post-metadata">(4 min | 1070 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/18/llm-in-a-flash/#atom-everything>Autoresearching Apple&#x27;s &quot;LLM in a Flash&quot; to run Qwen 397B locally
+Qwen3.5-397B-A17B running at 5.5+ tokens/second on a 48GB MacBook Pro M3 Max despite that model taking up 209GB (120GB quantized) on disk.
+Qwen3.5-397B-A17B is a Mixture-of-Experts (MoE) model, which means that each token only needs to run against a subset of the overall model weights. These expert weights can be streamed into memory from SSD, saving them from all needing to be held in RAM at the same time.
+Dan used techniques described in Apple&#x27;s 2023 paper LLM in a flash: Efficient Large Language Model Inference with Limited Memory:
+This paper tackles the challenge of efficiently running LLMs that exceed the available DRAM capacity by storing the model parameters in flash memory, but bringing them on demand to DRAM. Our method involves constructing an inference cost model that takes into account the characteristics of flash memory, guiding us to optimize in two critical areas: reducing the volume of data transferred from flash and reading data in larger, more contiguous chunks.
+He fed the paper to Claude Code and used a variant of Andrej Karpathy&#x27;s autoresearch pattern to have Claude run 90 experiments and produce MLX Objective-C and Metal code that ran the model as efficiently as possible.
+danveloper/flash-moe has the resulting code plus a PDF paper mostly written by Claude Opus 4.6 describing the experiment in full.
+The final model has the experts quantized to 2-bit, but the non-expert parts of the model such as the embedding table and routing matrices are kept at their original precision, adding up to 5.5GB which stays resident in memory while the model is running.
+Qwen 3.5 usually runs 10 experts per token, but this setup dropped that to 4 while claiming that the biggest quality drop-off occurred at 3.
+It&#x27;s not clear to me how much the quality of the model results are affected. Claude claimed that &quot;Output quality at 2-bit is indistinguishable from 4-bit for these evaluations&quot;, but the description of the evaluations it ran is quite thin.
+
+
+    
+Tags: ai, generative-ai, local-llms, llms, qwen, mlx</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -39,6 +83,18 @@
 The post Configure Copilot coding agent’s validation tools appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              minimax-m2.7
+              <span class="post-metadata">(10 min | 2919 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/minimax-m2.7>MiniMax&#x27;s M2-series model for coding, agentic workflows, and professional productivity.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
@@ -4694,294 +4750,6 @@ Tags: new-york-times, paul-ford, careers, ai, generative-ai, llms, ai-assisted-p
 
 — Martin Fowler, tidbits from the Thoughtworks Future of Software Development Retreat, via HN)
 Tags: martin-fowler, careers, generative-ai, ai, llms, ai-assisted-programming</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A Guide to Which AI to Use in the Agentic Era
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/a-guide-to-which-ai-to-use-in-the>It&#x27;s not just chatbots anymore</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Introducing EVMbench
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/introducing-evmbench>OpenAI and Paradigm introduce EVMbench, a benchmark evaluating AI agents’ ability to detect, patch, and exploit high-severity smart contract vulnerabilities.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-02-17</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Introducing Claude Sonnet 4.6
-              <span class="post-metadata">(4 min | 1149 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/17/claude-sonnet-46/#atom-everything>Introducing Claude Sonnet 4.6
-November&#x27;s Opus 4.5 while maintaining the Sonnet pricing of $3/million input and $15/million output tokens (the Opus models are $5/$25). Here&#x27;s the system card PDF.
-Sonnet 4.6 has a &quot;reliable knowledge cutoff&quot; of August 2025, compared to Opus 4.6&#x27;s May 2025 and Haiku 4.5&#x27;s February 2025. Both Opus and Sonnet default to 200,000 max input tokens but can stretch to 1 million in beta and at a higher cost.
-I just released llm-anthropic 0.24 with support for both Sonnet 4.6 and Opus 4.6. Claude Code did most of the work - the new models had a fiddly amount of extra details around adaptive thinking and no longer supporting prefixes, as described in Anthropic&#x27;s migration guide.
-Here&#x27;s what I got from:
-uvx --with llm-anthropic llm &#x27;Generate an SVG of a pelican riding a bicycle&#x27; -m claude-sonnet-4.6
-
-
-The SVG comments include:
-&lt;!-- Hat (fun accessory) --&gt;
-
-I tried a second time and also got a top hat. Sonnet 4.6 apparently loves top hats!
-For comparison, here&#x27;s the pelican Opus 4.5 drew me in November:
-
-And here&#x27;s Anthropic&#x27;s current best pelican, drawn by Opus 4.6 on February 5th:
-
-Opus 4.6 produces the best pelican beak/pouch. I do think the top hat from Sonnet 4.6 is a nice touch though.
-
-    
-Via Hacker News
-Tags: ai, generative-ai, llms, llm, anthropic, claude, llm-pricing, pelican-riding-a-bicycle, llm-release, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Rodney v0.4.0
-              <span class="post-metadata">(4 min | 1216 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/17/rodney/#atom-everything>Rodney v0.4.0
-Rodney CLI tool for browser automation attracted quite the flurry of PRs since I announced it last week. Here are the release notes for the just-released v0.4.0:
-Errors now use exit code 2, which means exit code 1 is just for for check failures. #15
-New rodney assert command for running JavaScript tests, exit code 1 if they fail. #19
-New directory-scoped sessions with --local/--global flags. #14
-New reload --hard and clear-cache commands. #17
-New rodney start --show option to make the browser window visible. Thanks, Antonio Cuni. #13
-New rodney connect PORT command to debug an already-running Chrome instance. Thanks, Peter Fraenkel. #12
-New RODNEY_HOME environment variable to support custom state directories. Thanks, Senko Rašić. #11
-New --insecure flag to ignore certificate errors. Thanks, Jakub Zgoliński. #10
-Windows support: avoid Setsid on Windows via build-tag helpers. Thanks, adm1neca. #18
-Tests now run on windows-latest and macos-latest in addition to Linux.
-I&#x27;ve been using Showboat to create demos of new features - here those are for rodney assert, rodney reload --hard, rodney exit codes, and rodney start --local.
-The rodney assert command is pretty neat: you can now Rodney to test a web app through multiple steps in a shell script that looks something like this (adapted from the README):
-#!/bin/bash
-set -euo pipefail
-
-FAIL&#x3D;0
-
-check() {
-    if ! &quot;$@&quot;; then
-        echo &quot;FAIL: $*&quot;
-        FAIL&#x3D;1
-    fi
-}
-
-rodney start
-rodney open &quot;https://example.com&quot;
-rodney waitstable
-
-# Assert elements exist
-check rodney exists &quot;h1&quot;
-
-# Assert key elements are visible
-check rodney visible &quot;h1&quot;
-check rodney visible &quot;#main-content&quot;
-
-# Assert JS expressions
-check rodney assert &#x27;document.title&#x27; &#x27;Example Domain&#x27;
-check rodney assert &#x27;document.querySelectorAll(&quot;p&quot;).length&#x27; &#x27;2&#x27;
-
-# Assert accessibility requirements
-check rodney ax-find --role navigation
-
-rodney stop
-
-if [ &quot;$FAIL&quot; -ne 0 ]; then
-    echo &quot;Some checks failed&quot;
-    exit 1
-fi
-echo &quot;All checks passed&quot;
-
-
-
-    
-Tags: browsers, projects, testing, annotated-release-notes, rodney</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              API access to billing usage reports in public preview
-              <span class="post-metadata">(4 min | 1286 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-api-access-to-billing-usage-reports-in-public-preview>Enterprise administrators can now request and download billing usage reports in .csv format via a new REST API. With this new capability, the same billing reports that are available in…
-The post API access to billing usage reports in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enterprise-wide credential management tools for incident response
-              <span class="post-metadata">(7 min | 2002 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-enterprise-wide-credential-management-tools-for-incident-response>Enterprise owners can now use new credential management actions to respond decisively to high-impact security incidents in their GitHub Enterprise Cloud enterprise accounts. These new capabilities are available for enterprise…
-The post Enterprise-wide credential management tools for incident response appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Claude Sonnet 4.6 is now generally available in GitHub Copilot
-              <span class="post-metadata">(5 min | 1521 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-claude-sonnet-4-6-is-now-generally-available-in-github-copilot>Claude Sonnet 4.6, Anthropic’s latest agentic coding model, is now rolling out in GitHub Copilot. In early testing, this model excels on agentic coding, and is particularly successful in search…
-The post Claude Sonnet 4.6 is now generally available in GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              MCP Registry and more improvements in Copilot in Eclipse
-              <span class="post-metadata">(6 min | 1679 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-mcp-registry-and-more-improvements-in-copilot-in-eclipse>We’ve just shipped a new set of improvements to make GitHub Copilot in Eclipse smarter and easier to use. These updates bring more context options, smoother workflows, and better customization…
-The post MCP Registry and more improvements in Copilot in Eclipse appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Delegate tasks to Copilot coding agent from Visual Studio
-              <span class="post-metadata">(5 min | 1390 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-delegate-tasks-to-copilot-coding-agent-from-visual-studio>Copilot coding agent is our asynchronous, autonomous background agent. Delegate a task to Copilot, and it opens a draft pull request, works in the background in the cloud, and then…
-The post Delegate tasks to Copilot coding agent from Visual Studio appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Assign issues to Copilot coding agent from Raycast
-              <span class="post-metadata">(5 min | 1388 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-assign-issues-to-copilot-coding-agent-from-raycast>Copilot coding agent is our asynchronous, autonomous background agent. Delegate a task to Copilot, and it works in the background, then requests a review from you. You can now assign…
-The post Assign issues to Copilot coding agent from Raycast appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Required reviewer rule is now generally available
-              <span class="post-metadata">(5 min | 1534 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-required-reviewer-rule-is-now-generally-available>The required reviewer rule for repository rulesets is now generally available, giving you granular control over who must approve changes to specific branches and files across your organization or enterprise.…
-The post Required reviewer rule is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Custom properties and rule insights improvements
-              <span class="post-metadata">(5 min | 1509 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-17-custom-properties-and-rule-insights-improvements>We’ve shipped two improvements to help you enforce repository policies and gain better visibility into rule activity across your organization. Custom properties now support required explicit values Organization and enterprise…
-The post Custom properties and rule insights improvements appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting ROUGH DRAFT 8/2/66
-              <span class="post-metadata">(3 min | 921 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/17/rough-draft-8266/#atom-everything>This is the story of the United Space Ship Enterprise. Assigned a five year patrol of our galaxy, the giant starship visits Earth colonies, regulates commerce, and explores strange new worlds and civilizations. These are its voyages... and its adventures.
-
-— ROUGH DRAFT 8/2/66, before the Star Trek opening narration reached its final form
-Tags: screen-writing, science-fiction</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              First kākāpō chick in four years hatches on Valentine&#x27;s Day
-              <span class="post-metadata">(4 min | 1056 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/17/first-kakapo-chick-in-four-years/#atom-everything>First kākāpō chick in four years hatches on Valentine&#x27;s Day
-the 2026 breeding season!
-Kākāpō Yasmine hatched an egg fostered from kākāpō Tīwhiri on Valentine&#x27;s Day, bringing the total number of kākāpō to 237 – though it won’t be officially added to the population until it fledges.
-Here&#x27;s why the egg was fostered:
-&quot;Kākāpō mums typically have the best outcomes when raising a maximum of two chicks. Biological mum Tīwhiri has four fertile eggs this season already, while Yasmine, an experienced foster mum, had no fertile eggs.&quot;
-And an update from conservation biologist Andrew Digby - a second chick hatched this morning!
-The second #kakapo chick of the #kakapo2026 breeding season hatched this morning: Hine Taumai-A1-2026 on Ako&#x27;s nest on Te Kākahu. We transferred the egg from Anchor two nights ago. This is Ako&#x27;s first-ever chick, which is just a few hours old in this video.
-That post has a video of mother and chick.
-
-    
-Via MetaFilter
-Tags: kakapo</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Dimitris Papailiopoulos
-              <span class="post-metadata">(3 min | 1031 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/17/dimitris-papailiopoulos/#atom-everything>But the intellectually interesting part for me is something else. I now have something close to a magic box where I throw in a question and a first answer comes back basically for free, in terms of human effort. Before this, the way I&#x27;d explore a new idea is to either clumsily put something together myself or ask a student to run something short for signal, and if it&#x27;s there, we’d go deeper. That quick signal step, i.e., finding out if a question has any meat to it, is what I can now do without taking up anyone else&#x27;s time. It’s now between just me, Claude Code, and a few days of GPU time.
-I don’t know what this means for how we do research long term. I don’t think anyone does yet. But the distance between a question and a first answer just got very small.
-
-— Dimitris Papailiopoulos, on running research questions though Claude Code
-Tags: research, coding-agents, claude-code, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
