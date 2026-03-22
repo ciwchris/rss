@@ -25,6 +25,146 @@
 
   <ul>
     <li>
+      <time>2026-03-21</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Profiling Hacker News users based on their comments
+              <span class="post-metadata">(6 min | 1684 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/21/profiling-hacker-news-users/#atom-everything>Here&#x27;s a mildly dystopian prompt I&#x27;ve been experimenting with recently: &quot;Profile this user&quot;, accompanied by a copy of their last 1,000 comments on Hacker News.
+
+Obtaining those comments is easy. The Algolia Hacker News API supports listing comments sorted by date that have a specific tag, and the author of a comment is tagged there as author_username. Here&#x27;s a JSON feed of my (simonw) most recent comments, for example:
+
+https://hn.algolia.com/api/v1/search_by_date?tags&#x3D;comment,author_simonw&amp;hitsPerPage&#x3D;1000
+
+The Algolia API is served with open CORS headers, which means you can access the API from JavaScript running on any web page.
+
+Last August I had ChatGPT build me a simple tool for hitting that API for any user which fetches their comments and gives me a mobile-friendly &quot;copy to clipboard&quot; button. I&#x27;ve since tweaked it a few times with Claude.
+
+I can then paste the whole lot into any LLM - these days I mostly use Claude Opus 4.6 for this - and prompt &quot;profile this user&quot; to see what it can figure out.
+
+It&#x27;s startlingly effective! It feels invasive to quote the profile of another user here, so I&#x27;ll show you what it produces for me:
+
+
+This is Simon Willison — a prolific, independent software developer, blogger, and one of the most visible voices in the AI-assisted coding space. Here&#x27;s a profile drawn from his comments:
+
+Professional identity: Independent developer and writer. Co-creator of Django, creator of Datasette and many other open source tools. On the board of the Python Software Foundation. Runs a heavily-trafficked personal blog at simonwillison.net with multiple content types (entries, link blog, notes, quotations). Monetizes through GitHub sponsors, ethical ads, and occasional consulting — not through any AI company payroll, a point he defends frequently.
+
+Core thesis on AI coding: He&#x27;s the leading evangelist for what he calls &quot;agentic engineering&quot; — using coding agents (Claude Code, Codex CLI) as productivity multipliers for skilled developers. His central argument: LLMs don&#x27;t replace programmers, they amplify existing expertise. He&#x27;s writing a guide/book on this at simonwillison.net/guides. He insists these tools are deceptively difficult to use well, and that most people who report bad results simply haven&#x27;t learned the craft yet.
+
+Working style: He does most of his programming from his iPhone via Claude Code for web, often while riding BART, walking the dog, or sitting in the garden. He embraces &quot;YOLO mode&quot; (auto-approving agent actions) and frequently runs 2-3 agent sessions in parallel. He starts every session with &quot;run uv run pytest&quot; to anchor the agent in TDD. He&#x27;s on the $200/month Claude Max plan.
+
+Key technical interests: Sandboxing and security (WebAssembly, Pyodide, sandbox-exec, Firecracker), SQLite (deeply), Python packaging and tooling (uv, PyPI distribution tricks), browser-in-a-browser experiments (v86, WASM Linux), and local LLM inference. He&#x27;s been learning Go &quot;by osmosis&quot; through coding agents.
+
+Security consciousness: He coined the term &quot;prompt injection&quot; and the &quot;lethal trifecta&quot; (access to private data + exposure to untrusted input + ability to take actions). He&#x27;s genuinely alarmed about OpenClaw/Clawdbot security risks and has been predicting a headline-grabbing prompt injection attack &quot;in the next six months&quot; for over two years — acknowledging it keeps not happening while insisting the risk is real. He references the &quot;normalization of deviance&quot; pattern frequently.
+
+Personality and debate style: Energetic, combative when challenged, but generally good-natured. He engages heavily in HN comment threads — sometimes dozens of replies in a single discussion. He&#x27;s transparent about his biases and maintains a public disclosures page. He pushes back hard against what he sees as motivated reasoning from AI skeptics, but also against AGI hype (&quot;I refer to that as the science fiction version of AI&quot;). He gets visibly frustrated by sock-puppet accounts and bad-faith criticism. He has a self-deprecating streak (&quot;my stupid pelican benchmark&quot;).
+
+Recurring themes across hundreds of comments:
+
+
+&quot;Two things can be true at the same time&quot; — he holds nuanced positions
+
+Tests are for productivity, not just quality
+
+The November 2025 model releases (Opus 4.5, GPT-5.2) were a genuine inflection point
+
+Code review is the biggest bottleneck in agent-assisted workflows
+
+&quot;Cognitive debt&quot; is a real and unsolved problem
+
+The best engineering practices (tests, docs, CI/CD, clean code) also make agents work better
+
+He&#x27;s deliberately trying to &quot;teach people good software engineering while tricking them into thinking the book is about AI&quot;
+
+
+Personal interests mentioned: Niche museums (runs niche-museums.com), New Zealand kākāpō parrots, cooking food from countries he&#x27;s never visited, chickens in his garden. Lives in Half Moon Bay, CA near a major pelican roost. The pelican-on-a-bicycle SVG test is his signature LLM benchmark.
+
+In a sentence: A deeply experienced, independently-minded developer who&#x27;s genuinely excited about AI coding tools, fights hard against both uncritical hype and reflexive dismissal, and is trying to professionalize how the industry uses these tools — while also worrying loudly about the security implications almost nobody else takes seriously enough.
+
+
+This all checks out! I ran this in Claude incognito mode to hopefully prevent Claude from guessing that I was evaluating myself and sycophantically glazing me - the tone of the response it gave here is similar to the tone I&#x27;ve seen against other accounts.
+
+
+I expect it guessed my real name due to my habit of linking to my own writing from some of my comments, which provides plenty of simonwillison.net URLs for it to associate with my public persona. I haven&#x27;t seen it take a guess at a real name for any of the other profiles I&#x27;ve generated.
+
+It&#x27;s a little creepy to be able to derive this much information about someone so easily, even when they&#x27;ve shared that freely in a public (and API-available) place.
+
+I mainly use this to check that I&#x27;m not getting embroiled in an extensive argument with someone who has a history of arguing in bad faith. Thankfully that&#x27;s rarely the case - Hacker News continues to be a responsibly moderated online space.
+Tags: hacker-news, ai, generative-ai, llms, ai-ethics</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Using Git with coding agents
+              <span class="post-metadata">(7 min | 2090 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/using-git-with-coding-agents/#atom-everything>Agentic Engineering Patterns &gt;
+Git is a key tool for working with coding agents. Keeping code in version control lets us record how that code changes over time and investigate and reverse any mistakes. All of the coding agents are fluent in using Git&#x27;s features, both basic and advanced.
+This fluency means we can be more ambitious about how we use Git ourselves. We don&#x27;t need to  memorize how to do things with Git, but staying aware of what&#x27;s possible means we can take advantage of the full suite of Git&#x27;s abilities.
+Git essentials
+Each Git project lives in a repository - a folder on disk that can track changes made to the files within it. Those changes are recorded in commits - timestamped bundles of changes to one or more files accompanied by a commit message describing those changes and an author recording who made them.
+Git supports branches, which allow you to construct and experiment with new changes independently of each other. Branches can then be merged back into your main branch (using various methods) once they are deemed ready.
+Git repositories can be cloned onto a new machine, and that clone includes both the current files and the full history of changes to them.
+This means developers - or coding agents - can browse and explore that history without any extra network traffic, making history diving effectively free.
+Git repositories can live just on your own machine,  but Git is designed to support collaboration and backups by publishing them to a remote, which can be public or private. GitHub is the most popular place for these remotes but Git is open source software that enables hosting these remotes on any machine or service that supports the Git protocol.
+Core concepts and prompts
+Coding agents all have a deep understanding of Git jargon. The following prompts should work with any of them:
+Start a new Git repo here
+git init command. If you just say &quot;repo&quot; agents will assume you mean a Git repository.
+Commit these changes
+git commit -m &quot;commit message&quot; command.
+Add username/repo as a github remote
+github.com/new, and configure your machine to talk to GitHub.
+Review changes made today
+This is a great way to start a fresh coding agents session. Telling the agent to look at recent changes causes it to run git log, which can instantly load its context with details of what you have been working on recently - both the modified code and the commit messages that describe it.
+Seeding the session in this way means you can start talking about that code - suggest additional fixes, ask questions about how it works, or propose the next change that builds on what came before.
+Integrate latest changes from main
+There are multiple ways to merge changes, including merge, rebase, squash or fast-forward. If you can&#x27;t remember the details of these that&#x27;s fine:
+Discuss options for integrating changes from main
+Sort out this git mess for me
+Unpicking those used to be the most difficult and time consuming parts of working with Git. No more! Coding agents can navigate the most Byzantine of merge conflicts, reasoning through the intent of the new code and figuring out what to keep and how to combine conflicting changes. If your code has automated tests (and it should) the agent can ensure those pass before finalizing that merge.
+Find and recover my code that does ...
+git stash) your agent can probably find it for you. 
+Git has a mechanism called the reflog which can often capture details of code that hasn&#x27;t been committed to a permanent branch. Agents can search that, and search other branches too.
+Just tell them what to find and watch them dive in.
+Use git bisect to find when this bug was introduced: ...
+When you run a bisect operation you provide Git with some kind of test condition and a start and ending commit range. Git then runs a binary search to identify the earliest commit for which your test condition fails. 
+This can efficiently answer the question &quot;what first caused this bug&quot;. The only downside is the need to express the test for the bug in a format that Git bisect can execute.
+Coding agents can handle this boilerplate for you. This upgrades Git bisect from an occasional use tool to one you can deploy any time you are curious about the historic behavior of your software.
+Rewriting history
+Let&#x27;s get into the fun advanced stuff.
+The commit history of a Git repository is not fixed. The data is just files on disk after all (tucked away in a hidden .git/ directory), and Git itself provides tools that can be used to modify that history.
+Don&#x27;t think of the Git history as a permanent record of what actually happened - instead consider it to be a deliberately authored story that describes the progression of the software project.
+This story is a tool to aid future development. Permanently recording mistakes and cancelled directions can sometimes be useful, but repository authors can make editorial decisions about what to keep and how best to capture that history.
+Coding agents are really good at using Git&#x27;s advanced history rewriting features.
+Undo or rewrite commits
+Undo last commit
+git reset --soft HEAD~1. I&#x27;ve never been able to remember that, and now I don&#x27;t have to!
+Remove uv.lock from that last commit
+Combine last three commits with a better commit message
+I&#x27;ve found that frontier models usually have really good taste in commit messages. I used to insist on writing these myself but I&#x27;ve accepted that the quality they produce is generally good enough, and often even better than what I would have produced myself.
+Building a new repository from scraps of an older one
+A trick I find myself using quite often is extracting out code from a larger repository into a new one while maintaining the key history of that code.
+One common example is library extraction. I may have built some classes and functions into a project and later realized they would make more sense as a standalone reusable code library.
+Start a new repo at /tmp/distance-functions and build a Python library there with the lib/distance_functions.py module from here - build a similar commit history copying the author and commit dates in the new repo
+Tags: coding-agents, generative-ai, github, agentic-engineering, ai, git, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-03-20</time>
 
       <section>
@@ -4509,193 +4649,6 @@ Codex models are trained in the presence of the harness. Tool use, execution loo
 Tags: definitions, openai, generative-ai, llms, ai-assisted-programming, codex-cli</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-02-21</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Thibault Sottiaux
-              <span class="post-metadata">(2 min | 684 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/21/thibault-sottiaux/#atom-everything>We’ve made GPT-5.3-Codex-Spark about 30% faster. It is now serving at over 1200 tokens per second.
-
-— Thibault Sottiaux, OpenAI
-Tags: openai, llms, ai, generative-ai, llm-performance</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Andrej Karpathy talks about &quot;Claws&quot;
-              <span class="post-metadata">(3 min | 962 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/21/claws/#atom-everything>Andrej Karpathy talks about &quot;Claws&quot;
-I&#x27;m definitely a bit sus&#x27;d to run OpenClaw specifically [...] But I do love the concept and I think that just like LLM agents were a new layer on top of LLMs, Claws are now a new layer on top of LLM agents, taking the orchestration, scheduling, context, tool calls and a kind of persistence to a next level.
-Looking around, and given that the high level idea is clear, there are a lot of smaller Claws starting to pop out. For example, on a quick skim NanoClaw looks really interesting in that the core engine is ~4000 lines of code (fits into both my head and that of AI agents, so it feels manageable, auditable, flexible, etc.) and runs everything in containers by default. [...]
-Anyway there are many others - e.g. nanobot, zeroclaw, ironclaw, picoclaw (lol @ prefixes). [...]
-Not 100% sure what my setup ends up looking like just yet but Claws are an awesome, exciting new layer of the AI stack.
-Andrej has an ear for fresh terminology (see vibe coding, agentic engineering) and I think he&#x27;s right about this one, too: &quot;Claw&quot; is becoming a term of art for the entire category of OpenClaw-like agent systems - AI agents that generally run on personal hardware, communicate via messaging protocols and can both act on direct instructions and schedule tasks.
-It even comes with an established emoji 🦞
-
-
-    
-Tags: definitions, ai, andrej-karpathy, generative-ai, llms, ai-agents, openclaw</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-02-20</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Adding TILs, releases, museums, tools and research to my blog
-              <span class="post-metadata">(4 min | 1309 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/20/beats/#atom-everything>I&#x27;ve been wanting to add indications of my various other online activities to my blog for a while now. I just turned on a new feature I&#x27;m calling &quot;beats&quot; (after story beats, naming this was hard!) which adds five new types of content to my site, all corresponding to activity elsewhere.
-
-Here&#x27;s what beats look like:
-
-
-
-Those three are from the 30th December 2025 archive page.
-
-Beats are little inline links with badges that fit into different content timeline views around my site, including the homepage, search and archive pages.
-
-There are currently five types of beats:
-
-
-
-Releases are GitHub releases of my many different open source projects, imported from this JSON file that was constructed by GitHub Actions.
-
-
-TILs are the posts from my TIL blog, imported using a SQL query over JSON and HTTP against the Datasette instance powering that site.
-
-
-Museums are new posts on my niche-museums.com blog, imported from this custom JSON feed.
-
-
-Tools are HTML and JavaScript tools I&#x27;ve vibe-coded on my tools.simonwillison.net site, as described in Useful patterns for building HTML tools.
-
-
-Research is for AI-generated research projects, hosted in my simonw/research repo and described in Code research projects with async coding agents like Claude Code and Codex.
-
-
-That&#x27;s five different custom integrations to pull in all of that data. The good news is that this kind of integration project is the kind of thing that coding agents really excel at. I knocked most of the feature out in a single morning while working in parallel on various other things.
-
-I didn&#x27;t have a useful structured feed of my Research projects, and it didn&#x27;t matter because I gave Claude Code a link to the raw Markdown README that lists them all and it spun up a parser regex. Since I&#x27;m responsible for both the source and the destination I&#x27;m fine with a brittle solution that would be too risky against a source that I don&#x27;t control myself.
-
-Claude also handled all of the potentially tedious UI integration work with my site, making sure the new content worked on all of my different page types and was handled correctly by my faceted search engine.
-
-Prototyping with Claude Artifacts
-
-I actually prototyped the initial concept for beats in regular Claude - not Claude Code - taking advantage of the fact that it can clone public repos from GitHub these days. I started with:
-
-
-Clone simonw/simonwillisonblog and tell me about the models and views
-
-
-And then later in the brainstorming session said:
-
-
-use the templates and CSS in this repo to create a new artifact with all HTML and CSS inline that shows me my homepage with some of those inline content types mixed in
-
-
-After some iteration we got to this artifact mockup, which was enough to convince me that the concept had legs and was worth handing over to full Claude Code for web to implement.
-
-If you want to see how the rest of the build played out the most interesting PRs are Beats #592 which implemented the core feature and Add Museums Beat importer #595 which added the Museums content type.
-Tags: blogging, museums, ai, til, generative-ai, llms, ai-assisted-programming, claude-artifacts, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Taalas serves Llama 3.1 8B at 17,000 tokens/second
-              <span class="post-metadata">(3 min | 797 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/20/taalas/#atom-everything>Taalas serves Llama 3.1 8B at 17,000 tokens/second
-July 2024) that can run at a staggering 17,000 tokens/second.
-I was going to include a video of their demo but it&#x27;s so fast it would look more like a screenshot. You can try it out at chatjimmy.ai.
-They describe their Silicon Llama as “aggressively quantized, combining 3-bit and 6-bit parameters.” Their next generation will use 4-bit - presumably they have quite a long lead time for baking out new models!
-
-    
-Via Hacker News
-Tags: ai, generative-ai, llama, llms, llm-performance</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Organization-level Copilot usage metrics dashboard available in public preview
-              <span class="post-metadata">(5 min | 1482 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-02-20-organization-level-copilot-usage-metrics-dashboard-available-in-public-preview>Until now, Copilot usage metrics dashboards were only available at the enterprise level. With this release, organization owners can view GitHub Copilot usage metrics for their organization directly in the…
-The post Organization-level Copilot usage metrics dashboard available in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              ggml.ai joins Hugging Face to ensure the long-term progress of Local AI
-              <span class="post-metadata">(4 min | 1169 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/20/ggmlai-joins-hugging-face/#atom-everything>ggml.ai joins Hugging Face to ensure the long-term progress of Local AI
-It&#x27;s hard to overstate the impact Georgi Gerganov has had on the local model space. Back in March 2023 his release of llama.cpp made it possible to run a local LLM on consumer hardware. The original README said:
-The main goal is to run the model using 4-bit quantization on a MacBook. [...] This was hacked in an evening - I have no idea if it works correctly.
-I wrote about trying llama.cpp out at the time in Large language models are having their Stable Diffusion moment:
-I used it to run the 7B LLaMA model on my laptop last night, and then this morning upgraded to the 13B model—the one that Facebook claim is competitive with GPT-3.
-Meta&#x27;s original LLaMA release depended on PyTorch and their FairScale PyTorch extension for running on multiple GPUs, and required CUDA and NVIDIA hardware. Georgi&#x27;s work opened that up to a much wider range of hardware and kicked off the local model movement that has continued to grow since then.
-Hugging Face are already responsible for the incredibly influential Transformers library used by the majority of LLM releases today. They&#x27;ve proven themselves a good steward for that open source project, which makes me optimistic for the future of llama.cpp and related projects.
-This section from the announcement looks particularly promising:
-Going forward, our joint efforts will be geared towards the following objectives:
-Towards seamless &quot;single-click&quot; integration with the transformers library. The transformers framework has established itself as the &#x27;source of truth&#x27; for AI model definitions. Improving the compatibility between the transformers and the ggml ecosystems is essential for wider model support and quality control.
-Better packaging and user experience of ggml-based software. As we enter the phase in which local inference becomes a meaningful and competitive alternative to cloud inference, it is crucial to improve and simplify the way in which casual users deploy and access local models. We will work towards making llama.cpp ubiquitous and readily available everywhere, and continue partnering with great downstream projects.
-Given the influence of Transformers, this closer integration could lead to model releases that are compatible with the GGML ecosystem out of the box. That would be a big win for the local model ecosystem.
-I&#x27;m also excited to see investment in &quot;packaging and user experience of ggml-based software&quot;. This has mostly been left to tools like Ollama and LM Studio. ggml-org released LlamaBarn last year - &quot;a macOS menu bar app for running local LLMs&quot; - and I&#x27;m hopeful that further investment in this area will result in more high quality open source tools for running local models from the team best placed to deliver them.
-
-    
-Via @ggerganov
-Tags: open-source, transformers, ai, generative-ai, llama, local-llms, llms, hugging-face, llama-cpp</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Our First Proof submissions
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/first-proof-submissions>We share our AI model’s proof attempts for the First Proof math challenge, testing research-grade reasoning on expert-level problems.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
