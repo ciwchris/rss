@@ -25,6 +25,231 @@
 
   <ul>
     <li>
+      <time>2026-03-23</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Beats now have notes
+              <span class="post-metadata">(3 min | 799 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/23/beats-now-have-notes/#atom-everything>Last month I added a feature I call beats to this blog, pulling in some of my other content from external sources and including it on the homepage, search and various archive pages on the site.
+On any given day these frequently outnumber my regular posts. They were looking a little bit thin and were lacking any form of explanation beyond a link, so I&#x27;ve added the ability to annotate them with a &quot;note&quot; which now shows up as part of their display.
+Here&#x27;s what that looks like for the content I published yesterday:
+
+I&#x27;ve also updated the /atom/everything/ Atom feed to include any beats that I&#x27;ve attached notes to.
+Tags: atom, blogging, site-upgrades</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Starlette 1.0 skill
+              <span class="post-metadata">(2 min | 745 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/23/starlette-1-skill/#atom-everything>Research: Starlette 1.0 skill
+See Experimenting with Starlette 1.0 with Claude skills.
+Tags: starlette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2026-03-22</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Experimenting with Starlette 1.0 with Claude skills
+              <span class="post-metadata">(5 min | 1469 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/22/starlette/#atom-everything>Starlette 1.0 is out! This is a really big deal. I think Starlette may be the Python framework with the most usage compared to its relatively low brand recognition because Starlette is the foundation of FastAPI, which has attracted a huge amount of buzz that seems to have overshadowed Starlette itself.
+
+Kim Christie started working on Starlette in 2018 and it quickly became my favorite out of the new breed of Python ASGI frameworks. The only reason I didn&#x27;t use it as the basis for my own Datasette project was that it didn&#x27;t yet promise stability, and I was determined to provide a stable API for Datasette&#x27;s own plugins... albeit I still haven&#x27;t been brave enough to ship my own 1.0 release (after 26 alphas and counting)!
+
+Then in September 2025 Marcelo Trylesinski announced that Starlette and Uvicorn were transferring to their GitHub account, in recognition of their many years of contributions and to make it easier for them to receive sponsorship against those projects.
+
+The 1.0 version has a few breaking changes compared to the 0.x series, described in the release notes for 1.0.0rc1 that came out in February.
+
+The most notable of these is a change to how code runs on startup and shutdown. Previously that was handled by on_startup and on_shutdown parameters, but the new system uses a neat lifespan mechanism instead based around an async context manager:
+
+@contextlib.asynccontextmanager
+async def lifespan(app):
+    async with some_async_resource():
+        print(&quot;Run at startup!&quot;)
+        yield
+        print(&quot;Run on shutdown!&quot;)
+
+app &#x3D; Starlette(
+    routes&#x3D;routes,
+    lifespan&#x3D;lifespan
+)
+
+If you haven&#x27;t tried Starlette before it feels to me like an asyncio-native cross between Flask and Django, unsurprising since creator Kim Christie is also responsible for Django REST Framework. Crucially, this means you can write most apps as a single Python file, Flask style.
+
+This makes it really easy for LLMs to spit out a working Starlette app from a single prompt.
+
+There&#x27;s just one problem there: if 1.0 breaks compatibility with the Starlette code that the models have been trained on, how can we have them generate code that works with 1.0?
+
+I decided to see if I could get this working with a Skill.
+
+Building a Skill with Claude
+
+Regular Claude Chat on claude.ai has skills, and one of those default skills is the skill-creator skill. This means Claude knows how to build its own skills.
+
+So I started a chat session and told it:
+
+
+Clone Starlette from GitHub - it just had its 1.0 release. Build a skill markdown document for this release which includes code examples of every feature.
+
+
+I didn&#x27;t even tell it where to find the repo, Starlette is widely enough known that I expected it could find it on its own.
+
+It ran git clone https://github.com/encode/starlette.git which is actually the old repository name, but GitHub handles redirects automatically so this worked just fine.
+
+The resulting skill document looked very thorough to me... and then I noticed a new button at the top I hadn&#x27;t seen before labelled &quot;Copy to your skills&quot;. So I clicked it:
+
+
+
+And now my regular Claude chat has access to that skill!
+
+A task management demo app
+
+I started a new conversation and prompted:
+
+
+Build a task management app with Starlette, it should have projects and tasks and comments and labels
+
+
+And Claude did exactly that, producing a simple GitHub Issues clone using Starlette 1.0, a SQLite database (via aiosqlite) and a Jinja2 template.
+
+Claude even tested the app manually like this:
+
+
+cd /home/claude/taskflow &amp;&amp; timeout 5 python -c &quot;
+import asyncio
+from database import init_db
+asyncio.run(init_db())
+print(&#x27;DB initialized successfully&#x27;)
+&quot; 2&gt;&amp;1
+
+pip install httpx --break-system-packages -q \
+  &amp;&amp; cd /home/claude/taskflow &amp;&amp; \
+  python -c &quot;
+from starlette.testclient import TestClient
+from main import app
+
+client &#x3D; TestClient(app)
+
+r &#x3D; client.get(&#x27;/api/stats&#x27;)
+print(&#x27;Stats:&#x27;, r.json())
+
+r &#x3D; client.get(&#x27;/api/projects&#x27;)
+print(&#x27;Projects:&#x27;, len(r.json()), &#x27;found&#x27;)
+
+r &#x3D; client.get(&#x27;/api/tasks&#x27;)
+print(&#x27;Tasks:&#x27;, len(r.json()), &#x27;found&#x27;)
+
+r &#x3D; client.get(&#x27;/api/labels&#x27;)
+print(&#x27;Labels:&#x27;, len(r.json()), &#x27;found&#x27;)
+
+r &#x3D; client.get(&#x27;/api/tasks/1&#x27;)
+t &#x3D; r.json()
+print(f&#x27;Task 1: \&quot;{t[\&quot;title\&quot;]}\&quot; - {len(t[\&quot;comments\&quot;])} comments, {len(t[\&quot;labels\&quot;])} labels&#x27;)
+
+r &#x3D; client.post(&#x27;/api/tasks&#x27;, json&#x3D;{&#x27;title&#x27;:&#x27;Test task&#x27;,&#x27;project_id&#x27;:1,&#x27;priority&#x27;:&#x27;high&#x27;,&#x27;label_ids&#x27;:[1,2]})
+print(&#x27;Created task:&#x27;, r.status_code, r.json()[&#x27;title&#x27;])
+
+r &#x3D; client.post(&#x27;/api/comments&#x27;, json&#x3D;{&#x27;task_id&#x27;:1,&#x27;content&#x27;:&#x27;Test comment&#x27;})
+print(&#x27;Created comment:&#x27;, r.status_code)
+
+r &#x3D; client.get(&#x27;/&#x27;)
+print(&#x27;Homepage:&#x27;, r.status_code, &#x27;- length:&#x27;, len(r.text))
+
+print(&#x27;\nAll tests passed!&#x27;)
+&quot;
+
+For all of the buzz about Claude Code, it&#x27;s easy to overlook that Claude itself counts as a coding agent now, fully able to both write and then test the code that it is writing.
+
+Here&#x27;s what the resulting app looked like. The code is here in my research repository.
+
+
+Tags: open-source, python, ai, asgi, kim-christie, generative-ai, llms, ai-assisted-programming, claude, coding-agents, skills, agentic-engineering, starlette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              PCGamer Article Performance Audit
+              <span class="post-metadata">(3 min | 830 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/22/pcgamer-audit/#atom-everything>Research: PCGamer Article Performance Audit
+Stuart Breckenridge pointed out that PC Gamer Recommends RSS Readers in a 37MB Article That Just Keeps Downloading, highlighting a truly horrifying example of web bloat that added up to 100s more MBs thanks to auto-playing video ads. I decided to have Claude Code for web use Rodney to investigate the page - prompt here.
+Tags: web-performance, rodney</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              JavaScript Sandboxing Research
+              <span class="post-metadata">(3 min | 777 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/22/javascript-sandboxing-research/#atom-everything>Research: JavaScript Sandboxing Research
+Aaron Harper wrote about Node.js worker threads, which inspired me to run a research task to see if they might help with running JavaScript in a sandbox. Claude Code went way beyond my initial question and produced a comparison of isolated-vm, vm2, quickjs-emscripten, QuickJS-NG, ShadowRealm, and Deno Workers.
+Tags: sandboxing, javascript, nodejs, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              DNS Lookup
+              <span class="post-metadata">(2 min | 734 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/22/dns/#atom-everything>Tool: DNS Lookup
+TIL that Cloudflare&#x27;s 1.1.1.1 DNS service (and 1.1.1.2 and 1.1.1.3, which block malware and malware + adult content respectively) has a CORS-enabled JSON API, so I had Claude Code build me a UI for running DNS queries against all three of those resolvers.
+Tags: dns, cors, cloudflare</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Merge State Visualizer
+              <span class="post-metadata">(3 min | 752 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/22/manyana/#atom-everything>Tool: Merge State Visualizer
+Bram Cohen wrote about his coherent vision for the future of version control using CRDTs, illustrated by 470 lines of Python.
+I fed that Python (minus comments) into Claude and asked for an explanation, then had it use Pyodide to build me an interactive UI for seeing how the algorithms work.
+Tags: vcs, pyodide, bram-cohen, crdt</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-03-21</time>
 
       <section>
@@ -271,6 +496,20 @@ The post Monitor Copilot coding agent logs live in Raycast appeared first on The
 The post A smoother navigation experience in GitHub Mobile for Android appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              SQLite Tags Benchmark: Comparing 5 Tagging Strategies
+              <span class="post-metadata">(3 min | 803 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/20/sqlite-tags-benchmark/#atom-everything>Research: SQLite Tags Benchmark: Comparing 5 Tagging Strategies
+I had Claude Code run a micro-benchmark comparing different approaches to implementing tagging in SQLite. Traditional many-to-many tables won, but FTS5 came a close second. Full table scans with LIKE queries performed better than I expected, but full table scans with JSON arrays and json_each() were much slower.
+Tags: json, sqlite</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
@@ -565,6 +804,19 @@ Tags: ai, generative-ai, local-llms, llms, qwen, mlx</a>
       <article>
           <details>
             <summary>
+              datasette 1.0a26
+              <span class="post-metadata">(2 min | 725 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/18/datasette/#atom-everything>Release: datasette 1.0a26
+Datasette now has a mechanism for assigning semantic column types. Built-in column types include url, email, and json, and plugins can register additional types using the new register_column_types() plugin hook.</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Configure Copilot coding agent’s validation tools
               <span class="post-metadata">(4 min | 1298 words)</span> 
             </summary>
@@ -787,6 +1039,19 @@ Then I had OpenAI Codex loop through all five reasoning effort levels and all th
 
 
 Tags: ai, openai, generative-ai, llms, llm, vision-llms, llm-pricing, pelican-riding-a-bicycle, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm 0.29
+              <span class="post-metadata">(2 min | 703 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/17/llm/#atom-everything>Release: llm 0.29
+Adds support for OpenAI&#x27;s new models gpt-5.4, gpt-5.4-mini, and gpt-5.4-nano.</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
@@ -1245,6 +1510,20 @@ The post Deprecating the cost center integration on the enterprise People page a
       <time>2026-03-15</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              John M. Mossman Lock Collection
+              <span class="post-metadata">(2 min | 733 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/15/john-m-mossman-lock-collection/#atom-everything>Museum: John M. Mossman Lock Collection
+The General Society of Mechanics and Tradesmen of the City of New York is home to the John M. Mossman Lock Collection, likely the world&#x27;s largest collection of antique bank locks.
+Tags: museums</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>

@@ -2,10 +2,186 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-03-22T21:16:47.266Z</updated>
+    <updated>2026-03-23T14:48:27.480Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Beats now have notes]]></title>
+        <id>https://simonwillison.net/2026/Mar/23/beats-now-have-notes/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/23/beats-now-have-notes/#atom-everything"/>
+        <updated>2026-03-23T02:13:13.000Z</updated>
+        <summary type="html"><![CDATA[<p>Last month I <a href="https://simonwillison.net/2026/Feb/20/beats/">added a feature I call beats</a> to this blog, pulling in some of my other content from <a href="https://simonwillison.net/elsewhere/">external sources</a> and including it on the homepage, search and various archive pages on the site.</p>
+<p>On any given day these frequently outnumber my regular posts. They were looking a little bit thin and were lacking any form of explanation beyond a link, so I've added the ability to annotate them with a "note" which now shows up as part of their display.</p>
+<p>Here's what that looks like <a href="https://simonwillison.net/2026/Mar/22/">for the content I published yesterday</a>:</p>
+<p><img class="blogmark-image" style="width:80%" src="https://static.simonwillison.net/static/2026/beats-notes.jpg" alt="Screenshot of part of my blog homepage showing four &quot;beats&quot; entries from March 22, 2026, each tagged as RESEARCH or TOOL, with titles like &quot;PCGamer Article Performance Audit&quot; and &quot;DNS Lookup&quot;, now annotated with short descriptive notes explaining the context behind each linked item."></p>
+<p>I've also updated the <a href="https://simonwillison.net/atom/everything/">/atom/everything/</a> Atom feed to include any beats that I've attached notes to.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/atom">atom</a>, <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/site-upgrades">site-upgrades</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Starlette 1.0 skill]]></title>
+        <id>https://simonwillison.net/2026/Mar/23/starlette-1-skill/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/23/starlette-1-skill/#atom-everything"/>
+        <updated>2026-03-23T00:05:00.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Research:</strong> <a href="https://github.com/simonw/research/tree/main/starlette-1-skill#readme">Starlette 1.0 skill</a></p>
+    <p>See <a href="https://simonwillison.net/2026/Mar/22/starlette/">Experimenting with Starlette 1.0 with Claude skills</a>.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/starlette">starlette</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Experimenting with Starlette 1.0 with Claude skills]]></title>
+        <id>https://simonwillison.net/2026/Mar/22/starlette/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/22/starlette/#atom-everything"/>
+        <updated>2026-03-22T23:57:44.000Z</updated>
+        <summary type="html"><![CDATA[<p><a href="https://marcelotryle.com/blog/2026/03/22/starlette-10-is-here/">Starlette 1.0 is out</a>! This is a really big deal. I think Starlette may be the Python framework with the most usage compared to its relatively low brand recognition because Starlette is the foundation of <a href="https://fastapi.tiangolo.com/">FastAPI</a>, which has attracted a huge amount of buzz that seems to have overshadowed Starlette itself.</p>
+<p>Kim Christie started working on Starlette in 2018 and it quickly became my favorite out of the new breed of Python ASGI frameworks. The only reason I didn't use it as the basis for my own <a href="https://datasette.io/">Datasette</a> project was that it didn't yet promise stability, and I was determined to provide a stable API for Datasette's own plugins... albeit I still haven't been brave enough to ship my own 1.0 release (after 26 alphas and counting)!</p>
+<p>Then in September 2025 Marcelo Trylesinski <a href="https://github.com/Kludex/starlette/discussions/2997">announced that Starlette and Uvicorn were transferring to their GitHub account</a>, in recognition of their many years of contributions and to make it easier for them to receive sponsorship against those projects.</p>
+<p>The 1.0 version has a few breaking changes compared to the 0.x series, described in <a href="https://starlette.dev/release-notes/#100rc1-february-23-2026">the release notes for 1.0.0rc1</a> that came out in February.</p>
+<p>The most notable of these is a change to how code runs on startup and shutdown. Previously that was handled by <code>on_startup</code> and <code>on_shutdown</code> parameters, but the new system uses a neat <a href="https://starlette.dev/lifespan/">lifespan</a> mechanism instead based around an <a href="https://docs.python.org/3/library/contextlib.html#contextlib.asynccontextmanager">async context manager</a>:</p>
+<pre><span class="pl-en">@<span class="pl-s1">contextlib</span>.<span class="pl-c1">asynccontextmanager</span></span>
+<span class="pl-k">async</span> <span class="pl-k">def</span> <span class="pl-en">lifespan</span>(<span class="pl-s1">app</span>):
+    <span class="pl-k">async</span> <span class="pl-k">with</span> <span class="pl-en">some_async_resource</span>():
+        <span class="pl-en">print</span>(<span class="pl-s">"Run at startup!"</span>)
+        <span class="pl-k">yield</span>
+        <span class="pl-en">print</span>(<span class="pl-s">"Run on shutdown!"</span>)
+
+<span class="pl-s1">app</span> <span class="pl-c1">=</span> <span class="pl-en">Starlette</span>(
+    <span class="pl-s1">routes</span><span class="pl-c1">=</span><span class="pl-s1">routes</span>,
+    <span class="pl-s1">lifespan</span><span class="pl-c1">=</span><span class="pl-s1">lifespan</span>
+)</pre>
+<p>If you haven't tried Starlette before it feels to me like an asyncio-native cross between Flask and Django, unsurprising since creator Kim Christie is also responsible for Django REST Framework. Crucially, this means you can write most apps as a single Python file, Flask style.</p>
+<p>This makes it <em>really</em> easy for LLMs to spit out a working Starlette app from a single prompt.</p>
+<p>There's just one problem there: if 1.0 breaks compatibility with the Starlette code that the models have been trained on, how can we have them generate code that works with 1.0?</p>
+<p>I decided to see if I could get this working <a href="https://simonwillison.net/2025/Oct/16/claude-skills/">with a Skill</a>.</p>
+<h4 id="building-a-skill-with-claude">Building a Skill with Claude</h4>
+<p>Regular Claude Chat on <a href="https://claude.ai/">claude.ai</a> has skills, and one of those default skills is the <a href="https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md">skill-creator skill</a>. This means Claude knows how to build its own skills.</p>
+<p>So I started <a href="https://claude.ai/share/b537c340-aea7-49d6-a14d-3134aa1bd957">a chat session</a> and told it:</p>
+<blockquote>
+<p>Clone Starlette from GitHub - it just had its 1.0 release. Build a skill markdown document for this release which includes code examples of every feature.</p>
+</blockquote>
+<p>I didn't even tell it where to find the repo, Starlette is widely enough known that I expected it could find it on its own.</p>
+<p>It ran <code>git clone https://github.com/encode/starlette.git</code> which is actually the old repository name, but GitHub handles redirects automatically so this worked just fine.</p>
+<p>The <a href="https://github.com/simonw/research/blob/main/starlette-1-skill/SKILL.md">resulting skill document</a> looked very thorough to me... and then I noticed a new button at the top I hadn't seen before labelled "Copy to your skills". So I clicked it:</p>
+<p><img src="https://static.simonwillison.net/static/2026/skill-button.jpg" alt="Screenshot of the Claude.ai interface showing a conversation titled &quot;Starlette 1.0 skill document with code examples.&quot; The left panel shows a chat where the user prompted: &quot;Clone Starlette from GitHub - it just had its 1.0 release. Build a skill markdown document for this release which includes code examples of every feature.&quot; Claude's responses include collapsed sections labeled &quot;Strategized cloning repository and documenting comprehensive feature examples,&quot; &quot;Examined version details and surveyed source documentation comprehensively,&quot; and &quot;Synthesized Starlette 1.0 knowledge to construct comprehensive skill documentation,&quot; with intermediate messages like &quot;I'll clone Starlette from GitHub and build a comprehensive skill document. Let me start by reading the skill-creator guide and then cloning the repo,&quot; &quot;Now let me read through all the documentation files to capture every feature:&quot; and &quot;Now I have a thorough understanding of the entire codebase. Let me build the comprehensive skill document.&quot; The right panel shows a skill preview pane with buttons &quot;Copy to your skills&quot; and &quot;Copy&quot; at the top, and a Description section reading: &quot;Build async web applications and APIs with Starlette 1.0, the lightweight ASGI framework for Python. Use this skill whenever a user wants to create an async Python web app, REST API, WebSocket server, or ASGI application using Starlette. Triggers include mentions of 'Starlette', 'ASGI', async Python web frameworks, or requests to build lightweight async APIs, WebSocket services, streaming responses, or middleware pipelines. Also use when the user is working with FastAPI internals (which is built on Starlette), needs ASGI middleware patterns, or wants a minimal async web server&quot; (text truncated)." style="max-width: 100%;" /></p>
+<p>And now my regular Claude chat has access to that skill!</p>
+<h4 id="a-task-management-demo-app">A task management demo app</h4>
+<p>I started <a href="https://claude.ai/share/b5285fbc-5849-4939-b473-dcb66f73503b">a new conversation</a> and prompted:</p>
+<blockquote>
+<p>Build a task management app with Starlette, it should have projects and tasks and comments and labels</p>
+</blockquote>
+<p>And Claude did exactly that, producing a simple GitHub Issues clone using Starlette 1.0, a SQLite database (via <a href="https://github.com/omnilib/aiosqlite">aiosqlite</a>) and a Jinja2 template.</p>
+<p>Claude even tested the app manually like this:</p>
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> /home/claude/taskflow <span class="pl-k">&amp;&amp;</span> timeout 5 python -c <span class="pl-s"><span class="pl-pds">"</span></span>
+<span class="pl-s">import asyncio</span>
+<span class="pl-s">from database import init_db</span>
+<span class="pl-s">asyncio.run(init_db())</span>
+<span class="pl-s">print('DB initialized successfully')</span>
+<span class="pl-s"><span class="pl-pds">"</span></span> <span class="pl-k">2&gt;&amp;1</span>
+
+pip install httpx --break-system-packages -q \
+  <span class="pl-k">&amp;&amp;</span> <span class="pl-c1">cd</span> /home/claude/taskflow <span class="pl-k">&amp;&amp;</span> \
+  python -c <span class="pl-s"><span class="pl-pds">"</span></span>
+<span class="pl-s">from starlette.testclient import TestClient</span>
+<span class="pl-s">from main import app</span>
+<span class="pl-s"></span>
+<span class="pl-s">client = TestClient(app)</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.get('/api/stats')</span>
+<span class="pl-s">print('Stats:', r.json())</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.get('/api/projects')</span>
+<span class="pl-s">print('Projects:', len(r.json()), 'found')</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.get('/api/tasks')</span>
+<span class="pl-s">print('Tasks:', len(r.json()), 'found')</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.get('/api/labels')</span>
+<span class="pl-s">print('Labels:', len(r.json()), 'found')</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.get('/api/tasks/1')</span>
+<span class="pl-s">t = r.json()</span>
+<span class="pl-s">print(f'Task 1: <span class="pl-cce">\"</span>{t[<span class="pl-cce">\"</span>title<span class="pl-cce">\"</span>]}<span class="pl-cce">\"</span> - {len(t[<span class="pl-cce">\"</span>comments<span class="pl-cce">\"</span>])} comments, {len(t[<span class="pl-cce">\"</span>labels<span class="pl-cce">\"</span>])} labels')</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.post('/api/tasks', json={'title':'Test task','project_id':1,'priority':'high','label_ids':[1,2]})</span>
+<span class="pl-s">print('Created task:', r.status_code, r.json()['title'])</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.post('/api/comments', json={'task_id':1,'content':'Test comment'})</span>
+<span class="pl-s">print('Created comment:', r.status_code)</span>
+<span class="pl-s"></span>
+<span class="pl-s">r = client.get('/')</span>
+<span class="pl-s">print('Homepage:', r.status_code, '- length:', len(r.text))</span>
+<span class="pl-s"></span>
+<span class="pl-s">print('\nAll tests passed!')</span>
+<span class="pl-s"><span class="pl-pds">"</span></span></pre></div>
+<p>For all of the buzz about Claude Code, it's easy to overlook that Claude itself counts as a coding agent now, fully able to both write and then test the code that it is writing.</p>
+<p>Here's what the resulting app looked like. The code is <a href="https://github.com/simonw/research/blob/main/starlette-1-skill/taskflow">here in my research repository</a>.</p>
+<p><img src="https://static.simonwillison.net/static/2026/taskflow.jpg" alt="Screenshot of a dark-themed Kanban board app called &quot;TaskFlow&quot; showing the &quot;Website Redesign&quot; project. The left sidebar has sections &quot;OVERVIEW&quot; with &quot;Dashboard&quot;, &quot;All Tasks&quot;, and &quot;Labels&quot;, and &quot;PROJECTS&quot; with &quot;Website Redesign&quot; (1) and &quot;API Platform&quot; (0). The main area has three columns: &quot;TO DO&quot; (0) showing &quot;No tasks&quot;, &quot;IN PROGRESS&quot; (1) with a card titled &quot;Blog about Starlette 1.0&quot; tagged &quot;MEDIUM&quot; and &quot;Documentation&quot;, and &quot;DONE&quot; (0) showing &quot;No tasks&quot;. Top-right buttons read &quot;+ New Task&quot; and &quot;Delete&quot;." style="max-width: 100%;" /></p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/asgi">asgi</a>, <a href="https://simonwillison.net/tags/kim-christie">kim-christie</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/skills">skills</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/starlette">starlette</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[PCGamer Article Performance Audit]]></title>
+        <id>https://simonwillison.net/2026/Mar/22/pcgamer-audit/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/22/pcgamer-audit/#atom-everything"/>
+        <updated>2026-03-22T22:49:00.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Research:</strong> <a href="https://github.com/simonw/research/tree/main/pcgamer-audit#readme">PCGamer Article Performance Audit</a></p>
+    <p>Stuart Breckenridge pointed out that <a href="https://stuartbreckenridge.net/2026-03-19-pc-gamer-recommends-rss-readers-in-a-37mb-article/">PC Gamer Recommends RSS Readers in a 37MB Article That Just Keeps Downloading</a>, highlighting a truly horrifying example of web bloat that added up to 100s more MBs thanks to auto-playing video ads. I decided to have Claude Code for web use <a href="https://github.com/simonw/rodney/">Rodney</a> to investigate the page - <a href="https://github.com/simonw/research/pull/101#issue-4117308562">prompt here</a>.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/web-performance">web-performance</a>, <a href="https://simonwillison.net/tags/rodney">rodney</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[JavaScript Sandboxing Research]]></title>
+        <id>https://simonwillison.net/2026/Mar/22/javascript-sandboxing-research/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/22/javascript-sandboxing-research/#atom-everything"/>
+        <updated>2026-03-22T19:53:00.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Research:</strong> <a href="https://github.com/simonw/research/tree/main/javascript-sandboxing-research#readme">JavaScript Sandboxing Research</a></p>
+    <p>Aaron Harper <a href="https://www.inngest.com/blog/node-worker-threads">wrote about Node.js worker threads</a>, which inspired me to run a research task to see if they might help with running JavaScript in a sandbox. Claude Code went way beyond my initial question and produced a comparison of <a href="https://github.com/laverdet/isolated-vm">isolated-vm</a>, <a href="https://github.com/patriksimek/vm2">vm2</a>, <a href="https://github.com/justjake/quickjs-emscripten">quickjs-emscripten</a>, <a href="https://github.com/quickjs-ng/quickjs">QuickJS-NG</a>, <a href="https://github.com/tc39/proposal-shadowrealm">ShadowRealm</a>, and <a href="https://docs.deno.com/runtime/manual/runtime/workers/">Deno Workers</a>.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/sandboxing">sandboxing</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/nodejs">nodejs</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[DNS Lookup]]></title>
+        <id>https://simonwillison.net/2026/Mar/22/dns/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/22/dns/#atom-everything"/>
+        <updated>2026-03-22T19:16:30.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Tool:</strong> <a href="https://tools.simonwillison.net/dns">DNS Lookup</a></p>
+    <p>TIL that Cloudflare's 1.1.1.1 DNS service (and 1.1.1.2 and 1.1.1.3, which block malware and malware + adult content respectively) has a CORS-enabled JSON API, so I <a href="https://github.com/simonw/tools/pull/258#issue-4116864108">had Claude Code build me</a> a UI for running DNS queries against all three of those resolvers.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/dns">dns</a>, <a href="https://simonwillison.net/tags/cors">cors</a>, <a href="https://simonwillison.net/tags/cloudflare">cloudflare</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Merge State Visualizer]]></title>
+        <id>https://simonwillison.net/2026/Mar/22/manyana/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/22/manyana/#atom-everything"/>
+        <updated>2026-03-22T18:57:32.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Tool:</strong> <a href="https://tools.simonwillison.net/manyana">Merge State Visualizer</a></p>
+    <p>Bram Cohen wrote about his <a href="https://bramcohen.com/p/manyana">coherent vision for the future of version control</a> using CRDTs, illustrated by <a href="https://github.com/bramcohen/manyana/blob/main/manyana.py">470 lines of Python</a>.</p>
+<p>I fed that Python (minus comments) into Claude and asked for <a href="https://claude.ai/share/8ce777cd-c7c3-4656-a45e-acbf66bf994b">an explanation</a>, then had it use Pyodide to build me an interactive UI for seeing how the algorithms work.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/vcs">vcs</a>, <a href="https://simonwillison.net/tags/pyodide">pyodide</a>, <a href="https://simonwillison.net/tags/bram-cohen">bram-cohen</a>, <a href="https://simonwillison.net/tags/crdt">crdt</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Profiling Hacker News users based on their comments]]></title>
         <id>https://simonwillison.net/2026/Mar/21/profiling-hacker-news-users/#atom-everything</id>
@@ -208,6 +384,19 @@ The post Monitor Copilot coding agent logs live in Raycast appeared first on The
 The post A smoother navigation experience in GitHub Mobile for Android appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SQLite Tags Benchmark: Comparing 5 Tagging Strategies]]></title>
+        <id>https://simonwillison.net/2026/Mar/20/sqlite-tags-benchmark/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/20/sqlite-tags-benchmark/#atom-everything"/>
+        <updated>2026-03-20T02:57:00.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Research:</strong> <a href="https://github.com/simonw/research/tree/main/sqlite-tags-benchmark#readme">SQLite Tags Benchmark: Comparing 5 Tagging Strategies</a></p>
+    <p>I had Claude Code run a micro-benchmark comparing different approaches to implementing tagging in SQLite. Traditional many-to-many tables won, but FTS5 came a close second. Full table scans with LIKE queries performed better than I expected, but full table scans with JSON arrays and <code>json_each()</code> were much slower.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/json">json</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
@@ -421,6 +610,17 @@ Here's a fascinating piece of research by Dan Woods, who managed to get a custom
         </author>
     </entry>
     <entry>
+        <title type="html"><![CDATA[datasette 1.0a26]]></title>
+        <id>https://simonwillison.net/2026/Mar/18/datasette/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/18/datasette/#atom-everything"/>
+        <updated>2026-03-18T22:16:19.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/datasette/releases/tag/1.0a26">datasette 1.0a26</a></p>
+    <p>Datasette now has a mechanism for assigning semantic column types. Built-in column types include <code>url</code>, <code>email</code>, and <code>json</code>, and plugins can register additional types using the new <a href="https://docs.datasette.io/en/latest/plugin_hooks.html#plugin-register-column-types">register_column_types()</a> plugin hook.</p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Configure Copilot coding agent’s validation tools]]></title>
         <id>https://github.blog/changelog/2026-03-18-configure-copilot-coding-agents-validation-tools</id>
         <link href="https://github.blog/changelog/2026-03-18-configure-copilot-coding-agents-validation-tools"/>
@@ -593,6 +793,17 @@ The post Secret scanning in AI coding agents via the GitHub MCP Server appeared 
 <p><img src="https://static.simonwillison.net/static/2026/gpt-5.4-pelican-family.svg" alt="Described by Claude Opus 4.6: A 5x3 comparison grid of AI-generated cartoon illustrations of a pelican riding a bicycle. Columns are labeled &quot;gpt-5.4-nano&quot;, &quot;gpt-5.4-mini&quot;, and &quot;gpt-5.4&quot; across the top, and rows are labeled &quot;none&quot;, &quot;low&quot;, &quot;medium&quot;, &quot;high&quot;, and &quot;xhigh&quot; down the left side, representing quality/detail settings. In the &quot;none&quot; row, gpt-5.4-nano shows a chaotic white bird with misplaced arrows and tangled wheels on grass, gpt-5.4-mini shows a duck-like brown bird awkwardly straddling a motorcycle-like bike, and gpt-5.4 shows a stiff gray-and-white pelican sitting atop a blue tandem bicycle with extra legs. In the &quot;low&quot; row, nano shows a chubby round white bird pedaling with small feet on grass, mini shows a cleaner white bird riding a blue bicycle with motion lines, and gpt-5.4 shows a pelican with a blue cap riding confidently but with slightly awkward proportions. In the &quot;medium&quot; row, nano regresses to a strange bird standing over bowling balls on ice, mini shows two plump white birds merged onto one yellow-wheeled bicycle, and gpt-5.4 shows a more recognizable gray-and-white pelican on a red bicycle but with tangled extra legs. In the &quot;high&quot; row, nano shows multiple small pelicans crowded around a broken green bicycle on grass with a sun overhead, mini shows a tandem bicycle with two white pelicans and clear blue sky, and gpt-5.4 shows two pelicans stacked on a red tandem bike with the most realistic proportions yet. In the &quot;xhigh&quot; row, nano shows the most detailed scene with a pelican on a detailed bicycle with grass and a large sun but still somewhat jumbled anatomy, mini produces the cleanest single pelican on a yellow-accented bicycle with a light blue sky, and gpt-5.4 shows a well-rendered gray pelican on a teal bicycle with the best overall coherence. Generally, quality improves moving right across models and down through quality tiers, though &quot;medium&quot; is inconsistently worse than &quot;low&quot; for some models, and all images maintain a lighthearted cartoon style with pastel skies and simple backgrounds." style="max-width: 100%;" /></p>
     
         <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/vision-llms">vision-llms</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm 0.29]]></title>
+        <id>https://simonwillison.net/2026/Mar/17/llm/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/17/llm/#atom-everything"/>
+        <updated>2026-03-17T19:24:10.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/llm/releases/tag/0.29">llm 0.29</a></p>
+    <p>Adds support for OpenAI's new models <code>gpt-5.4</code>, <code>gpt-5.4-mini</code>, and <code>gpt-5.4-nano</code>.</p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
@@ -1014,6 +1225,19 @@ The post Deprecating the cost center integration on the enterprise People page a
         <summary type="html"><![CDATA[A deep dive into why Codex Security doesn’t rely on traditional SAST, instead using AI-driven constraint reasoning and validation to find real vulnerabilities with fewer false positives.]]></summary>
         <author>
             <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[John M. Mossman Lock Collection]]></title>
+        <id>https://simonwillison.net/2026/Mar/15/john-m-mossman-lock-collection/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/15/john-m-mossman-lock-collection/#atom-everything"/>
+        <updated>2026-03-15T23:38:05.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Museum:</strong> <a href="https://www.niche-museums.com/118">John M. Mossman Lock Collection</a></p>
+    <p>The General Society of Mechanics and Tradesmen of the City of New York is home to the John M. Mossman Lock Collection, likely the world's largest collection of antique bank locks.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/museums">museums</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
