@@ -31,6 +31,94 @@
       <article>
           <details>
             <summary>
+              Package Managers Need to Cool Down
+              <span class="post-metadata">(3 min | 908 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/24/package-managers-need-to-cool-down/#atom-everything>Package Managers Need to Cool Down
+LiteLLM supply chain attack inspired me to revisit the idea of dependency cooldowns, the practice of only installing updated dependencies once they&#x27;ve been out in the wild for a few days to give the community a chance to spot if they&#x27;ve been subverted in some way.
+This recent piece (March 4th) piece by Andrew Nesbitt reviews the current state of dependency cooldown mechanisms across different packaging tools. It&#x27;s surprisingly well supported! There&#x27;s been a flurry of activity across major packaging tools, including:
+pnpm 10.16 (September 2025) — minimumReleaseAge with minimumReleaseAgeExclude for trusted packages
+Yarn 4.10.0 (September 2025) — npmMinimalAgeGate (in minutes) with npmPreapprovedPackages for exemptions
+Bun 1.3 (October 2025) — minimumReleaseAge via bunfig.toml
+Deno 2.6 (December 2025) — --minimum-dependency-age for deno update and deno outdated
+uv 0.9.17 (December 2025) — added relative duration support to existing --exclude-newer, plus per-package overrides via exclude-newer-package
+pip 26.0 (January 2026) — --uploaded-prior-to (absolute timestamps only; relative duration support requested)
+npm 11.10.0 (February 2026) — min-release-age
+pip currently only supports absolute rather than relative dates but Seth Larson has a workaround for that using a scheduled cron to update the absolute date in the pip.conf config file.
+
+
+    
+Tags: javascript, packaging, pip, pypi, python, security, npm, deno, supply-chain, uv</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Christopher Mims
+              <span class="post-metadata">(2 min | 717 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/24/christopher-mims/#atom-everything>I really think &quot;give AI total control of my computer and therefore my entire life&quot; is going to look so foolish in retrospect that everyone who went for this is going to look as dumb as Jimmy Fallon holding up a picture of his Bored Ape
+
+— Christopher Mims, Technology columnist at The Wall Street Journal
+Tags: ai, security</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Ask @copilot to make changes to any pull request
+              <span class="post-metadata">(5 min | 1375 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-03-24-ask-copilot-to-make-changes-to-any-pull-request>You can now mention @copilot in any pull request to ask Copilot to make changes. You can ask @copilot to: Fix failing GitHub Actions workflows: @copilot Fix the failing tests…
+The post Ask @copilot to make changes to any pull request appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Manage Copilot coding agent repository access via the API
+              <span class="post-metadata">(6 min | 1824 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-03-24-manage-copilot-coding-agent-repository-access-via-the-api>Organization owners who want to manage Copilot coding agent access at scale can now do so programmatically with the new Copilot coding agent management REST APIs, available in public preview.…
+The post Manage Copilot coding agent repository access via the API appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Malicious litellm_init.pth in litellm 1.82.8 — credential stealer
+              <span class="post-metadata">(3 min | 904 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/24/malicious-litellm/#atom-everything>Malicious litellm_init.pth in litellm 1.82.8 — credential stealer
+litellm_init.pth file, which means installing the package is enough to trigger it even without running import litellm.
+(1.82.7 had the exploit as well but it was in the proxy/proxy_server.py file so the package had to be imported for it to take effect.)
+This issue has a very detailed description of what the credential stealer does. There&#x27;s more information about the timeline of the exploit over here.
+PyPI has already quarantined the litellm package so the window for compromise was just a few hours, but if you DID install the package it would have hoovered up a bewildering array of secrets, including ~/.ssh/, ~/.gitconfig, ~/.git-credentials, ~/.aws/, ~/.kube/, ~/.config/, ~/.azure/, ~/.docker/, ~/.npmrc, ~/.vault-token, ~/.netrc, ~/.lftprc, ~/.msmtprc, ~/.my.cnf, ~/.pgpass, ~/.mongorc.js, ~/.bash_history, ~/.zsh_history, ~/.sh_history, ~/.mysql_history, ~/.psql_history, ~/.rediscli_history, ~/.bitcoin/, ~/.litecoin/, ~/.dogecoin/, ~/.zcash/, ~/.dashcore/, ~/.ripple/, ~/.bitmonero/, ~/.ethereum/, ~/.cardano/.
+It looks like this supply chain attack started with the recent exploit against Trivy, ironically a security scanner tool that was used in CI by LiteLLM. The Trivy exploit likely resulted in stolen PyPI credentials which were then used to directly publish the vulnerable packages.
+
+
+    
+Tags: open-source, pypi, python, security, supply-chain</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Faster incremental analysis with CodeQL in pull requests
               <span class="post-metadata">(5 min | 1378 words)</span> 
             </summary>
@@ -39,6 +127,42 @@
 The post Faster incremental analysis with CodeQL in pull requests appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Helping developers build safer AI experiences for teens
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/teen-safety-policies-gpt-oss-safeguard>OpenAI releases prompt-based teen safety policies for developers using gpt-oss-safeguard, helping moderate age-specific risks in AI systems.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Update on the OpenAI Foundation
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/update-on-the-openai-foundation>The OpenAI Foundation announces plans to invest at least $1 billion in curing diseases, economic opportunity, AI resilience, and community programs.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Powering product discovery in ChatGPT
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/powering-product-discovery-in-chatgpt>ChatGPT introduces richer, visually immersive shopping powered by the Agentic Commerce Protocol, enabling product discovery, side-by-side comparisons, and merchant integration.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
       <article>
@@ -4940,43 +5064,6 @@ Tags: ai-ethics, generative-ai, ai-agents, openclaw, ai, llms</a>
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified>SWE-bench Verified is increasingly contaminated and mismeasures frontier coding progress. Our analysis shows flawed tests and training leakage. We recommend SWE-bench Pro.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Red/green TDD
-              <span class="post-metadata">(3 min | 957 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/#atom-everything>Agentic Engineering Patterns &gt;
-&quot;Use red/green TDD&quot; is a pleasingly succinct way to get better results out of a coding agent.
-TDD stands for Test Driven Development. It&#x27;s a programming style where you ensure every piece of code you write is accompanied by automated tests that demonstrate the code works.
-The most disciplined form of TDD is test-first development. You write the automated tests first, confirm that they fail, then iterate on the implementation until the tests pass.
-This turns out to be a fantastic fit for coding agents. A significant risk with coding agents is that they might write code that doesn&#x27;t work, or build code that is unnecessary and never gets used, or both.
-Test-first development helps protect against both of these common mistakes, and also ensures a robust automated test suite that protects against future regressions. As projects grow the chance that a new change might break an existing feature grows with them. A comprehensive test suite is by far the most effective way to keep those features working.
-It&#x27;s important to confirm that the tests fail before implementing the code to make them pass. If you skip that step you risk building a test that passes already, hence failing to exercise and confirm your new implementation.
-That&#x27;s what &quot;red/green&quot; means: the red phase watches the tests fail, then the green phase confirms that they now pass.
-Every good model understands &quot;red/green TDD&quot; as a shorthand for the much longer &quot;use test driven development, write the tests first, confirm that the tests fail before you implement the change that gets them to pass&quot;.
-Example prompt:
-Build a Python function to extract headers from a markdown string. Use red/green TDD.
-Here&#x27;s what I got from Claude and from ChatGPT. Normally I would use a coding agent like Claude Code or OpenAI Codex, but this example is simple enough that both Claude and ChatGPT can implement it using their default code environments.
-(I did have to append &quot;Use your code environment&quot; to the ChatGPT prompt. When I tried without that it wrote the code and tests without actually executing them.)
-Tags: testing, tdd, coding-agents, ai-assisted-programming</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI announces Frontier Alliance Partners
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/frontier-alliance-partners>OpenAI announces Frontier Alliance Partners to help enterprises move from AI pilots to production with secure, scalable agent deployments.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
