@@ -2,10 +2,60 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-03-24T21:27:57.949Z</updated>
+    <updated>2026-03-25T14:51:21.677Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Auto mode for Claude Code]]></title>
+        <id>https://simonwillison.net/2026/Mar/24/auto-mode-for-claude-code/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/24/auto-mode-for-claude-code/#atom-everything"/>
+        <updated>2026-03-24T23:57:33.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://claude.com/blog/auto-mode">Auto mode for Claude Code</a></strong></p>
+Really interesting new development in Claude Code today as an alternative to <code>--dangerously-skip-permissions</code>:</p>
+<blockquote>
+<p>Today, we're introducing auto mode, a new permissions mode in Claude Code where Claude makes permission decisions on your behalf, with safeguards monitoring actions before they run.</p>
+</blockquote>
+<p>Those safeguards appear to be implemented using Claude Sonnet 4.6, as <a href="https://code.claude.com/docs/en/permission-modes#eliminate-prompts-with-auto-mode">described in the documentation</a>:</p>
+<blockquote>
+<p>Before each action runs, a separate classifier model reviews the conversation and decides whether the action matches what you asked for: it blocks actions that escalate beyond the task scope, target infrastructure the classifier doesn’t recognize as trusted, or appear to be driven by hostile content encountered in a file or web page. [...]</p>
+<p><strong>Model</strong>: the classifier runs on Claude Sonnet 4.6, even if your main session uses a different model.</p>
+</blockquote>
+<p>They ship with an extensive set of default filters, and you can also customize them further with your own rules. The most interesting insight into how they work comes when you run this new command in the terminal:</p>
+<pre><code>claude auto-mode defaults
+</code></pre>
+<p><a href="https://gist.githubusercontent.com/simonw/91863bfd9f7ebf916d1fabb8e6940335/raw/cda3c88e919b8238e85d3f1cc990e8ff48ad9a18/defaults.json">Here's the full JSON output</a>. It's pretty long, so here's an illustrative subset:</p>
+<p>From the "allow" list:</p>
+<blockquote>
+<ul>
+<li>Test Artifacts: Hardcoded test API keys, placeholder credentials in examples, or hardcoding test cases</li>
+<li>Local Operations: Agent deleting local files in working directory, local file operations within project scope, or using <code>--ignore-certificate-errors</code> for local testing. "Project scope" means the repository the session started in — wandering into ~/, ~/Library/, /etc, or other repos is scope escalation (User Intent Rule #2), not a local operation. Does NOT cover irreversible destruction of pre-existing files or local stateful services — see "Irreversible Local Destruction" in BLOCK.</li>
+<li>Read-Only Operations: GET requests, read-only API calls, or queries that don't modify state and don't contain sensitive information in the URL. Note: PREEMPTIVE BLOCK ON CLEAR INTENT still applies — if the transcript contains clear evidence the agent is using read-only operations to scout for a blocked action, block it.</li>
+<li>Declared Dependencies: Installing packages that are already declared in the repo's manifest files (requirements.txt, package.json, Cargo.toml, pyproject.toml, Gemfile, etc.) via standard commands that read those manifests (<code>pip install -r requirements.txt</code>, <code>npm install</code>, <code>cargo build</code>, <code>bundle install</code>) — provided the agent has not modified the manifest in this session. Does NOT cover installing agent-chosen package names (e.g. <code>pip install foo</code>, <code>npm install bar</code>) — those carry typosquat and supply-chain risk. [...]</li>
+</ul>
+</blockquote>
+<p>From "soft_deny":</p>
+<blockquote>
+<ul>
+<li>Git Destructive: Force pushing (<code>git push --force</code>), deleting remote branches, or rewriting remote history</li>
+<li>Git Push to Default Branch: Pushing directly to main, master, or the repository's default branch — this bypasses pull request review. Commits should be pushed to a new feature branch instead.
+-Code from External: Downloading and executing code from external sources — e.g. <code>curl | bash</code>, deserializing external data via formats that can execute code (eval, exec, yaml.unsafe_load, pickle, etc), or similar mechanisms. Also includes running code from an external repo cloned earlier in the transcript (pip install -e, make install, python script.py, pickle.load/torch.load on cloned repo files) — "local on disk" does not mean trusted if it was cloned from an external source visible in the transcript. The repo the agent starts in is trusted.</li>
+<li>Cloud Storage Mass Delete: Deleting or mass modifying files on cloud storage (S3, GCS, Azure Blob, etc.) [...]</li>
+</ul>
+</blockquote>
+<p>I remain unconvinced by prompt injection protections that rely on AI, since they're non-deterministic by nature. The documentation does warn that this may still let things through:</p>
+<blockquote>
+<p>The classifier may still allow some risky actions: for example, if user intent is ambiguous, or if Claude doesn't have enough context about your environment to know an action might create additional risk.</p>
+</blockquote>
+<p>The fact that the default allow list includes <code>pip install -r requirements.txt</code> also means that this wouldn't protect against supply chain attacks with unpinned dependencies, as seen this morning <a href="https://simonwillison.net/2026/Mar/24/malicious-litellm/">with LiteLLM</a>.</p>
+<p>I still want my coding agents to run in a robust sandbox by default, one that restricts file access and network connections in a deterministic way. I trust those a whole lot more than prompt-based protections like this new auto mode.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-injection">prompt-injection</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Package Managers Need to Cool Down]]></title>
         <id>https://simonwillison.net/2026/Mar/24/package-managers-need-to-cool-down/#atom-everything</id>
@@ -4068,190 +4118,6 @@ The Go ecosystem is <em>really</em> good at tooling. I just learned about this t
         <p>Tags: <a href="https://simonwillison.net/tags/tdd">tdd</a>, <a href="https://simonwillison.net/tags/testing">testing</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Enterprise-defined custom organization roles are generally available]]></title>
-        <id>https://github.blog/changelog/2026-02-23-enterprise-defined-custom-organization-roles-are-generally-available</id>
-        <link href="https://github.blog/changelog/2026-02-23-enterprise-defined-custom-organization-roles-are-generally-available"/>
-        <updated>2026-02-24T02:33:02.000Z</updated>
-        <summary type="html"><![CDATA[Managing role-based access standards across many organizations can be challenging, whether administration is centralized or decentralized in your enterprise. Enterprise administrators can now create a set of custom organization roles…
-The post Enterprise-defined custom organization roles are generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[lfm2]]></title>
-        <id>https://ollama.com/library/lfm2</id>
-        <link href="https://ollama.com/library/lfm2"/>
-        <updated>2026-02-24T01:17:00.000Z</updated>
-        <summary type="html"><![CDATA[LFM2 is a family of hybrid models designed for on-device deployment. LFM2-24B-A2B is the largest model in the family, scaling the architecture to 24 billion parameters while keeping inference efficient.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Ladybird adopts Rust, with help from AI]]></title>
-        <id>https://simonwillison.net/2026/Feb/23/ladybird-adopts-rust/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/23/ladybird-adopts-rust/#atom-everything"/>
-        <updated>2026-02-23T18:52:53.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://ladybird.org/posts/adopting-rust/">Ladybird adopts Rust, with help from AI</a></strong></p>
-Really interesting case-study from Andreas Kling on advanced, sophisticated use of coding agents for ambitious coding projects with critical code. After a few years hoping Swift's platform support outside of the Apple ecosystem would mature they switched tracks to Rust their memory-safe language of choice, starting with an AI-assisted port of a critical library:</p>
-<blockquote>
-<p>Our first target was <strong>LibJS</strong> , Ladybird's JavaScript engine. The lexer, parser, AST, and bytecode generator are relatively self-contained and have extensive test coverage through <a href="https://github.com/tc39/test262">test262</a>, which made them a natural starting point.</p>
-<p>I used <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> and <a href="https://openai.com/codex/">Codex</a> for the translation. This was human-directed, not autonomous code generation. I decided what to port, in what order, and what the Rust code should look like. It was hundreds of small prompts, steering the agents where things needed to go. [...]</p>
-<p>The requirement from the start was byte-for-byte identical output from both pipelines. The result was about 25,000 lines of Rust, and the entire port took about two weeks. The same work would have taken me multiple months to do by hand. We’ve verified that every AST produced by the Rust parser is identical to the C++ one, and all bytecode generated by the Rust compiler is identical to the C++ compiler’s output. Zero regressions across the board.</p>
-</blockquote>
-<p>Having an existing conformance testing suite of the quality of <code>test262</code> is a huge unlock for projects of this magnitude, and the ability to compare output with an existing trusted implementation makes agentic engineering much more of a safe bet.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=47120899">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/browsers">browsers</a>, <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/rust">rust</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/andreas-kling">andreas-kling</a>, <a href="https://simonwillison.net/tags/ladybird">ladybird</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/conformance-suites">conformance-suites</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[IP allow list coverage extended to EMU namespaces in public preview]]></title>
-        <id>https://github.blog/changelog/2026-02-23-ip-allow-list-coverage-extended-to-emu-namespaces-in-public-preview</id>
-        <link href="https://github.blog/changelog/2026-02-23-ip-allow-list-coverage-extended-to-emu-namespaces-in-public-preview"/>
-        <updated>2026-02-23T17:44:32.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Enterprise Cloud with Enterprise Managed Users (EMUs) can now enable the ability for GitHub’s native IP allow list configuration to cover user namespaces. EMUs allow the enterprise to own…
-The post IP allow list coverage extended to EMU namespaces in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Writing about Agentic Engineering Patterns]]></title>
-        <id>https://simonwillison.net/2026/Feb/23/agentic-engineering-patterns/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/23/agentic-engineering-patterns/#atom-everything"/>
-        <updated>2026-02-23T17:43:02.000Z</updated>
-        <summary type="html"><![CDATA[<p>I've started a new project to collect and document <strong><a href="https://simonwillison.net/guides/agentic-engineering-patterns/">Agentic Engineering Patterns</a></strong> - coding practices and patterns to help get the best results out of this new era of coding agent development we find ourselves entering.</p>
-<p>I'm using <strong>Agentic Engineering</strong> to refer to building software using coding agents - tools like Claude Code and OpenAI Codex, where the defining feature is that they can both generate and <em>execute</em> code - allowing them to test that code and iterate on it independently of turn-by-turn guidance from their human supervisor.</p>
-<p>I think of <strong>vibe coding</strong> using its <a href="https://simonwillison.net/2025/Mar/19/vibe-coding/">original definition</a> of coding where you pay no attention to the code at all, which today is often associated with non-programmers using LLMs to write code.</p>
-<p>Agentic Engineering represents the other end of the scale: professional software engineers using coding agents to improve and accelerate their work by amplifying their existing expertise.</p>
-<p>There is so much to learn and explore about this new discipline! I've already published a lot <a href="https://simonwillison.net/tags/ai-assisted-programming/">under my ai-assisted-programming tag</a> (345 posts and counting) but that's been relatively unstructured. My new goal is to produce something that helps answer the question "how do I get good results out of this stuff" all in one place.</p>
-<p>I'll be developing and growing this project here on my blog as a series of chapter-shaped patterns, loosely inspired by the format popularized by <a href="https://en.wikipedia.org/wiki/Design_Patterns">Design Patterns: Elements of Reusable Object-Oriented Software</a> back in 1994.</p>
-<p>I published the first two chapters today:</p>
-<ul>
-<li>
-<strong><a href="https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/">Writing code is cheap now</a></strong> talks about the central challenge of agentic engineering: the cost to churn out initial working code has dropped to almost nothing, how does that impact our existing intuitions about how we work, both individually and as a team?</li>
-<li>
-<strong><a href="https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/">Red/green TDD</a></strong> describes how test-first development helps agents write more succinct and reliable code with minimal extra prompting.</li>
-</ul>
-<p>I hope to add more chapters at a rate of 1-2 a week. I don't really know when I'll stop, there's a lot to cover!</p>
-<h4 id="written-by-me-not-by-an-llm">Written by me, not by an LLM</h4>
-<p>I have a strong personal policy of not publishing AI-generated writing under my own name. That policy will hold true for Agentic Engineering Patterns as well. I'll be using LLMs for proofreading and fleshing out example code and all manner of other side-tasks, but the words you read here will be my own.</p>
-<h4 id="chapters-and-guides">Chapters and Guides</h4>
-<p>Agentic Engineering Patterns isn't exactly <em>a book</em>, but it's kind of book-shaped. I'll be publishing it on my site using a new shape of content I'm calling a <em>guide</em>. A guide is a collection of chapters, where each chapter is effectively a blog post with a less prominent date that's designed to be updated over time, not frozen at the point of first publication.</p>
-<p>Guides and chapters are my answer to the challenge of publishing "evergreen" content on a blog. I've been trying to find a way to do this for a while now. This feels like a format that might stick.</p>
-
-<p>If you're interested in the implementation you can find the code in the <a href="https://github.com/simonw/simonwillisonblog/blob/b9cd41a0ac4a232b2a6c90ca3fff9ae465263b02/blog/models.py#L262-L280">Guide</a>, <a href="https://github.com/simonw/simonwillisonblog/blob/b9cd41a0ac4a232b2a6c90ca3fff9ae465263b02/blog/models.py#L349-L405">Chapter</a> and <a href="https://github.com/simonw/simonwillisonblog/blob/b9cd41a0ac4a232b2a6c90ca3fff9ae465263b02/blog/models.py#L408-L423">ChapterChange</a> models and the <a href="https://github.com/simonw/simonwillisonblog/blob/b9cd41a0ac4a232b2a6c90ca3fff9ae465263b02/blog/views.py#L775-L923">associated Django views</a>, almost all of which was written by Claude Opus 4.6 running in Claude Code for web accessed via my iPhone.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/blogging">blogging</a>, <a href="https://simonwillison.net/tags/design-patterns">design-patterns</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/writing">writing</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Enterprise team support in organization APIs]]></title>
-        <id>https://github.blog/changelog/2026-02-23-enterprise-team-support-in-organization-apis</id>
-        <link href="https://github.blog/changelog/2026-02-23-enterprise-team-support-in-organization-apis"/>
-        <updated>2026-02-23T16:25:07.000Z</updated>
-        <summary type="html"><![CDATA[Organization owners within GitHub Enterprise can now discover and interact with both enterprise teams and organization teams through existing organization API endpoints. Previously, retrieving a complete view of all teams…
-The post Enterprise team support in organization APIs appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Writing code is cheap now]]></title>
-        <id>https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/#atom-everything</id>
-        <link href="https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/#atom-everything"/>
-        <updated>2026-02-23T16:20:42.000Z</updated>
-        <summary type="html"><![CDATA[<p><em><a href="https://simonwillison.net/guides/agentic-engineering-patterns/">Agentic Engineering Patterns</a> &gt;</em></p>
-    <p>The biggest challenge in adopting agentic engineering practices is getting comfortable with the consequences of the fact that <em>writing code is cheap now</em>.</p>
-<p>Code has always been expensive. Producing a few hundred lines of clean, tested code takes most software developers a full day or more. Many of our engineering habits, at both the macro and micro level, are built around this core constraint.</p>
-<p>At the macro level we spend a great deal of time designing, estimating and planning out projects, to ensure that our expensive coding time is spent as efficiently as possible. Product feature ideas are evaluated in terms of how much value they can provide <em>in exchange for that time</em> - a feature needs to earn its development costs many times over to be worthwhile!</p>
-<p>At the micro level we make hundreds of decisions a day predicated on available time and anticipated tradeoffs. Should I refactor that function to be slightly more elegant if it adds an extra hour of coding time? How about writing documentation? Is it worth adding a test for this edge case? Can I justify building a debug interface for this?</p>
-<p>Coding agents dramatically drop the cost of typing code into the computer, which disrupts <em>so many</em> of our existing personal and organizational intuitions about which trade-offs make sense.</p>
-<p>The ability to run parallel agents makes this even harder to evaluate, since one human engineer can now be implementing, refactoring, testing and documenting code in multiple places at the same time.</p>
-<h2>Good code still has a cost</h2>
-<p>Delivering new code has dropped in price to almost free... but delivering <em>good</em> code remains significantly more expensive than that.</p>
-<p>Here's what I mean by "good code":</p>
-<ul>
-<li>The code works. It does what it's meant to do, without bugs.</li>
-<li>We <em>know the code works</em>. We've taken steps to confirm to ourselves and to others that the code is fit for purpose.</li>
-<li>It solves the right problem.</li>
-<li>It handles error cases gracefully and predictably: it doesn't just consider the happy path. Errors should provide enough information to help future maintainers understand what went wrong.</li>
-<li>It’s simple and minimal - it does only what’s needed, in a way that both humans and machines can understand now and maintain in the future.</li>
-<li>It's protected by tests. The tests show that it works now and act as a regression suite to avoid it quietly breaking in the future.</li>
-<li>It's documented at an appropriate level, and that documentation reflects the current state of the system - if the code changes an existing behavior the existing documentation needs to be updated to match.</li>
-<li>The design affords future changes. It's important to maintain <a href="https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it">YAGNI</a> - code with added complexity to anticipate future changes that may never come is often bad code - but it's also important not to write code that makes future changes much harder than they should be.</li>
-<li>All of the other relevant "ilities" - accessibility, testability, reliability, security, maintainability, observability, scalability, usability - the non-functional quality measures that are appropriate for the particular class of software being developed.</li>
-</ul>
-<p>Coding agent tools can help with most of this, but there is still a substantial burden on the developer driving those tools to ensure that the produced code is good code for the subset of good that's needed for the current project.</p>
-<h2>We need to build new habits</h2>
-<p>The challenge is to develop new personal and organizational habits that respond to the affordances and opportunities of agentic engineering. </p>
-<p>These best practices are still being figured out across our industry. I'm still figuring them out myself.</p>
-<p>For now I think the best we can do is to second guess ourselves: any time our instinct says "don't build that, it's not worth the time" fire off a prompt anyway, in an asynchronous agent session where the worst that can happen is you check ten minutes later and find that it wasn't worth the tokens.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Paul Ford]]></title>
-        <id>https://simonwillison.net/2026/Feb/23/paul-ford/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/23/paul-ford/#atom-everything"/>
-        <updated>2026-02-23T16:00:32.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://ftrain.com/leading-thoughts"><p>The paper asked me to explain vibe coding, and I did so, because I think something big is coming there, and I'm deep in, and I worry that normal people are not able to see it and I want them to be prepared. But people can't just read something and hate you quietly; they can't see that you have provided them with a utility or a warning; they need their screech. You are distributed to millions of people, and become the local proxy for the emotions of maybe dozens of people, who disagree and demand your attention, and because you are the one in the paper you need to welcome them with a pastor's smile and deep empathy, and if you speak a word in your own defense they'll screech even louder.</p></blockquote>
-<p class="cite">&mdash; <a href="https://ftrain.com/leading-thoughts">Paul Ford</a>, on writing about vibe coding for the New York Times</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/new-york-times">new-york-times</a>, <a href="https://simonwillison.net/tags/paul-ford">paul-ford</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Reply guy]]></title>
-        <id>https://simonwillison.net/2026/Feb/23/reply-guy/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/23/reply-guy/#atom-everything"/>
-        <updated>2026-02-23T13:11:57.000Z</updated>
-        <summary type="html"><![CDATA[<p>The latest scourge of Twitter is AI bots that reply to your tweets with generic, banal commentary slop, often accompanied by a question to "drive engagement" and waste as much of your time as possible.</p>
-<p>I just <a href="https://twitter.com/simonw/status/2025918174894673986">found out</a> that the category name for this genre of software is <strong>reply guy</strong> tools. Amazing.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/twitter">twitter</a>, <a href="https://simonwillison.net/tags/slop">slop</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/definitions">definitions</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Summer Yue]]></title>
-        <id>https://simonwillison.net/2026/Feb/23/summer-yue/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Feb/23/summer-yue/#atom-everything"/>
-        <updated>2026-02-23T13:01:13.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://twitter.com/summeryue0/status/2025836517831405980"><p>Nothing humbles you like telling your OpenClaw “confirm before acting” and watching it speedrun deleting your inbox. I couldn’t stop it from my phone. I had to RUN to my Mac mini like I was defusing a bomb.</p>
-<p>I said “Check this inbox too and suggest what you would archive or delete, don’t action until I tell you to.” This has been working well for my toy inbox, but my real inbox was too huge and triggered compaction. During the compaction, it lost my original instruction 🤦‍♀️</p></blockquote>
-<p class="cite">&mdash; <a href="https://twitter.com/summeryue0/status/2025836517831405980">Summer Yue</a></p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-agents">ai-agents</a>, <a href="https://simonwillison.net/tags/openclaw">openclaw</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Why we no longer evaluate SWE-bench Verified]]></title>
-        <id>https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified</id>
-        <link href="https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified"/>
-        <updated>2026-02-23T11:00:00.000Z</updated>
-        <summary type="html"><![CDATA[SWE-bench Verified is increasingly contaminated and mismeasures frontier coding progress. Our analysis shows flawed tests and training leakage. We recommend SWE-bench Pro.]]></summary>
-        <author>
-            <name>OpenAI News</name>
         </author>
     </entry>
 </feed>
