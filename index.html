@@ -31,6 +31,160 @@
       <article>
           <details>
             <summary>
+              STADLER reshapes knowledge work at a 230-year-old company
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/stadler>Learn how STADLER uses ChatGPT to transform knowledge work, saving time and accelerating productivity across 650 employees.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Richard Fontana
+              <span class="post-metadata">(2 min | 738 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/27/richard-fontana/#atom-everything>FWIW, IANDBL, TINLA, etc., I don’t currently see any basis for concluding that chardet 7.0.0 is required to be released under the LGPL. AFAIK no one including Mark Pilgrim has identified persistence of copyrightable expressive material from earlier versions in 7.0.0 nor has anyone articulated some viable alternate theory of license violation. [...]
+
+— Richard Fontana, LGPLv3 co-author, weighing in on the chardet relicensing situation
+Tags: open-source, ai-ethics, llms, ai, generative-ai, ai-assisted-programming</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Vibe coding SwiftUI apps is a lot of fun
+              <span class="post-metadata">(6 min | 1715 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/27/vibe-coding-swiftui/#atom-everything>I have a new laptop - a 128GB M5 MacBook Pro, which early impressions show to be very capable for running good local LLMs. I got frustrated with Activity Monitor and decided to vibe code up some alternative tools for monitoring performance and I&#x27;m very happy with the results.
+
+This is my second experiment with vibe coding macOS apps - the first was this presentation app a few weeks ago.
+
+It turns out Claude Opus 4.6 and GPT-5.4 are both very competent at SwiftUI - and a full SwiftUI app can fit in a single text file, which means I can use them to spin something up without even opening Xcode.
+
+I’ve built two apps so far: Bandwidther shows me what apps are using network bandwidth and Gpuer to show me what’s going on with the GPU. At Claude’s suggestion both of these are now menu bar icons that open a panel full of information.
+
+Bandwidther
+
+I built this app first, because I wanted to see what Dropbox was doing. It looks like this:
+
+
+
+I’ve shared the full transcript I used to build the first version of the app. My prompts were pretty minimal:
+
+
+Show me how much network bandwidth is in use from this machine to the internet as opposed to local LAN
+
+
+(My initial curiosity was to see if Dropbox was transferring files via the LAN from my old computer or was downloading from the internet.)
+
+
+mkdir /tmp/bandwidther and write a native Swift UI app in there that shows me these details on a live ongoing basis
+
+
+This got me the first version, which proved to me this was worth pursuing further.
+
+
+git init and git commit what you have so far
+
+
+Since I was about to start adding new features.
+
+
+Now suggest features we could add to that app, the goal is to provide as much detail as possible concerning network usage including by different apps
+
+
+The nice thing about having Claude suggest features is that it has a much better idea for what’s possible than I do.
+
+We had a bit of back and forth fixing some bugs, then I sent a few more prompts to get to the two column layout shown above:
+
+
+add Per-Process Bandwidth, relaunch the app once that is done
+
+
+
+now add the reverse DNS feature but make sure original IP addresses are still visible too, albeit in smaller typeface
+
+
+
+redesign the app so that it is wider, I want two columns - the per-process one on the left and the rest on the right
+
+
+
+OK make it a task bar icon thing, when I click the icon I want the app to appear, the icon itself should be a neat minimal little thing
+
+
+The source code and build instructions are available in simonw/bandwidther.
+
+Gpuer
+
+While I was building Bandwidther in one session I had another session running to build a similar tool for seeing what the GPU was doing. Here’s what I ended up with:
+
+
+
+Here&#x27;s the transcript. This one took even less prompting because I could use the in-progress Bandwidther as an example:
+
+
+I want to know how much RAM and GPU this computer is using, which is hard because stuff on the GPU and RAM does not seem to show up in Activity Monitor
+
+
+This collected information using system_profiler and memory_pressure and gave me an answer - more importantly it showed me this was possible, so I said:
+
+
+Look at /tmp/bandwidther and then create a similar app in /tmp/gpuer which shows the information from above on an ongoing basis, or maybe does it better
+
+
+After a few more changes to the Bandwidther app I told it to catch up:
+
+
+Now take a look at recent changes in /tmp/bandwidther - that app now uses a sys tray icon, imitate that
+
+
+This remains one of my favorite tricks for using coding agents: having them recombine elements from other projects.
+
+The code for Gpuer can be found in simonw/gpuer on GitHub.
+
+You shouldn&#x27;t trust these apps
+
+These two apps are classic vibe coding: I don&#x27;t know Swift and I hardly glanced at the code they were writing.
+
+More importantly though, I have very little experience with macOS internals such as the values these tools are measuring. I am completely unqualified to evaluate if the numbers and charts being spat out by these tools are credible or accurate!
+
+I&#x27;ve added warnings to both GitHub repositories to that effect.
+
+This morning I caught Gpuer reporting that I had just 5GB of memory left when that clearly wasn&#x27;t the case (according to Activity Monitor). I pasted a screenshot into Claude Code and it adjusted the calculations and the new numbers look right, but I&#x27;m still not confident that it&#x27;s reporting things correctly.
+
+I only shared them on GitHub because I think they&#x27;re interesting as an example of what Claude can do with SwiftUI.
+
+Despite my lack of confidence in the apps themselves, I did learn some useful things from these projects:
+
+
+A SwiftUI app can get a whole lot done with a single file of code - here&#x27;s GpuerApp.swift (880 lines) and BandwidtherApp.swift (1063 lines).
+
+Wrapping various terminal commands in a neat UI with Swift is easily achieved.
+
+Claude has surprisingly good design taste when it comes to SwiftUI applications.
+
+Turning an app into a menu bar app is just a few lines of extra code as well.
+
+You don&#x27;t need to open Xcode to build this kind of application!
+
+
+These two apps took very little time to build and have convinced me that building macOS apps in SwiftUI is a new capability I should consider for future projects.
+Tags: macos, ai, generative-ai, llms, vibe-coding, coding-agents, swift, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               We Rewrote JSONata with AI in a Day, Saved $500K/Year
               <span class="post-metadata">(3 min | 825 words)</span> 
             </summary>
@@ -4764,57 +4918,6 @@ The post GitHub Mobile: Track coding agent progress in real time with Live Notif
 The post Improved search on the issues dashboard appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI Codex and Figma launch seamless code-to-design experience
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/figma-partnership>OpenAI and Figma launch a new Codex integration that connects code and design, enabling teams to move between implementation and the Figma canvas to iterate and ship faster.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Google API Keys Weren&#x27;t Secrets. But then Gemini Changed the Rules.
-              <span class="post-metadata">(3 min | 935 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/26/google-api-keys/#atom-everything>Google API Keys Weren&#x27;t Secrets. But then Gemini Changed the Rules.
-If you don&#x27;t understand this it&#x27;s very easy to accidentally enable Gemini billing on a previously public API key that exists in the wild already.
-What makes this a privilege escalation rather than a misconfiguration is the sequence of events. 
-A developer creates an API key and embeds it in a website for Maps. (At that point, the key is harmless.) 
-The Gemini API gets enabled on the same project. (Now that same key can access sensitive Gemini endpoints.) 
-The developer is never warned that the keys&#x27; privileges changed underneath it. (The key went from public identifier to secret credential).
-Truffle Security found 2,863 API keys in the November 2025 Common Crawl that could access Gemini, verified by hitting the /models listing endpoint. This included several keys belonging to Google themselves, one of which had been deployed since February 2023 (according to the Internet Archive) hence predating the Gemini API that it could now access.
-Google are working to revoke affected keys but it&#x27;s still a good idea to check that none of yours are affected by this.
-
-    
-Via Hacker News
-Tags: api-keys, google, security, gemini</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Benedict Evans
-              <span class="post-metadata">(3 min | 797 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Feb/26/benedict-evans/#atom-everything>If people are only using this a couple of times a week at most, and can’t think of anything to do with it on the average day, it hasn’t changed their life. OpenAI itself admits the problem, talking about a ‘capability gap’ between what the models can do and what people do with them, which seems to me like a way to avoid saying that you don’t have clear product-market fit. 
-Hence, OpenAI’s ad project is partly just about covering the cost of serving the 90% or more of users who don’t pay (and capturing an early lead with advertisers and early learning in how this might work), but more strategically, it’s also about making it possible to give those users the latest and most powerful (i.e. expensive) models, in the hope that this will deepen their engagement.
-
-— Benedict Evans, How will OpenAI compete?
-Tags: openai, chatgpt, benedict-evans, ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
