@@ -25,9 +25,112 @@
 
   <ul>
     <li>
+      <time>2026-03-30</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Mr. Chatterbox is a (weak) Victorian-era ethically trained model you can run on your own computer
+              <span class="post-metadata">(5 min | 1427 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/30/mr-chatterbox/#atom-everything>Trip Venturella released Mr. Chatterbox, a language model trained entirely on out-of-copyright text from the British Library. Here&#x27;s how he describes it:
+
+
+Mr. Chatterbox is a language model trained entirely from scratch on a corpus of over 28,000 Victorian-era British texts published between 1837 and 1899, drawn from a dataset made available by the British Library. The model has absolutely no training inputs from after 1899 — the vocabulary and ideas are formed exclusively from nineteenth-century literature.
+
+Mr. Chatterbox&#x27;s training corpus was 28,035 books, with an estimated 2.93 billion input tokens after filtering. The model has roughly 340 million paramaters, roughly the same size as GPT-2-Medium. The difference is, of course, that unlike GPT-2, Mr. Chatterbox is trained entirely on historical data.
+
+
+Given how hard it is to train a useful LLM without using vast amounts of scraped, unlicensed data I&#x27;ve been dreaming of a model like this for a couple of years now. What would a model trained on out-of-copyright text be like to chat with?
+
+Thanks to Trip we can now find out for ourselves!
+
+The model itself is tiny, at least by Large Language Model standards - just 2.05GB on disk. You can try it out using Trip&#x27;s HuggingFace Spaces demo:
+
+
+
+Honestly, it&#x27;s pretty terrible. Talking with it feels more like chatting with a Markov chain than an LLM - the responses may have a delightfully Victorian flavor to them but it&#x27;s hard to get a response that usefully answers a question.
+
+The 2022 Chinchilla paper suggests a ratio of 20x the parameter count to training tokens. For a 340m model that would suggest around 7 billion tokens, more than twice the British Library corpus used here. The smallest Qwen 3.5 model is 600m parameters and that model family starts to get interesting at 2b - so my hunch is we would need 4x or more the training data to get something that starts to feel like a useful conversational partner.
+
+But what a fun project!
+
+Running it locally with LLM
+
+I decided to see if I could run the model on my own machine using my LLM framework.
+
+I got Claude Code to do most of the work - here&#x27;s the transcript.
+
+Trip trained the model using Andrej Karpathy&#x27;s nanochat, so I cloned that project, pulled the model weights and told Claude to build a Python script to run the model. Once we had that working (which ended up needing some extra details from the Space demo source code) I had Claude read the LLM plugin tutorial and build the rest of the plugin.
+
+llm-mrchatterbox is the result. Install the plugin like this:
+
+llm install llm-mrchatterbox
+
+
+The first time you run a prompt it will fetch the 2.05GB model file from Hugging Face. Try that like this:
+
+llm -m mrchatterbox &quot;Good day, sir&quot;
+
+
+Or start an ongoing chat session like this:
+
+llm chat -m mrchatterbox
+
+
+If you don&#x27;t have LLM installed you can still get a chat session started from scratch using uvx like this:
+
+uvx --with llm-mrchatterbox llm chat -m mrchatterbox
+
+
+When you are finished with the model you can delete the cached file using:
+
+llm mrchatterbox delete-model
+
+
+This is the first time I&#x27;ve had Claude Code build a full LLM model plugin from scratch and it worked really well. I expect I&#x27;ll be using this method again in the future.
+
+I continue to hope we can get a useful model from entirely public domain data. The fact that Trip was able to get this far using nanochat and 2.93 billion training tokens is a promising start.
+Tags: ai, andrej-karpathy, generative-ai, local-llms, llms, ai-assisted-programming, hugging-face, llm, training-data, uv, ai-ethics, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-mrchatterbox 0.1
+              <span class="post-metadata">(2 min | 736 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Mar/30/llm-mrchatterbox-2/#atom-everything>Release: llm-mrchatterbox 0.1
+See Mr. Chatterbox is a (weak) Victorian-era ethically trained model you can run on your own computer.
+Tags: llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-03-29</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Helping disaster response teams turn AI into action across Asia
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/helping-disaster-response-teams-asia>AI for Disaster Response in Asia: OpenAI Workshop with Gates Foundation</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4455,62 +4558,6 @@ Tags: ai-ethics, writing, generative-ai, blogging, ai, llms</a>
 Tags: prompt-engineering, llm-memory, anthropic, claude, generative-ai, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-02-28</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Interactive explanations
-              <span class="post-metadata">(4 min | 1322 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/interactive-explanations/#atom-everything>Agentic Engineering Patterns &gt;
-When we lose track of how code written by our agents works we take on cognitive debt.
-For a lot of things this doesn&#x27;t matter: if the code fetches some data from a database and outputs it as JSON the implementation details are likely simple enough that we don&#x27;t need to care. We can try out the new feature and make a very solid guess at how it works, then glance over the code to be sure.
-Often though the details really do matter. If the core of our application becomes a black box that we don&#x27;t fully understand we can no longer confidently reason about it, which makes planning new features harder and eventually slows our progress in the same way that accumulated technical debt does.
-How do we pay down cognitive debt? By improving our understanding of how the code works.
-One of my favorite ways to do that is by building interactive explanations.
-Understanding word clouds
-In An AI agent coding skeptic tries AI agent coding, in excessive detail Max Woolf mentioned testing LLMs&#x27; Rust abilities with the prompt Create a Rust app that can create &quot;word cloud&quot; data visualizations given a long input text.
-This captured my imagination: I&#x27;ve always wanted to know how word clouds work, so I fired off an asynchronous research project - initial prompt here, code and report here - to explore the idea.
-This worked really well: Claude Code for web built me a Rust CLI tool that could produce images like
-this one:
-
-But how does it actually work?
-Claude&#x27;s report said it uses &quot;Archimedean spiral placement with per-word random angular offset for natural-looking layouts&quot;. This did not help me much!
-I requested a linear walkthrough of the codebase which helped me understand the Rust code in more detail - here&#x27;s that walkthrough (and the prompt). This helped me understand the structure of the Rust code but I still didn&#x27;t have an intuitive understanding of how that &quot;Archimedean spiral placement&quot; part actually worked.
-So I asked for an animated explanation. I did this by pasting a link to that existing walkthrough.md document into a Claude Code session along with the following:
-Fetch https://raw.githubusercontent.com/simonw/research/refs/heads/main/rust-wordcloud/walkthrough.md to /tmp using curl so you can read the whole thing
-
-Inspired by that, build animated-word-cloud.html - a page that accepts pasted text (which it persists in the &#x60;#fragment&#x60; of the URL such that a page loaded with that &#x60;#&#x60; populated will use that text as input and auto-submit it) such that when you submit the text it builds a word cloud using the algorithm described in that document but does it animated, to make the algorithm as clear to understand. Include a slider for the animation which can be paused and the speed adjusted or even stepped through frame by frame while paused. At any stage the visible in-progress word cloud can be downloaded as a PNG.
-play with the result here. Here&#x27;s an animated GIF demo:
-
-This was using Claude Opus 4.6, which turns out to have quite good taste when it comes to building explanatory animations.
-If you watch the animation closely you can see that for each word it attempts to place it somewhere on the page by showing a box, run checks if that box intersects an existing word. If so it continues to try to find a good spot, moving outward in a spiral from the center.
-I found that this animation really helped make the way the algorithm worked click for me.
-I have long been a fan of animations and interactive interfaces to help explain different concepts. A good coding agent can produce these on demand to help explain code - its own code or code written by others.
-Tags: explorables, llms, cognitive-debt, ai, generative-ai, ai-assisted-programming, coding-agents, agentic-engineering</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Our agreement with the Department of War
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/our-agreement-with-the-department-of-war>Details on OpenAI’s contract with the Department of War, outlining safety redlines, legal protections, and how AI systems will be deployed in classified environments.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 

@@ -2,10 +2,77 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-03-29T21:22:46.168Z</updated>
+    <updated>2026-03-30T14:55:46.474Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Mr. Chatterbox is a (weak) Victorian-era ethically trained model you can run on your own computer]]></title>
+        <id>https://simonwillison.net/2026/Mar/30/mr-chatterbox/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/30/mr-chatterbox/#atom-everything"/>
+        <updated>2026-03-30T14:28:34.000Z</updated>
+        <summary type="html"><![CDATA[<p>Trip Venturella released <a href="https://huggingface.co/tventurella/mr_chatterbox_model">Mr. Chatterbox</a>, a language model trained entirely on out-of-copyright text from the British Library. Here's how he describes it:</p>
+<blockquote>
+<p>Mr. Chatterbox is a language model trained entirely from scratch on a corpus of over 28,000 Victorian-era British texts published between 1837 and 1899, drawn from a dataset made available <a href="https://huggingface.co/datasets/TheBritishLibrary/blbooks">by the British Library</a>. The model has absolutely no training inputs from after 1899 — the vocabulary and ideas are formed exclusively from nineteenth-century literature.</p>
+<p>Mr. Chatterbox's training corpus was 28,035 books, with an estimated 2.93 billion input tokens after filtering. The model has roughly 340 million paramaters, roughly the same size as GPT-2-Medium. The difference is, of course, that unlike GPT-2, Mr. Chatterbox is trained entirely on historical data.</p>
+</blockquote>
+<p>Given how hard it is to train a useful LLM without using vast amounts of scraped, unlicensed data I've been dreaming of a model like this for a couple of years now. What would a model trained on out-of-copyright text be like to chat with?</p>
+<p>Thanks to Trip we can now find out for ourselves!</p>
+<p>The model itself is tiny, at least by Large Language Model standards - just <a href="https://huggingface.co/tventurella/mr_chatterbox_model/tree/main">2.05GB</a> on disk. You can try it out using Trip's <a href="https://huggingface.co/spaces/tventurella/mr_chatterbox">HuggingFace Spaces demo</a>:</p>
+<p style="text-align: center"><img src="https://static.simonwillison.net/static/2026/chatterbox.jpg" alt="Screenshot of a Victorian-themed chatbot interface titled &quot;🎩 Mr. Chatterbox (Beta)&quot; with subtitle &quot;The Victorian Gentleman Chatbot&quot;. The conversation shows a user asking &quot;How should I behave at dinner?&quot; with the bot replying &quot;My good fellow, one might presume that such trivialities could not engage your attention during an evening's discourse!&quot; The user then asks &quot;What are good topics?&quot; and the bot responds &quot;The most pressing subjects of our society— Indeed, a gentleman must endeavor to engage the conversation with grace and vivacity. Such pursuits serve as vital antidotes against ennui when engaged in agreeable company.&quot; A text input field at the bottom reads &quot;Say hello...&quot; with a send button. The interface uses a dark maroon and cream color scheme." style="max-width: 80%;" /></p>
+<p>Honestly, it's pretty terrible. Talking with it feels more like chatting with a Markov chain than an LLM - the responses may have a delightfully Victorian flavor to them but it's hard to get a response that usefully answers a question.</p>
+<p>The <a href="https://arxiv.org/abs/2203.15556">2022 Chinchilla paper</a> suggests a ratio of 20x the parameter count to training tokens. For a 340m model that would suggest around 7 billion tokens, more than twice the British Library corpus used here. The smallest Qwen 3.5 model is 600m parameters and that model family starts to get interesting at 2b - so my hunch is we would need 4x or more the training data to get something that starts to feel like a useful conversational partner.</p>
+<p>But what a fun project!</p>
+<h4 id="running-it-locally-with-llm">Running it locally with LLM</h4>
+<p>I decided to see if I could run the model on my own machine using my <a href="https://llm.datasette.io/">LLM</a> framework.</p>
+<p>I got Claude Code to do most of the work - <a href="https://gisthost.github.io/?7d0f00e152dd80d617b5e501e4ff025b/index.html">here's the transcript</a>.</p>
+<p>Trip trained the model using Andrej Karpathy's <a href="https://github.com/karpathy/nanochat">nanochat</a>, so I cloned that project, pulled the model weights and told Claude to build a Python script to run the model. Once we had that working (which ended up needing some extra details from the <a href="https://huggingface.co/spaces/tventurella/mr_chatterbox/tree/main">Space demo source code</a>) I had Claude <a href="https://llm.datasette.io/en/stable/plugins/tutorial-model-plugin.html">read the LLM plugin tutorial</a> and build the rest of the plugin.</p>
+<p><a href="https://github.com/simonw/llm-mrchatterbox">llm-mrchatterbox</a> is the result. Install the plugin like this:</p>
+<pre><code>llm install llm-mrchatterbox
+</code></pre>
+<p>The first time you run a prompt it will fetch the 2.05GB model file from Hugging Face. Try that like this:</p>
+<pre><code>llm -m mrchatterbox "Good day, sir"
+</code></pre>
+<p>Or start an ongoing chat session like this:</p>
+<pre><code>llm chat -m mrchatterbox
+</code></pre>
+<p>If you don't have LLM installed you can still get a chat session started from scratch using uvx like this:</p>
+<pre><code>uvx --with llm-mrchatterbox llm chat -m mrchatterbox
+</code></pre>
+<p>When you are finished with the model you can delete the cached file using:</p>
+<pre><code>llm mrchatterbox delete-model
+</code></pre>
+<p>This is the first time I've had Claude Code build a full LLM model plugin from scratch and it worked really well. I expect I'll be using this method again in the future.</p>
+<p>I continue to hope we can get a useful model from entirely public domain data. The fact that Trip was able to get this far using nanochat and 2.93 billion training tokens is a promising start.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/andrej-karpathy">andrej-karpathy</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/hugging-face">hugging-face</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/training-data">training-data</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm-mrchatterbox 0.1]]></title>
+        <id>https://simonwillison.net/2026/Mar/30/llm-mrchatterbox-2/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Mar/30/llm-mrchatterbox-2/#atom-everything"/>
+        <updated>2026-03-30T02:20:46.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/llm-mrchatterbox/releases/tag/0.1">llm-mrchatterbox 0.1</a></p>
+    <p>See <a href="https://simonwillison.net/2026/Mar/30/mr-chatterbox/">Mr. Chatterbox is a (weak) Victorian-era ethically trained model you can run on your own computer</a>.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Helping disaster response teams turn AI into action across Asia]]></title>
+        <id>https://openai.com/index/helping-disaster-response-teams-asia</id>
+        <link href="https://openai.com/index/helping-disaster-response-teams-asia"/>
+        <updated>2026-03-29T22:15:00.000Z</updated>
+        <summary type="html"><![CDATA[AI for Disaster Response in Asia: OpenAI Workshop with Gates Foundation]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Pretext]]></title>
         <id>https://simonwillison.net/2026/Mar/29/pretext/#atom-everything</id>
@@ -3704,52 +3771,6 @@ The phrasing &quot;lack of fruiting rimu trees&quot; is slightly imprecise. The 
     <p>Tags: <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/llm-memory">llm-memory</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Interactive explanations]]></title>
-        <id>https://simonwillison.net/guides/agentic-engineering-patterns/interactive-explanations/#atom-everything</id>
-        <link href="https://simonwillison.net/guides/agentic-engineering-patterns/interactive-explanations/#atom-everything"/>
-        <updated>2026-02-28T23:09:39.000Z</updated>
-        <summary type="html"><![CDATA[<p><em><a href="https://simonwillison.net/guides/agentic-engineering-patterns/">Agentic Engineering Patterns</a> &gt;</em></p>
-    <p>When we lose track of how code written by our agents works we take on <strong>cognitive debt</strong>.</p>
-<p>For a lot of things this doesn't matter: if the code fetches some data from a database and outputs it as JSON the implementation details are likely simple enough that we don't need to care. We can try out the new feature and make a very solid guess at how it works, then glance over the code to be sure.</p>
-<p>Often though the details really do matter. If the core of our application becomes a black box that we don't fully understand we can no longer confidently reason about it, which makes planning new features harder and eventually slows our progress in the same way that accumulated technical debt does.</p>
-<p>How do we pay down cognitive debt? By improving our understanding of how the code works.</p>
-<p>One of my favorite ways to do that is by building <strong>interactive explanations</strong>.</p>
-<h2 id="understanding-word-clouds">Understanding word clouds</h2>
-<p>In <a href="https://minimaxir.com/2026/02/ai-agent-coding/">An AI agent coding skeptic tries AI agent coding, in excessive detail</a> Max Woolf mentioned testing LLMs' Rust abilities with the prompt <code>Create a Rust app that can create "word cloud" data visualizations given a long input text</code>.</p>
-<p>This captured my imagination: I've always wanted to know how word clouds work, so I fired off an <a href="https://simonwillison.net/2025/Nov/6/async-code-research/">asynchronous research project</a> - <a href="https://github.com/simonw/research/pull/91#issue-4002426963">initial prompt here</a>, <a href="https://github.com/simonw/research/tree/main/rust-wordcloud">code and report here</a> - to explore the idea.</p>
-<p>This worked really well: Claude Code for web built me a Rust CLI tool that could produce images like
-this one:</p>
-<p><img alt="A word cloud, many words, different colors and sizes, larger words in the middle." src="https://raw.githubusercontent.com/simonw/research/refs/heads/main/rust-wordcloud/wordcloud.png" /></p>
-<p>But how does it actually work?</p>
-<p>Claude's report said it uses "<strong>Archimedean spiral placement</strong> with per-word random angular offset for natural-looking layouts". This did not help me much!</p>
-<p>I requested a <a href="https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/">linear walkthrough</a> of the codebase which helped me understand the Rust code in more detail - here's <a href="https://github.com/simonw/research/blob/main/rust-wordcloud/walkthrough.md">that walkthrough</a> (and <a href="https://github.com/simonw/research/commit/2cb8c62477173ef6a4c2e274be9f712734df6126">the prompt</a>). This helped me understand the structure of the Rust code but I still didn't have an intuitive understanding of how that "Archimedean spiral placement" part actually worked.</p>
-<p>So I asked for an <strong>animated explanation</strong>. I did this by pasting a link to that existing <code>walkthrough.md</code> document into a Claude Code session along with the following:</p>
-<p><div><markdown-copy><textarea>Fetch https://raw.githubusercontent.com/simonw/research/refs/heads/main/rust-wordcloud/walkthrough.md to /tmp using curl so you can read the whole thing
-
-Inspired by that, build animated-word-cloud.html - a page that accepts pasted text (which it persists in the `#fragment` of the URL such that a page loaded with that `#` populated will use that text as input and auto-submit it) such that when you submit the text it builds a word cloud using the algorithm described in that document but does it animated, to make the algorithm as clear to understand. Include a slider for the animation which can be paused and the speed adjusted or even stepped through frame by frame while paused. At any stage the visible in-progress word cloud can be downloaded as a PNG.</textarea></markdown-copy></div>
-You can <a href="https://tools.simonwillison.net/animated-word-cloud">play with the result here</a>. Here's an animated GIF demo:</p>
-<p><img alt="Words appear on the word cloud one at a time, with little boxes showing where the algorithm is attempting to place them - if those boxes overlap an existing word it tries again." src="https://static.simonwillison.net/static/2026/animated-word-cloud-demo.gif" /></p>
-<p>This was using Claude Opus 4.6, which turns out to have quite good taste when it comes to building explanatory animations.</p>
-<p>If you watch the animation closely you can see that for each word it attempts to place it somewhere on the page by showing a box, run checks if that box intersects an existing word. If so it continues to try to find a good spot, moving outward in a spiral from the center.</p>
-<p>I found that this animation really helped make the way the algorithm worked click for me.</p>
-<p>I have long been a fan of animations and interactive interfaces to help explain different concepts. A good coding agent can produce these on demand to help explain code - its own code or code written by others.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/explorables">explorables</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/cognitive-debt">cognitive-debt</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Our agreement with the Department of War]]></title>
-        <id>https://openai.com/index/our-agreement-with-the-department-of-war</id>
-        <link href="https://openai.com/index/our-agreement-with-the-department-of-war"/>
-        <updated>2026-02-28T12:30:00.000Z</updated>
-        <summary type="html"><![CDATA[Details on OpenAI’s contract with the Department of War, outlining safety redlines, legal protections, and how AI systems will be deployed in classified environments.]]></summary>
-        <author>
-            <name>OpenAI News</name>
         </author>
     </entry>
 </feed>
