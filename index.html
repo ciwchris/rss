@@ -25,6 +25,86 @@
 
   <ul>
     <li>
+      <time>2026-04-05</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              scan-for-secrets 0.2
+              <span class="post-metadata">(3 min | 775 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/5/scan-for-secrets/#atom-everything>Release: scan-for-secrets 0.2
+CLI tool now streams results as they are found rather than waiting until the end, which is better for large directories.
+-d/--directory option can now be used multiple times to scan multiple directories.
+New -f/--file option for specifying one or more individual files to scan.
+New scan_directory_iter(), scan_file() and scan_file_iter() Python API functions.
+New -v/--verbose option which shows each directory that is being scanned.</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              scan-for-secrets 0.1.1
+              <span class="post-metadata">(2 min | 732 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/5/scan-for-secrets-2/#atom-everything>Release: scan-for-secrets 0.1.1
+Added documentation of the escaping schemes that are also scanned.
+Removed unnecessary repr escaping scheme, which was already covered by json.</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              scan-for-secrets 0.1
+              <span class="post-metadata">(3 min | 915 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/5/scan-for-secrets-3/#atom-everything>Release: scan-for-secrets 0.1
+I like publishing transcripts of local Claude Code sessions using my claude-code-transcripts tool but I&#x27;m often paranoid that one of my API keys or similar secrets might inadvertently be revealed in the detailed log files.
+I built this new Python scanning tool to help reassure me. You can feed it secrets and have it scan for them in a specified directory:
+uvx scan-for-secrets $OPENAI_API_KEY -d logs-to-publish/
+
+If you leave off the -d it defaults to the current directory.
+It doesn&#x27;t just scan for the literal secrets - it also scans for common encodings of those secrets e.g. backslash or JSON escaping, as described in the README.
+If you have a set of secrets you always want to protect you can list commands to echo them in a ~/.scan-for-secrets.conf.sh file. Mine looks like this:
+llm keys get openai
+llm keys get anthropic
+llm keys get gemini
+llm keys get mistral
+awk -F&#x3D; &#x27;/aws_secret_access_key/{print $2}&#x27; ~/.aws/credentials | xargs
+
+I built this tool using README-driven-development: I carefully constructed the README describing exactly how the tool should work, then dumped it into Claude Code and told it to build the actual tool (using red/green TDD, naturally.)
+Tags: projects, security, agentic-engineering, coding-agents, ai-assisted-programming, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              research-llm-apis 2026-04-04
+              <span class="post-metadata">(3 min | 838 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/5/research-llm-apis/#atom-everything>Release: research-llm-apis 2026-04-04
+I&#x27;m working on a major change to my LLM Python library and CLI tool. LLM provides an abstraction layer over hundreds of different LLMs from dozens of different vendors thanks to its plugin system, and some of those vendors have grown new features over the past year which LLM&#x27;s abstraction layer can&#x27;t handle, such as server-side tool execution.
+To help design that new abstraction layer I had Claude Code read through the Python client libraries for Anthropic, OpenAI, Gemini and Mistral and use those to help craft curl commands to access the raw JSON for both streaming and non-streaming modes across a range of different scenarios. Both the scripts and the captured outputs now live in this new repo.
+Tags: llm, apis, json, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-04-04</time>
 
       <section>
@@ -4857,103 +4937,6 @@ Via @openaidevs
 Tags: open-source, ai, openai, generative-ai, llms, codex-cli</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-03-06</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Ally Piechowski
-              <span class="post-metadata">(3 min | 770 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/6/ally-piechowski/#atom-everything>Questions for developers:
-“What’s the one area you’re afraid to touch?”
-“When’s the last time you deployed on a Friday?”
-“What broke in production in the last 90 days that wasn’t caught by tests?”
-Questions for the CTO/EM:
-“What feature has been blocked for over a year?”
-“Do you have real-time error visibility right now?”
-“What was the last feature that took significantly longer than estimated?”
-Questions for business stakeholders:
-“Are there features that got quietly turned off and never came back?”
-“Are there things you’ve stopped promising customers?”
-
-— Ally Piechowski, How to Audit a Rails Codebase
-Tags: technical-debt, software-engineering, rails</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Figma MCP server can now generate design layers from VS Code
-              <span class="post-metadata">(5 min | 1436 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-06-figma-mcp-server-can-now-generate-design-layers-from-vs-code>GitHub Copilot users can now connect to the Figma MCP server to both pull design context into code and send rendered UI to Figma as editable frames. Together, these capabilities…
-The post Figma MCP server can now generate design layers from VS Code appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot in Visual Studio Code v1.110 – February release
-              <span class="post-metadata">(6 min | 1729 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-06-github-copilot-in-visual-studio-code-v1-110-february-release>The Visual Studio Code February 2026 release makes agents practical for longer-running and more complex tasks. This gives you more control over how they run, new ways to extend what…
-The post GitHub Copilot in Visual Studio Code v1.110 – February release appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Anthropic and the Pentagon
-              <span class="post-metadata">(3 min | 823 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/6/anthropic-and-the-pentagon/#atom-everything>Anthropic and the Pentagon
-AI models are increasingly commodified. The top-tier offerings have about the same performance, and there is little to differentiate one from the other. The latest models from Anthropic, OpenAI and Google, in particular, tend to leapfrog each other with minor hops forward in quality every few months. [...]
-In this sort of market, branding matters a lot. Anthropic and its CEO, Dario Amodei, are positioning themselves as the moral and trustworthy AI provider. That has market value for both consumers and enterprise clients.
-Tags: bruce-schneier, ai, openai, generative-ai, llms, anthropic, ai-ethics</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Codex Security: now in research preview
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/codex-security-now-in-research-preview>Codex Security is an AI application security agent that analyzes project context to detect, validate, and patch complex vulnerabilities with higher confidence and less noise.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How Descript enables multilingual video dubbing at scale
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/descript>Descript uses OpenAI models to scale multilingual video dubbing, optimizing translations for both meaning and timing so dubbed speech sounds natural across languages.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 

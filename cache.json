@@ -754,26 +754,6 @@
           "wordCount": 1382,
           "title": "Dependabot now supports pre-commit hooks",
           "imageUrl": "https://github.blog/wp-content/uploads/2026/03/560536360-bf2c796b-964d-42ea-8846-8e0c5918b64b.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-03-06-figma-mcp-server-can-now-generate-design-layers-from-vs-code",
-          "author": "Allison",
-          "description": "GitHub Copilot users can now connect to the Figma MCP server to both pull design context into code and send rendered UI to Figma as editable frames. Together, these capabilities…\nThe post Figma MCP server can now generate design layers from VS Code appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-03-06-figma-mcp-server-can-now-generate-design-layers-from-vs-code",
-          "publishedOn": "2026-03-06T21:20:15.000Z",
-          "wordCount": 1436,
-          "title": "Figma MCP server can now generate design layers from VS Code",
-          "imageUrl": "https://github.blog/wp-content/uploads/2026/03/559530151-ad3f8f64-b916-4fab-a42d-2fd08e409855.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-03-05-github-copilot-in-visual-studio-code-v1-110-february-release",
-          "author": "Allison",
-          "description": "The Visual Studio Code February 2026 release makes agents practical for longer-running and more complex tasks. This gives you more control over how they run, new ways to extend what…\nThe post GitHub Copilot in Visual Studio Code v1.110 – February release appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-03-06-github-copilot-in-visual-studio-code-v1-110-february-release",
-          "publishedOn": "2026-03-06T19:03:06.000Z",
-          "wordCount": 1729,
-          "title": "GitHub Copilot in Visual Studio Code v1.110 – February release",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg"
         }
       ]
     },
@@ -844,6 +824,46 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2026/Apr/5/scan-for-secrets/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/scan-for-secrets/releases/tag/0.2\">scan-for-secrets 0.2</a></p>\n    <ul>\n<li>CLI tool now streams results as they are found rather than waiting until the end, which is better for large directories.</li>\n<li><code>-d/--directory</code> option can now be used multiple times to scan multiple directories.</li>\n<li>New <code>-f/--file</code> option for specifying one or more individual files to scan.</li>\n<li>New <code>scan_directory_iter()</code>, <code>scan_file()</code> and <code>scan_file_iter()</code> Python API functions.</li>\n<li>New <code>-v/--verbose</code> option which shows each directory that is being scanned.</li>\n</ul>",
+          "link": "https://simonwillison.net/2026/Apr/5/scan-for-secrets/#atom-everything",
+          "publishedOn": "2026-04-05T04:07:13.000Z",
+          "wordCount": 775,
+          "title": "scan-for-secrets 0.2",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Apr/5/scan-for-secrets-2/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/scan-for-secrets/releases/tag/0.1.1\">scan-for-secrets 0.1.1</a></p>\n    <blockquote>\n<ul>\n<li>Added documentation of the escaping schemes that are also scanned.</li>\n<li>Removed unnecessary <code>repr</code> escaping scheme, which was already covered by <code>json</code>.</li>\n</ul>\n</blockquote>",
+          "link": "https://simonwillison.net/2026/Apr/5/scan-for-secrets-2/#atom-everything",
+          "publishedOn": "2026-04-05T03:39:33.000Z",
+          "wordCount": 732,
+          "title": "scan-for-secrets 0.1.1",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Apr/5/scan-for-secrets-3/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/scan-for-secrets/releases/tag/0.1\">scan-for-secrets 0.1</a></p>\n    <p>I like publishing transcripts of local Claude Code sessions using my <a href=\"https://github.com/simonw/claude-code-transcripts\">claude-code-transcripts</a> tool but I'm often paranoid that one of my API keys or similar secrets might inadvertently be revealed in the detailed log files.</p>\n<p>I built this new Python scanning tool to help reassure me. You can feed it secrets and have it scan for them in a specified directory:</p>\n<pre><code>uvx scan-for-secrets $OPENAI_API_KEY -d logs-to-publish/\n</code></pre>\n<p>If you leave off the <code>-d</code> it defaults to the current directory.</p>\n<p>It doesn't just scan for the literal secrets - it also scans for common encodings of those secrets e.g. backslash or JSON escaping, <a href=\"https://github.com/simonw/scan-for-secrets/blob/main/README.md#escaping-schemes\">as described in the README</a>.</p>\n<p>If you have a set of secrets you always want to protect you can list commands to echo them in a <code>~/.scan-for-secrets.conf.sh</code> file. Mine looks like this:</p>\n<pre><code>llm keys get openai\nllm keys get anthropic\nllm keys get gemini\nllm keys get mistral\nawk -F= '/aws_secret_access_key/{print $2}' ~/.aws/credentials | xargs\n</code></pre>\n<p>I built this tool using README-driven-development: I carefully constructed the README describing exactly how the tool should work, then <a href=\"https://gisthost.github.io/?d4b1a398bf3b6b14aade923dea69a1ac/index.html\">dumped it into Claude Code</a> and told it to build the actual tool (using <a href=\"https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/\">red/green TDD</a>, naturally.)</p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/projects\">projects</a>, <a href=\"https://simonwillison.net/tags/security\">security</a>, <a href=\"https://simonwillison.net/tags/agentic-engineering\">agentic-engineering</a>, <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/claude-code\">claude-code</a></p>",
+          "link": "https://simonwillison.net/2026/Apr/5/scan-for-secrets-3/#atom-everything",
+          "publishedOn": "2026-04-05T03:27:13.000Z",
+          "wordCount": 915,
+          "title": "scan-for-secrets 0.1",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Apr/5/research-llm-apis/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/research-llm-apis/releases/tag/2026-04-04\">research-llm-apis 2026-04-04</a></p>\n    <p>I'm working on a <a href=\"https://github.com/simonw/llm/issues/1314\">major change</a> to my LLM Python library and CLI tool. LLM provides an abstraction layer over hundreds of different LLMs from dozens of different vendors thanks to its plugin system, and some of those vendors have grown new features over the past year which LLM's abstraction layer can't handle, such as server-side tool execution.</p>\n<p>To help design that new abstraction layer I had Claude Code read through the Python client libraries for Anthropic, OpenAI, Gemini and Mistral and use those to help craft <code>curl</code> commands to access the raw JSON for both streaming and non-streaming modes across a range of different scenarios. Both the scripts and the captured outputs now live in this new repo.</p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/apis\">apis</a>, <a href=\"https://simonwillison.net/tags/json\">json</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
+          "link": "https://simonwillison.net/2026/Apr/5/research-llm-apis/#atom-everything",
+          "publishedOn": "2026-04-05T00:32:11.000Z",
+          "wordCount": 838,
+          "title": "research-llm-apis 2026-04-04",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2026/Apr/4/kyle-daigle/#atom-everything",
           "author": null,
@@ -1813,26 +1833,6 @@
           "wordCount": 801,
           "title": "Codex for Open Source",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/6/ally-piechowski/#atom-everything",
-          "author": null,
-          "description": "<blockquote cite=\"https://piechowski.io/post/how-i-audit-a-legacy-rails-codebase/\"><p><strong>Questions for developers:</strong></p>\n<ul>\n<li>“What’s the one area you’re afraid to touch?”</li>\n<li>“When’s the last time you deployed on a Friday?”</li>\n<li>“What broke in production in the last 90 days that wasn’t caught by tests?”</li>\n</ul>\n<p><strong>Questions for the CTO/EM:</strong></p>\n<ul>\n<li>“What feature has been blocked for over a year?”</li>\n<li>“Do you have real-time error visibility right now?”</li>\n<li>“What was the last feature that took significantly longer than estimated?”</li>\n</ul>\n<p><strong>Questions for business stakeholders:</strong></p>\n<ul>\n<li>“Are there features that got quietly turned off and never came back?”</li>\n<li>“Are there things you’ve stopped promising customers?”</li>\n</ul></blockquote>\n<p class=\"cite\">&mdash; <a href=\"https://piechowski.io/post/how-i-audit-a-legacy-rails-codebase/\">Ally Piechowski</a>, How to Audit a Rails Codebase</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/technical-debt\">technical-debt</a>, <a href=\"https://simonwillison.net/tags/software-engineering\">software-engineering</a>, <a href=\"https://simonwillison.net/tags/rails\">rails</a></p>",
-          "link": "https://simonwillison.net/2026/Mar/6/ally-piechowski/#atom-everything",
-          "publishedOn": "2026-03-06T21:58:33.000Z",
-          "wordCount": 770,
-          "title": "Quoting Ally Piechowski",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/6/anthropic-and-the-pentagon/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://www.schneier.com/blog/archives/2026/03/anthropic-and-the-pentagon.html\">Anthropic and the Pentagon</a></strong></p>\nThis piece by Bruce Schneier and Nathan E. Sanders is the most thoughtful and grounded coverage I've seen of the recent and ongoing Pentagon/OpenAI/Anthropic contract situation.</p>\n<blockquote>\n<p>AI models are increasingly commodified. The top-tier offerings have about the same performance, and there is little to differentiate one from the other. The latest models from Anthropic, OpenAI and Google, in particular, tend to leapfrog each other with minor hops forward in quality every few months. [...]</p>\n<p>In this sort of market, branding matters a lot. Anthropic and its CEO, Dario Amodei, are positioning themselves as the moral and trustworthy AI provider. That has market value for both consumers and enterprise clients.</p>\n</blockquote>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/bruce-schneier\">bruce-schneier</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/openai\">openai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/anthropic\">anthropic</a>, <a href=\"https://simonwillison.net/tags/ai-ethics\">ai-ethics</a></p>",
-          "link": "https://simonwillison.net/2026/Mar/6/anthropic-and-the-pentagon/#atom-everything",
-          "publishedOn": "2026-03-06T17:26:50.000Z",
-          "wordCount": 823,
-          "title": "Anthropic and the Pentagon",
-          "imageUrl": null
         }
       ]
     },
@@ -2162,26 +2162,6 @@
           "publishedOn": "2026-03-09T10:00:00.000Z",
           "wordCount": null,
           "title": "OpenAI to acquire Promptfoo",
-          "imageUrl": null
-        },
-        {
-          "id": "https://openai.com/index/codex-security-now-in-research-preview",
-          "author": null,
-          "description": "Codex Security is an AI application security agent that analyzes project context to detect, validate, and patch complex vulnerabilities with higher confidence and less noise.",
-          "link": "https://openai.com/index/codex-security-now-in-research-preview",
-          "publishedOn": "2026-03-06T10:00:00.000Z",
-          "wordCount": null,
-          "title": "Codex Security: now in research preview",
-          "imageUrl": null
-        },
-        {
-          "id": "https://openai.com/index/descript",
-          "author": null,
-          "description": "Descript uses OpenAI models to scale multilingual video dubbing, optimizing translations for both meaning and timing so dubbed speech sounds natural across languages.",
-          "link": "https://openai.com/index/descript",
-          "publishedOn": "2026-03-06T10:00:00.000Z",
-          "wordCount": null,
-          "title": "How Descript enables multilingual video dubbing at scale",
           "imageUrl": null
         }
       ]

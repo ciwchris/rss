@@ -2,10 +2,83 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-04T21:21:56.445Z</updated>
+    <updated>2026-04-05T14:27:05.768Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[scan-for-secrets 0.2]]></title>
+        <id>https://simonwillison.net/2026/Apr/5/scan-for-secrets/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/5/scan-for-secrets/#atom-everything"/>
+        <updated>2026-04-05T04:07:13.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/scan-for-secrets/releases/tag/0.2">scan-for-secrets 0.2</a></p>
+    <ul>
+<li>CLI tool now streams results as they are found rather than waiting until the end, which is better for large directories.</li>
+<li><code>-d/--directory</code> option can now be used multiple times to scan multiple directories.</li>
+<li>New <code>-f/--file</code> option for specifying one or more individual files to scan.</li>
+<li>New <code>scan_directory_iter()</code>, <code>scan_file()</code> and <code>scan_file_iter()</code> Python API functions.</li>
+<li>New <code>-v/--verbose</code> option which shows each directory that is being scanned.</li>
+</ul>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[scan-for-secrets 0.1.1]]></title>
+        <id>https://simonwillison.net/2026/Apr/5/scan-for-secrets-2/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/5/scan-for-secrets-2/#atom-everything"/>
+        <updated>2026-04-05T03:39:33.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/scan-for-secrets/releases/tag/0.1.1">scan-for-secrets 0.1.1</a></p>
+    <blockquote>
+<ul>
+<li>Added documentation of the escaping schemes that are also scanned.</li>
+<li>Removed unnecessary <code>repr</code> escaping scheme, which was already covered by <code>json</code>.</li>
+</ul>
+</blockquote>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[scan-for-secrets 0.1]]></title>
+        <id>https://simonwillison.net/2026/Apr/5/scan-for-secrets-3/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/5/scan-for-secrets-3/#atom-everything"/>
+        <updated>2026-04-05T03:27:13.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/scan-for-secrets/releases/tag/0.1">scan-for-secrets 0.1</a></p>
+    <p>I like publishing transcripts of local Claude Code sessions using my <a href="https://github.com/simonw/claude-code-transcripts">claude-code-transcripts</a> tool but I'm often paranoid that one of my API keys or similar secrets might inadvertently be revealed in the detailed log files.</p>
+<p>I built this new Python scanning tool to help reassure me. You can feed it secrets and have it scan for them in a specified directory:</p>
+<pre><code>uvx scan-for-secrets $OPENAI_API_KEY -d logs-to-publish/
+</code></pre>
+<p>If you leave off the <code>-d</code> it defaults to the current directory.</p>
+<p>It doesn't just scan for the literal secrets - it also scans for common encodings of those secrets e.g. backslash or JSON escaping, <a href="https://github.com/simonw/scan-for-secrets/blob/main/README.md#escaping-schemes">as described in the README</a>.</p>
+<p>If you have a set of secrets you always want to protect you can list commands to echo them in a <code>~/.scan-for-secrets.conf.sh</code> file. Mine looks like this:</p>
+<pre><code>llm keys get openai
+llm keys get anthropic
+llm keys get gemini
+llm keys get mistral
+awk -F= '/aws_secret_access_key/{print $2}' ~/.aws/credentials | xargs
+</code></pre>
+<p>I built this tool using README-driven-development: I carefully constructed the README describing exactly how the tool should work, then <a href="https://gisthost.github.io/?d4b1a398bf3b6b14aade923dea69a1ac/index.html">dumped it into Claude Code</a> and told it to build the actual tool (using <a href="https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/">red/green TDD</a>, naturally.)</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[research-llm-apis 2026-04-04]]></title>
+        <id>https://simonwillison.net/2026/Apr/5/research-llm-apis/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/5/research-llm-apis/#atom-everything"/>
+        <updated>2026-04-05T00:32:11.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/research-llm-apis/releases/tag/2026-04-04">research-llm-apis 2026-04-04</a></p>
+    <p>I'm working on a <a href="https://github.com/simonw/llm/issues/1314">major change</a> to my LLM Python library and CLI tool. LLM provides an abstraction layer over hundreds of different LLMs from dozens of different vendors thanks to its plugin system, and some of those vendors have grown new features over the past year which LLM's abstraction layer can't handle, such as server-side tool execution.</p>
+<p>To help design that new abstraction layer I had Claude Code read through the Python client libraries for Anthropic, OpenAI, Gemini and Mistral and use those to help craft <code>curl</code> commands to access the raw JSON for both streaming and non-streaming modes across a range of different scenarios. Both the scripts and the captured outputs now live in this new repo.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/apis">apis</a>, <a href="https://simonwillison.net/tags/json">json</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Kyle Daigle]]></title>
         <id>https://simonwillison.net/2026/Apr/4/kyle-daigle/#atom-everything</id>
@@ -3956,95 +4029,6 @@ Anthropic announced six months of free Claude Max for maintainers of popular ope
     <p>Tags: <a href="https://simonwillison.net/tags/open-source">open-source</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Ally Piechowski]]></title>
-        <id>https://simonwillison.net/2026/Mar/6/ally-piechowski/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/6/ally-piechowski/#atom-everything"/>
-        <updated>2026-03-06T21:58:33.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://piechowski.io/post/how-i-audit-a-legacy-rails-codebase/"><p><strong>Questions for developers:</strong></p>
-<ul>
-<li>“What’s the one area you’re afraid to touch?”</li>
-<li>“When’s the last time you deployed on a Friday?”</li>
-<li>“What broke in production in the last 90 days that wasn’t caught by tests?”</li>
-</ul>
-<p><strong>Questions for the CTO/EM:</strong></p>
-<ul>
-<li>“What feature has been blocked for over a year?”</li>
-<li>“Do you have real-time error visibility right now?”</li>
-<li>“What was the last feature that took significantly longer than estimated?”</li>
-</ul>
-<p><strong>Questions for business stakeholders:</strong></p>
-<ul>
-<li>“Are there features that got quietly turned off and never came back?”</li>
-<li>“Are there things you’ve stopped promising customers?”</li>
-</ul></blockquote>
-<p class="cite">&mdash; <a href="https://piechowski.io/post/how-i-audit-a-legacy-rails-codebase/">Ally Piechowski</a>, How to Audit a Rails Codebase</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/technical-debt">technical-debt</a>, <a href="https://simonwillison.net/tags/software-engineering">software-engineering</a>, <a href="https://simonwillison.net/tags/rails">rails</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Figma MCP server can now generate design layers from VS Code]]></title>
-        <id>https://github.blog/changelog/2026-03-06-figma-mcp-server-can-now-generate-design-layers-from-vs-code</id>
-        <link href="https://github.blog/changelog/2026-03-06-figma-mcp-server-can-now-generate-design-layers-from-vs-code"/>
-        <updated>2026-03-06T21:20:15.000Z</updated>
-        <summary type="html"><![CDATA[GitHub Copilot users can now connect to the Figma MCP server to both pull design context into code and send rendered UI to Figma as editable frames. Together, these capabilities…
-The post Figma MCP server can now generate design layers from VS Code appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub Copilot in Visual Studio Code v1.110 – February release]]></title>
-        <id>https://github.blog/changelog/2026-03-05-github-copilot-in-visual-studio-code-v1-110-february-release</id>
-        <link href="https://github.blog/changelog/2026-03-06-github-copilot-in-visual-studio-code-v1-110-february-release"/>
-        <updated>2026-03-06T19:03:06.000Z</updated>
-        <summary type="html"><![CDATA[The Visual Studio Code February 2026 release makes agents practical for longer-running and more complex tasks. This gives you more control over how they run, new ways to extend what…
-The post GitHub Copilot in Visual Studio Code v1.110 – February release appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Anthropic and the Pentagon]]></title>
-        <id>https://simonwillison.net/2026/Mar/6/anthropic-and-the-pentagon/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/6/anthropic-and-the-pentagon/#atom-everything"/>
-        <updated>2026-03-06T17:26:50.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.schneier.com/blog/archives/2026/03/anthropic-and-the-pentagon.html">Anthropic and the Pentagon</a></strong></p>
-This piece by Bruce Schneier and Nathan E. Sanders is the most thoughtful and grounded coverage I've seen of the recent and ongoing Pentagon/OpenAI/Anthropic contract situation.</p>
-<blockquote>
-<p>AI models are increasingly commodified. The top-tier offerings have about the same performance, and there is little to differentiate one from the other. The latest models from Anthropic, OpenAI and Google, in particular, tend to leapfrog each other with minor hops forward in quality every few months. [...]</p>
-<p>In this sort of market, branding matters a lot. Anthropic and its CEO, Dario Amodei, are positioning themselves as the moral and trustworthy AI provider. That has market value for both consumers and enterprise clients.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/bruce-schneier">bruce-schneier</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Codex Security: now in research preview]]></title>
-        <id>https://openai.com/index/codex-security-now-in-research-preview</id>
-        <link href="https://openai.com/index/codex-security-now-in-research-preview"/>
-        <updated>2026-03-06T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Codex Security is an AI application security agent that analyzes project context to detect, validate, and patch complex vulnerabilities with higher confidence and less noise.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[How Descript enables multilingual video dubbing at scale]]></title>
-        <id>https://openai.com/index/descript</id>
-        <link href="https://openai.com/index/descript"/>
-        <updated>2026-03-06T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Descript uses OpenAI models to scale multilingual video dubbing, optimizing translations for both meaning and timing so dubbed speech sounds natural across languages.]]></summary>
-        <author>
-            <name>OpenAI News</name>
         </author>
     </entry>
 </feed>
