@@ -31,6 +31,160 @@
       <article>
           <details>
             <summary>
+              GLM-5.1: Towards Long-Horizon Tasks
+              <span class="post-metadata">(3 min | 1001 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/7/glm-51/#atom-everything>GLM-5.1: Towards Long-Horizon Tasks
+Hugging Face) MIT-licensed monster - the same size as their previous GLM-5 release, and sharing the same paper.
+It&#x27;s available via OpenRouter so I asked it to draw me a pelican:
+llm install llm-openrouter
+llm -m openrouter/z-ai/glm-5.1 &#x27;Generate an SVG of a pelican on a bicycle&#x27;
+
+And something new happened... unprompted, the model decided to give me an HTML page that included both the SVG and a separate set of CSS animations!
+The SVG was excellent, and might be my new favorite from an open weights model:
+
+But the animation broke it:
+
+That&#x27;s the pelican, floating up in the top left corner.
+I usually don&#x27;t do follow-up prompts for the pelican test, but in this case I made an exception:
+llm -c &#x27;the animation is a bit broken, the pelican ends up positioned off the screen at the top right&#x27;
+
+GLM 5.1 replied:
+The issue is that CSS transform animations on SVG elements override the SVG transform attribute used for positioning, causing the pelican to lose its placement and fly off to the top-right. The fix is to separate positioning (SVG attribute) from animation (inner group) and use &lt;animateTransform&gt; for SVG rotations since it handles coordinate systems correctly.
+And spat out fresh HTML which fixed the problem!
+
+I particularly like the animation of the beak, which is described in the SVG comments like so:
+&lt;!-- Pouch (lower beak) with wobble --&gt;
+&lt;g&gt;
+    &lt;path d&#x3D;&quot;M42,-58 Q43,-50 48,-42 Q55,-35 62,-38 Q70,-42 75,-60 L42,-58 Z&quot; fill&#x3D;&quot;url(#pouchGrad)&quot; stroke&#x3D;&quot;#b06008&quot; stroke-width&#x3D;&quot;1&quot; opacity&#x3D;&quot;0.9&quot;/&gt;
+    &lt;path d&#x3D;&quot;M48,-50 Q55,-46 60,-52&quot; fill&#x3D;&quot;none&quot; stroke&#x3D;&quot;#c06a08&quot; stroke-width&#x3D;&quot;0.8&quot; opacity&#x3D;&quot;0.6&quot;/&gt;
+    &lt;animateTransform attributeName&#x3D;&quot;transform&quot; type&#x3D;&quot;scale&quot;
+    values&#x3D;&quot;1,1; 1.03,0.97; 1,1&quot; dur&#x3D;&quot;0.75s&quot; repeatCount&#x3D;&quot;indefinite&quot;
+    additive&#x3D;&quot;sum&quot;/&gt;
+&lt;/g&gt;
+
+
+
+    
+Tags: css, svg, ai, generative-ai, llms, pelican-riding-a-bicycle, llm-release, ai-in-china, glm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Anthropic&#x27;s Project Glasswing - restricting Claude Mythos to security researchers - sounds necessary to me
+              <span class="post-metadata">(6 min | 1742 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/7/project-glasswing/#atom-everything>Anthropic didn&#x27;t release their latest model, Claude Mythos (system card PDF), today. They have instead made it available to a very restricted set of preview partners under their newly announced Project Glasswing.
+
+The model is a general purpose model, similar to Claude Opus 4.6, but Anthropic claim that its cyber-security research abilities are strong enough that they need to give the software industry as a whole time to prepare.
+
+
+Mythos Preview has already found thousands of high-severity vulnerabilities, including some in every major operating system and web browser. Given the rate of AI progress, it will not be long before such capabilities proliferate, potentially beyond actors who are committed to deploying them safely.
+
+[...]
+
+Project Glasswing partners will receive access to Claude Mythos Preview to find and fix vulnerabilities or weaknesses in their foundational systems—systems that represent a very large portion of the world’s shared cyberattack surface. We anticipate this work will focus on tasks like local vulnerability detection, black box testing of binaries, securing endpoints, and penetration testing of systems.
+
+
+Saying &quot;our model is too dangerous to release&quot; is a great way to build buzz around a new model, but in this case I expect their caution is warranted.
+
+Just a few days (last Friday) ago I started a new ai-security-research tag on this blog to acknowledge an uptick in credible security professionals pulling the alarm on how good modern LLMs have got at vulnerability research.
+
+Greg Kroah-Hartman of the Linux kernel:
+
+
+Months ago, we were getting what we called &#x27;AI slop,&#x27; AI-generated security reports that were obviously wrong or low quality. It was kind of funny. It didn&#x27;t really worry us.
+
+Something happened a month ago, and the world switched. Now we have real reports. All open source projects have real reports that are made with AI, but they&#x27;re good, and they&#x27;re real.
+
+
+Daniel Stenberg of curl:
+
+
+The challenge with AI in open source security has transitioned from an AI slop tsunami into more of a ... plain security report tsunami. Less slop but lots of reports. Many of them really good.
+
+I&#x27;m spending hours per day on this now. It&#x27;s intense.
+
+
+And Thomas Ptacek published Vulnerability Research Is Cooked, a post inspired by his podcast conversation with Anthropic&#x27;s Nicholas Carlini.
+
+Anthropic have a 5 minute talking heads video describing the Glasswing project. Nicholas Carlini appears as one of those talking heads, where he said (highlights mine):
+
+
+It has the ability to chain together vulnerabilities. So what this means is you find two vulnerabilities, either of which doesn&#x27;t really get you very much independently. But this model is able to create exploits out of three, four, or sometimes five vulnerabilities that in sequence give you some kind of very sophisticated end outcome. [...]
+
+I&#x27;ve found more bugs in the last couple of weeks than I found in the rest of my life combined. We&#x27;ve used the model to scan a bunch of open source code, and the thing that we went for first was operating systems, because this is the code that underlies the entire internet infrastructure. For OpenBSD, we found a bug that&#x27;s been present for 27 years, where I can send a couple of pieces of data to any OpenBSD server and crash it. On Linux, we found a number of vulnerabilities where as a user with no permissions, I can elevate myself to the administrator by just running some binary on my machine. For each of these bugs, we told the maintainers who actually run the software about them, and they went and fixed them and have deployed the patches  patches so that anyone who runs the software is no longer vulnerable to these attacks.
+
+
+I found this on the OpenBSD 7.8 errata page:
+
+
+025: RELIABILITY FIX: March 25, 2026  All architectures
+
+TCP packets with invalid SACK options could crash the kernel.
+
+A source code patch exists which remedies this problem.
+
+
+I tracked that change down in the GitHub mirror of the OpenBSD CVS repo (apparently they still use CVS!) and found it using git blame:
+
+
+
+Sure enough, the surrounding code is from 27 years ago.
+
+I&#x27;m not sure which Linux vulnerability Nicholas was describing, but it may have been this NFS one recently covered by Michael Lynch
+.
+
+There&#x27;s enough smoke here that I believe there&#x27;s a fire. It&#x27;s not surprising to find vulnerabilities in decades-old software, especially given that they&#x27;re mostly written in C, but what&#x27;s new is that coding agents run by the latest frontier LLMs are proving tirelessly capable at digging up these issues.
+
+I actually thought to myself on Friday that this sounded like an industry-wide reckoning in the making, and that it might warrant a huge investment of time and money to get ahead of the inevitable barrage of vulnerabilities. Project Glasswing incorporates &quot;$100M in usage credits ... as well as $4M in direct donations to open-source security organizations&quot;. Partners include AWS, Apple, Microsoft, Google, and the Linux Foundation. It would be great to see OpenAI involved as well - GPT-5.4 already has a strong reputation for finding security vulnerabilities and they have stronger models on the near horizon.
+
+The bad news for those of us who are not trusted partners is this:
+
+
+We do not plan to make Claude Mythos Preview generally available, but our eventual goal is to enable our users to safely deploy Mythos-class models at scale—for cybersecurity purposes, but also for the myriad other benefits that such highly capable models will bring. To do so, we need to make progress in developing cybersecurity (and other) safeguards that detect and block the model’s most dangerous outputs. We plan to launch new safeguards with an upcoming Claude Opus model, allowing us to improve and refine them with a model that does not pose the same level of risk as Mythos Preview.
+
+
+I can live with that. I think the security risks really are credible here, and having extra time for trusted teams to get ahead of them is a reasonable trade-off.
+Tags: security, thomas-ptacek, ai, generative-ai, llms, anthropic, nicholas-carlini, ai-ethics, llm-release, ai-security-research</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Prioritize security alerts with runtime context from Dynatrace
+              <span class="post-metadata">(5 min | 1436 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-07-prioritize-security-alerts-with-runtime-context-from-dynatrace>You can now use runtime context from Dynatrace to prioritize GitHub Advanced Security alerts based on deployed artifacts and runtime risk in your Kubernetes environment. When you connect Dynatrace to…
+The post Prioritize security alerts with runtime context from Dynatrace appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot CLI now supports BYOK and local models
+              <span class="post-metadata">(5 min | 1588 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-07-copilot-cli-now-supports-byok-and-local-models>GitHub Copilot CLI now lets you connect your own model provider or run fully local models instead of using GitHub-hosted model routing. This means you can use the models and…
+The post Copilot CLI now supports BYOK and local models appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Dependabot alerts are now assignable to AI agents for remediation
               <span class="post-metadata">(6 min | 1741 words)</span> 
             </summary>
@@ -63,6 +217,19 @@ The post Dependabot version updates now support the Nix ecosystem appeared first
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2026-04-07-code-scanning-batch-apply-security-alert-suggestions-on-pull-requests>GitHub code scanning alerts on pull requests are now easier to address with bulk actions. You can now apply fixes for code scanning alerts in the Files changed tab by…
 The post Code scanning: Batch apply security alert suggestions on pull requests appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              npm trusted publishing now supports CircleCI
+              <span class="post-metadata">(6 min | 1829 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-06-npm-trusted-publishing-now-supports-circleci>npm trusted publishing now supports CircleCI as an OIDC provider, joining GitHub Actions and GitLab CI/CD. Maintainers publishing from CircleCI workflows can now eliminate stored credentials entirely and authenticate directly…
+The post npm trusted publishing now supports CircleCI appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
