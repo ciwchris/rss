@@ -915,6 +915,16 @@
           "imageUrl": "https://static.simonwillison.net/static/2026/openbsd-27-years.jpg"
         },
         {
+          "id": "https://simonwillison.net/2026/Apr/7/sqlite-wal-docker-containers/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Research:</strong> <a href=\"https://github.com/simonw/research/tree/main/sqlite-wal-docker-containers#readme\">SQLite WAL Mode Across Docker Containers Sharing a Volume</a></p>\n    <p>Inspired by <a href=\"https://news.ycombinator.com/item?id=47637353\">this conversation</a> on Hacker News about whether two SQLite processes in separate Docker containers that share the same volume might run into problems due to WAL shared memory. The answer is that everything works fine - Docker containers on the same host and filesystem share the same shared memory in a way that allows WAL to collaborate as it should.</p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/docker\">docker</a>, <a href=\"https://simonwillison.net/tags/sqlite\">sqlite</a></p>",
+          "link": "https://simonwillison.net/2026/Apr/7/sqlite-wal-docker-containers/#atom-everything",
+          "publishedOn": "2026-04-07T15:41:00.000Z",
+          "wordCount": 831,
+          "title": "SQLite WAL Mode Across Docker Containers Sharing a Volume",
+          "imageUrl": null
+        },
+        {
           "id": "https://simonwillison.net/2026/Apr/6/google-ai-edge-gallery/#atom-everything",
           "author": null,
           "description": "<p><strong><a href=\"https://apps.apple.com/nl/app/google-ai-edge-gallery/id6749645337\">Google AI Edge Gallery</a></strong></p>\nTerrible name, really great app: this is Google's official app for running their Gemma 4 models (the E2B and E4B sizes, plus some members of the Gemma 3 family) directly on your iPhone.</p>\n<p>It works <em>really</em> well. The E2B model is a 2.54GB download and is both fast and genuinely useful.</p>\n<p>The app also provides \"ask questions about images\" and audio transcription (up to 30s) with the two small Gemma 4 models, and has an interesting \"skills\" demo which demonstrates tool calling against eight different interactive widgets, each implemented as an HTML page (though sadly the source code is not visible): interactive-map, kitchen-adventure, calculate-hash, text-spinner, mood-tracker, mnemonic-password, query-wikipedia, and qr-code.</p>\n<p><img src=\"https://static.simonwillison.net/static/2026/gemini-agent-skills.jpg\" alt=\"Screenshot of an &quot;Agent Skills&quot; chat interface using the Gemma-4-E2B-it model. The user prompt reads &quot;Show me the Castro Theatre on a map.&quot; The model response, labeled &quot;Model on GPU,&quot; shows it &quot;Called JS skill &#39;interactive-map/index.html&#39;&quot; and displays an embedded Google Map centered on a red pin at The Castro Theatre in San Francisco, with nearby landmarks visible including Starbelly, Cliff&#39;s Variety, Blind Butcher, GLBT Historical Society Museum, and Fable. An &quot;Open in Maps&quot; link and &quot;View in full screen&quot; button are shown. Below the map, the model states &quot;The interactive map view for the Castro Theatre has been shown.&quot; with a response time of 2.4 s. A text input field with &quot;Type prompt...&quot; placeholder, a &quot;+&quot; button, and a &quot;Skills&quot; button appear at the bottom.\" style=\"max-width: min(400px, 100%); margin: 0 auto; display: block;\"></p>\n<p>(That demo did freeze the app when I tried to add a follow-up prompt though.)</p>\n<p>This is the first time I've seen a local model vendor release an official app for trying out their models on in iPhone. Sadly it's missing permanent logs - conversations with this app are ephemeral.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=47652561\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/google\">google</a>, <a href=\"https://simonwillison.net/tags/iphone\">iphone</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/gemini\">gemini</a>, <a href=\"https://simonwillison.net/tags/llm-tool-use\">llm-tool-use</a></p>",
@@ -1963,26 +1973,6 @@
           "wordCount": 1560,
           "title": "AI should help us produce better code",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/9/production-query-plans-without-production-data/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://boringsql.com/posts/portable-stats/\">Production query plans without production data</a></strong></p>\nRadim Marek describes the new <a href=\"https://www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-STATSMOD\"><code>pg_restore_relation_stats()</code> and <code>pg_restore_attribute_stats()</code> functions</a> that were introduced <a href=\"https://www.postgresql.org/docs/current/release-18.html\">in PostgreSQL 18</a> in September 2025.</p>\n<p>The PostgreSQL query planner makes use of internal statistics to help it decide how to best execute a query. These statistics often differ between production data and development environments, which means the query plans used in production may not be replicable in development.</p>\n<p>PostgreSQL's new features now let you copy those statistics down to your development environment, allowing you to simulate the plans for production workloads without needing to copy in all of that data first.</p>\n<p>I found this illustrative example useful:</p>\n<pre><code>SELECT pg_restore_attribute_stats(\n    'schemaname', 'public',\n    'relname', 'test_orders',\n    'attname', 'status',\n    'inherited', false::boolean,\n    'null_frac', 0.0::real,\n    'avg_width', 9::integer,\n    'n_distinct', 5::real,\n    'most_common_vals', '{delivered,shipped,cancelled,pending,returned}'::text,\n    'most_common_freqs', '{0.95,0.015,0.015,0.015,0.005}'::real[]\n);\n</code></pre>\n<p>This simulates statistics for a <code>status</code> column that is 95% <code>delivered</code>. Based on these statistics PostgreSQL can decide to use an index for <code>status = 'shipped'</code> but to instead perform a full table scan for <code>status = 'delivered'</code>.</p>\n<p>These statistics are pretty small. Radim says:</p>\n<blockquote>\n<p>Statistics dumps are tiny. A database with hundreds of tables and thousands of columns produces a statistics dump under 1MB. The production data might be hundreds of GB. The statistics that describe it fit in a text file.</p>\n</blockquote>\n<p>I posted on the SQLite user forum asking if SQLite could offer a similar feature and D. Richard Hipp promptly replied <a href=\"https://sqlite.org/forum/forumpost/480c5cb8a3898346\">that it has one already</a>:</p>\n<blockquote>\n<p>All of the data statistics used by the query planner in SQLite are available in the <a href=\"https://sqlite.org/fileformat.html#the_sqlite_stat1_table\">sqlite_stat1 table</a> (or also in the <a href=\"https://sqlite.org/fileformat.html#the_sqlite_stat4_table\">sqlite_stat4 table</a> if you happen to have compiled with SQLITE_ENABLE_STAT4).  That table is writable. You can inject whatever alternative statistics you like.</p>\n<p>This approach to controlling the query planner is mentioned in the documentation:\n<a href=\"https://sqlite.org/optoverview.html#manual_control_of_query_plans_using_sqlite_stat_tables\">https://sqlite.org/optoverview.html#manual_control_of_query_plans_using_sqlite_stat_tables</a>.</p>\n<p>See also <a href=\"https://sqlite.org/lang_analyze.html#fixed_results_of_analyze\">https://sqlite.org/lang_analyze.html#fixed_results_of_analyze</a>.</p>\n<p>The \".fullschema\" command in the CLI outputs both the schema and the content of the sqlite_statN tables, exactly for the reasons outlined above - so that we can reproduce query problems for testing without have to load multi-terabyte database files.</p>\n</blockquote>\n\n    <p><small></small>Via <a href=\"https://lobste.rs/s/o8vbb7/production_query_plans_without\">Lobste.rs</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/databases\">databases</a>, <a href=\"https://simonwillison.net/tags/postgresql\">postgresql</a>, <a href=\"https://simonwillison.net/tags/sql\">sql</a>, <a href=\"https://simonwillison.net/tags/sqlite\">sqlite</a>, <a href=\"https://simonwillison.net/tags/d-richard-hipp\">d-richard-hipp</a></p>",
-          "link": "https://simonwillison.net/2026/Mar/9/production-query-plans-without-production-data/#atom-everything",
-          "publishedOn": "2026-03-09T15:05:15.000Z",
-          "wordCount": 1043,
-          "title": "Production query plans without production data",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/9/not-so-boring/#atom-everything",
-          "author": null,
-          "description": "<p>A recurring concern I've seen regarding LLMs for programming is that they will push our technology choices towards the tools that are best represented in their training data, making it harder for new, better tools to break through the noise.</p>\r\n<p>This was certainly the case a couple of years ago, when asking models for help with Python or JavaScript appeared to give much better results than questions about less widely used languages.</p>\r\n<p>With <a href=\"https://simonwillison.net/tags/november-2025-inflection/\">the latest models</a> running in good coding agent harnesses I'm not sure this continues to hold up.</p>\r\n<p>I'm seeing excellent results with my <a href=\"https://simonwillison.net/2026/Feb/17/chartroom-and-datasette-showboat/\">brand new tools</a> where I start by prompting \"use uvx showboat --help / rodney --help / chartroom --help to learn about these tools\" - the context length of these new models is long enough that they can consume quite a lot of documentation before they start working on a problem.</p>\r\n<p>Drop a coding agent into <em>any</em> existing codebase that uses libraries and tools that are too private or too new to feature in the training data and my experience is that it works <em>just fine</em> - the agent will consult enough of the existing examples to understand patterns, then iterate and test its own output to fill in the gaps.</p>\r\n<p>This is a surprising result. I thought coding agents would prove to be the ultimate embodiment of the <a href=\"https://boringtechnology.club\">Choose Boring Technology</a> approach, but in practice they don't seem to be affecting my technology choices in that way at all.</p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/boring-technology\">boring-technology</a>, <a href=\"https://simonwillison.net/tags/coding-agents\">coding-agents</a>, <a href=\"https://simonwillison.net/tags/agentic-engineering\">agentic-engineering</a>, <a href=\"https://simonwillison.net/tags/november-2025-inflection\">november-2025-inflection</a></p>",
-          "link": "https://simonwillison.net/2026/Mar/9/not-so-boring/#atom-everything",
-          "publishedOn": "2026-03-09T13:37:45.000Z",
-          "wordCount": 976,
-          "title": "Perhaps not Boring Technology after all",
-          "imageUrl": null
         }
       ]
     },
@@ -1991,6 +1981,16 @@
       "feedUrl": "https://simonw.github.io/ollama-models-atom-feed/atom.xml",
       "siteUrl": "https://ollama.com/search?o=newest",
       "articles": [
+        {
+          "id": "https://ollama.com/library/glm-5.1",
+          "author": null,
+          "description": "GLM-5.1 is our next-generation flagship model for agentic engineering, with significantly stronger coding capabilities than its predecessor. It achieves state-of-the-art performance on SWE-Bench Pro and leads GLM-5 by a wide margin.",
+          "link": "https://ollama.com/library/glm-5.1",
+          "publishedOn": "2026-04-07T15:00:00.000Z",
+          "wordCount": 3238,
+          "title": "glm-5.1",
+          "imageUrl": "https://ollama.com/public/og.png"
+        },
         {
           "id": "https://ollama.com/library/gemma4",
           "author": null,
@@ -2064,6 +2064,16 @@
       "feedUrl": "https://openai.com/news/rss.xml",
       "siteUrl": "https://openai.com/news",
       "articles": [
+        {
+          "id": "https://openai.com/index/introducing-child-safety-blueprint",
+          "author": null,
+          "description": "Discover OpenAI’s Child Safety Blueprint—a roadmap for building AI responsibly with safeguards, age-appropriate design, and collaboration to protect and empower young people online.",
+          "link": "https://openai.com/index/introducing-child-safety-blueprint",
+          "publishedOn": "2026-04-08T05:00:00.000Z",
+          "wordCount": null,
+          "title": "Introducing the Child Safety Blueprint",
+          "imageUrl": null
+        },
         {
           "id": "https://openai.com/index/introducing-openai-safety-fellowship",
           "author": null,
@@ -2322,16 +2332,6 @@
           "publishedOn": "2026-03-10T10:00:00.000Z",
           "wordCount": null,
           "title": "New ways to learn math and science in ChatGPT",
-          "imageUrl": null
-        },
-        {
-          "id": "https://openai.com/index/openai-to-acquire-promptfoo",
-          "author": null,
-          "description": "OpenAI is acquiring Promptfoo, an AI security platform that helps enterprises identify and remediate vulnerabilities in AI systems during development.",
-          "link": "https://openai.com/index/openai-to-acquire-promptfoo",
-          "publishedOn": "2026-03-09T10:00:00.000Z",
-          "wordCount": null,
-          "title": "OpenAI to acquire Promptfoo",
           "imageUrl": null
         }
       ]
