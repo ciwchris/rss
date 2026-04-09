@@ -25,9 +25,383 @@
 
   <ul>
     <li>
+      <time>2026-04-09</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              OpenAI Full Fan Mode Contest: Terms &amp; Conditions
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/full-fan-mode-contest-terms-conditions>Explore the official terms and conditions for the OpenAI Full Fan Mode Contest, including eligibility, entry steps, judging criteria, and prize details. Learn how to participate, submit your entry on Instagram, and win IPL match tickets.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-04-08</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Copilot-reviewed pull request merge metrics now in the usage metrics API
+              <span class="post-metadata">(5 min | 1534 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-08-copilot-reviewed-pull-request-merge-metrics-now-in-the-usage-metrics-api>Building on the pull request throughput and cycle-time metrics shipped in February, which track Copilot-created pull requests from the coding agent, the Copilot usage metrics API now includes two new…
+The post Copilot-reviewed pull request merge metrics now in the usage metrics API appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Meta&#x27;s new model is Muse Spark, and meta.ai chat has some interesting tools
+              <span class="post-metadata">(8 min | 2520 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/8/muse-spark/#atom-everything>Meta announced Muse Spark today, their first model release since Llama 4 almost exactly a year ago. It&#x27;s hosted, not open weights, and the API is currently &quot;a private API preview to select users&quot;, but you can try it out today on meta.ai (Facebook or Instagram login required).
+
+Meta&#x27;s self-reported benchmarks show it competitive with Opus 4.6, Gemini 3.1 Pro, and GPT 5.4 on selected benchmarks, though notably behind on Terminal-Bench 2.0. Meta themselves say they &quot;continue to invest in areas with current performance gaps, such as long-horizon agentic systems and coding workflows&quot;.
+
+The model is exposed as two different modes on meta.ai - &quot;Instant&quot; and &quot;Thinking&quot;. Meta promise a &quot;Contemplating&quot; mode in the future which they say will offer much longer reasoning time and should behave more like Gemini Deep Think or GPT-5.4 Pro.
+
+A couple of pelicans
+
+I prefer to run my pelican test via API to avoid being influenced by any invisible system prompts, but since that&#x27;s not an option I ran it against the chat UI directly.
+
+Here&#x27;s the pelican I got for &quot;Instant&quot;:
+
+
+
+And this one for &quot;Thinking&quot;:
+
+
+
+Both SVGs were rendered inline by the Meta AI interface. Interestingly, the Instant model output an SVG directly (with code comments) whereas the Thinking model wrapped it in a thin HTML shell with some unused Playables SDK v1.0.0 JavaScript libraries.
+
+Which got me curious...
+
+Poking around with tools
+
+Clearly Meta&#x27;s chat harness has some tools wired up to it - at the very least it can render SVG and HTML as embedded frames, Claude Artifacts style.
+
+But what else can it do?
+
+I asked it:
+
+
+what tools do you have access to?
+
+
+And then:
+
+
+I want the exact tool names, parameter names and tool descriptions, in the original format
+
+
+It spat out detailed descriptions of 16 different tools. You can see the full list I got back here - credit to Meta for not telling their bot to hide these, since it&#x27;s far less frustrating if I can get them out without having to mess around with jailbreaks.
+
+Here are highlights derived from that response:
+
+
+
+Browse and search. browser.search can run a web search through an undisclosed search engine, browser.open can load the full page from one of those search results and browser.find can run pattern matches against the returned page content.
+
+
+
+Meta content search. meta_1p.content_search can run &quot;Semantic search across Instagram, Threads, and Facebook posts&quot; - but only for posts the user has access to view which were created since 2025-01-01. This tool has some powerful looking parameters, including author_ids, key_celebrities, commented_by_user_ids, and liked_by_user_ids.
+
+
+
+&quot;Catalog search&quot; - meta_1p.meta_catalog_search can &quot;Search for products in Meta&#x27;s product catalog&quot;, presumably for the &quot;Shopping&quot; option in the Meta AI model selector.
+
+
+
+Image generation. media.image_gen generates images from prompts, and &quot;returns a CDN URL and saves the image to the sandbox&quot;. It has modes &quot;artistic&quot; and &quot;realistic&quot; and can return &quot;square&quot;, &quot;vertical&quot; or &quot;landscape&quot; images.
+
+
+
+container.python_execution - yes! It&#x27;s Code Interpreter, my favourite feature of both ChatGPT and Claude.
+
+
+Execute Python code in a remote sandbox environment. Python 3.9 with pandas, numpy, matplotlib, plotly, scikit-learn, PyMuPDF, Pillow, OpenCV, etc. Files persist at /mnt/data/.
+
+
+Python 3.9 is EOL these days but the library collection looks useful.
+
+I prompted &quot;use python code to confirm sqlite version and python version&quot; and got back Python 3.9.25 and SQLite 3.34.1 (from January 2021).
+
+
+
+container.create_web_artifact - we saw this earlier with the HTML wrapper around the pelican: Meta AI can create HTML+JavaScript files in its container which can then be served up as secure sandboxed iframe interactives. &quot;Set kind to html for websites/apps or svg for vector graphics.&quot;
+
+
+
+container.download_meta_1p_media is interesting: &quot;Download media from Meta 1P sources into the sandbox. Use post_id for Instagram/Facebook/Threads posts, or catalog_search_citation_id for catalog product images&quot;. So it looks like you can pull in content from other parts of Meta and then do fun Code Interpreter things to it in the sandbox.
+
+
+
+container.file_search - &quot;Search uploaded files in this conversation and return relevant excerpts&quot; - I guess for digging through PDFs and similar?
+
+
+
+Tools for editing files in the container - container.view, container.insert (with new_str and insert_line), container.str_replace. These look similar to Claude&#x27;s text editor tool commands - these are becoming a common pattern across any file-equipped agent harness.
+
+
+
+container.visual_grounding - see below, this one is fun.
+
+
+
+subagents.spawn_agent - the sub-agent as a tool pattern. &quot;Spawn an independent sub-agent for research, analysis, or delegation. It returns its final text response.&quot;
+
+
+
+third_party.link_third_party_account - &quot;Initiate account linking for a third-party service&quot;, currently Google Calendar, Outlook Calendar, Gmail, or Outlook.
+
+
+
+Image analysis in the container
+
+Let&#x27;s talk about that container.visual_grounding one. Here&#x27;s the description in full:
+
+
+Description: Visual grounding tool that analyzes the image, identifies and labels objects, locates regions, or counts objects.
+
+Parameters:
+
+
+
+object_names (array, required)
+
+
+image_path (string, default &quot;&quot;)
+
+
+format_type (&quot;bbox&quot;|&quot;point&quot;|&quot;count&quot;|null, default &quot;bbox&quot;)
+
+
+title (string|null)[string]
+
+
+
+So it can take an image path, optional object names and return things in format bbox, point or count.
+
+Sounds to me like Meta&#x27;s Segment Anything. I decided to take it for a spin.
+
+Prompt:
+
+
+generate a photo of a raccoon sitting on a trash can wearing trash as a hat
+
+
+Response:
+
+
+Here you go — king of the alley, in full regalia:
+
+
+
+Coffee cup crown, banana peel brim, newspaper feather. Peak raccoon fashion. Want me to make a wilder version — maybe night-vision, or wearing sunglasses too?
+
+
+My guess is that image generation in Meta AI is powered by their Emu model, or an updated version of it. This is the same pattern as ChatGPT and Gemini image generation, where images are generated by a tool call (here that&#x27;s media.image_gen).
+
+The image_gen tool description said that it &quot;saves the image to the sandbox&quot;, so my guess was that I&#x27;d then be able to run Python code against it. I tried:
+
+
+use python OpenCV to analyze that image and find out neat things about it
+
+
+Annoyingly it did not show me the code it ran, but it did create this image:
+
+
+
+Pretty neat! We can both generate images and then use them with Python tools.
+
+Next, the visual_grounding tool. Knowing the names of the tools makes it easy to refer to them in prompts:
+
+
+Now try the container.visual_grounding tool
+
+
+The response (full response here):
+
+
+Done — visual_grounding pinpointed every piece of the outfit with pixel-level precision:
+
+
+
+[...]
+
+Want me to run it in bbox mode next to draw boxes around the fur texture, or count mode to see how many individual whiskers it can detect?
+
+
+Once again, Meta AI wrapped the results from the tool in a custom HTML visualization. That&#x27;s clearly point mode, but how about the others?
+
+I prompted:
+
+
+yes draw bounding boxes, can it do masks too?
+
+
+Response:
+
+
+Yes — bounding boxes work great. Masks? Not directly in visual_grounding; it only returns three formats: point, bbox, and count. No pixel-level segmentation masks.
+
+Here&#x27;s the bbox output:
+
+
+
+What you’re seeing:
+
+
+
+raccoon: big box from (270,240) to (892,845) — covers 62% of the width, basically the whole animal
+
+
+coffee cup: (424,115)-(610,273) — sits highest, 158px tall in the 0-1000 space
+
+
+banana peel: (472,215)-(667,291) — overlaps the cup&#x27;s base, confirming it&#x27;s draped over the side
+
+
+newspaper: (305,223)-(548,315) — left ear coverage
+
+
+trash can lid: (107,800)-(1000,998) — spans almost the full image width at the bottom
+
+
+face: (305,283)-(750,537) — tight crop around the mask
+
+
+eyes: both ~40×37 pixel boxes, perfectly level at y&#x3D;379
+
+
+Notice how the boxes nest: face is inside raccoon, eyes inside face, hat pieces overlap each other but stay above the face box. The tool is doing real object localization, not just guessing centers.
+
+
+About masks: since visual_grounding doesn&#x27;t output them, I can fake them with OpenCV in the container. Two quick options:
+
+
+
+GrabCut — I give it the raccoon bbox, it iteratively segments fur from background and returns a binary mask
+
+
+SAM-style color threshold — use the bbox plus k-means to isolate the coffee cup or banana peel
+
+
+Want me to generate an actual alpha mask for the raccoon (cut it out from the alley), or for the trash hat pieces separately? Takes about 10 seconds and I can give you a transparent PNG.
+
+
+Here&#x27;s the HTML for that bbox visualization.
+
+Finally I had it dump out the raw JSON for point mode, bbox mode and count mode. You can see that all here. The count mode is particularly interesting - here&#x27;s that in full:
+
+
+[
+  {
+    &quot;object_name&quot;: &quot;raccoon whisker&quot;,
+    &quot;points&quot;: [
+      {&quot;x&quot;: 403, &quot;y&quot;: 445},
+      {&quot;x&quot;: 397, &quot;y&quot;: 458},
+      {&quot;x&quot;: 392, &quot;y&quot;: 472},
+      {&quot;x&quot;: 391, &quot;y&quot;: 485},
+      {&quot;x&quot;: 398, &quot;y&quot;: 497},
+      {&quot;x&quot;: 415, &quot;y&quot;: 512},
+      {&quot;x&quot;: 618, &quot;y&quot;: 446},
+      {&quot;x&quot;: 622, &quot;y&quot;: 461},
+      {&quot;x&quot;: 625, &quot;y&quot;: 475},
+      {&quot;x&quot;: 628, &quot;y&quot;: 488},
+      {&quot;x&quot;: 635, &quot;y&quot;: 501},
+      {&quot;x&quot;: 651, &quot;y&quot;: 518}
+    ],
+    &quot;count&quot;: 12
+  },
+  {
+    &quot;object_name&quot;: &quot;raccoon paw claw&quot;,
+    &quot;points&quot;: [
+      {&quot;x&quot;: 406, &quot;y&quot;: 845},
+      {&quot;x&quot;: 424, &quot;y&quot;: 847},
+      {&quot;x&quot;: 441, &quot;y&quot;: 842},
+      {&quot;x&quot;: 473, &quot;y&quot;: 833},
+      {&quot;x&quot;: 596, &quot;y&quot;: 830},
+      {&quot;x&quot;: 635, &quot;y&quot;: 844},
+      {&quot;x&quot;: 660, &quot;y&quot;: 843},
+      {&quot;x&quot;: 679, &quot;y&quot;: 838}
+    ],
+    &quot;count&quot;: 8
+  },
+  {
+    &quot;object_name&quot;: &quot;trash item on head&quot;,
+    &quot;points&quot;: [
+      {&quot;x&quot;: 514, &quot;y&quot;: 191},
+      {&quot;x&quot;: 568, &quot;y&quot;: 263},
+      {&quot;x&quot;: 392, &quot;y&quot;: 274}
+    ],
+    &quot;count&quot;: 3
+  },
+  {
+    &quot;object_name&quot;: &quot;eye&quot;,
+    &quot;points&quot;: [
+      {&quot;x&quot;: 462, &quot;y&quot;: 395},
+      {&quot;x&quot;: 582, &quot;y&quot;: 398}
+    ],
+    &quot;count&quot;: 2
+  },
+  {
+    &quot;object_name&quot;: &quot;ear&quot;,
+    &quot;points&quot;: [
+      {&quot;x&quot;: 359, &quot;y&quot;: 313},
+      {&quot;x&quot;: 680, &quot;y&quot;: 294}
+    ],
+    &quot;count&quot;: 2
+  }
+]
+
+So Meta AI has the ability to count a raccoon&#x27;s whiskers baked into the default set of tools.
+
+Which means... it can count pelicans too!
+
+
+
+Here&#x27;s that overlay exported as HTML.
+
+
+Update: Meta&#x27;s Jack Wu confirms that these tools are part of the new harness they launched alongside the new model.
+
+
+Maybe open weights in the future?
+
+On Twitter Alexandr Wang said:
+
+
+this is step one. bigger models are already in development with infrastructure scaling to match. private api preview open to select partners today, with plans to open-source future versions.
+
+
+I really hope they do go back to open-sourcing their models. Llama 3.1/3.2/3.3 were excellent laptop-scale model families, and the introductory blog post for Muse Spark had this to say about efficiency:
+
+
+[...] we can reach the same capabilities with over an order of magnitude less compute than our previous model, Llama 4 Maverick. This improvement also makes Muse Spark significantly more efficient than the leading base models available for comparison.
+
+
+So are Meta back in the frontier model game? Artificial Analysis think so - they scored Meta Spark at 52, &quot;behind only Gemini 3.1 Pro, GPT-5.4, and Claude Opus 4.6&quot;. Last year&#x27;s Llama 4 Maverick and Scout scored 18 and 13 respectively.
+
+I&#x27;m waiting for API access - while the tool collection on meta.ai is quite strong the real test of a model like this is still what we can build on top of it.
+Tags: facebook, ai, generative-ai, llms, code-interpreter, llm-tool-use, meta, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5244,119 +5618,6 @@ The post Explore a repository using Copilot on the web appeared first on The Git
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/wayfair>Wayfair uses OpenAI models to improve ecommerce support and product catalog accuracy, automating ticket triage and enhancing millions of product attributes at scale.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-03-10</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              AI should help us produce better code
-              <span class="post-metadata">(5 min | 1560 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/better-code/#atom-everything>Agentic Engineering Patterns &gt;
-Many developers worry that outsourcing their code to AI tools will result in a drop in quality, producing bad code that&#x27;s churned out fast enough that decision makers are willing to overlook its flaws.
-If adopting coding agents demonstrably reduces the quality of the code and features you are producing, you should address that problem directly: figure out which aspects of your process are hurting the quality of your output and fix them.
-Shipping worse code with agents is a choice. We can choose to ship code that is better instead.
-Avoiding taking on technical debt
-I like to think about shipping better code in terms of technical debt. We take on technical debt as the result of trade-offs: doing things &quot;the right way&quot; would take too long, so we work within the time constraints we are under and cross our fingers that our project will survive long enough to pay down the debt later on.
-The best mitigation for technical debt is to avoid taking it on in the first place.
-In my experience, a common category of technical debt fixes is changes that are simple but time-consuming.
-Our original API design doesn&#x27;t cover an important case that emerged later on. Fixing that API would require changing code in dozens of different places, making it quicker to add a very slightly different new API and live with the duplication.
-We made a poor choice naming a concept early on - teams rather than groups for example - but cleaning up that nomenclature everywhere in the code is too much work so we only fix it in the UI.
-Our system has grown duplicate but slightly different functionality over time which needs combining and refactoring.
-One of our files has grown to several thousand lines of code which we would ideally split into separate modules.
-All of these changes are conceptually simple but still need time dedicated to them, which can be hard to justify given more pressing issues.
-Coding agents can handle these for us
-Refactoring tasks like this are an ideal application of coding agents.
-Fire up an agent, tell it what to change and leave it to churn away in a branch or worktree somewhere in the background.
-I usually use asynchronous coding agents for this such as Gemini Jules, OpenAI Codex web, or Claude Code on the web. That way I can run those refactoring jobs without interrupting my flow on my laptop.
-Evaluate the result in a Pull Request. If it&#x27;s good, land it. If it&#x27;s almost there, prompt it and tell it what to do differently. If it&#x27;s bad, throw it away.
-The cost of these code improvements has dropped so low that we can afford a zero tolerance attitude to minor code smells and inconveniences.
-AI tools let us consider more options
-Any software development task comes with a wealth of options for approaching the problem. Some of the most significant technical debt comes from making poor choices at the planning step - missing out on an obvious simple solution, or picking a technology that later turns out not to be exactly the right fit.
-LLMs can help ensure we don&#x27;t miss any obvious solutions that may not have crossed our radar before. They&#x27;ll only suggest solutions that are common in their training data but those tend to be the Boring Technology that&#x27;s most likely to work.
-More importantly, coding agents can help with exploratory prototyping.
-The best way to make confident technology choices is to prove that they are fit for purpose with a prototype.
-Is Redis a good choice for the activity feed on a site which expects thousands of concurrent users?
-The best way to know for sure is to wire up a simulation of that system and run a load test against it to see what breaks.
-Coding agents can build this kind of simulation from a single well crafted prompt, which drops the cost of this kind of experiment to almost nothing. And since they&#x27;re so cheap we can run multiple experiments at once, testing several solutions to pick the one that is the best fit for our problem.
-Embrace the compound engineering loop
-Agents follow instructions. We can evolve these instructions over time to get better results from future runs, based on what we&#x27;ve learned previously.
-Dan Shipper and Kieran Klaassen at Every describe their company&#x27;s approach to working with coding agents as Compound Engineering. Every coding project they complete ends with a retrospective, which they call the compound step where they take what worked and document that for future agent runs.
-If we want the best results from our agents, we should aim to continually increase the quality of our codebase over time. Small improvements compound. Quality enhancements that used to be time-consuming have now dropped in cost to the point that there&#x27;s no excuse not to invest in quality at the same time as shipping new features. Coding agents mean we can finally have both.
-Tags: coding-agents, ai-assisted-programming, generative-ai, agentic-engineering, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Secret scanning pattern updates — March 2026
-              <span class="post-metadata">(6 min | 1729 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-10-secret-scanning-pattern-updates-march-2026>GitHub secret scanning continually updates its detectors, validators, and analyzers. Here’s what’s new for March 2026. 28 new secret detectors from 15 providers, including Lark, Vercel, Snowflake, and Supabase. 39…
-The post Secret scanning pattern updates — March 2026 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              CodeQL 2.24.3 adds Java 26 support and other improvements
-              <span class="post-metadata">(5 min | 1568 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-10-codeql-2-24-3-adds-java-26-support-and-other-improvements>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.24.3, which adds support for Java 26…
-The post CodeQL 2.24.3 adds Java 26 support and other improvements appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot now supports pre-commit hooks
-              <span class="post-metadata">(5 min | 1382 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-10-dependabot-now-supports-pre-commit-hooks>GitHub Dependabot now natively supports automatic dependency updates for pre-commit hooks. By adding pre-commit as a package ecosystem in your dependabot.yml configuration, Dependabot will parse your .pre-commit-config.yaml, check each hook’s…
-The post Dependabot now supports pre-commit hooks appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Improving instruction hierarchy in frontier LLMs
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/instruction-hierarchy-challenge>IH-Challenge trains models to prioritize trusted instructions, improving instruction hierarchy, safety steerability, and resistance to prompt injection attacks.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New ways to learn math and science in ChatGPT
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/new-ways-to-learn-math-and-science-in-chatgpt>ChatGPT introduces interactive visual explanations for math and science, helping students explore formulas, variables, and concepts in real time.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
