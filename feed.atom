@@ -2,10 +2,45 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-11T14:27:54.076Z</updated>
+    <updated>2026-04-11T21:23:03.916Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[SQLite 3.53.0]]></title>
+        <id>https://simonwillison.net/2026/Apr/11/sqlite/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/11/sqlite/#atom-everything"/>
+        <updated>2026-04-11T19:56:53.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://sqlite.org/releaselog/3_53_0.html">SQLite 3.53.0</a></strong></p>
+SQLite 3.52.0 was withdrawn so this is a pretty big release with a whole lot of accumulated user-facing and internal improvements. Some that stood out to me:</p>
+<ul>
+<li><code>ALTER TABLE</code> can now add and remove <code>NOT NULL</code> and <code>CHECK</code> constraints - I've previously used my own <a href="https://sqlite-utils.datasette.io/en/stable/python-api.html#changing-not-null-status">sqlite-utils transform() method</a> for this.</li>
+<li>New <a href="https://sqlite.org/json1.html#jarrayins">json_array_insert() function</a> and its <code>jsonb</code> equivalent.</li>
+<li>Significant improvements to <a href="https://sqlite.org/climode.html">CLI mode</a>, including result formatting.</li>
+</ul>
+<p>The result formatting improvements come from a new library, the <a href="https://sqlite.org/src/file/ext/qrf">Query Results Formatter</a>. I <a href="https://github.com/simonw/tools/pull/266">had Claude Code</a> (on my phone) compile that to WebAssembly and build <a href="https://tools.simonwillison.net/sqlite-qrf">this playground interface</a> for trying that out.
+
+    <p><small></small>Via <a href="https://lobste.rs/s/sqsb24/sqlite_3_53_0">Lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/sql">sql</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SQLite Query Result Formatter Demo]]></title>
+        <id>https://simonwillison.net/2026/Apr/11/sqlite-qrf/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/11/sqlite-qrf/#atom-everything"/>
+        <updated>2026-04-11T19:35:31.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Tool:</strong> <a href="https://tools.simonwillison.net/sqlite-qrf">SQLite Query Result Formatter Demo</a></p>
+    <p>See my notes <a href="https://simonwillison.net/2026/Apr/11/sqlite/">on SQLite 3.53.0</a>. This playground provides a UI for trying out the various rendering options for SQL result tables from the new Query Result Formatter library, compiled to WebAssembly.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/tools">tools</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Enforcing new limits and retiring Opus 4.6 Fast from Copilot Pro+]]></title>
         <id>https://github.blog/changelog/2026-04-10-enforcing-new-limits-and-retiring-opus-4-6-fast-from-copilot-pro</id>
@@ -4764,43 +4799,6 @@ The post Self-hosted runner minimum version enforcement paused appeared first on
 The post Updates to GitHub Copilot for students appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Shopify/liquid: Performance: 53% faster parse+render, 61% fewer allocations]]></title>
-        <id>https://simonwillison.net/2026/Mar/13/liquid/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/13/liquid/#atom-everything"/>
-        <updated>2026-03-13T03:44:34.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/Shopify/liquid/pull/2056">Shopify/liquid: Performance: 53% faster parse+render, 61% fewer allocations</a></strong></p>
-PR from Shopify CEO Tobias Lütke against Liquid, Shopify's open source Ruby template engine that was somewhat inspired by Django when Tobi first created it <a href="https://simonwillison.net/2005/Nov/6/liquid/">back in 2005</a>.</p>
-<p>Tobi found dozens of new performance micro-optimizations using a variant of <a href="https://github.com/karpathy/autoresearch">autoresearch</a>, Andrej Karpathy's new system for having a coding agent run hundreds of semi-autonomous experiments to find new effective techniques for training <a href="https://github.com/karpathy/nanochat">nanochat</a>.</p>
-<p>Tobi's implementation started two days ago with this <a href="https://github.com/Shopify/liquid/blob/2543fdc1a101f555db208fb0deeb2e3bf1ae9e36/auto/autoresearch.md">autoresearch.md</a> prompt file and an <a href="https://github.com/Shopify/liquid/blob/2543fdc1a101f555db208fb0deeb2e3bf1ae9e36/auto/autoresearch.sh">autoresearch.sh</a> script for the agent to run to execute the test suite and report on benchmark scores.</p>
-<p>The PR now lists <a href="https://github.com/Shopify/liquid/pull/2056/commits">93 commits</a> from around 120 automated experiments. The PR description lists what worked in detail - some examples:</p>
-<blockquote>
-<ul>
-<li><strong>Replaced StringScanner tokenizer with <code>String#byteindex</code>.</strong> Single-byte <code>byteindex</code> searching is ~40% faster than regex-based <code>skip_until</code>. This alone reduced parse time by ~12%.</li>
-<li><strong>Pure-byte <code>parse_tag_token</code>.</strong> Eliminated the costly <code>StringScanner#string=</code> reset that was called for every <code>{% %}</code> token (878 times). Manual byte scanning for tag name + markup extraction is faster than resetting and re-scanning via StringScanner. [...]</li>
-<li><strong>Cached small integer <code>to_s</code>.</strong> Pre-computed frozen strings for 0-999 avoid 267 <code>Integer#to_s</code> allocations per render.</li>
-</ul>
-</blockquote>
-<p>This all added up to a 53% improvement on benchmarks - truly impressive for a codebase that's been tweaked by hundreds of contributors over 20 years.</p>
-<p>I think this illustrates a number of interesting ideas:</p>
-<ul>
-<li>Having a robust test suite - in this case 974 unit tests - is a <em>massive unlock</em> for working with coding agents. This kind of research effort would not be possible without first having a tried and tested suite of tests.</li>
-<li>The autoresearch pattern - where an agent brainstorms a multitude of potential improvements and then experiments with them one at a time - is really effective.</li>
-<li>If you provide an agent with a benchmarking script "make it faster" becomes an actionable goal.</li>
-<li>CEOs can code again! Tobi has always been more hands-on than most, but this is a much more significant contribution than anyone would expect from the leader of a company with 7,500+ employees. I've seen this pattern play out a lot over the past few months: coding agents make it feasible for people in high-interruption roles to productively work with code again.</li>
-</ul>
-<p>Here's Tobi's <a href="https://github.com/tobi">GitHub contribution graph</a> for the past year, showing a significant uptick following that <a href="https://simonwillison.net/tags/november-2025-inflection/">November 2025 inflection point</a> when coding agents got really good.</p>
-<p><img alt="1,658 contributions in the last year - scattered lightly through Jun, Aug, Sep, Oct and Nov and then picking up significantly in Dec, Jan, and Feb." src="https://static.simonwillison.net/static/2026/tobi-contribs.jpg" /></p>
-<p>He used <a href="https://github.com/badlogic/pi-mono">Pi</a> as the coding agent and released a new <a href="https://github.com/davebcn87/pi-autoresearch">pi-autoresearch</a> plugin in collaboration with David Cortés, which maintains state in an <code>autoresearch.jsonl</code> file <a href="https://github.com/Shopify/liquid/blob/3182b7c1b3758b0f5fe2d0fcc71a48bbcb11c946/autoresearch.jsonl">like this one</a>.
-
-    <p><small></small>Via <a href="https://x.com/tobi/status/2032212531846971413">@tobi</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/django">django</a>, <a href="https://simonwillison.net/tags/performance">performance</a>, <a href="https://simonwillison.net/tags/rails">rails</a>, <a href="https://simonwillison.net/tags/ruby">ruby</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/andrej-karpathy">andrej-karpathy</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/november-2025-inflection">november-2025-inflection</a>, <a href="https://simonwillison.net/tags/tobias-lutke">tobias-lutke</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
 </feed>
