@@ -2,10 +2,66 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-14T21:41:02.447Z</updated>
+    <updated>2026-04-15T14:58:04.517Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Zig 0.16.0 release notes: "Juicy Main"]]></title>
+        <id>https://simonwillison.net/2026/Apr/15/juicy-main/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/15/juicy-main/#atom-everything"/>
+        <updated>2026-04-15T01:59:21.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://ziglang.org/download/0.16.0/release-notes.html#Juicy-Main">Zig 0.16.0 release notes: &quot;Juicy Main&quot;</a></strong></p>
+Zig has <em>really good</em> release notes - comprehensive, detailed, and with relevant usage examples for each of the new features.</p>
+<p>Of particular note in the newly released Zig 0.16.0 is what they are calling "Juicy Main" - a dependency injection feature for your program's <code>main()</code> function where accepting a <code>process.Init</code> parameter grants access to a struct of useful properties:</p>
+<div class="highlight highlight-source-zig"><pre><span class="pl-k">const</span> <span class="pl-v">std</span> <span class="pl-k">=</span> <span class="pl-k">@import</span>(<span class="pl-s">"std"</span>);
+
+<span class="pl-k">pub</span> <span class="pl-k">fn</span> <span class="pl-en">main</span>(<span class="pl-v">init</span>: <span class="pl-k">std.process.Init</span>) <span class="pl-k">!</span><span class="pl-k">void</span> {
+    <span class="pl-c">/// general purpose allocator for temporary heap allocations:</span>
+    <span class="pl-k">const</span> <span class="pl-v">gpa</span> <span class="pl-k">=</span> <span class="pl-v">init</span>.<span class="pl-v">gpa</span>;
+    <span class="pl-c">/// default Io implementation:</span>
+    <span class="pl-k">const</span> <span class="pl-v">io</span> <span class="pl-k">=</span> <span class="pl-v">init</span>.<span class="pl-v">io</span>;
+    <span class="pl-c">/// access to environment variables:</span>
+    <span class="pl-v">std</span>.<span class="pl-v">log</span>.<span class="pl-v">info</span>(<span class="pl-s">"{d} env vars"</span>, .{<span class="pl-v">init</span>.<span class="pl-v">environ_map</span>.<span class="pl-v">count</span>()});
+    <span class="pl-c">/// access to CLI arguments</span>
+    <span class="pl-k">const</span> <span class="pl-v">args</span> <span class="pl-k">=</span> <span class="pl-k">try</span> <span class="pl-v">init</span>.<span class="pl-v">minimal</span>.<span class="pl-v">args</span>.<span class="pl-v">toSlice</span>(
+        <span class="pl-v">init</span>.<span class="pl-v">arena</span>.<span class="pl-v">allocator</span>()
+    );
+}</pre></div>
+
+    <p><small></small>Via <a href="https://lobste.rs/s/4vvozb/zig_0_16_0_release_notes">Lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/zig">zig</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[datasette PR #2689: Replace token-based CSRF with Sec-Fetch-Site header protection]]></title>
+        <id>https://simonwillison.net/2026/Apr/14/replace-token-based-csrf/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/14/replace-token-based-csrf/#atom-everything"/>
+        <updated>2026-04-14T23:58:53.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/simonw/datasette/pull/2689">datasette PR #2689: Replace token-based CSRF with Sec-Fetch-Site header protection</a></strong></p>
+Datasette has long protected against CSRF attacks using CSRF tokens, implemented using my <a href="https://github.com/simonw/asgi-csrf">asgi-csrf</a> Python library. These are something of a pain to work with - you need to scatter forms in templates with <code>&lt;input type="hidden" name="csrftoken" value="{{ csrftoken() }}"&gt;</code> lines and then selectively disable CSRF protection for APIs that are intended to be called from outside the browser.</p>
+<p>I've been following Filippo Valsorda's research here with interest, described in <a href="https://words.filippo.io/csrf/">this detailed essay from August 2025</a> and shipped <a href="https://tip.golang.org/doc/go1.25#nethttppkgnethttp">as part of Go 1.25</a> that same month.</p>
+<p>I've now landed the same change in Datasette. Here's the PR description - Claude Code did much of the work (across 10 commits, closely guided by me and cross-reviewed by GPT-5.4) but I've decided to start writing these PR descriptions by hand, partly to make them more concise and also as an exercise in keeping myself honest.</p>
+<blockquote>
+<ul>
+<li>New CSRF protection middleware inspired by Go 1.25 and <a href="https://words.filippo.io/csrf/">this research</a> by Filippo Valsorda. This replaces the old CSRF token based protection.</li>
+<li>Removes all instances of <code>&lt;input type="hidden" name="csrftoken" value="{{ csrftoken() }}"&gt;</code> in the templates - they are no longer needed.</li>
+<li>Removes the <code>def skip_csrf(datasette, scope):</code> plugin hook defined in <code>datasette/hookspecs.py</code> and its documentation and tests.</li>
+<li>Updated <a href="https://docs.datasette.io/en/latest/internals.html#csrf-protection">CSRF protection documentation</a> to describe the new approach.</li>
+<li>Upgrade guide now <a href="https://docs.datasette.io/en/latest/upgrade_guide.html#csrf-protection-is-now-header-based">describes the CSRF change</a>.</li>
+</ul>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/csrf">csrf</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/ai-assisted-programming">ai-assisted-programming</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Trusted access for the next era of cyber defense]]></title>
         <id>https://simonwillison.net/2026/Apr/14/trusted-access-openai/#atom-everything</id>
@@ -4421,230 +4477,6 @@ The post GitHub Code Quality: Batch apply quality suggestions on pull requests a
         <summary type="html"><![CDATA[GPT-5.4 mini and nano are smaller, faster versions of GPT-5.4 optimized for coding, tool use, multimodal reasoning, and high-volume API and sub-agent workloads.]]></summary>
         <author>
             <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Equipping workers with insights about compensation]]></title>
-        <id>https://openai.com/index/equipping-workers-with-insights-about-compensation</id>
-        <link href="https://openai.com/index/equipping-workers-with-insights-about-compensation"/>
-        <updated>2026-03-17T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[New research shows Americans send nearly 3 million daily messages to ChatGPT asking about compensation and earnings, helping close the wage information gap.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Introducing Mistral Small 4]]></title>
-        <id>https://simonwillison.net/2026/Mar/16/mistral-small-4/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/16/mistral-small-4/#atom-everything"/>
-        <updated>2026-03-16T23:41:17.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://mistral.ai/news/mistral-small-4">Introducing Mistral Small 4</a></strong></p>
-Big new release from Mistral today (despite the name) - a new Apache 2 licensed 119B parameter (Mixture-of-Experts, 6B active) model which they describe like this:</p>
-<blockquote>
-<p>Mistral Small 4 is the first Mistral model to unify the capabilities of our flagship models, Magistral for reasoning, Pixtral for multimodal, and Devstral for agentic coding, into a single, versatile model.</p>
-</blockquote>
-<p>It supports <code>reasoning_effort="none"</code> or <code>reasoning_effort="high"</code>, with the latter providing "equivalent verbosity to previous Magistral models". </p>
-<p>The new model is <a href="https://huggingface.co/mistralai/Mistral-Small-4-119B-2603/tree/main">242GB on Hugging Face</a>.</p>
-<p>I <a href="https://gist.github.com/simonw/3dec228577559f15f26204a3cc550583">tried it out</a> via the Mistral API using <a href="https://github.com/simonw/llm-mistral">llm-mistral</a>:</p>
-<pre><code>llm install llm-mistral
-llm mistral refresh
-llm -m mistral/mistral-small-2603 "Generate an SVG of a pelican riding a bicycle"
-</code></pre>
-<p><img alt="The bicycle is upside down and mangled and the pelican is a series of grey curves with a triangular beak." src="https://static.simonwillison.net/static/2026/mistral-small-4.png" /></p>
-<p>I couldn't find a way to set the reasoning effort in their <a href="https://docs.mistral.ai/api/endpoint/chat#operation-chat_completion_v1_chat_completions_post">API documentation</a>, so hopefully that's a feature which will land soon.</p>
-<p>Also from Mistral today and fitting their -stral naming convention is <a href="https://mistral.ai/news/leanstral">Leanstral</a>, an open weight model that is specifically tuned to help output the <a href="https://lean-lang.org/">Lean 4</a> formally verifiable coding language. I haven't explored Lean at all so I have no way to credibly evaluate this, but it's interesting to see them target one specific language in this way.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/mistral">mistral</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Use subagents and custom agents in Codex]]></title>
-        <id>https://simonwillison.net/2026/Mar/16/codex-subagents/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/16/codex-subagents/#atom-everything"/>
-        <updated>2026-03-16T23:03:56.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://developers.openai.com/codex/subagents">Use subagents and custom agents in Codex</a></strong></p>
-Subagents were announced in general availability today for OpenAI Codex, after several weeks of preview behind a feature flag.</p>
-<p>They're very similar to the Claude Code implementation, with default subagents for "explorer", "worker" and "default". It's unclear to me what the difference between "worker" and "default" is but based on their CSV example I think "worker" is intended for running large numbers of small tasks in parallel.</p>
-<p>Codex also lets you define custom agents as TOML files in <code>~/.codex/agents/</code>. These can have custom instructions and be assigned to use specific models - including <code>gpt-5.3-codex-spark</code> if you want <a href="https://simonwillison.net/2026/Feb/12/codex-spark/">some raw speed</a>. They can then be referenced by name, as demonstrated by this example prompt from the documentation:</p>
-<blockquote>
-<p><code>Investigate why the settings modal fails to save. Have browser_debugger reproduce it, code_mapper trace the responsible code path, and ui_fixer implement the smallest fix once the failure mode is clear.</code></p>
-</blockquote>
-<p>The subagents pattern is widely supported in coding agents now. Here's documentation across a number of different platforms:</p>
-<ul>
-<li><a href="https://developers.openai.com/codex/subagents/">OpenAI Codex subagents</a></li>
-<li><a href="https://code.claude.com/docs/en/sub-agents">Claude Code subagents</a></li>
-<li><a href="https://geminicli.com/docs/core/subagents/">Gemini CLI subagents</a> (experimental)</li>
-<li><a href="https://docs.mistral.ai/mistral-vibe/agents-skills#agent-selection">Mistral Vibe subagents</a></li>
-<li><a href="https://opencode.ai/docs/agents/">OpenCode agents</a></li>
-<li><a href="https://code.visualstudio.com/docs/copilot/agents/subagents">Subagents in Visual Studio Code</a></li>
-<li><a href="https://cursor.com/docs/subagents">Cursor Subagents</a></li>
-</ul>
-
-    <p><small></small>Via <a href="https://twitter.com/OpenAIDevs/status/2033636701848174967">@OpenAIDevs</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a>, <a href="https://simonwillison.net/tags/parallel-agents">parallel-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting A member of Anthropic’s alignment-science team]]></title>
-        <id>https://simonwillison.net/2026/Mar/16/blackmail/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/16/blackmail/#atom-everything"/>
-        <updated>2026-03-16T21:38:55.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://www.newyorker.com/news/annals-of-inquiry/the-pentagon-went-to-war-with-anthropic-whats-really-at-stake?_sp=9a6e0ff7-2bfd-46f8-a9e1-3941ef2003b5.1773495048769"><p>The point of <a href="https://simonwillison.net/2025/Jun/20/agentic-misalignment/">the blackmail exercise</a> was to have something to describe to policymakers—results that are visceral enough to land with people, and make misalignment risk actually salient in practice for people who had never thought about it before.</p></blockquote>
-<p class="cite">&mdash; <a href="https://www.newyorker.com/news/annals-of-inquiry/the-pentagon-went-to-war-with-anthropic-whats-really-at-stake?_sp=9a6e0ff7-2bfd-46f8-a9e1-3941ef2003b5.1773495048769">A member of Anthropic’s alignment-science team</a>, as told to Gideon Lewis-Kraus</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Guilherme Rambo]]></title>
-        <id>https://simonwillison.net/2026/Mar/16/guilherme-rambo/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/16/guilherme-rambo/#atom-everything"/>
-        <updated>2026-03-16T20:34:13.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://daringfireball.net/2026/03/apple_enclaves_neo_camera_indicator"><p>Tidbit: the software-based camera indicator light in the MacBook Neo runs in the secure exclave¹ part of the chip, so it is almost as secure as the hardware indicator light. What that means in practice is that even a kernel-level exploit would not be able to turn on the camera without the light appearing on screen. It runs in a privileged environment separate from the kernel and blits the light directly onto the screen hardware.</p></blockquote>
-<p class="cite">&mdash; <a href="https://daringfireball.net/2026/03/apple_enclaves_neo_camera_indicator">Guilherme Rambo</a>, in a text message to John Gruber</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/hardware">hardware</a>, <a href="https://simonwillison.net/tags/apple">apple</a>, <a href="https://simonwillison.net/tags/privacy">privacy</a>, <a href="https://simonwillison.net/tags/john-gruber">john-gruber</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Coding agents for data analysis]]></title>
-        <id>https://simonwillison.net/2026/Mar/16/coding-agents-for-data-analysis/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/16/coding-agents-for-data-analysis/#atom-everything"/>
-        <updated>2026-03-16T20:12:32.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://simonw.github.io/nicar-2026-coding-agents/">Coding agents for data analysis</a></strong></p>
-Here's the handout I prepared for my NICAR 2026 workshop "Coding agents for data analysis" - a three hour session aimed at data journalists demonstrating ways that tools like Claude Code and OpenAI Codex can be used to explore, analyze and clean data.</p>
-<p>Here's the table of contents:</p>
-<blockquote>
-<ul>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/coding-agents.html">Coding agents</a></li>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/warmup.html">Warmup: ChatGPT and Claude</a></li>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/setup.html">Setup Claude Code and Codex</a></li>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/asking-questions.html">Asking questions against a database</a></li>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/exploring-data.html">Exploring data with agents</a></li>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/cleaning-trees.html">Cleaning data: decoding neighborhood codes</a></li>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/visualizations.html">Creating visualizations with agents</a></li>
-<li><a href="https://simonw.github.io/nicar-2026-coding-agents/scraping.html">Scraping data with agents</a></li>
-</ul>
-</blockquote>
-<p>I ran the workshop using GitHub Codespaces and OpenAI Codex, since it was easy (and inexpensive) to distribute a budget-restricted API key for Codex that attendees could use during the class. Participants ended up burning $23 of Codex tokens.</p>
-<p>The exercises all used Python and SQLite and some of them used Datasette.</p>
-<p>One highlight of the workshop was when we started <a href="https://simonw.github.io/nicar-2026-coding-agents/visualizations.html#javascript-visualizations">running Datasette</a> such that it served static content from a <code>viz/</code> folder, then had Claude Code start vibe coding new interactive visualizations directly in that folder. Here's a heat map it created for my trees database using Leaflet and <a href="https://github.com/Leaflet/Leaflet.heat">Leaflet.heat</a>, <a href="https://gist.github.com/simonw/985ae2a6a3cd3df3fd375eb58dabea0f">source code here</a>.</p>
-<p><img alt="Screenshot of a &quot;Trees SQL Map&quot; web application with the heading &quot;Trees SQL Map&quot; and subheading &quot;Run a query and render all returned points as a heat map. The default query targets roughly 200,000 trees.&quot; Below is an input field containing &quot;/trees/-/query.json&quot;, a &quot;Run Query&quot; button, and a SQL query editor with the text &quot;SELECT cast(Latitude AS float) AS latitude, cast(Longitude AS float) AS longitude, CASE WHEN DBH IS NULL OR DBH = '' THEN 0.3 WHEN cast(DBH AS float) &lt;= 0 THEN 0.3 WHEN cast(DBH AS float) &gt;= 80 THEN 1.0&quot; (query is truncated). A status message reads &quot;Loaded 1,000 rows and plotted 1,000 points as heat map.&quot; Below is a Leaflet/OpenStreetMap interactive map of San Francisco showing a heat map overlay of tree locations, with blue/green clusters concentrated in areas like the Richmond District, Sunset District, and other neighborhoods. Map includes zoom controls and a &quot;Leaflet | © OpenStreetMap contributors&quot; attribution." src="https://static.simonwillison.net/static/2026/tree-sql-map.jpg" /></p>
-<p>I designed the handout to also be useful for people who weren't able to attend the session in person. As is usually the case, material aimed at data journalists is equally applicable to anyone else with data to explore.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/data-journalism">data-journalism</a>, <a href="https://simonwillison.net/tags/geospatial">geospatial</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/speaking">speaking</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/github-codespaces">github-codespaces</a>, <a href="https://simonwillison.net/tags/nicar">nicar</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a>, <a href="https://simonwillison.net/tags/leaflet">leaflet</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[nemotron-3-nano]]></title>
-        <id>https://ollama.com/library/nemotron-3-nano</id>
-        <link href="https://ollama.com/library/nemotron-3-nano"/>
-        <updated>2026-03-16T15:34:00.000Z</updated>
-        <summary type="html"><![CDATA[Nemotron-3-Nano is a new Standard for Efficient, Open, and Intelligent Agentic Models, now updated with a 4B parameter count model.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[How coding agents work]]></title>
-        <id>https://simonwillison.net/guides/agentic-engineering-patterns/how-coding-agents-work/#atom-everything</id>
-        <link href="https://simonwillison.net/guides/agentic-engineering-patterns/how-coding-agents-work/#atom-everything"/>
-        <updated>2026-03-16T14:01:41.000Z</updated>
-        <summary type="html"><![CDATA[<p><em><a href="https://simonwillison.net/guides/agentic-engineering-patterns/">Agentic Engineering Patterns</a> &gt;</em></p>
-    <p>As with any tool, understanding how <a href="https://simonwillison.net/guides/agentic-engineering-patterns/what-is-agentic-engineering/">coding agents</a> work under the hood can help you make better decisions about how to apply them.</p>
-<p>A coding agent is a piece of software that acts as a <strong>harness</strong> for an LLM, extending that LLM with additional capabilities that are powered by invisible prompts and implemented as callable tools.</p>
-<h2 id="large-language-models">Large Language Models</h2>
-<p>At the heart of any coding agent is a Large Language Model, or LLM. These have names like GPT-5.4 or Claude Opus 4.6 or Gemini 3.1 Pro or Qwen3.5-35B-A3B.</p>
-<p>An LLM is a machine learning model that can complete a sentence of text. Give the model the phrase "the cat sat on the " and it will (almost certainly) suggest "mat" as the next word in the sentence.</p>
-<p>As these models get larger and train on increasing amounts of data, they can complete more complex sentences - like "a python function to download a file from a URL is def download_file(url): ".</p>
-<p>LLMs don't actually work directly with words - they work with tokens. A sequence of text is converted into a sequence of integer tokens, so "the cat sat on the " becomes <code>[3086, 9059, 10139, 402, 290, 220]</code>. This is worth understanding because LLM providers charge based on the number of tokens processed, and are limited in how many tokens they can consider at a time.</p>
-<p>You can experiment with the OpenAI tokenizer to see how this works at <a href="https://platform.openai.com/tokenizer">platform.openai.com/tokenizer</a>.</p>
-<p>The input to an LLM is called the <strong>prompt</strong>. The text returned by an LLM is called the <strong>completion</strong>, or sometimes the <strong>response</strong>.</p>
-<p>Many models today are <strong>multimodal</strong>, which means they can accept more than just text as input.  <strong>Vision LLMs</strong> (vLLMs) can accept images as part of the input, which means you can feed them sketches or photos or screenshots. A common misconception is that these are run through a separate process for OCR or image analysis, but these inputs are actually turned into yet more token integers which are processed in the same way as text.</p>
-<h2 id="chat-templated-prompts">Chat templated prompts</h2>
-<p>The first LLMs worked as completion engines - users were expected to provide a prompt which could then be completed by the model, such as the two examples shown above.</p>
-<p>This wasn't particularly user-friendly so models mostly switched to using <strong>chat templated prompts</strong> instead, which represent communication with the model as a simulated conversation.</p>
-<p>This is actually just a form of completion prompt with a special format that looks something like this.</p>
-<div class="codehilite"><pre><span></span><code>user: write a python function to download a file from a URL
-assistant:
-</code></pre></div>
-<p>The natural completion for this prompt is for the assistant (represented by the LLM) to answer the user's question with some Python code.</p>
-<p>LLMs are stateless: every time they execute a prompt they start from the same blank slate. </p>
-<p>To maintain the simulation of a conversation, the software that talks to the model needs to maintain its own state and replay the entire existing conversation every time the user enters a new chat prompt:</p>
-<div class="codehilite"><pre><span></span><code>user: write a python function to download a file from a URL
-assistant: def download_url(url):
-    return urllib.request.urlopen(url).read()
-user: use the requests library instead
-assistant:
-</code></pre></div>
-<p>Since providers charge for both input and output tokens, this means that as a conversation gets longer, each prompt becomes more expensive since the number of input tokens grows every time.</p>
-<h2 id="token-caching">Token caching</h2>
-<p>Most model providers offset this somewhat through a cheaper rate for <strong>cached input tokens</strong> - common token prefixes that have been processed within a short time period can be charged at a lower rate as the underlying infrastructure can cache and then reuse many of the expensive calculations used to process that input.</p>
-<p>Coding agents are designed with this optimization in mind - they avoid modifying earlier conversation content to ensure the cache is used as efficiently as possible.</p>
-<h2 id="calling-tools">Calling tools</h2>
-<p>The defining feature of an LLM <strong>agent</strong> is that agents can call <strong>tools</strong>. But what is a tool?</p>
-<p>A tool is a function that the agent harness makes available to the LLM.</p>
-<p>At the level of the prompt itself, that looks something like this:</p>
-<div class="codehilite"><pre><span></span><code>system: If you need to access the weather, end your turn with &lt;tool&gt;get_weather(city_name)&lt;/tool&gt;
-user: what&#39;s the weather in San Francisco?
-assistant:
-</code></pre></div>
-<p>Here the assistant might respond with the following text:</p>
-<div class="codehilite"><pre><span></span><code>&lt;tool&gt;get_weather(&quot;San Francisco&quot;)&lt;/tool&gt;
-</code></pre></div>
-<p>The model harness software then extracts that function call request from the response - probably with a regular expression - and executes the tool.</p>
-<p>It then returns the result to the model, with a constructed prompt that looks something like this:</p>
-<div class="codehilite"><pre><span></span><code>system: If you need to access the weather, end your turn with &lt;tool&gt;get_weather(city_name)&lt;/tool&gt;
-user: what&#39;s the weather in San Francisco?
-assistant: &lt;tool&gt;get_weather(&quot;San Francisco&quot;)&lt;/tool&gt;
-user: &lt;tool-result&gt;61°, Partly cloudy&lt;/tool-result&gt;
-assistant:
-</code></pre></div>
-<p>The LLM can now use that tool result to help generate an answer to the user's question.</p>
-<p>Most coding agents define a dozen or more tools for the agent to call. The most powerful of these allow for code execution - a <code>Bash()</code> tool for executing terminal commands, or a <code>Python()</code> tool for running Python code, for example.</p>
-<h2 id="the-system-prompt">The system prompt</h2>
-<p>In the previous example I included an initial message marked "system" which informed the LLM about the available tool and how to call it.</p>
-<p>Coding agents usually start every conversation with a system prompt like this, which is not shown to the user but provides instructions telling the model how it should behave.</p>
-<p>These system prompts can be hundreds of lines long. Here's <a href="https://github.com/openai/codex/blob/rust-v0.114.0/codex-rs/core/templates/model_instructions/gpt-5.2-codex_instructions_template.md">the system prompt for OpenAI Codex</a> as-of March 2026, which is a useful clear example of the kind of instructions that make these coding agents work.</p>
-<h2 id="reasoning">Reasoning</h2>
-<p>One of the big new advances in 2025 was the introduction of <strong>reasoning</strong> to the frontier model families.</p>
-<p>Reasoning, sometimes presented as <strong>thinking</strong> in the UI, is when a model spends additional time generating text that talks through the problem and its potential solutions before presenting a reply to the user.</p>
-<p>This can look similar to a person thinking out loud, and has a similar effect. Crucially it allows models to spend more time (and more tokens) working on a problem in order to hopefully get a better result.</p>
-<p>Reasoning is particularly useful for debugging issues in code as it gives the model an opportunity to navigate more complex code paths, mixing in tool calls and using the reasoning phase to follow function calls back to the potential source of an issue.</p>
-<p>Many coding agents include options for dialing up or down the reasoning effort level, encouraging models to spend more time chewing on harder problems.</p>
-<h2 id="llm-system-prompt-tools-in-a-loop">LLM + system prompt + tools in a loop</h2>
-<p>Believe it or not, that's most of what it takes to build a coding agent!</p>
-<p>If you want to develop a deeper understanding of how these things work, a useful exercise is to try building your own agent from scratch. A simple tool loop can be achieved with a few dozen lines of code on top of an existing LLM API.</p>
-<p>A <em>good</em> tool loop is a great deal more work than that, but the fundamental mechanics are surprisingly straightforward.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Deprecating the cost center integration on the enterprise People page]]></title>
-        <id>https://github.blog/changelog/2026-03-16-deprecating-the-cost-center-integration-on-the-enterprise-people-page</id>
-        <link href="https://github.blog/changelog/2026-03-16-deprecating-the-cost-center-integration-on-the-enterprise-people-page"/>
-        <updated>2026-03-16T12:55:31.000Z</updated>
-        <summary type="html"><![CDATA[We are deprecating the cost center integration on the enterprise People page and in the People/Licensing CSV export. When the cost center integration was originally shipped in 2023, cost center…
-The post Deprecating the cost center integration on the enterprise People page appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
 </feed>

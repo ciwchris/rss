@@ -25,9 +25,70 @@
 
   <ul>
     <li>
+      <time>2026-04-15</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Zig 0.16.0 release notes: &quot;Juicy Main&quot;
+              <span class="post-metadata">(3 min | 832 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/15/juicy-main/#atom-everything>Zig 0.16.0 release notes: &quot;Juicy Main&quot;
+really good release notes - comprehensive, detailed, and with relevant usage examples for each of the new features.
+Of particular note in the newly released Zig 0.16.0 is what they are calling &quot;Juicy Main&quot; - a dependency injection feature for your program&#x27;s main() function where accepting a process.Init parameter grants access to a struct of useful properties:
+const std &#x3D; @import(&quot;std&quot;);
+
+pub fn main(init: std.process.Init) !void {
+    /// general purpose allocator for temporary heap allocations:
+    const gpa &#x3D; init.gpa;
+    /// default Io implementation:
+    const io &#x3D; init.io;
+    /// access to environment variables:
+    std.log.info(&quot;{d} env vars&quot;, .{init.environ_map.count()});
+    /// access to CLI arguments
+    const args &#x3D; try init.minimal.args.toSlice(
+        init.arena.allocator()
+    );
+}
+
+
+    
+Via Lobste.rs
+Tags: zig</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-04-14</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              datasette PR #2689: Replace token-based CSRF with Sec-Fetch-Site header protection
+              <span class="post-metadata">(3 min | 949 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/14/replace-token-based-csrf/#atom-everything>datasette PR #2689: Replace token-based CSRF with Sec-Fetch-Site header protection
+asgi-csrf Python library. These are something of a pain to work with - you need to scatter forms in templates with &lt;input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;csrftoken&quot; value&#x3D;&quot;{{ csrftoken() }}&quot;&gt; lines and then selectively disable CSRF protection for APIs that are intended to be called from outside the browser.
+I&#x27;ve been following Filippo Valsorda&#x27;s research here with interest, described in this detailed essay from August 2025 and shipped as part of Go 1.25 that same month.
+I&#x27;ve now landed the same change in Datasette. Here&#x27;s the PR description - Claude Code did much of the work (across 10 commits, closely guided by me and cross-reviewed by GPT-5.4) but I&#x27;ve decided to start writing these PR descriptions by hand, partly to make them more concise and also as an exercise in keeping myself honest.
+New CSRF protection middleware inspired by Go 1.25 and this research by Filippo Valsorda. This replaces the old CSRF token based protection.
+Removes all instances of &lt;input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;csrftoken&quot; value&#x3D;&quot;{{ csrftoken() }}&quot;&gt; in the templates - they are no longer needed.
+Removes the def skip_csrf(datasette, scope): plugin hook defined in datasette/hookspecs.py and its documentation and tests.
+Updated CSRF protection documentation to describe the new approach.
+Upgrade guide now describes the CSRF change.
+Tags: csrf, security, datasette, ai-assisted-programming</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5416,245 +5477,6 @@ The post GitHub Code Quality: Batch apply quality suggestions on pull requests a
               <a target="_blank" href=https://openai.com/index/introducing-gpt-5-4-mini-and-nano>GPT-5.4 mini and nano are smaller, faster versions of GPT-5.4 optimized for coding, tool use, multimodal reasoning, and high-volume API and sub-agent workloads.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Equipping workers with insights about compensation
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/equipping-workers-with-insights-about-compensation>New research shows Americans send nearly 3 million daily messages to ChatGPT asking about compensation and earnings, helping close the wage information gap.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-03-16</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Introducing Mistral Small 4
-              <span class="post-metadata">(3 min | 908 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/16/mistral-small-4/#atom-everything>Introducing Mistral Small 4
-Mistral Small 4 is the first Mistral model to unify the capabilities of our flagship models, Magistral for reasoning, Pixtral for multimodal, and Devstral for agentic coding, into a single, versatile model.
-It supports reasoning_effort&#x3D;&quot;none&quot; or reasoning_effort&#x3D;&quot;high&quot;, with the latter providing &quot;equivalent verbosity to previous Magistral models&quot;. 
-The new model is 242GB on Hugging Face.
-I tried it out via the Mistral API using llm-mistral:
-llm install llm-mistral
-llm mistral refresh
-llm -m mistral/mistral-small-2603 &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-
-I couldn&#x27;t find a way to set the reasoning effort in their API documentation, so hopefully that&#x27;s a feature which will land soon.
-Also from Mistral today and fitting their -stral naming convention is Leanstral, an open weight model that is specifically tuned to help output the Lean 4 formally verifiable coding language. I haven&#x27;t explored Lean at all so I have no way to credibly evaluate this, but it&#x27;s interesting to see them target one specific language in this way.
-
-
-    
-Tags: ai, generative-ai, llms, llm, mistral, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Use subagents and custom agents in Codex
-              <span class="post-metadata">(3 min | 911 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/16/codex-subagents/#atom-everything>Use subagents and custom agents in Codex
-They&#x27;re very similar to the Claude Code implementation, with default subagents for &quot;explorer&quot;, &quot;worker&quot; and &quot;default&quot;. It&#x27;s unclear to me what the difference between &quot;worker&quot; and &quot;default&quot; is but based on their CSV example I think &quot;worker&quot; is intended for running large numbers of small tasks in parallel.
-Codex also lets you define custom agents as TOML files in ~/.codex/agents/. These can have custom instructions and be assigned to use specific models - including gpt-5.3-codex-spark if you want some raw speed. They can then be referenced by name, as demonstrated by this example prompt from the documentation:
-Investigate why the settings modal fails to save. Have browser_debugger reproduce it, code_mapper trace the responsible code path, and ui_fixer implement the smallest fix once the failure mode is clear.
-The subagents pattern is widely supported in coding agents now. Here&#x27;s documentation across a number of different platforms:
-OpenAI Codex subagents
-Claude Code subagents
-Gemini CLI subagents (experimental)
-Mistral Vibe subagents
-OpenCode agents
-Subagents in Visual Studio Code
-Cursor Subagents
-Via @OpenAIDevs
-Tags: ai, openai, generative-ai, llms, coding-agents, codex-cli, parallel-agents, agentic-engineering</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting A member of Anthropic’s alignment-science team
-              <span class="post-metadata">(2 min | 735 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/16/blackmail/#atom-everything>The point of the blackmail exercise was to have something to describe to policymakers—results that are visceral enough to land with people, and make misalignment risk actually salient in practice for people who had never thought about it before.
-
-— A member of Anthropic’s alignment-science team, as told to Gideon Lewis-Kraus
-Tags: ai-ethics, anthropic, claude, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Guilherme Rambo
-              <span class="post-metadata">(3 min | 761 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/16/guilherme-rambo/#atom-everything>Tidbit: the software-based camera indicator light in the MacBook Neo runs in the secure exclave¹ part of the chip, so it is almost as secure as the hardware indicator light. What that means in practice is that even a kernel-level exploit would not be able to turn on the camera without the light appearing on screen. It runs in a privileged environment separate from the kernel and blits the light directly onto the screen hardware.
-
-— Guilherme Rambo, in a text message to John Gruber
-Tags: hardware, apple, privacy, john-gruber</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Coding agents for data analysis
-              <span class="post-metadata">(3 min | 958 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/16/coding-agents-for-data-analysis/#atom-everything>Coding agents for data analysis
-Here&#x27;s the table of contents:
-Coding agents
-Warmup: ChatGPT and Claude
-Setup Claude Code and Codex
-Asking questions against a database
-Exploring data with agents
-Cleaning data: decoding neighborhood codes
-Creating visualizations with agents
-Scraping data with agents
-I ran the workshop using GitHub Codespaces and OpenAI Codex, since it was easy (and inexpensive) to distribute a budget-restricted API key for Codex that attendees could use during the class. Participants ended up burning $23 of Codex tokens.
-The exercises all used Python and SQLite and some of them used Datasette.
-One highlight of the workshop was when we started running Datasette such that it served static content from a viz/ folder, then had Claude Code start vibe coding new interactive visualizations directly in that folder. Here&#x27;s a heat map it created for my trees database using Leaflet and Leaflet.heat, source code here.
-
-I designed the handout to also be useful for people who weren&#x27;t able to attend the session in person. As is usually the case, material aimed at data journalists is equally applicable to anyone else with data to explore.
-
-
-    
-Tags: data-journalism, geospatial, python, speaking, sqlite, ai, datasette, generative-ai, llms, github-codespaces, nicar, coding-agents, claude-code, codex-cli, leaflet</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              nemotron-3-nano
-              <span class="post-metadata">(11 min | 3358 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/nemotron-3-nano>Nemotron-3-Nano is a new Standard for Efficient, Open, and Intelligent Agentic Models, now updated with a 4B parameter count model.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How coding agents work
-              <span class="post-metadata">(6 min | 1915 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/how-coding-agents-work/#atom-everything>Agentic Engineering Patterns &gt;
-As with any tool, understanding how coding agents work under the hood can help you make better decisions about how to apply them.
-A coding agent is a piece of software that acts as a harness for an LLM, extending that LLM with additional capabilities that are powered by invisible prompts and implemented as callable tools.
-Large Language Models
-At the heart of any coding agent is a Large Language Model, or LLM. These have names like GPT-5.4 or Claude Opus 4.6 or Gemini 3.1 Pro or Qwen3.5-35B-A3B.
-An LLM is a machine learning model that can complete a sentence of text. Give the model the phrase &quot;the cat sat on the &quot; and it will (almost certainly) suggest &quot;mat&quot; as the next word in the sentence.
-As these models get larger and train on increasing amounts of data, they can complete more complex sentences - like &quot;a python function to download a file from a URL is def download_file(url): &quot;.
-LLMs don&#x27;t actually work directly with words - they work with tokens. A sequence of text is converted into a sequence of integer tokens, so &quot;the cat sat on the &quot; becomes [3086, 9059, 10139, 402, 290, 220]. This is worth understanding because LLM providers charge based on the number of tokens processed, and are limited in how many tokens they can consider at a time.
-You can experiment with the OpenAI tokenizer to see how this works at platform.openai.com/tokenizer.
-The input to an LLM is called the prompt. The text returned by an LLM is called the completion, or sometimes the response.
-Many models today are multimodal, which means they can accept more than just text as input.  Vision LLMs (vLLMs) can accept images as part of the input, which means you can feed them sketches or photos or screenshots. A common misconception is that these are run through a separate process for OCR or image analysis, but these inputs are actually turned into yet more token integers which are processed in the same way as text.
-Chat templated prompts
-The first LLMs worked as completion engines - users were expected to provide a prompt which could then be completed by the model, such as the two examples shown above.
-This wasn&#x27;t particularly user-friendly so models mostly switched to using chat templated prompts instead, which represent communication with the model as a simulated conversation.
-This is actually just a form of completion prompt with a special format that looks something like this.
-user: write a python function to download a file from a URL
-assistant:
-
-
-The natural completion for this prompt is for the assistant (represented by the LLM) to answer the user&#x27;s question with some Python code.
-LLMs are stateless: every time they execute a prompt they start from the same blank slate. 
-To maintain the simulation of a conversation, the software that talks to the model needs to maintain its own state and replay the entire existing conversation every time the user enters a new chat prompt:
-user: write a python function to download a file from a URL
-assistant: def download_url(url):
-    return urllib.request.urlopen(url).read()
-user: use the requests library instead
-assistant:
-
-
-Since providers charge for both input and output tokens, this means that as a conversation gets longer, each prompt becomes more expensive since the number of input tokens grows every time.
-Token caching
-Most model providers offset this somewhat through a cheaper rate for cached input tokens - common token prefixes that have been processed within a short time period can be charged at a lower rate as the underlying infrastructure can cache and then reuse many of the expensive calculations used to process that input.
-Coding agents are designed with this optimization in mind - they avoid modifying earlier conversation content to ensure the cache is used as efficiently as possible.
-Calling tools
-The defining feature of an LLM agent is that agents can call tools. But what is a tool?
-A tool is a function that the agent harness makes available to the LLM.
-At the level of the prompt itself, that looks something like this:
-system: If you need to access the weather, end your turn with &lt;tool&gt;get_weather(city_name)&lt;/tool&gt;
-user: what&#x27;s the weather in San Francisco?
-assistant:
-
-
-Here the assistant might respond with the following text:
-&lt;tool&gt;get_weather(&quot;San Francisco&quot;)&lt;/tool&gt;
-
-
-The model harness software then extracts that function call request from the response - probably with a regular expression - and executes the tool.
-It then returns the result to the model, with a constructed prompt that looks something like this:
-system: If you need to access the weather, end your turn with &lt;tool&gt;get_weather(city_name)&lt;/tool&gt;
-user: what&#x27;s the weather in San Francisco?
-assistant: &lt;tool&gt;get_weather(&quot;San Francisco&quot;)&lt;/tool&gt;
-user: &lt;tool-result&gt;61°, Partly cloudy&lt;/tool-result&gt;
-assistant:
-
-
-The LLM can now use that tool result to help generate an answer to the user&#x27;s question.
-Most coding agents define a dozen or more tools for the agent to call. The most powerful of these allow for code execution - a Bash() tool for executing terminal commands, or a Python() tool for running Python code, for example.
-The system prompt
-In the previous example I included an initial message marked &quot;system&quot; which informed the LLM about the available tool and how to call it.
-Coding agents usually start every conversation with a system prompt like this, which is not shown to the user but provides instructions telling the model how it should behave.
-These system prompts can be hundreds of lines long. Here&#x27;s the system prompt for OpenAI Codex as-of March 2026, which is a useful clear example of the kind of instructions that make these coding agents work.
-Reasoning
-One of the big new advances in 2025 was the introduction of reasoning to the frontier model families.
-Reasoning, sometimes presented as thinking in the UI, is when a model spends additional time generating text that talks through the problem and its potential solutions before presenting a reply to the user.
-This can look similar to a person thinking out loud, and has a similar effect. Crucially it allows models to spend more time (and more tokens) working on a problem in order to hopefully get a better result.
-Reasoning is particularly useful for debugging issues in code as it gives the model an opportunity to navigate more complex code paths, mixing in tool calls and using the reasoning phase to follow function calls back to the potential source of an issue.
-Many coding agents include options for dialing up or down the reasoning effort level, encouraging models to spend more time chewing on harder problems.
-LLM + system prompt + tools in a loop
-Believe it or not, that&#x27;s most of what it takes to build a coding agent!
-If you want to develop a deeper understanding of how these things work, a useful exercise is to try building your own agent from scratch. A simple tool loop can be achieved with a few dozen lines of code on top of an existing LLM API.
-A good tool loop is a great deal more work than that, but the fundamental mechanics are surprisingly straightforward.
-Tags: coding-agents, generative-ai, agentic-engineering, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deprecating the cost center integration on the enterprise People page
-              <span class="post-metadata">(5 min | 1363 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-16-deprecating-the-cost-center-integration-on-the-enterprise-people-page>We are deprecating the cost center integration on the enterprise People page and in the People/Licensing CSV export. When the cost center integration was originally shipped in 2023, cost center…
-The post Deprecating the cost center integration on the enterprise People page appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
