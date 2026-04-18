@@ -25,9 +25,160 @@
 
   <ul>
     <li>
+      <time>2026-04-18</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Adding a new content type to my blog-to-newsletter tool
+              <span class="post-metadata">(6 min | 1671 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/guides/agentic-engineering-patterns/adding-a-new-content-type/#atom-everything>Agentic Engineering Patterns &gt;
+Here&#x27;s an example of a deceptively short prompt that got a quite a lot of work done in a single shot.
+First, some background. I send out a free Substack newsletter around once a week containing content copied-and-pasted from my blog. I&#x27;m effectively using Substack as a lightweight way to allow people to subscribe to my blog via email.
+I generate the newsletter with my blog-to-newsletter tool - an HTML and JavaScript app that fetches my latest content from this Datasette instance and formats it as rich text HTML, which I can then copy to my clipboard and paste into the Substack editor. Here&#x27;s a detailed explanation of how that works.
+I recently added a new type of content to my blog to capture content that I post elsewhere, which I called &quot;beats&quot;. These include things like releases of my open source projects, new tools that I&#x27;ve built, museums that I&#x27;ve visited (from niche-museums.com) and other external content.
+I wanted to include these in the generated newsletter. Here&#x27;s the prompt I ran against the simonw/tools repository that hosts my blog-to-newsletter tool, using Claude Code on the web.
+Clone simonw/simonwillisonblog from github to /tmp for reference
+
+Update blog-to-newsletter.html to include beats that have descriptions - similar to how the Atom everything feed on the blog works
+
+Run it with python -m http.server and use &#x60;uvx rodney --help&#x60; to test it - compare what shows up in the newsletter with what&#x27;s on the homepage of https://simonwillison.net
+exact solution I needed. Let&#x27;s break down the prompt.
+Clone simonw/simonwillisonblog from github to /tmp for reference
+I use this pattern a lot. Coding agents can clone code from GitHub, and the best way to explain a problem is often to have them look at relevant code. By telling them to clone to /tmp I ensure they don&#x27;t accidentally end up including that reference code in their own commit later on.
+The simonw/simonwillisonblog repository contains the source code for my Django-powered simonwillison.net blog. This includes the logic and database schema for my new &quot;beats&quot; feature.
+Update blog-to-newsletter.html to include beats that have descriptions - similar to how the Atom everything feed on the blog works
+Referencing blog-to-newsletter.html is all I need here to tell Claude which of the 200+ HTML apps in that simonw/tools repo it should be modifying.
+Beats are automatically imported from multiple sources. Often they aren&#x27;t very interesting - a dot-release bug fix for one of my smaller open source projects, for example.
+My blog includes a way for me to add additional descriptions to any beat, which provides extra commentary but also marks that beat as being more interesting than those that I haven&#x27;t annotated in some way.
+I already use this as a distinction to decide which beats end up in my site&#x27;s Atom feed. Telling Claude to imitate that saves me from having to describe the logic in any extra detail.
+Run it with python -m http.server and use &#x60;uvx rodney --help&#x60; to test it - compare what shows up in the newsletter with what&#x27;s on the homepage of https://simonwillison.net
+Coding agents always work best if they have some kind of validation mechanism they can use to test their own work.
+In this case I wanted Claude Code to actively check that the changes it made to my tool would correctly fetch and display the latest data.
+I reminded it to use python -m http.server as a static server because I&#x27;ve had issues in the past with applications that fetch data and break when served as a file from disk instead of a localhost server. In this particular case that may not have been necessary, but my prompting muscle memory has python -m http.server baked in at this point!
+I described the uvx rodney --help trick in the agentic manual testing chapter. Rodney is browser automation software that can be installed using uvx, and that has --help output designed to teach an agent everything it needs to know in order to use the tool.
+I figured that telling Claude to compare the results in the newsletter to the content of my blog&#x27;s homepage would be enough for it to confidently verify that the new changes were working correctly, since I had recently posted content that matched the new requirements.
+You can see the full session here, or if that doesn&#x27;t work I have an alternative transcript showing all of the individual tool calls.
+The resulting PR made exactly the right change. It added an additional UNION clause to the SQL query that fetched the blog&#x27;s content, filtering out draft beats and beats that have nothing in their note column:
+
+...
+union all
+select
+  id,
+  &#x27;beat&#x27; as type,
+  title,
+  created,
+  slug,
+  &#x27;No HTML&#x27; as html,
+  json_object(
+    &#x27;created&#x27;, date(created),
+    &#x27;beat_type&#x27;, beat_type,
+    &#x27;title&#x27;, title,
+    &#x27;url&#x27;, url,
+    &#x27;commentary&#x27;, commentary,
+    &#x27;note&#x27;, note
+  ) as json,
+  url as external_url
+from blog_beat
+where coalesce(note, &#x27;&#x27;) !&#x3D; &#x27;&#x27; and is_draft &#x3D; 0
+union all
+...
+
+
+And it figured out a mapping of beat types to their formal names, presumably derived from the Django ORM definition that it read while it was exploring the reference codebase:
+
+const beatTypeDisplay &#x3D; {
+  release: &#x27;Release&#x27;,
+  til: &#x27;TIL&#x27;,
+  til_update: &#x27;TIL updated&#x27;,
+  research: &#x27;Research&#x27;,
+  tool: &#x27;Tool&#x27;,
+  museum: &#x27;Museum&#x27;
+};
+
+
+Telling agents to use another codebase as reference is a powerful shortcut for communicating complex concepts with minimal additional information needed in the prompt.
+Tags: ai, llms, prompt-engineering, coding-agents, ai-assisted-programming, generative-ai, agentic-engineering, github</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-04-17</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Join us at PyCon US 2026 in Long Beach - we have new AI and security tracks this year
+              <span class="post-metadata">(4 min | 1331 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/17/pycon-us-2026/#atom-everything>This year&#x27;s PyCon US is coming up next month from May 13th to May 19th, with the core conference talks from Friday 15th to Sunday 17th and tutorial and sprint days either side. It&#x27;s in Long Beach, California this year, the first time PyCon US has come to the West Coast since Portland, Oregon in 2017 and the first time in California since Santa Clara in 2013.
+
+If you&#x27;re based in California this is a great opportunity to catch up with the Python community, meet a whole lot of interesting people and learn a ton of interesting things.
+
+In addition to regular PyCon programming we have two new dedicated tracks at the conference this year: an AI track on Friday and a Security track on Saturday.
+
+The AI program was put together by track chairs Silona Bonewald (CitableAI) and Zac Hatfield-Dodds (Anthropic). I&#x27;ll be an in-the-room chair this year, introducing speakers and helping everything run as smoothly as possible.
+
+Here&#x27;s the AI track schedule in full:
+
+
+11:00: AI-Assisted Contributions and Maintainer Load - Paolo Melchiorre
+
+11:45: AI-Powered Python Education : Towards Adaptive and Inclusive Learning - Sonny Mupfuni
+
+12:30: Making African Languages Visible: A Python-Based Guide to Low-Resource Language ID - Gift Ojeabulu
+
+2:00: Running Large Language Models on Laptops: Practical Quantization Techniques in Python - Aayush Kumar JVS
+
+2:45: Distributing AI with Python in the Browser: Edge Inference and Flexibility Without Infrastructure - Fabio Pliger
+
+3:30: Don&#x27;t Block the Loop: Python Async Patterns for AI Agents - Aditya Mehra
+
+4:30: What Python Developers Need to Know About Hardware: A Practical Guide to GPU Memory, Kernel Scheduling, and Execution Models - Santosh Appachu Devanira Poovaiah
+
+5:15: How to Build Your First Real-Time Voice Agent in Python (Without Losing Your Mind) - Camila Hinojosa Añez, Elizabeth Fuentes
+
+
+(And here&#x27;s how I scraped that as a Markdown list from the schedule page using Claude Code and Rodney.)
+
+You should come to PyCon US!
+
+I&#x27;ve been going to PyCon for over twenty years now - I first went back in 2005. It&#x27;s one of my all-time favourite conference series. Even as it&#x27;s grown to more than 2,000 attendees PyCon US has remained a heavily community-focused conference - it&#x27;s the least corporate feeling large event I&#x27;ve ever attended.
+
+The talks are always great, but it&#x27;s the add-ons around the talks that really make it work for me. The lightning talks slots are some of the most heavily attended sessions. The PyLadies auction is always deeply entertaining. The sprints are an incredible opportunity to contribute directly to projects that you use, coached by their maintainers.
+
+In addition to scheduled talks, the event has open spaces, where anyone can reserve space for a conversation about a topic - effectively PyCon&#x27;s version of an unconference. I plan to spend a lot of my time in the open spaces this year - I&#x27;m hoping to join or instigate sessions about both Datasette and agentic engineering.
+
+I&#x27;m on the board of the Python Software Foundation, and PyCon US remains one of our most important responsibilities - in the past it&#x27;s been a key source of funding for the organization, but it&#x27;s also core to our mission to &quot;promote, protect, and advance the Python programming language, and to support and facilitate the growth of a diverse and international community of Python programmers&quot;.
+
+If you do come to Long Beach, we&#x27;d really appreciate it if you could book accommodation in the official hotel block, for reasons outlined in this post on the PSF blog.
+Tags: conferences, open-source, pycon, python, ai, psf</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot CLI now supports Copilot auto model selection
+              <span class="post-metadata">(5 min | 1423 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-17-github-copilot-cli-now-supports-copilot-auto-model-selection>Copilot auto model selection is now generally available in GitHub Copilot CLI for all Copilot plans. With auto, Copilot chooses the most efficient model on your behalf. How it works…
+The post GitHub Copilot CLI now supports Copilot auto model selection appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5200,251 +5351,6 @@ I had Claude Code run a micro-benchmark comparing different approaches to implem
 Tags: json, sqlite</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-03-19</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              More visibility into Copilot coding agent sessions
-              <span class="post-metadata">(5 min | 1438 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-19-more-visibility-into-copilot-coding-agent-sessions>When you delegate a task to Copilot coding agent, it works in the background, then requests your review. You can view the agent session logs to understand what Copilot did…
-The post More visibility into Copilot coding agent sessions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Actions: Late March 2026 updates
-              <span class="post-metadata">(5 min | 1463 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-19-github-actions-late-march-2026-updates>This month, GitHub Actions resolves some outstanding papercuts, including support for timezones in scheduled workflows and using environments without automatic deployments. GitHub Actions now allows developers to use environments without…
-The post GitHub Actions: Late March 2026 updates appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Actions Runner Controller release 0.14.0
-              <span class="post-metadata">(6 min | 1757 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-19-actions-runner-controller-release-0-14-0>GitHub Actions Runner Controller (ARC) 0.14.0 is now generally available. This release introduces multilabel support for runner scale sets, switches to the actions/scaleset library client, adds resource customization options, and…
-The post Actions Runner Controller release 0.14.0 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot coding agent now starts work 50% faster
-              <span class="post-metadata">(4 min | 1284 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-19-copilot-coding-agent-now-starts-work-50-faster>We’ve optimized Copilot coding agent so it now starts work 50% faster. You can hand work to Copilot coding agent in many ways, including assigning an issue to Copilot, entering…
-The post Copilot coding agent now starts work 50% faster appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Codespaces with data residency now available in Japan
-              <span class="post-metadata">(4 min | 1288 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-19-codespaces-with-data-residency-now-available-in-japan>GitHub Codespaces with data residency now supports Japan as an available region, in addition to the existing EU and Australia regions. In January, we announced that Codespaces is now in…
-The post Codespaces with data residency now available in Japan appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              March 19th, 2026 - Small Web Expansion and Translate goes viral
-              <span class="post-metadata">(10 min | 3133 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://kagifeedback.org/d/10140-march-19th-2026-small-web-expansion-and-translate-goes-viral/1>Kagi Small Web just got bigger!
-
-Kagi&#x27;s Small Web just got a whole lot bigger. With over 30,000 feeds and new browser extensions, mobile apps, and categories, there&#x27;s never been a better way to discover the independent web.
-Read the full announcement here! And check out the TechCrunch coverage.
-Download for iOS
-Download for Android
-Get the browser extensions
-
-
-Kagi Translate goes viral!
-On March 16, we launched our latest fun language on Kagi Translate, LinkedIn Speak, and it quickly went viral on social media, generating millions of engagements. Check out some of the press coverage below:
-
-This Viral Tool Turns Anything Into LinkedIn Speak—and the Internet Is Obsessed
-This eerily accurate ‘LinkedIn Speak’ translation tool will help you sound like an instant thinkfluencer
-&#x27;LinkedIn speak&#x27; …</a>
-            </div>
-            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Thoughts on OpenAI acquiring Astral and uv/ruff/ty
-              <span class="post-metadata">(7 min | 1955 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Mar/19/openai-acquiring-astral/#atom-everything>The big news this morning: Astral to join OpenAI (on the Astral blog) and OpenAI to acquire Astral (the OpenAI announcement). Astral are the company behind uv, ruff, and ty - three increasingly load-bearing open source projects in the Python ecosystem. I have thoughts!
-
-The official line from OpenAI and Astral
-
-The Astral team will become part of the Codex team at OpenAI.
-
-Charlie Marsh has this to say:
-
-
-Open source is at the heart of that impact and the heart of that story; it sits at the center of everything we do. In line with our philosophy and OpenAI&#x27;s own announcement, OpenAI will continue supporting our open source tools after the deal closes. We&#x27;ll keep building in the open, alongside our community -- and for the broader Python ecosystem -- just as we have from the start. [...]
-
-After joining the Codex team, we&#x27;ll continue building our open source tools, explore ways they can work more seamlessly with Codex, and expand our reach to think more broadly about the future of software development.
-
-
-OpenAI&#x27;s message has a slightly different focus (highlights mine):
-
-
-As part of our developer-first philosophy, after closing OpenAI plans to support Astral’s open source products. By bringing Astral’s tooling and engineering expertise to OpenAI, we will accelerate our work on Codex and expand what AI can do across the software development lifecycle.
-
-
-This is a slightly confusing message. The Codex CLI is a Rust application, and Astral have some of the best Rust engineers in the industry - BurntSushi alone (Rust regex, ripgrep, jiff) may be worth the price of acquisition!
-
-So is this about the talent or about the product? I expect both, but I know from past experience that a product+talent acquisition can turn into a talent-only acquisition later on.
-
-uv is the big one
-
-Of Astral&#x27;s projects the most impactful by far is uv. If you&#x27;re not familiar with it, uv is by far the most convincing solution to Python&#x27;s environment management problems, best illustrated by this classic XKCD:
-
-
-
-Switch from python to uv run and most of these problems go away. I&#x27;ve been using it extensively for the past couple of years and it&#x27;s become an essential part of my workflow.
-
-I&#x27;m not alone in this. According to PyPI Stats uv was downloaded more than 126 million times last month! Since its release in February 2024 - just two years ago - it&#x27;s become one of the most popular tools for running Python code.
-
-Ruff and ty
-
-Astral&#x27;s two other big projects are ruff - a Python linter and formatter - and ty - a fast Python type checker.
-
-These are popular tools that provide a great developer experience but they aren&#x27;t load-bearing in the same way that uv is.
-
-They do however resonate well with coding agent tools like Codex - giving an agent access to fast linting and type checking tools can help improve the quality of the code they generate.
-
-I&#x27;m not convinced that integrating them into the coding agent itself as opposed to telling it when to run them will make a meaningful difference, but I may just not be imaginative enough here.
-
-What of pyx?
-
-Ever since uv started to gain traction the Python community has been worrying about the strategic risk of a single VC-backed company owning a key piece of Python infrastructure. I wrote about one of those conversations in detail back in September 2024.
-
-The conversation back then focused on what Astral&#x27;s business plan could be, which started to take form in August 2025 when they announced pyx, their private PyPI-style package registry for organizations.
-
-I&#x27;m less convinced that pyx makes sense within OpenAI, and it&#x27;s notably absent from both the Astral and OpenAI announcement posts.
-
-Competitive dynamics
-
-An interesting aspect of this deal is how it might impact the competition between Anthropic and OpenAI.
-
-Both companies spent most of 2025 focused on improving the coding ability of their models, resulting in the November 2025 inflection point when coding agents went from often-useful to almost-indispensable tools for software development.
-
-The competition between Anthropic&#x27;s Claude Code and OpenAI&#x27;s Codex is fierce. Those $200/month subscriptions add up to billions of dollars a year in revenue, for companies that very much need that money.
-
-Anthropic acquired the Bun JavaScript runtime in December 2025, an acquisition that looks somewhat similar in shape to Astral.
-
-Bun was already a core component of Claude Code and that acquisition looked to mainly be about ensuring that a crucial dependency stayed actively maintained. Claude Code&#x27;s performance has increased significantly since then thanks to the efforts of Bun&#x27;s Jarred Sumner.
-
-One bad version of this deal would be if OpenAI start using their ownership of uv as leverage in their competition with Anthropic.
-
-Astral&#x27;s quiet series A and B
-
-One detail that caught my eye from Astral&#x27;s announcement, in the section thanking the team, investors, and community:
-
-
-Second, to our investors, especially Casey Aylward from Accel, who led our Seed and Series A, and Jennifer Li from Andreessen Horowitz, who led our Series B. As a first-time, technical, solo founder, you showed far more belief in me than I ever showed in myself, and I will never forget that.
-
-
-As far as I can tell neither the Series A nor the Series B were previously announced - I&#x27;ve only been able to find coverage of the original seed round from April 2023.
-
-Those investors presumably now get to exchange their stake in Astral for a piece of OpenAI. I wonder how much influence they had on Astral&#x27;s decision to sell.
-
-Forking as a credible exit?
-
-Armin Ronacher built Rye, which was later taken over by Astral and effectively merged with uv. In August 2024 he wrote about the risk involved in a VC-backed company owning a key piece of open source infrastructure and said the following (highlight mine):
-
-
-However having seen the code and what uv is doing, even in the worst possible future this is a very forkable and maintainable thing. I believe that even in case Astral shuts down or were to do something incredibly dodgy licensing wise, the community would be better off than before uv existed.
-
-
-Astral&#x27;s own Douglas Creager emphasized this angle on Hacker News today:
-
-
-All I can say is that right now, we&#x27;re committed to maintaining our open-source tools with the same level of effort, care, and attention to detail as before. That does not change with this acquisition. No one can guarantee how motives, incentives, and decisions might change years down the line. But that&#x27;s why we bake optionality into it with the tools being permissively licensed. That makes the worst-case scenarios have the shape of &quot;fork and move on&quot;, and not &quot;software disappears forever&quot;.
-
-
-I like and trust the Astral team and I&#x27;m optimistic that their projects will be well-maintained in their new home.
-
-OpenAI don&#x27;t yet have much of a track record with respect to acquiring and maintaining open source projects. They&#x27;ve been on a bit of an acquisition spree over the past three months though, snapping up Promptfoo and OpenClaw (sort-of, they hired creator Peter Steinberger and are spinning OpenClaw off to a foundation), plus closed source LaTeX platform Crixet (now Prism).
-
-If things do go south for uv and the other Astral projects we&#x27;ll get to see quite how credible the forking exit strategy turns out to be.
-Tags: python, ai, rust, openai, ruff, uv, astral, charlie-marsh, coding-agents, codex-cli, ty</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              View code and comments side-by-side in pull request Files changed page
-              <span class="post-metadata">(5 min | 1624 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-19-view-code-and-comments-side-by-side-in-pull-request-files-changed-page>Docked panels for the pull request “Files changed” page are rolling out now. They let you review code with key pull request context open side-by-side: overview, comments, merge status, and…
-The post View code and comments side-by-side in pull request Files changed page appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Hierarchy view in GitHub Projects is now generally available
-              <span class="post-metadata">(5 min | 1426 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-19-hierarchy-view-in-github-projects-is-now-generally-available>Hierarchy view in GitHub Projects is now generally available. Starting today, hierarchy view is enabled by default for all new project views. If you have existing views, you can turn…
-The post Hierarchy view in GitHub Projects is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How we monitor internal coding agents for misalignment
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/how-we-monitor-internal-coding-agents-misalignment>How OpenAI uses chain-of-thought monitoring to study misalignment in internal coding agents—analyzing real-world deployments to detect risks and strengthen AI safety safeguards.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
