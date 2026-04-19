@@ -2,10 +2,112 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-18T21:23:49.630Z</updated>
+    <updated>2026-04-19T14:34:02.737Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Changes in the system prompt between Claude Opus 4.6 and 4.7]]></title>
+        <id>https://simonwillison.net/2026/Apr/18/opus-system-prompt/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/18/opus-system-prompt/#atom-everything"/>
+        <updated>2026-04-18T23:59:40.000Z</updated>
+        <summary type="html"><![CDATA[<p>Anthropic are the only major AI lab to <a href="https://platform.claude.com/docs/en/release-notes/system-prompts">publish the system prompts</a> for their user-facing chat systems. Their system prompt archive now dates all the way back to Claude 3 in July 2024 and it's always interesting to see how the system prompt evolves as they publish new models.</p>
+<p>Opus 4.7 shipped the other day (April 16, 2026) with a <a href="https://claude.ai/">Claude.ai</a> system prompt update since Opus 4.6 (February 5, 2026).</p>
+<p>I had Claude Code take <a href="https://platform.claude.com/docs/en/release-notes/system-prompts.md">the Markdown version of their system prompts</a>, break that up into separate documents for each of the models and then construct <a href="https://github.com/simonw/research/tree/main/extract-system-prompts#readme">a Git history</a> of those files over time with fake commit dates representing the publication dates of each updated prompt - <a href="https://github.com/simonw/research/pull/109#issue-4287908903">here's the prompt I used</a> with Claude Code for the web.</p>
+<p>Here is the <a href="https://github.com/simonw/research/commit/888f21161500cd60b7c92367f9410e311ffcff09">git diff between Opus 4.6 and 4.7</a>. These are my own highlights extracted from that diff - in all cases text <strong>in bold</strong> is my emphasis:</p>
+<ul>
+<li>The "developer platform" is now called the "Claude Platform".</li>
+<li>The list of Claude tools mentioned in the system prompt now includes "Claude in Chrome - a browsing agent that can interact with websites autonomously, Claude in Excel - a spreadsheet agent, and <strong>Claude in Powerpoint</strong> - a slides agent. Claude Cowork can use all of these as tools." - Claude in Powerpoint was not mentioned in the 4.6 prompt.</li>
+<li>The child safety section has been greatly expanded, and is now wrapped in a new <code>&lt;critical_child_safety_instructions&gt;</code> tag. Of particular note: "Once Claude refuses a request for reasons of child safety, all subsequent requests in the same conversation must be approached with extreme caution."</li>
+<li>It looks like they're trying to make Claude less pushy: "If a user indicates they are ready to end the conversation, Claude does not request that the user stay in the interaction or try to elicit another turn and instead respects the user's request to stop."</li>
+<li>The new <code>&lt;acting_vs_clarifying&gt;</code> section includes:
+<blockquote>
+<p>When a request leaves minor details unspecified, <strong>the person typically wants Claude to make a reasonable attempt now, not to be interviewed first</strong>. Claude only asks upfront when the request is genuinely unanswerable without the missing information (e.g., it references an attachment that isn't there).</p>
+<p>When a tool is available that could resolve the ambiguity or supply the missing information — searching, looking up the person's location, checking a calendar, discovering available capabilities — Claude calls the tool to try and solve the ambiguity before asking the person. Acting with tools is preferred over asking the person to do the lookup themselves.</p>
+<p>Once Claude starts on a task, Claude sees it through to a complete answer rather than stopping partway. [...]</p>
+</blockquote>
+</li>
+<li>It looks like Claude chat now has a tool search mechanism, as seen in <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool">this API documentation</a> and described in <a href="https://www.anthropic.com/engineering/advanced-tool-use">this November 2025 post</a>:
+<blockquote>
+<p>Before concluding Claude lacks a capability — access to the person's location, memory, calendar, files, past conversations, or any external data — <strong>Claude calls tool_search to check whether a relevant tool is available but deferred</strong>. "I don't have access to X" is only correct after tool_search confirms no matching tool exists.</p>
+</blockquote>
+</li>
+<li>There's new language to encourage Claude to be less verbose:
+<blockquote>
+<p>Claude keeps its responses focused and concise so as to avoid potentially overwhelming the user with overly-long responses. Even if an answer has disclaimers or caveats, Claude discloses them briefly and keeps the majority of its response focused on its main answer.</p>
+</blockquote>
+</li>
+<li>This section was present in the 4.6 prompt but has been removed for 4.7, presumably because the new model no longer misbehaves in the same way:
+<blockquote>
+<p>Claude avoids the use of emotes or actions inside asterisks unless the person specifically asks for this style of communication.</p>
+<p>Claude avoids saying "genuinely", "honestly", or "straightforward".</p>
+</blockquote>
+</li>
+<li>There's a new section about "disordered eating", which was not previously mentioned by name:
+<blockquote>
+<p>If a user shows signs of disordered eating, Claude should not give precise nutrition, diet, or exercise guidance — no specific numbers, targets, or step-by-step plans - anywhere else in the conversation. Even if it's intended to help set healthier goals or highlight the potential dangers of disordered eating, responses with these details could trigger or encourage disordered tendencies.</p>
+</blockquote>
+</li>
+<li>A popular screenshot attack against AI models is to force them to say yes or no to a controversial question. Claude's system prompt now guards against that (in the <code>&lt;evenhandedness&gt;</code> section):
+<blockquote>
+<p>If people ask Claude to give a simple yes or no answer (or any other short or single word response) in response to complex or contested issues or as commentary on contested figures, Claude can decline to offer the short response and instead give a nuanced answer and explain why a short response wouldn't be appropriate.</p>
+</blockquote>
+</li>
+<li>Claude 4.6 had a section specifically clarifying that "Donald Trump is the current president of the United States and was inaugurated on January 20, 2025", because without that the model's knowledge cut-off date combined with its previous knowledge that Trump falsely claimed to win the 2020 election meant it would deny he was the president. That language is gone for 4.7, reflecting the model's new reliable knowledge cut-off date of January 2026.</li>
+</ul>
+<h4 id="and-the-tool-descriptions-too">And the tool descriptions too</h4>
+<p>The system prompts published by Anthropic are sadly not the entire story - their published information doesn't include the tool descriptions that are provided to the model, which is arguably an even more important piece of documentation if you want to take full advantage of what the Claude chat UI can do for you.</p>
+<p>Thanfully you can <a href="https://claude.ai/share/dc1e375e-2213-4afb-ac1b-812d42735a8e">ask Claude directly</a> - I used the prompt:</p>
+<blockquote>
+<p>List all tools you have available to you with an exact copy of the tool description and parameters</p>
+</blockquote>
+<p>My <a href="https://claude.ai/share/dc1e375e-2213-4afb-ac1b-812d42735a8e">shared transcript</a> has full details, but the list of named tools is as follows:</p>
+<ul>
+<li><code>ask_user_input_v0</code></li>
+<li><code>bash_tool</code></li>
+<li><code>conversation_search</code></li>
+<li><code>create_file</code></li>
+<li><code>fetch_sports_data</code></li>
+<li><code>image_search</code></li>
+<li><code>message_compose_v1</code></li>
+<li><code>places_map_display_v0</code></li>
+<li><code>places_search</code></li>
+<li><code>present_files</code></li>
+<li><code>recent_chats</code></li>
+<li><code>recipe_display_v0</code></li>
+<li><code>recommend_claude_apps</code></li>
+<li><code>search_mcp_registry</code></li>
+<li><code>str_replace</code></li>
+<li><code>suggest_connectors</code></li>
+<li><code>view</code></li>
+<li><code>weather_fetch</code></li>
+<li><code>web_fetch</code></li>
+<li><code>web_search</code></li>
+<li><code>tool_search</code></li>
+<li><code>visualize:read_me</code></li>
+<li><code>visualize:show_widget</code></li>
+</ul>
+<p>I don't believe this list has changed since Opus 4.6.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a>, <a href="https://simonwillison.net/tags/system-prompts">system-prompts</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude system prompts as a git timeline]]></title>
+        <id>https://simonwillison.net/2026/Apr/18/extract-system-prompts/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/18/extract-system-prompts/#atom-everything"/>
+        <updated>2026-04-18T12:25:00.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Research:</strong> <a href="https://github.com/simonw/research/tree/main/extract-system-prompts#readme">Claude system prompts as a git timeline</a></p>
+    <p>Anthropic <a href="https://platform.claude.com/docs/en/release-notes/system-prompts">publish the system prompts</a> for Claude chat and make that page <a href="https://platform.claude.com/docs/en/release-notes/system-prompts.md">available as Markdown</a>. I had Claude Code turn that page into separate files for each model and model family with fake git commit dates to enable browsing the changes via the GitHub commit view.</p>
+<p>I used this to write my own <a href="https://simonwillison.net/2026/Apr/18/opus-system-prompt/">detailed notes on the changes between Opus 4.6 and 4.7</a>.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/system-prompts">system-prompts</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Adding a new content type to my blog-to-newsletter tool]]></title>
         <id>https://simonwillison.net/guides/agentic-engineering-patterns/adding-a-new-content-type/#atom-everything</id>
@@ -4311,98 +4413,6 @@ This kind of operation used to be involved enough that most developers would cre
         <p>Tags: <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/git">git</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Turbo Pascal 3.02A, deconstructed]]></title>
-        <id>https://simonwillison.net/2026/Mar/20/turbo-pascal/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/20/turbo-pascal/#atom-everything"/>
-        <updated>2026-03-20T23:59:14.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://tools.simonwillison.net/turbo-pascal-deconstructed">Turbo Pascal 3.02A, deconstructed</a></strong></p>
-In <a href="https://prog21.dadgum.com/116.html">Things That Turbo Pascal is Smaller Than</a> James Hague lists things (from 2011) that are larger in size than Borland's 1985 Turbo Pascal 3.02 executable - a 39,731 byte file that somehow included a full text editor IDE and Pascal compiler.</p>
-<p>This inspired me to track down a copy of that executable (available as freeware since 2000) and see if Claude could interpret the binary and decompile it for me.</p>
-<p>It did a great job, so I had it create <a href="https://tools.simonwillison.net/turbo-pascal-deconstructed">this interactive artifact</a> illustrating the result. Here's the <a href="https://claude.ai/share/260d2eed-8d4a-4b9f-8a75-727c3ec4274e">sequence of prompts</a> I used (in regular <a href="https://claude.ai/">claude.ai</a> chat, not Claude Code):</p>
-<blockquote>
-<p>Read this https://prog21.dadgum.com/116.html</p>
-<p>Now find a copy of that binary online</p>
-<p>Explore this (<em>I attached the zip file</em>)</p>
-<p>Build an artifact - no react - that embeds the full turbo.com binary and displays it in a way that helps understand it - broke into labeled segments for different parts of the application, decompiled to visible source code (I guess assembly?) and with that assembly then reconstructed into readable code with extensive annotations</p>
-</blockquote>
-<p><img alt="Infographic titled &quot;TURBO.COM&quot; with subtitle &quot;Borland Turbo Pascal 3.02A — September 17, 1986 — Deconstructed&quot; on a dark background. Four statistics are displayed: 39,731 TOTAL BYTES, 17 SEGMENTS MAPPED, 1 INT 21H INSTRUCTION, 100+ BUILT-IN IDENTIFIERS. Below is a &quot;BINARY MEMORY MAP — 0X0100 TO 0X9C33&quot; shown as a horizontal color-coded bar chart with a legend listing 17 segments: COM Header &amp; Copyright, Display Configuration Table, Screen I/O &amp; Video BIOS Routines, Keyboard Input Handler, String Output &amp; Number Formatting, DOS System Call Dispatcher, Runtime Library Core, Error Handler &amp; Runtime Errors, File I/O System, Software Floating-Point Engine, x86 Code Generator, Startup Banner &amp; Main Menu Loop, File Manager &amp; Directory Browser, Compiler Driver &amp; Status, Full-Screen Text Editor, Pascal Parser &amp; Lexer, and Symbol Table &amp; Built-in Identifiers." src="https://static.simonwillison.net/static/2026/turbo-pascal.jpg" />
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/computer-history">computer-history</a>, <a href="https://simonwillison.net/tags/tools">tools</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/claude">claude</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Kimi.ai @Kimi_Moonshot]]></title>
-        <id>https://simonwillison.net/2026/Mar/20/cursor-on-kimi/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/20/cursor-on-kimi/#atom-everything"/>
-        <updated>2026-03-20T20:29:23.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://twitter.com/Kimi_Moonshot/status/2035074972943831491"><p>Congrats to the <a href="https://x.com/cursor_ai">@cursor_ai</a> team on the launch of Composer 2!</p>
-<p>We are proud to see Kimi-k2.5 provide the foundation. Seeing our model integrated effectively through Cursor's continued pretraining &amp; high-compute RL training is the open model ecosystem we love to support.</p>
-<p>Note: Cursor accesses Kimi-k2.5 via <a href="https://x.com/FireworksAI_HQ">@FireworksAI_HQ</a> hosted RL and inference platform as part of an authorized commercial partnership.</p></blockquote>
-<p class="cite">&mdash; <a href="https://twitter.com/Kimi_Moonshot/status/2035074972943831491">Kimi.ai @Kimi_Moonshot</a>, responding to reports that Composer 2 was built on top of Kimi K2.5</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/kimi">kimi</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/cursor">cursor</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[nemotron-cascade-2]]></title>
-        <id>https://ollama.com/library/nemotron-cascade-2</id>
-        <link href="https://ollama.com/library/nemotron-cascade-2"/>
-        <updated>2026-03-20T20:10:00.000Z</updated>
-        <summary type="html"><![CDATA[An open 30B MoE model from NVIDIA with 3B activated parameters that delivers strong reasoning and agentic capabilities.]]></summary>
-        <author>
-            <name>Ollama models</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Copilot usage metrics now resolve auto model selection to actual models]]></title>
-        <id>https://github.blog/changelog/2026-03-20-copilot-usage-metrics-now-resolve-auto-model-selection-to-actual-models</id>
-        <link href="https://github.blog/changelog/2026-03-20-copilot-usage-metrics-now-resolve-auto-model-selection-to-actual-models"/>
-        <updated>2026-03-20T18:37:18.000Z</updated>
-        <summary type="html"><![CDATA[Copilot usage metrics now provides full clarity into model usage when auto model selection is enabled. Activity that previously appeared under a generic “Auto” label now resolves to the actual…
-The post Copilot usage metrics now resolve auto model selection to actual models appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Trace any Copilot coding agent commit to its session logs]]></title>
-        <id>https://github.blog/changelog/2026-03-20-trace-any-copilot-coding-agent-commit-to-its-session-logs</id>
-        <link href="https://github.blog/changelog/2026-03-20-trace-any-copilot-coding-agent-commit-to-its-session-logs"/>
-        <updated>2026-03-20T12:21:49.000Z</updated>
-        <summary type="html"><![CDATA[Every commit from Copilot coding agent, our cloud-based background agent, is authored by Copilot, with the human who gave Copilot the task marked as the co-author. This makes it easier…
-The post Trace any Copilot coding agent commit to its session logs appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Monitor Copilot coding agent logs live in Raycast]]></title>
-        <id>https://github.blog/changelog/2026-03-20-monitor-copilot-coding-agent-logs-live-in-raycast</id>
-        <link href="https://github.blog/changelog/2026-03-20-monitor-copilot-coding-agent-logs-live-in-raycast"/>
-        <updated>2026-03-20T12:21:30.000Z</updated>
-        <summary type="html"><![CDATA[Raycast is a powerful free launcher for macOS and Windows. It can launch apps, search files, control your system, and leverage community-built extensions. With the GitHub Copilot extension for Raycast,…
-The post Monitor Copilot coding agent logs live in Raycast appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[A smoother navigation experience in GitHub Mobile for Android]]></title>
-        <id>https://github.blog/changelog/2026-03-20-a-smoother-navigation-experience-in-github-mobile-for-android</id>
-        <link href="https://github.blog/changelog/2026-03-20-a-smoother-navigation-experience-in-github-mobile-for-android"/>
-        <updated>2026-03-20T10:45:48.000Z</updated>
-        <summary type="html"><![CDATA[We’ve revamped navigation in GitHub Mobile for Android to create a more consistent and intuitive experience across the app. With this update, moving between key areas such as Home and…
-The post A smoother navigation experience in GitHub Mobile for Android appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
 </feed>
