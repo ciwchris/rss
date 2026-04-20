@@ -2,10 +2,101 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-19T21:25:14.414Z</updated>
+    <updated>2026-04-20T15:08:25.671Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Sunsetting SHA-1 in HTTPS on GitHub]]></title>
+        <id>https://github.blog/changelog/2026-04-20-sunsetting-sha-1-in-https-on-github</id>
+        <link href="https://github.blog/changelog/2026-04-20-sunsetting-sha-1-in-https-on-github"/>
+        <updated>2026-04-20T14:15:30.000Z</updated>
+        <summary type="html"><![CDATA[What’s changing We’re going to remove the use of SHA-1 in HTTPS for GitHub and our CDNs. This impacts browsers that are used to view the GitHub website, any software…
+The post Sunsetting SHA-1 in HTTPS on GitHub appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SQL functions in Google Sheets to fetch data from Datasette]]></title>
+        <id>https://simonwillison.net/2026/Apr/20/datasette-sql/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/20/datasette-sql/#atom-everything"/>
+        <updated>2026-04-20T02:33:58.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>TIL:</strong> <a href="https://til.simonwillison.net/google-sheets/datasette-sql">SQL functions in Google Sheets to fetch data from Datasette</a></p>
+    <p>I put together some notes on patterns for fetching data from a Datasette instance directly into Google Sheets - using the <code>importdata()</code> function, a "named function" that wraps it or a Google Apps Script if you need to send an API token in an HTTP header (not supported by <code>importdata()</code>.)</p>
+<p>Here's <a href="https://docs.google.com/spreadsheets/d/14lRV2-AeBmjI3lJbl2apwfC_ncXqL0uSV68lmtzUI7I/edit?gid=0#gid=0">an example sheet</a> demonstrating all three methods.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/spreadsheets">spreadsheets</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/google">google</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude Token Counter, now with model comparisons]]></title>
+        <id>https://simonwillison.net/2026/Apr/20/claude-token-counts/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/20/claude-token-counts/#atom-everything"/>
+        <updated>2026-04-20T00:50:45.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://tools.simonwillison.net/claude-token-counter">Claude Token Counter, now with model comparisons</a></strong></p>
+I <a href="https://github.com/simonw/tools/pull/269">upgraded</a> my Claude Token Counter tool to add the ability to run the same count against different models in order to compare them.</p>
+<p>As far as I can tell Claude Opus 4.7 is the first model to change the tokenizer, so it's only worth running comparisons between 4.7 and 4.6. The Claude <a href="https://platform.claude.com/docs/en/build-with-claude/token-counting">token counting API</a> accepts any Claude model ID though so I've included options for all four of the notable current models (Opus 4.7 and 4.6, Sonnet 4.6, and Haiku 4.5).</p>
+<p>In the Opus 4.7 announcement <a href="https://www.anthropic.com/news/claude-opus-4-7#migrating-from-opus-46-to-opus-47">Anthropic said</a>:</p>
+<blockquote>
+<p>Opus 4.7 uses an updated tokenizer that improves how the model processes text. The tradeoff is that the same input can map to more tokens—roughly 1.0–1.35× depending on the content type.</p>
+</blockquote>
+<p>I pasted the <a href="https://github.com/simonw/research/blob/2cf912666ba08ef0c00a1b51ee07c9a8e64579ef/extract-system-prompts/claude-opus-4-7.md?plain=1">Opus 4.7 system prompt</a> into the token counting tool and found that the Opus 4.7 tokenizer used 1.46x the number of tokens as Opus 4.6.</p>
+<p><img alt="Screenshot of a token comparison tool. Models to compare: claude-opus-4-7 (checked), claude-opus-4-6 (checked), claude-opus-4-5, claude-sonnet-4-6, claude-haiku-4-5. Note: &quot;These models share the same tokenizer&quot;. Blue &quot;Count Tokens&quot; button. Results table — Model | Tokens | vs. lowest. claude-opus-4-7: 7,335 tokens, 1.46x (yellow badge). claude-opus-4-6: 5,039 tokens, 1.00x (green badge)." src="https://static.simonwillison.net/static/2026/claude-token-count.jpg" /></p>
+<p>Opus 4.7 uses the same pricing is Opus 4.6 - $5 per million input tokens and $25 per million output tokens - but this token inflation means we can expect it to be around 40% more expensive.</p>
+<p>The token counter tool also accepts images. Opus 4.7 has improved image support, described like this:</p>
+<blockquote>
+<p>Opus 4.7 has better vision for high-resolution images: it can accept images up to 2,576 pixels on the long edge (~3.75 megapixels), more than three times as many as prior Claude models.</p>
+</blockquote>
+<p>I tried counting tokens for a 3456x2234 pixel 3.7MB PNG and got an even bigger increase in token counts - 3.01x times the number of tokens for 4.7 compared to 4.6:</p>
+<p><img alt="Same UI, this time with an uploaded screenshot PNG image. claude-opus-4-7: 4,744 tokens, 3.01x (yellow badge). claude-opus-4-6: 1,578 tokens, 1.00x (green badge)." src="https://static.simonwillison.net/static/2026/claude-token-count-image.jpg" /></p>
+<p><strong>Update</strong>: That 3x increase for images is <em>entirely</em> due to Opus 4.7 being able to handle higher resolutions. I tried that again with a 682x318 pixel image and it took 314 tokens with Opus 4.7 and 310 with Opus 4.6, so effectively the same cost.</p>
+<p><strong>Update 2</strong>: I tried a 15MB, 30 page text-heavy PDF and Opus 4.7 reported 60,934   tokens while 4.6 reported 56,482 - that's a 1.08x multiplier, significantly lower than the multiplier I got for raw text.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/tokenization">tokenization</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[OpenAI helps Hyatt advance AI among colleagues]]></title>
+        <id>https://openai.com/index/hyatt-advances-ai-with-chatgpt-enterprise</id>
+        <link href="https://openai.com/index/hyatt-advances-ai-with-chatgpt-enterprise"/>
+        <updated>2026-04-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Hyatt deploys ChatGPT Enterprise across its global workforce, using GPT-5.4 and Codex to improve productivity, operations, and guest experiences.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Headless everything for personal AI]]></title>
+        <id>https://simonwillison.net/2026/Apr/19/headless-everything/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/19/headless-everything/#atom-everything"/>
+        <updated>2026-04-19T21:46:38.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://interconnected.org/home/2026/04/18/headless">Headless everything for personal AI</a></strong></p>
+Matt Webb thinks <strong>headless</strong> services are about to become much more common:</p>
+<blockquote>
+<p>Why? Because using personal AIs is a better experience for users than using services directly (honestly); and headless services are quicker and more dependable for the personal AIs than having them click round a GUI with a bot-controlled mouse.</p>
+</blockquote>
+<p>Evidently <a href="https://twitter.com/benioff/status/2044981547267395620">Marc Benioff thinks so too</a>:</p>
+<blockquote>
+<p>Welcome Salesforce Headless 360: No Browser Required!  Our API is the UI. Entire Salesforce &amp; Agentforce &amp; Slack platforms are now exposed as APIs, MCP, &amp; CLI. All AI agents can access data, workflows, and tasks directly in Slack, Voice, or anywhere else with Salesforce Headless.</p>
+</blockquote>
+<p>If this model does take off it's going to play havoc with existing per-head SaaS pricing schemes.</p>
+<p>I'm reminded of the early 2010s era when every online service was launching APIs. Brandur Leach reminisces about that time in <a href="https://brandur.org/second-wave-api-first">The Second Wave of the API-first Economy</a>, and predicts that APIs are ready to make a comeback:</p>
+<blockquote>
+<p>Suddenly, an API is no longer liability, but a major saleable vector to give users what they want: a way into the services they use and pay for so that an agent can carry out work on their behalf. Especially given a field of relatively undifferentiated products, in the near future the availability of an API might just be the crucial deciding factor that leads to one choice winning the field.</p>
+</blockquote>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/apis">apis</a>, <a href="https://simonwillison.net/tags/definitions">definitions</a>, <a href="https://simonwillison.net/tags/matt-webb">matt-webb</a>, <a href="https://simonwillison.net/tags/salesforce">salesforce</a>, <a href="https://simonwillison.net/tags/saas">saas</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/brandur-leach">brandur-leach</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Changes in the system prompt between Claude Opus 4.6 and 4.7]]></title>
         <id>https://simonwillison.net/2026/Apr/18/opus-system-prompt/#atom-everything</id>
@@ -4299,118 +4390,6 @@ pip install httpx --break-system-packages -q \
 <p>I fed that Python (minus comments) into Claude and asked for <a href="https://claude.ai/share/8ce777cd-c7c3-4656-a45e-acbf66bf994b">an explanation</a>, then had it use Pyodide to build me an interactive UI for seeing how the algorithms work.</p>
     
         <p>Tags: <a href="https://simonwillison.net/tags/vcs">vcs</a>, <a href="https://simonwillison.net/tags/pyodide">pyodide</a>, <a href="https://simonwillison.net/tags/bram-cohen">bram-cohen</a>, <a href="https://simonwillison.net/tags/crdt">crdt</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Profiling Hacker News users based on their comments]]></title>
-        <id>https://simonwillison.net/2026/Mar/21/profiling-hacker-news-users/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/21/profiling-hacker-news-users/#atom-everything"/>
-        <updated>2026-03-21T23:59:47.000Z</updated>
-        <summary type="html"><![CDATA[<p>Here's a mildly dystopian prompt I've been experimenting with recently: "Profile this user", accompanied by a copy of their last 1,000 comments on Hacker News.</p>
-<p>Obtaining those comments is easy. The <a href="https://hn.algolia.com/api">Algolia Hacker News API</a> supports listing comments sorted by date that have a specific tag, and the author of a comment is tagged there as <code>author_username</code>. Here's a JSON feed of my (<code>simonw</code>) most recent comments, for example:</p>
-<p><a href="https://hn.algolia.com/api/v1/search_by_date?tags=comment,author_simonw&amp;hitsPerPage=1000">https://hn.algolia.com/api/v1/search_by_date?tags=comment,author_simonw&amp;hitsPerPage=1000</a></p>
-<p>The Algolia API is served with open CORS headers, which means you can access the API from JavaScript running on any web page.</p>
-<p>Last August I <a href="https://chatgpt.com/share/68a4d2b1-a678-8006-aca0-cec51b243bd3">had ChatGPT build me</a> a <a href="https://tools.simonwillison.net/hn-comments-for-user">simple tool</a> for hitting that API for any user which fetches their comments and gives me a mobile-friendly "copy to clipboard" button. I've since <a href="https://github.com/simonw/tools/commits/main/hn-comments-for-user.html">tweaked it a few times</a> with Claude.</p>
-<p>I can then paste the whole lot into any LLM - these days I mostly use Claude Opus 4.6 for this - and prompt "profile this user" to see what it can figure out.</p>
-<p>It's startlingly effective! It feels invasive to quote the profile of another user here, so I'll show you what it produces for me:</p>
-<blockquote>
-<p>This is <strong>Simon Willison</strong> — a prolific, independent software developer, blogger, and one of the most visible voices in the AI-assisted coding space. Here's a profile drawn from his comments:</p>
-<p><strong>Professional identity:</strong> Independent developer and writer. Co-creator of Django, creator of Datasette and many other open source tools. On the board of the Python Software Foundation. Runs a heavily-trafficked personal blog at simonwillison.net with multiple content types (entries, link blog, notes, quotations). Monetizes through GitHub sponsors, ethical ads, and occasional consulting — not through any AI company payroll, a point he defends frequently.</p>
-<p><strong>Core thesis on AI coding:</strong> He's the leading evangelist for what he calls "agentic engineering" — using coding agents (Claude Code, Codex CLI) as productivity multipliers for skilled developers. His central argument: LLMs don't replace programmers, they amplify existing expertise. He's writing a guide/book on this at simonwillison.net/guides. He insists these tools are deceptively difficult to use well, and that most people who report bad results simply haven't learned the craft yet.</p>
-<p><strong>Working style:</strong> He does most of his programming from his iPhone via Claude Code for web, often while riding BART, walking the dog, or sitting in the garden. He embraces "YOLO mode" (auto-approving agent actions) and frequently runs 2-3 agent sessions in parallel. He starts every session with "run uv run pytest" to anchor the agent in TDD. He's on the $200/month Claude Max plan.</p>
-<p><strong>Key technical interests:</strong> Sandboxing and security (WebAssembly, Pyodide, sandbox-exec, Firecracker), SQLite (deeply), Python packaging and tooling (uv, PyPI distribution tricks), browser-in-a-browser experiments (v86, WASM Linux), and local LLM inference. He's been learning Go "by osmosis" through coding agents.</p>
-<p><strong>Security consciousness:</strong> He coined the term "prompt injection" and the "lethal trifecta" (access to private data + exposure to untrusted input + ability to take actions). He's genuinely alarmed about OpenClaw/Clawdbot security risks and has been predicting a headline-grabbing prompt injection attack "in the next six months" for over two years — acknowledging it keeps not happening while insisting the risk is real. He references the "normalization of deviance" pattern frequently.</p>
-<p><strong>Personality and debate style:</strong> Energetic, combative when challenged, but generally good-natured. He engages heavily in HN comment threads — sometimes dozens of replies in a single discussion. He's transparent about his biases and maintains a public disclosures page. He pushes back hard against what he sees as motivated reasoning from AI skeptics, but also against AGI hype ("I refer to that as the science fiction version of AI"). He gets visibly frustrated by sock-puppet accounts and bad-faith criticism. He has a self-deprecating streak ("my stupid pelican benchmark").</p>
-<p><strong>Recurring themes across hundreds of comments:</strong></p>
-<ul>
-<li>"Two things can be true at the same time" — he holds nuanced positions</li>
-<li>Tests are for productivity, not just quality</li>
-<li>The November 2025 model releases (Opus 4.5, GPT-5.2) were a genuine inflection point</li>
-<li>Code review is the biggest bottleneck in agent-assisted workflows</li>
-<li>"Cognitive debt" is a real and unsolved problem</li>
-<li>The best engineering practices (tests, docs, CI/CD, clean code) also make agents work better</li>
-<li>He's deliberately trying to "teach people good software engineering while tricking them into thinking the book is about AI"</li>
-</ul>
-<p><strong>Personal interests mentioned:</strong> Niche museums (runs niche-museums.com), New Zealand kākāpō parrots, cooking food from countries he's never visited, chickens in his garden. Lives in Half Moon Bay, CA near a major pelican roost. The pelican-on-a-bicycle SVG test is his signature LLM benchmark.</p>
-<p><strong>In a sentence:</strong> A deeply experienced, independently-minded developer who's genuinely excited about AI coding tools, fights hard against both uncritical hype and reflexive dismissal, and is trying to professionalize how the industry uses these tools — while also worrying loudly about the security implications almost nobody else takes seriously enough.</p>
-</blockquote>
-<p>This all checks out! I ran this in Claude incognito mode to hopefully prevent Claude from guessing that I was evaluating myself and sycophantically glazing me - the tone of the response it gave here is similar to the tone I've seen against other accounts.</p>
-
-<p>I expect it guessed my real name due to my habit of linking to my own writing from some of my comments, which provides plenty of simonwillison.net URLs for it to associate with my public persona. I haven't seen it take a guess at a real name for any of the other profiles I've generated.</p>
-<p>It's a little creepy to be able to derive this much information about someone so easily, even when they've shared that freely in a public (and API-available) place.</p>
-<p>I mainly use this to check that I'm not getting embroiled in an extensive argument with someone who has a history of arguing in bad faith. Thankfully that's rarely the case - Hacker News continues to be a responsibly moderated online space.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/hacker-news">hacker-news</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Using Git with coding agents]]></title>
-        <id>https://simonwillison.net/guides/agentic-engineering-patterns/using-git-with-coding-agents/#atom-everything</id>
-        <link href="https://simonwillison.net/guides/agentic-engineering-patterns/using-git-with-coding-agents/#atom-everything"/>
-        <updated>2026-03-21T22:08:24.000Z</updated>
-        <summary type="html"><![CDATA[<p><em><a href="https://simonwillison.net/guides/agentic-engineering-patterns/">Agentic Engineering Patterns</a> &gt;</em></p>
-    <p>Git is a key tool for working with coding agents. Keeping code in version control lets us record how that code changes over time and investigate and reverse any mistakes. All of the coding agents are fluent in using Git's features, both basic and advanced.</p>
-<p>This fluency means we can be more ambitious about how we use Git ourselves. We don't need to  memorize <em>how</em> to do things with Git, but staying aware of what's possible means we can take advantage of the full suite of Git's abilities.</p>
-<h2 id="git-essentials">Git essentials</h2>
-<p>Each Git project lives in a <strong>repository</strong> - a folder on disk that can track changes made to the files within it. Those changes are recorded in <strong>commits</strong> - timestamped bundles of changes to one or more files accompanied by a <strong>commit message</strong> describing those changes and an <strong>author</strong> recording who made them.</p>
-<p>Git supports <strong>branches</strong>, which allow you to construct and experiment with new changes independently of each other. Branches can then be <strong>merged</strong> back into your main branch (using various methods) once they are deemed ready.</p>
-<p>Git repositories can be <strong>cloned</strong> onto a new machine, and that clone includes both the current files and the full history of changes to them.
-This means developers - or coding agents - can browse and explore that history without any extra network traffic, making history diving effectively free.</p>
-<p>Git repositories can live just on your own machine,  but Git is designed to support collaboration and backups by publishing them to a <strong>remote</strong>, which can be public or private. GitHub is the most popular place for these remotes but Git is open source software that enables hosting these remotes on any machine or service that supports the Git protocol.</p>
-<h2 id="core-concepts-and-prompts">Core concepts and prompts</h2>
-<p>Coding agents all have a deep understanding of Git jargon. The following prompts should work with any of them:</p>
-<p><div><markdown-copy><textarea>Start a new Git repo here</textarea></markdown-copy></div>
-To turn the folder the agent is working in into a Git repository - the agent will probably run the <code>git init</code> command. If you just say "repo" agents will assume you mean a Git repository.</p>
-<p><div><markdown-copy><textarea>Commit these changes</textarea></markdown-copy></div>
-Create a new Git commit to record the changes the agent has made - usually with the <code>git commit -m "commit message"</code> command.</p>
-<p><div><markdown-copy><textarea>Add username/repo as a github remote</textarea></markdown-copy></div>
-This should configure your repository for GitHub. You'll need to create a new repo first using <a href="https://github.com/new">github.com/new</a>, and configure your machine to talk to GitHub.</p>
-<p><div><markdown-copy><textarea>Review changes made today</textarea></markdown-copy></div>
-Or "recent changes" or "last three commits".</p>
-<p>This is a great way to start a fresh coding agents session. Telling the agent to look at recent changes causes it to run <code>git log</code>, which can instantly load its context with details of what you have been working on recently - both the modified code and the commit messages that describe it.</p>
-<p>Seeding the session in this way means you can start talking about that code - suggest additional fixes, ask questions about how it works, or propose the next change that builds on what came before.</p>
-<p><div><markdown-copy><textarea>Integrate latest changes from main</textarea></markdown-copy></div>
-Run this on your main branch to fetch other contributions from the remote repository, or run it in a branch to integrate the latest changes on main.</p>
-<p>There are multiple ways to merge changes, including merge, rebase, squash or fast-forward. If you can't remember the details of these that's fine:
-<div><markdown-copy><textarea>Discuss options for integrating changes from main</textarea></markdown-copy></div>
-Agents are great at explaining the pros and cons of different merging strategies, and everything in git can always be undone so there's minimal risk in trying new things.
-<div><markdown-copy><textarea>Sort out this git mess for me</textarea></markdown-copy></div>
-I use this universal prompt surprisingly often! There are plenty of ways you can get into a mess with Git, often through pulls or rebase commands that end in a merge conflict, or just through adding the wrong things to Git's staging environment.</p>
-<p>Unpicking those used to be the most difficult and time consuming parts of working with Git. No more! Coding agents can navigate the most Byzantine of merge conflicts, reasoning through the intent of the new code and figuring out what to keep and how to combine conflicting changes. If your code has automated tests (and <a href="https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/">it should</a>) the agent can ensure those pass before finalizing that merge.</p>
-<p><div><markdown-copy><textarea>Find and recover my code that does ...</textarea></markdown-copy></div>
-If you lose code that you are working on that's previously been committed (or saved with <code>git stash</code>) your agent can probably find it for you. </p>
-<p>Git has a mechanism called the <code>reflog</code> which can often capture details of code that hasn't been committed to a permanent branch. Agents can search that, and search other branches too.</p>
-<p>Just tell them what to find and watch them dive in.</p>
-<p><div><markdown-copy><textarea>Use git bisect to find when this bug was introduced: ...</textarea></markdown-copy></div>
-Git bisect is one of the most powerful debugging tools in Git's arsenal, but it has a relatively steep learning curve that often deters developers from using it.</p>
-<p>When you run a bisect operation you provide Git with some kind of test condition and a start and ending commit range. Git then runs a binary search to identify the earliest commit for which your test condition fails. </p>
-<p>This can efficiently answer the question "what first caused this bug". The only downside is the need to express the test for the bug in a format that Git bisect can execute.</p>
-<p>Coding agents can handle this boilerplate for you. This upgrades Git bisect from an occasional use tool to one you can deploy any time you are curious about the historic behavior of your software.</p>
-<h2 id="rewriting-history">Rewriting history</h2>
-<p>Let's get into the fun advanced stuff.</p>
-<p>The commit history of a Git repository is not fixed. The data is just files on disk after all (tucked away in a hidden <code>.git/</code> directory), and Git itself provides tools that can be used to modify that history.</p>
-<p>Don't think of the Git history as a permanent record of what actually happened - instead consider it to be a deliberately authored story that describes the progression of the software project.</p>
-<p>This story is a tool to aid future development. Permanently recording mistakes and cancelled directions can sometimes be useful, but repository authors can make editorial decisions about what to keep and how best to capture that history.</p>
-<p>Coding agents are really good at using Git's advanced history rewriting features.</p>
-<h3 id="undo-or-rewrite-commits">Undo or rewrite commits</h3>
-<p><div><markdown-copy><textarea>Undo last commit</textarea></markdown-copy></div>
-It's common to commit code and then regret it - realize that it includes a file you didn't mean to include, for example. The git recipe for this is <code>git reset --soft HEAD~1</code>. I've never been able to remember that, and now I don't have to!</p>
-<p><div><markdown-copy><textarea>Remove uv.lock from that last commit</textarea></markdown-copy></div>
-You can also perform more finely grained surgery on commits - rewriting them to remove just a single file, for example.</p>
-<p><div><markdown-copy><textarea>Combine last three commits with a better commit message</textarea></markdown-copy></div>
-Agents can rewrite commit messages and can combine multiple commits into a single unit.</p>
-<p>I've found that frontier models usually have really good taste in commit messages. I used to insist on writing these myself but I've accepted that the quality they produce is generally good enough, and often even better than what I would have produced myself.</p>
-<h3 id="building-a-new-repository-from-scraps-of-an-older-one">Building a new repository from scraps of an older one</h3>
-<p>A trick I find myself using quite often is extracting out code from a larger repository into a new one while maintaining the key history of that code.</p>
-<p>One common example is library extraction. I may have built some classes and functions into a project and later realized they would make more sense as a standalone reusable code library.</p>
-<p><div><markdown-copy><textarea>Start a new repo at /tmp/distance-functions and build a Python library there with the lib/distance_functions.py module from here - build a similar commit history copying the author and commit dates in the new repo</textarea></markdown-copy></div>
-This kind of operation used to be involved enough that most developers would create a fresh copy detached from that old commit history. We don't have to settle for that any more!</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/github">github</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/git">git</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
