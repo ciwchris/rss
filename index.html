@@ -31,6 +31,151 @@
       <article>
           <details>
             <summary>
+              Where&#x27;s the raccoon with the ham radio? (ChatGPT Images 2.0)
+              <span class="post-metadata">(5 min | 1369 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/21/gpt-image-2/#atom-everything>OpenAI released ChatGPT Images 2.0 today, their latest image generation model. On the livestream Sam Altman said that the leap from gpt-image-1 to gpt-image-2 was equivalent to jumping from GPT-3 to GPT-5. Here&#x27;s how I put it to the test.
+
+My prompt:
+
+
+Do a where&#x27;s Waldo style image but it&#x27;s where is the raccoon holding a ham radio
+
+
+gpt-image-1
+
+First as a baseline here&#x27;s what I got from the older gpt-image-1 using ChatGPT directly:
+
+
+
+I wasn&#x27;t able to spot the raccoon - I quickly realized that testing image generation models on Where&#x27;s Waldo style images (Where&#x27;s Wally in the UK) can be pretty frustrating!
+
+I tried getting Claude Opus 4.7 with its new higher resolution inputs to solve it but it was convinced there was a raccoon it couldn&#x27;t find thanks to the instruction card at the top left of the image:
+
+
+Yes — there&#x27;s at least one raccoon in the picture, but it&#x27;s very well hidden. In my careful sweep through zoomed-in sections, honestly, I couldn&#x27;t definitively spot a raccoon holding a ham radio. [...]
+
+
+Nano Banana 2 and Pro
+
+Next I tried Google&#x27;s Nano Banana 2, via Gemini:
+
+
+
+That one was pretty obvious, the raccoon is in the &quot;Amateur Radio Club&quot; booth in the center of the image!
+
+Claude said:
+
+
+Honestly, this one wasn&#x27;t really hiding — he&#x27;s the star of the booth. Feels like the illustrator took pity on us after that last impossible scene. The little &quot;W6HAM&quot; callsign pun on the booth sign is a nice touch too.
+
+
+I also tried Nano Banana Pro in AI Studio and got this, by far the worst result from any model. Not sure what went wrong here!
+
+
+
+gpt-image-2
+
+With the baseline established, let&#x27;s try out the new model.
+
+I used an updated version of my openai_image.py script, which is a thin wrapper around the OpenAI Python client library. Their client library hasn&#x27;t yet been updated to include gpt-image-2 but thankfully it doesn&#x27;t validate the model ID so you can use it anyway.
+
+Here&#x27;s how I ran that:
+
+
+OPENAI_API_KEY&#x3D;&quot;$(llm keys get openai)&quot; \
+  uv run https://tools.simonwillison.net/python/openai_image.py \
+  -m gpt-image-2 \
+  &quot;Do a where&#x27;s Waldo style image but it&#x27;s where is the raccoon holding a ham radio&quot;
+
+Here&#x27;s what I got back. I don&#x27;t think there&#x27;s a raccoon in there - I couldn&#x27;t spot one, and neither could Claude.
+
+
+
+The OpenAI image generation cookbook has been updated with notes on gpt-image-2, including the outputQuality setting and available sizes.
+
+I tried setting outputQuality to high and the dimensions to 3840x2160 - I believe that&#x27;s the maximum - and got this - a 17MB PNG which I converted to a 5MB WEBP:
+
+
+OPENAI_API_KEY&#x3D;&quot;$(llm keys get openai)&quot; \
+  uv run &#x27;https://raw.githubusercontent.com/simonw/tools/refs/heads/main/python/openai_image.py&#x27; \
+  -m gpt-image-2 &quot;Do a where&#x27;s Waldo style image but it&#x27;s where is the raccoon holding a ham radio&quot; \
+  --quality high --size 3840x2160
+
+
+
+That&#x27;s pretty great! There&#x27;s a raccoon with a ham radio in there (bottom left, quite easy to spot).
+
+The image used 13,342 output tokens, which are charged at $30/million so a total cost of around 40 cents.
+
+Takeaways
+
+I think this new ChatGPT image generation model takes the crown from Gemini, at least for the moment.
+
+Where&#x27;s Waldo style images are an infuriating and somewhat foolish way to test these models, but they do help illustrate how good they are getting at complex illustrations combining both text and details.
+
+Update: asking models to solve this is risky
+
+rizaco on Hacker News asked ChatGPT to draw a red circle around the raccoon in one of the images in which I had failed to find one. Here&#x27;s an animated mix of their result and the original image:
+
+
+
+Looks like we definitely can&#x27;t trust these models to usefully solve their own puzzles!
+Tags: ai, openai, generative-ai, chatgpt, llms, text-to-image, llm-release, nano-banana</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Andreas Påhlsson-Notini
+              <span class="post-metadata">(3 min | 762 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/21/andreas-pahlsson-notini/#atom-everything>AI agents are already too human. Not in the romantic sense, not because they love or fear or dream, but in the more banal and frustrating one. The current implementations keep showing their human origin again and again: lack of stringency, lack of patience, lack of focus. Faced with an awkward task, they drift towards the familiar. Faced with hard constraints, they start negotiating with reality.
+
+— Andreas Påhlsson-Notini, Less human AI agents, please.
+Tags: ai-agents, coding-agents, ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              CodeQL now supports sanitizers and validators in models-as-data
+              <span class="post-metadata">(5 min | 1512 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-21-codeql-now-supports-sanitizers-and-validators-in-models-as-data>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. You can now define custom sanitizers and validators using data extensions…
+The post CodeQL now supports sanitizers and validators in models-as-data appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              scosman/pelicans_riding_bicycles
+              <span class="post-metadata">(3 min | 750 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/21/scosman/#atom-everything>scosman/pelicans_riding_bicycles
+
+(To be fair, most of the examples I&#x27;ve published count as poisoning too.)
+
+    
+Via Hacker News comment
+Tags: ai, generative-ai, llms, training-data, pelican-riding-a-bicycle</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Scaling Codex to enterprises worldwide
               <span class="post-metadata">(0 min |  words)</span> 
             </summary>
@@ -57,6 +202,23 @@
               <a target="_blank" href=https://ollama.com/library/kimi-k2.6>Kimi K2.6 is an open-source, native multimodal agentic model that advances practical capabilities in long-horizon coding, coding-driven design, proactive autonomous execution, and swarm-based task orchestration.</a>
             </div>
             <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-openrouter 0.6
+              <span class="post-metadata">(3 min | 799 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/20/llm-openrouter/#atom-everything>Release: llm-openrouter 0.6
+llm openrouter refresh command for refreshing the list of available models without waiting for the cache to expire.
+I added this feature so I could try Kimi 2.6 on OpenRouter as soon as it became available there.
+Here&#x27;s its pelican - this time as an HTML page because Kimi chose to include an HTML and JavaScript UI to control the animation. Transcript here.
+
+Tags: openrouter, llm, llm-release, pelican-riding-a-bicycle, kimi, ai-in-china, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
       <article>
