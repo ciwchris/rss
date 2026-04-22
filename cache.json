@@ -6,6 +6,26 @@
       "siteUrl": "https://github.blog/changelog/",
       "articles": [
         {
+          "id": "https://github.blog/changelog/2026-04-22-bring-your-own-language-model-key-in-vs-code-now-available",
+          "author": "Allison",
+          "description": "Copilot Business and Enterprise users can now use bring your own language model key (BYOK) in Visual Studio Code. BYOK lets teams reuse their API keys to access models from…\nThe post Bring your own language model key in VS Code now available appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2026-04-22-bring-your-own-language-model-key-in-vs-code-now-available",
+          "publishedOn": "2026-04-22T16:38:20.000Z",
+          "wordCount": 1349,
+          "title": "Bring your own language model key in VS Code now available",
+          "imageUrl": "https://github.blog/wp-content/uploads/2026/04/0abf5a45d6ba9827c6a6fd6dd7bce974bb60ec9b465a8c2e3983df8554a6b366-2400x1260-1.jpeg"
+        },
+        {
+          "id": "https://github.blog/changelog/2026-04-20-c-code-intelligence-for-github-copilot-cli-in-public-preview",
+          "author": "Allison",
+          "description": "The Microsoft C++ Language Server is now available in public preview for the Copilot CLI. Powered by the same IntelliSense engine used in Visual Studio and VS Code, it extends…\nThe post C++ code intelligence for GitHub Copilot CLI in public preview appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2026-04-22-c-code-intelligence-for-github-copilot-cli-in-public-preview",
+          "publishedOn": "2026-04-22T07:00:26.000Z",
+          "wordCount": 1525,
+          "title": "C++ code intelligence for GitHub Copilot CLI in public preview",
+          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg"
+        },
+        {
           "id": "https://github.blog/changelog/2026-04-21-codeql-now-supports-sanitizers-and-validators-in-models-as-data",
           "author": "Allison",
           "description": "CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. You can now define custom sanitizers and validators using data extensions…\nThe post CodeQL now supports sanitizers and validators in models-as-data appeared first on The GitHub Blog.",
@@ -868,6 +888,16 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2026/Apr/22/qwen36-27b/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://qwen.ai/blog?id=qwen3.6-27b\">Qwen3.6-27B: Flagship-Level Coding in a 27B Dense Model</a></strong></p>\nBig claims from Qwen about their latest open weight model:</p>\n<blockquote>\n<p>Qwen3.6-27B delivers flagship-level agentic coding performance, surpassing the previous-generation open-source flagship Qwen3.5-397B-A17B (397B total / 17B active MoE) across all major coding benchmarks.</p>\n</blockquote>\n<p>On Hugging Face <a href=\"https://huggingface.co/Qwen/Qwen3.5-397B-A17B/tree/main\">Qwen3.5-397B-A17B</a> is 807GB, this new <a href=\"https://huggingface.co/Qwen/Qwen3.6-27B/tree/main\">Qwen3.6-27B</a> is 55.6GB.</p>\n<p>I tried it out with the 16.8GB Unsloth <a href=\"https://huggingface.co/unsloth/Qwen3.6-27B-GGUF\">Qwen3.6-27B-GGUF:Q4_K_M</a> quantized version and <code>llama-server</code> using this recipe by <a href=\"https://news.ycombinator.com/item?id=47863217#47865140\">benob on Hacker News</a>, after first installing <code>llama-server</code> using <code>brew install llama.cpp</code>:</p>\n<pre><code>llama-server \\\n    -hf unsloth/Qwen3.6-27B-GGUF:Q4_K_M \\\n    --no-mmproj \\\n    --fit on \\\n    -np 1 \\\n    -c 65536 \\\n    --cache-ram 4096 -ctxcp 2 \\\n    --jinja \\\n    --temp 0.6 \\\n    --top-p 0.95 \\\n    --top-k 20 \\\n    --min-p 0.0 \\\n    --presence-penalty 0.0 \\\n    --repeat-penalty 1.0 \\\n    --reasoning on \\\n    --chat-template-kwargs '{\"preserve_thinking\": true}'\n</code></pre>\n<p>On first run that saved the ~17GB model to <code>~/.cache/huggingface/hub/models--unsloth--Qwen3.6-27B-GGUF</code>.</p>\n<p>Here's <a href=\"https://gist.github.com/simonw/4d99d730c840df594096366db1d27281\">the transcript</a> for \"Generate an SVG of a pelican riding a bicycle\". This is an <em>outstanding</em> result for a 16.8GB local model:</p>\n<p><img alt=\"Bicycle has spokes, a chain and a correctly shaped frame. Handlebars are a bit detached. Pelican has wing on the handlebars, weirdly bent legs that touch the pedals and a good bill. Background details are pleasant - semi-transparent clouds, birds, grass, sun.\" src=\"https://static.simonwillison.net/static/2026/Qwen3.6-27B-GGUF-Q4_K_M.png\" /></p>\n<p>Performance numbers reported by <code>llama-server</code>:</p>\n<ul>\n<li>Reading: 20 tokens, 0.4s, 54.32 tokens/s</li>\n<li>Generation: 4,444 tokens, 2min 53s, 25.57 tokens/s</li>\n</ul>\n<p>For good measure, here's <a href=\"https://gist.github.com/simonw/95735fe5e76e6fdf1753e6dcce360699\">Generate an SVG of a NORTH VIRGINIA OPOSSUM ON AN E-SCOOTER</a> (run previously <a href=\"https://simonwillison.net/2026/Apr/7/glm-51/\">with GLM-5.1</a>):</p>\n<p><img alt=\"Digital illustration in a neon Tron-inspired style of a grey cat-like creature wearing cyan visor goggles riding a glowing cyan futuristic motorcycle through a dark cityscape at night, with its long tail trailing behind, silhouetted buildings with yellow-lit windows in the background, and a glowing magenta moon on the right.\" src=\"https://static.simonwillison.net/static/2026/qwen3.6-27b-possum.jpg\" /></p>\n<p>That one took 6,575 tokens, 4min 25s, 24.74 t/s.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=47863217\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/qwen\">qwen</a>, <a href=\"https://simonwillison.net/tags/pelican-riding-a-bicycle\">pelican-riding-a-bicycle</a>, <a href=\"https://simonwillison.net/tags/llama-cpp\">llama-cpp</a>, <a href=\"https://simonwillison.net/tags/llm-release\">llm-release</a>, <a href=\"https://simonwillison.net/tags/ai-in-china\">ai-in-china</a></p>",
+          "link": "https://simonwillison.net/2026/Apr/22/qwen36-27b/#atom-everything",
+          "publishedOn": "2026-04-22T16:45:23.000Z",
+          "wordCount": 937,
+          "title": "Qwen3.6-27B: Flagship-Level Coding in a 27B Dense Model",
+          "imageUrl": "https://static.simonwillison.net/static/2026/Qwen3.6-27B-GGUF-Q4_K_M.png"
+        },
         {
           "id": "https://simonwillison.net/2026/Apr/22/bobby-holley/#atom-everything",
           "author": null,
@@ -1917,16 +1947,6 @@
           "wordCount": 904,
           "title": "Malicious litellm_init.pth in litellm 1.82.8 — credential stealer",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Mar/24/streaming-experts/#atom-everything",
-          "author": null,
-          "description": "<p>I wrote about Dan Woods' experiments with <strong>streaming experts</strong> <a href=\"https://simonwillison.net/2026/Mar/18/llm-in-a-flash/\">the other day</a>, the trick where you run larger Mixture-of-Experts models on hardware that doesn't have enough RAM to fit the entire model by instead streaming the necessary expert weights from SSD for each token that you process.</p>\n<p>Five days ago Dan was running Qwen3.5-397B-A17B in 48GB of RAM. Today <a href=\"https://twitter.com/seikixtc/status/2036246162936910322\">@seikixtc reported</a> running the colossal Kimi K2.5 - a 1 trillion parameter model with 32B active weights at any one time, in 96GB of RAM on an M2 Max MacBook Pro.</p>\n<p>And <a href=\"https://twitter.com/anemll/status/2035901335984611412\">@anemll showed</a> that same Qwen3.5-397B-A17B model running on an iPhone, albeit at just 0.6 tokens/second - <a href=\"https://github.com/Anemll/flash-moe/tree/iOS-App\">iOS repo here</a>.</p>\n<p>I think this technique has legs. Dan and his fellow tinkerers are continuing to run <a href=\"https://simonwillison.net/tags/autoresearch/\">autoresearch loops</a> in order to find yet more optimizations to squeeze more performance out of these models.</p>\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/definitions\">definitions</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/autoresearch\">autoresearch</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/kimi\">kimi</a>, <a href=\"https://simonwillison.net/tags/local-llms\">local-llms</a>, <a href=\"https://simonwillison.net/tags/qwen\">qwen</a></p>",
-          "link": "https://simonwillison.net/2026/Mar/24/streaming-experts/#atom-everything",
-          "publishedOn": "2026-03-24T05:09:03.000Z",
-          "wordCount": 839,
-          "title": "Streaming experts",
-          "imageUrl": null
         }
       ]
     },
@@ -2019,6 +2039,36 @@
       "siteUrl": "https://openai.com/news",
       "articles": [
         {
+          "id": "https://openai.com/index/introducing-workspace-agents-in-chatgpt",
+          "author": null,
+          "description": "Workspace agents in ChatGPT are Codex-powered agents that automate complex workflows, run in the cloud, and help teams scale work across tools securely.",
+          "link": "https://openai.com/index/introducing-workspace-agents-in-chatgpt",
+          "publishedOn": "2026-04-22T10:00:00.000Z",
+          "wordCount": null,
+          "title": "Introducing workspace agents in ChatGPT",
+          "imageUrl": null
+        },
+        {
+          "id": "https://openai.com/index/speeding-up-agentic-workflows-with-websockets",
+          "author": null,
+          "description": "A deep dive into the Codex agent loop, showing how WebSockets and connection-scoped caching reduced API overhead and improved model latency.",
+          "link": "https://openai.com/index/speeding-up-agentic-workflows-with-websockets",
+          "publishedOn": "2026-04-22T10:00:00.000Z",
+          "wordCount": null,
+          "title": "Speeding up agentic workflows with WebSockets in the Responses API",
+          "imageUrl": null
+        },
+        {
+          "id": "https://openai.com/academy/workspace-agents",
+          "author": null,
+          "description": "Learn how to build, use, and scale workspace agents in ChatGPT to automate repeatable workflows, connect tools, and streamline team operations.",
+          "link": "https://openai.com/academy/workspace-agents",
+          "publishedOn": "2026-04-22T10:00:00.000Z",
+          "wordCount": null,
+          "title": "Workspace agents",
+          "imageUrl": null
+        },
+        {
           "id": "https://openai.com/index/introducing-openai-privacy-filter",
           "author": null,
           "description": "OpenAI Privacy Filter is an open-weight model for detecting and redacting personally identifiable information (PII) in text with state-of-the-art accuracy",
@@ -2026,6 +2076,16 @@
           "publishedOn": "2026-04-22T00:00:00.000Z",
           "wordCount": null,
           "title": "Introducing OpenAI Privacy Filter",
+          "imageUrl": null
+        },
+        {
+          "id": "https://openai.com/index/introducing-chatgpt-images-2-0",
+          "author": null,
+          "description": "ChatGPT Images 2.0 introduces a state-of-the-art image generation model with improved text rendering, multilingual support, and advanced visual reasoning.",
+          "link": "https://openai.com/index/introducing-chatgpt-images-2-0",
+          "publishedOn": "2026-04-21T12:00:00.000Z",
+          "wordCount": null,
+          "title": "Introducing ChatGPT Images 2.0",
           "imageUrl": null
         },
         {
@@ -2506,26 +2566,6 @@
           "publishedOn": "2026-03-24T11:00:00.000Z",
           "wordCount": null,
           "title": "Helping developers build safer AI experiences for teens",
-          "imageUrl": null
-        },
-        {
-          "id": "https://openai.com/index/update-on-the-openai-foundation",
-          "author": null,
-          "description": "The OpenAI Foundation announces plans to invest at least $1 billion in curing diseases, economic opportunity, AI resilience, and community programs.",
-          "link": "https://openai.com/index/update-on-the-openai-foundation",
-          "publishedOn": "2026-03-24T09:00:00.000Z",
-          "wordCount": null,
-          "title": "Update on the OpenAI Foundation",
-          "imageUrl": null
-        },
-        {
-          "id": "https://openai.com/index/powering-product-discovery-in-chatgpt",
-          "author": null,
-          "description": "ChatGPT introduces richer, visually immersive shopping powered by the Agentic Commerce Protocol, enabling product discovery, side-by-side comparisons, and merchant integration.",
-          "link": "https://openai.com/index/powering-product-discovery-in-chatgpt",
-          "publishedOn": "2026-03-24T09:00:00.000Z",
-          "wordCount": null,
-          "title": "Powering product discovery in ChatGPT",
           "imageUrl": null
         }
       ]
