@@ -2,10 +2,167 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-23T15:28:47.231Z</updated>
+    <updated>2026-04-23T21:36:30.972Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Sign of the future: GPT-5.5]]></title>
+        <id>https://www.oneusefulthing.org/p/sign-of-the-future-gpt-55</id>
+        <link href="https://www.oneusefulthing.org/p/sign-of-the-future-gpt-55"/>
+        <updated>2026-04-23T20:00:38.000Z</updated>
+        <summary type="html"><![CDATA[One impressive step on the curve]]></summary>
+        <author>
+            <name>Ethan Mollick</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[A pelican for GPT-5.5 via the semi-official Codex backdoor API]]></title>
+        <id>https://simonwillison.net/2026/Apr/23/gpt-5-5/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/23/gpt-5-5/#atom-everything"/>
+        <updated>2026-04-23T19:59:47.000Z</updated>
+        <summary type="html"><![CDATA[<p><a href="https://openai.com/index/introducing-gpt-5-5/">GPT-5.5 is out</a>. It's available in OpenAI Codex and is rolling out to paid ChatGPT subscribers. I've had some preview access and found it to be a fast, effective and highly capable model. As is usually the case these days, it's hard to put into words what's good about it - I ask it to build things and it builds exactly what I ask for!</p>
+<p>There's one notable omission from today's release - the API:</p>
+<blockquote>
+<p>API deployments require different safeguards and we are working closely with partners and customers on the safety and security requirements for serving it at scale. We'll bring GPT‑5.5 and GPT‑5.5 Pro to the API very soon.</p>
+</blockquote>
+<p>When I run my <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle/">pelican benchmark</a> I always prefer to use an API, to avoid hidden system prompts in ChatGPT or other agent harnesses from impacting the results.</p>
+<h4 id="the-openclaw-backdoor">The OpenClaw backdoor</h4>
+<p>One of the ongoing tension points in the AI world over the past few months has concerned how agent harnesses like OpenClaw and Pi interact with the APIs provided by the big providers.</p>
+<p>Both OpenAI and Anthropic offer popular monthly subscriptions which provide access to their models at a significant discount to their raw API.</p>
+<p>OpenClaw integrated directly with this mechanism, and was then <a href="https://www.theverge.com/ai-artificial-intelligence/907074/anthropic-openclaw-claude-subscription-ban">blocked from doing so</a> by Anthropic. This kicked off a whole thing. OpenAI - who recently hired OpenClaw creator Peter Steinberger - saw an opportunity for an easy karma win and announced that OpenClaw was welcome to continue integrating with OpenAI's subscriptions via the same mechanism used by their (open source) Codex CLI tool.</p>
+<p>Does this mean <em>anyone</em> can write code that integrates with OpenAI's Codex-specific APIs to hook into those existing subscriptions?</p>
+<p>The other day <a href="https://twitter.com/jeremyphoward/status/2046537816834965714">Jeremy Howard asked</a>:</p>
+<blockquote>
+<p>Anyone know whether OpenAI officially supports the use of the <code>/backend-api/codex/responses</code> endpoint that Pi and Opencode (IIUC) uses?</p>
+</blockquote>
+<p>It turned out that on March 30th OpenAI's Romain Huet <a href="https://twitter.com/romainhuet/status/2038699202834841962">had tweeted</a>:</p>
+<blockquote>
+<p>We want people to be able to use Codex, and their ChatGPT subscription, wherever they like! That means in the app, in the terminal, but also in JetBrains, Xcode, OpenCode, Pi, and now Claude Code.</p>
+<p>That’s why Codex CLI and Codex app server are open source too! 🙂</p>
+</blockquote>
+<p>And Peter Steinberger <a href="https://twitter.com/steipete/status/2046775849769148838">replied to Jeremy</a> that:</p>
+<blockquote>
+<p>OpenAI sub is officially supported.</p>
+</blockquote>
+<h4 id="llm-openai-via-codex">llm-openai-via-codex</h4>
+<p>So... I had Claude Code reverse-engineer the <a href="https://github.com/openai/codex">openai/codex</a> repo, figure out how authentication tokens were stored and build me <a href="https://github.com/simonw/llm-openai-via-codex">llm-openai-via-codex</a>, a new plugin for <a href="https://llm.datasette.io/">LLM</a> which picks up your existing Codex subscription and uses it to run prompts!</p>
+<p>(With hindsight I wish I'd used GPT-5.4 or the GPT-5.5 preview, it would have been funnier. I genuinely considered rewriting the project from scratch using Codex and GPT-5.5 for the sake of the joke, but decided not to spend any more time on this!)</p>
+<p>Here's how to use it:</p>
+<ol>
+<li>Install Codex CLI, buy an OpenAI plan, login to Codex</li>
+<li>Install LLM: <code>uv tool install llm</code>
+</li>
+<li>Install the new plugin: <code>llm install llm-openai-via-codex</code>
+</li>
+<li>Start prompting: <code>llm -m openai-codex/gpt-5.5 'Your prompt goes here'</code>
+</li>
+</ol>
+<p>All existing LLM features should also work - use <code>-a filepath.jpg/URL</code> to attach an image, <code>llm chat -m openai-codex/gpt-5.5</code> to start an ongoing chat, <code>llm logs</code> to view logged conversations and <code>llm --tool ...</code> to <a href="https://llm.datasette.io/en/stable/tools.html">try it out with tool support</a>.</p>
+<h4 id="and-some-pelicans">And some pelicans</h4>
+<p>Let's generate a pelican!</p>
+<div class="highlight highlight-source-shell"><pre>llm install llm-openai-via-codex
+llm -m openai-codex/gpt-5.5 <span class="pl-s"><span class="pl-pds">'</span>Generate an SVG of a pelican riding a bicycle<span class="pl-pds">'</span></span></pre></div>
+<p>Here's <a href="https://gist.github.com/simonw/edda1d98f7ba07fd95eeff473cb16634">what I got back</a>:</p>
+<p><img src="https://static.simonwillison.net/static/2026/gpt-5.5-pelican.png" alt="It is a bit mangled to be honest - good beak, pelican body shapes are slightly weird, legs do at least extend to the pedals, bicycle frame is not quite right." style="max-width: 100%;" /></p>
+<p>I've seen better <a href="https://simonwillison.net/2026/Mar/17/mini-and-nano/#pelicans">from GPT-5.4</a>, so I tagged on <code>-o reasoning_effort xhigh</code> and <a href="https://gist.github.com/simonw/a6168e4165a258e4d664aeae8e602cc5">tried again</a>:</p>
+<p>That one took almost four minutes to generate, but I think it's a much better effort.</p>
+<p><img src="https://static.simonwillison.net/static/2026/gpt-5.5-pelican-xhigh.png" alt="Pelican has gradients now, body is much better put together, bicycle is nearly the right shape albeit with one extra bar between pedals and front wheel, clearly a better image overall." style="max-width: 100%;" /></p>
+<p>If you compare the SVG code (<a href="https://gist.github.com/simonw/edda1d98f7ba07fd95eeff473cb16634#response">default</a>, <a href="https://gist.github.com/simonw/a6168e4165a258e4d664aeae8e602cc5#response">xhigh</a>) the <code>xhigh</code> one took a very different approach, which is much more CSS-heavy - as demonstrated by those gradients. <code>xhigh</code> used 9,322 reasoning tokens where the default used just 39.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/chatgpt">chatgpt</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a>, <a href="https://simonwillison.net/tags/gpt">gpt</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot Chat improvements for pull requests]]></title>
+        <id>https://github.blog/changelog/2026-04-22-copilot-chat-improvements-for-pull-requests</id>
+        <link href="https://github.blog/changelog/2026-04-23-copilot-chat-improvements-for-pull-requests"/>
+        <updated>2026-04-23T19:58:34.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Copilot Chat now provides richer context and new capabilities when you’re working with diffs and pull requests. You can access this functionality by asking a question about a pull…
+The post Copilot Chat improvements for pull requests appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Global pull requests dashboard moves to opt-out public preview]]></title>
+        <id>https://github.blog/changelog/2026-04-23-global-pull-requests-dashboard-moves-to-opt-out-public-preview</id>
+        <link href="https://github.blog/changelog/2026-04-23-global-pull-requests-dashboard-moves-to-opt-out-public-preview"/>
+        <updated>2026-04-23T19:10:59.000Z</updated>
+        <summary type="html"><![CDATA[The new global pull requests dashboard will be on by default for all GitHub users as the new experience transitions to an opt-out public preview. The new dashboard and inbox…
+The post Global pull requests dashboard moves to opt-out public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Immutable subject claims for GitHub Actions OIDC tokens]]></title>
+        <id>https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens</id>
+        <link href="https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens"/>
+        <updated>2026-04-23T17:56:07.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Actions OIDC tokens now include immutable identifiers in the default sub (subject) claim for new repositories. This change strengthens the security of OIDC-based trust between your GitHub Actions workflows…
+The post Immutable subject claims for GitHub Actions OIDC tokens appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Copilot cloud agent fields added to usage metrics]]></title>
+        <id>https://github.blog/changelog/2026-04-23-copilot-cloud-agent-fields-added-to-usage-metrics</id>
+        <link href="https://github.blog/changelog/2026-04-23-copilot-cloud-agent-fields-added-to-usage-metrics"/>
+        <updated>2026-04-23T17:53:12.000Z</updated>
+        <summary type="html"><![CDATA[Following the Copilot coding agent to Copilot cloud agent rename, the Copilot usage metrics API now includes a new used_copilot_cloud_agent field in user-level reports. This boolean field mirrors the existing…
+The post Copilot cloud agent fields added to usage metrics appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dependabot-based dependency graphs for Python]]></title>
+        <id>https://github.blog/changelog/2026-04-13-dependabot-based-dependency-graphs-for-python</id>
+        <link href="https://github.blog/changelog/2026-04-23-dependabot-graphs-for-python"/>
+        <updated>2026-04-23T17:45:58.000Z</updated>
+        <summary type="html"><![CDATA[Python projects will now see more complete and accurate transitive dependency trees in their dependency graphs and Software Bills of Materials (SBOMs). This feature is based on a new type…
+The post Dependabot-based dependency graphs for Python appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Disable commit comments across your organization]]></title>
+        <id>https://github.blog/changelog/2026-04-23-disable-commit-comments-across-your-organization</id>
+        <link href="https://github.blog/changelog/2026-04-23-disable-commit-comments-across-your-organization"/>
+        <updated>2026-04-23T17:35:38.000Z</updated>
+        <summary type="html"><![CDATA[You can now disable commit comments at the organization level—no more manually updating every repository one by one. A few weeks ago, we added the ability to disable commit comments…
+The post Disable commit comments across your organization appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Better debugging with GitHub Copilot on the web]]></title>
+        <id>https://github.blog/changelog/2026-04-22-better-debugging-with-github-copilot-on-the-web</id>
+        <link href="https://github.blog/changelog/2026-04-23-better-debugging-with-github-copilot-on-the-web"/>
+        <updated>2026-04-23T16:16:52.000Z</updated>
+        <summary type="html"><![CDATA[GitHub Copilot Chat in github.com helps you get to the root cause of an error faster when you paste a stack trace. Copilot recognizes stack traces more reliably and will…
+The post Better debugging with GitHub Copilot on the web appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[View and manage agent sessions from issues and projects]]></title>
+        <id>https://github.blog/changelog/2026-04-23-see-and-manage-agent-sessions-from-issues-and-projects</id>
+        <link href="https://github.blog/changelog/2026-04-23-view-and-manage-agent-sessions-from-issues-and-projects"/>
+        <updated>2026-04-23T16:15:42.000Z</updated>
+        <summary type="html"><![CDATA[You can now view and steer cloud agent sessions directly from issues and projects, giving you better visibility into agent activity without leaving your workflow. What’s new Session pill on…
+The post View and manage agent sessions from issues and projects appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Quoting Maggie Appleton]]></title>
         <id>https://simonwillison.net/2026/Apr/23/maggie-appleton/#atom-everything</id>
@@ -20,6 +177,106 @@
         </author>
     </entry>
     <entry>
+        <title type="html"><![CDATA[GPT-5.5 System Card]]></title>
+        <id>https://openai.com/index/gpt-5-5-system-card</id>
+        <link href="https://openai.com/index/gpt-5-5-system-card"/>
+        <updated>2026-04-23T11:00:00.000Z</updated>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing GPT-5.5]]></title>
+        <id>https://openai.com/index/introducing-gpt-5-5</id>
+        <link href="https://openai.com/index/introducing-gpt-5-5"/>
+        <updated>2026-04-23T11:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Introducing GPT-5.5, our smartest model yet—faster, more capable, and built for complex tasks like coding, research, and data analysis across tools.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[What is Codex?]]></title>
+        <id>https://openai.com/academy/what-is-codex</id>
+        <link href="https://openai.com/academy/what-is-codex"/>
+        <updated>2026-04-23T10:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn how Codex helps you go beyond chat by automating tasks, connecting tools, and producing real outputs like docs and dashboards.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Automations]]></title>
+        <id>https://openai.com/academy/codex-automations</id>
+        <link href="https://openai.com/academy/codex-automations"/>
+        <updated>2026-04-23T10:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn how to automate tasks in Codex using schedules and triggers to create reports, summaries, and recurring workflows without manual effort.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Plugins and skills]]></title>
+        <id>https://openai.com/academy/codex-plugins-and-skills</id>
+        <link href="https://openai.com/academy/codex-plugins-and-skills"/>
+        <updated>2026-04-23T10:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn how to use Codex plugins and skills to connect tools, access data, and follow repeatable workflows to automate tasks and improve results.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Working with Codex]]></title>
+        <id>https://openai.com/academy/working-with-codex</id>
+        <link href="https://openai.com/academy/working-with-codex"/>
+        <updated>2026-04-23T10:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn how to set up your Codex workspace, create threads and projects, manage files, and start completing tasks with step-by-step guidance.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to get started with Codex]]></title>
+        <id>https://openai.com/academy/codex-how-to-start</id>
+        <link href="https://openai.com/academy/codex-how-to-start"/>
+        <updated>2026-04-23T10:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn how to get started with Codex by setting up projects, creating threads, and completing your first tasks with step-by-step guidance.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Codex settings]]></title>
+        <id>https://openai.com/academy/codex-settings</id>
+        <link href="https://openai.com/academy/codex-settings"/>
+        <updated>2026-04-23T10:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn how to configure Codex settings, including personalization, detail level, and permissions, to run tasks smoothly and customize your workflow.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Top 10 uses for Codex at work]]></title>
+        <id>https://openai.com/academy/top-10-use-cases-codex-for-work</id>
+        <link href="https://openai.com/academy/top-10-use-cases-codex-for-work"/>
+        <updated>2026-04-23T10:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Explore 10 practical Codex use cases to automate tasks, create deliverables, and turn real inputs into outputs across tools, files, and workflows.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Pausing new self-serve signups for GitHub Copilot Business]]></title>
+        <id>https://github.blog/changelog/2026-04-22-pausing-new-self-serve-signups-for-github-copilot-business</id>
+        <link href="https://github.blog/changelog/2026-04-22-pausing-new-self-serve-signups-for-github-copilot-business"/>
+        <updated>2026-04-23T06:45:26.000Z</updated>
+        <summary type="html"><![CDATA[As part of our ongoing efforts to ensure a reliable and sustainable Copilot experience for all users, we are pausing new self-serve signups for GitHub Copilot Business for organizations on…
+The post Pausing new self-serve signups for GitHub Copilot Business appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[GitHub Copilot for Jira: Our latest enhancements]]></title>
         <id>https://github.blog/changelog/2026-04-22-github-copilot-for-jira-our-latest-enhancements</id>
         <link href="https://github.blog/changelog/2026-04-22-github-copilot-for-jira-our-latest-enhancements"/>
@@ -28,6 +285,16 @@
 The post GitHub Copilot for Jira: Our latest enhancements appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GPT-5.5 Bio Bug Bounty]]></title>
+        <id>https://openai.com/index/gpt-5-5-bio-bug-bounty</id>
+        <link href="https://openai.com/index/gpt-5-5-bio-bug-bounty"/>
+        <updated>2026-04-23T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Explore the GPT-5.5 Bio Bug Bounty: a red-teaming challenge to find universal jailbreaks for bio safety risks, with rewards up to $25,000.]]></summary>
+        <author>
+            <name>OpenAI News</name>
         </author>
     </entry>
     <entry>

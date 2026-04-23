@@ -31,6 +31,213 @@
       <article>
           <details>
             <summary>
+              Sign of the future: GPT-5.5
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://www.oneusefulthing.org/p/sign-of-the-future-gpt-55>One impressive step on the curve</a>
+            </div>
+            <!-- <p class="post-source">One Useful Thing</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A pelican for GPT-5.5 via the semi-official Codex backdoor API
+              <span class="post-metadata">(5 min | 1382 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/23/gpt-5-5/#atom-everything>GPT-5.5 is out. It&#x27;s available in OpenAI Codex and is rolling out to paid ChatGPT subscribers. I&#x27;ve had some preview access and found it to be a fast, effective and highly capable model. As is usually the case these days, it&#x27;s hard to put into words what&#x27;s good about it - I ask it to build things and it builds exactly what I ask for!
+
+There&#x27;s one notable omission from today&#x27;s release - the API:
+
+
+API deployments require different safeguards and we are working closely with partners and customers on the safety and security requirements for serving it at scale. We&#x27;ll bring GPT‑5.5 and GPT‑5.5 Pro to the API very soon.
+
+
+When I run my pelican benchmark I always prefer to use an API, to avoid hidden system prompts in ChatGPT or other agent harnesses from impacting the results.
+
+The OpenClaw backdoor
+
+One of the ongoing tension points in the AI world over the past few months has concerned how agent harnesses like OpenClaw and Pi interact with the APIs provided by the big providers.
+
+Both OpenAI and Anthropic offer popular monthly subscriptions which provide access to their models at a significant discount to their raw API.
+
+OpenClaw integrated directly with this mechanism, and was then blocked from doing so by Anthropic. This kicked off a whole thing. OpenAI - who recently hired OpenClaw creator Peter Steinberger - saw an opportunity for an easy karma win and announced that OpenClaw was welcome to continue integrating with OpenAI&#x27;s subscriptions via the same mechanism used by their (open source) Codex CLI tool.
+
+Does this mean anyone can write code that integrates with OpenAI&#x27;s Codex-specific APIs to hook into those existing subscriptions?
+
+The other day Jeremy Howard asked:
+
+
+Anyone know whether OpenAI officially supports the use of the /backend-api/codex/responses endpoint that Pi and Opencode (IIUC) uses?
+
+
+It turned out that on March 30th OpenAI&#x27;s Romain Huet had tweeted:
+
+
+We want people to be able to use Codex, and their ChatGPT subscription, wherever they like! That means in the app, in the terminal, but also in JetBrains, Xcode, OpenCode, Pi, and now Claude Code.
+
+That’s why Codex CLI and Codex app server are open source too! 🙂
+
+
+And Peter Steinberger replied to Jeremy that:
+
+
+OpenAI sub is officially supported.
+
+
+llm-openai-via-codex
+
+So... I had Claude Code reverse-engineer the openai/codex repo, figure out how authentication tokens were stored and build me llm-openai-via-codex, a new plugin for LLM which picks up your existing Codex subscription and uses it to run prompts!
+
+(With hindsight I wish I&#x27;d used GPT-5.4 or the GPT-5.5 preview, it would have been funnier. I genuinely considered rewriting the project from scratch using Codex and GPT-5.5 for the sake of the joke, but decided not to spend any more time on this!)
+
+Here&#x27;s how to use it:
+
+
+Install Codex CLI, buy an OpenAI plan, login to Codex
+
+Install LLM: uv tool install llm
+
+Install the new plugin: llm install llm-openai-via-codex
+
+Start prompting: llm -m openai-codex/gpt-5.5 &#x27;Your prompt goes here&#x27;
+
+
+All existing LLM features should also work - use -a filepath.jpg/URL to attach an image, llm chat -m openai-codex/gpt-5.5 to start an ongoing chat, llm logs to view logged conversations and llm --tool ... to try it out with tool support.
+
+And some pelicans
+
+Let&#x27;s generate a pelican!
+
+
+llm install llm-openai-via-codex
+llm -m openai-codex/gpt-5.5 &#x27;Generate an SVG of a pelican riding a bicycle&#x27;
+
+Here&#x27;s what I got back:
+
+
+
+I&#x27;ve seen better from GPT-5.4, so I tagged on -o reasoning_effort xhigh and tried again:
+
+That one took almost four minutes to generate, but I think it&#x27;s a much better effort.
+
+
+
+If you compare the SVG code (default, xhigh) the xhigh one took a very different approach, which is much more CSS-heavy - as demonstrated by those gradients. xhigh used 9,322 reasoning tokens where the default used just 39.
+Tags: ai, openai, generative-ai, chatgpt, llms, llm, pelican-riding-a-bicycle, llm-reasoning, llm-release, codex-cli, gpt</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot Chat improvements for pull requests
+              <span class="post-metadata">(5 min | 1414 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-copilot-chat-improvements-for-pull-requests>GitHub Copilot Chat now provides richer context and new capabilities when you’re working with diffs and pull requests. You can access this functionality by asking a question about a pull…
+The post Copilot Chat improvements for pull requests appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Global pull requests dashboard moves to opt-out public preview
+              <span class="post-metadata">(7 min | 2134 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-global-pull-requests-dashboard-moves-to-opt-out-public-preview>The new global pull requests dashboard will be on by default for all GitHub users as the new experience transitions to an opt-out public preview. The new dashboard and inbox…
+The post Global pull requests dashboard moves to opt-out public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Immutable subject claims for GitHub Actions OIDC tokens
+              <span class="post-metadata">(5 min | 1464 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens>GitHub Actions OIDC tokens now include immutable identifiers in the default sub (subject) claim for new repositories. This change strengthens the security of OIDC-based trust between your GitHub Actions workflows…
+The post Immutable subject claims for GitHub Actions OIDC tokens appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot cloud agent fields added to usage metrics
+              <span class="post-metadata">(5 min | 1449 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-copilot-cloud-agent-fields-added-to-usage-metrics>Following the Copilot coding agent to Copilot cloud agent rename, the Copilot usage metrics API now includes a new used_copilot_cloud_agent field in user-level reports. This boolean field mirrors the existing…
+The post Copilot cloud agent fields added to usage metrics appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Dependabot-based dependency graphs for Python
+              <span class="post-metadata">(4 min | 1293 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-dependabot-graphs-for-python>Python projects will now see more complete and accurate transitive dependency trees in their dependency graphs and Software Bills of Materials (SBOMs). This feature is based on a new type…
+The post Dependabot-based dependency graphs for Python appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Disable commit comments across your organization
+              <span class="post-metadata">(6 min | 1779 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-disable-commit-comments-across-your-organization>You can now disable commit comments at the organization level—no more manually updating every repository one by one. A few weeks ago, we added the ability to disable commit comments…
+The post Disable commit comments across your organization appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Better debugging with GitHub Copilot on the web
+              <span class="post-metadata">(5 min | 1464 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-better-debugging-with-github-copilot-on-the-web>GitHub Copilot Chat in github.com helps you get to the root cause of an error faster when you paste a stack trace. Copilot recognizes stack traces more reliably and will…
+The post Better debugging with GitHub Copilot on the web appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              View and manage agent sessions from issues and projects
+              <span class="post-metadata">(5 min | 1432 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-23-view-and-manage-agent-sessions-from-issues-and-projects>You can now view and steer cloud agent sessions directly from issues and projects, giving you better visibility into agent activity without leaving your workflow. What’s new Session pill on…
+The post View and manage agent sessions from issues and projects appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Maggie Appleton
               <span class="post-metadata">(2 min | 746 words)</span> 
             </summary>
@@ -46,6 +253,127 @@ Tags: blogging, maggie-appleton</a>
       <article>
           <details>
             <summary>
+              GPT-5.5 System Card
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/gpt-5-5-system-card>No content preview</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Introducing GPT-5.5
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/introducing-gpt-5-5>Introducing GPT-5.5, our smartest model yet—faster, more capable, and built for complex tasks like coding, research, and data analysis across tools.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              What is Codex?
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/academy/what-is-codex>Learn how Codex helps you go beyond chat by automating tasks, connecting tools, and producing real outputs like docs and dashboards.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Automations
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/academy/codex-automations>Learn how to automate tasks in Codex using schedules and triggers to create reports, summaries, and recurring workflows without manual effort.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Plugins and skills
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/academy/codex-plugins-and-skills>Learn how to use Codex plugins and skills to connect tools, access data, and follow repeatable workflows to automate tasks and improve results.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Working with Codex
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/academy/working-with-codex>Learn how to set up your Codex workspace, create threads and projects, manage files, and start completing tasks with step-by-step guidance.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How to get started with Codex
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/academy/codex-how-to-start>Learn how to get started with Codex by setting up projects, creating threads, and completing your first tasks with step-by-step guidance.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Codex settings
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/academy/codex-settings>Learn how to configure Codex settings, including personalization, detail level, and permissions, to run tasks smoothly and customize your workflow.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Top 10 uses for Codex at work
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/academy/top-10-use-cases-codex-for-work>Explore 10 practical Codex use cases to automate tasks, create deliverables, and turn real inputs into outputs across tools, files, and workflows.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Pausing new self-serve signups for GitHub Copilot Business
+              <span class="post-metadata">(4 min | 1273 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-04-22-pausing-new-self-serve-signups-for-github-copilot-business>As part of our ongoing efforts to ensure a reliable and sustainable Copilot experience for all users, we are pausing new self-serve signups for GitHub Copilot Business for organizations on…
+The post Pausing new self-serve signups for GitHub Copilot Business appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               GitHub Copilot for Jira: Our latest enhancements
               <span class="post-metadata">(5 min | 1531 words)</span> 
             </summary>
@@ -54,6 +382,18 @@ Tags: blogging, maggie-appleton</a>
 The post GitHub Copilot for Jira: Our latest enhancements appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GPT-5.5 Bio Bug Bounty
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/gpt-5-5-bio-bug-bounty>Explore the GPT-5.5 Bio Bug Bounty: a red-teaming challenge to find universal jailbreaks for bio safety risks, with rewards up to $25,000.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
