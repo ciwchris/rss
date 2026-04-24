@@ -2,10 +2,337 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-23T21:36:30.972Z</updated>
+    <updated>2026-04-24T15:00:06.075Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[DeepSeek V4 - almost on the frontier, a fraction of the price]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/deepseek-v4/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/deepseek-v4/#atom-everything"/>
+        <updated>2026-04-24T06:01:04.000Z</updated>
+        <summary type="html"><![CDATA[<p>Chinese AI lab DeepSeek's last model release was V3.2 (and V3.2 Speciale) <a href="https://simonwillison.net/2025/Dec/1/deepseek-v32/">last December</a>. They just dropped the first of their hotly anticipated V4 series in the shape of two preview models, <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">DeepSeek-V4-Pro</a> and <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash">DeepSeek-V4-Flash</a>.</p>
+<p>Both models are 1 million token context Mixture of Experts. Pro is 1.6T total parameters, 49B active. Flash is 284B total, 13B active. They're using the standard MIT license.</p>
+<p>I think this makes DeepSeek-V4-Pro the new largest open weights model. It's larger than Kimi K2.6 (1.1T) and GLM-5.1 (754B) and more than twice the size of DeepSeek V3.2 (685B).</p>
+<p>Pro is 865GB on Hugging Face, Flash is 160GB. I'm hoping that a lightly quantized Flash will run on my 128GB M5 MacBook Pro. It's <em>possible</em> the Pro model may run on it if I can stream just the necessary active experts from disk.</p>
+<p>For the moment I tried the models out via <a href="https://openrouter.ai/">OpenRouter</a>, using <a href="https://github.com/simonw/llm-openrouter">llm-openrouter</a>:</p>
+<pre><code>llm install llm-openrouter
+llm openrouter refresh
+llm -m openrouter/deepseek/deepseek-v4-pro 'Generate an SVG of a pelican riding a bicycle'
+</code></pre>
+<p>Here's the pelican <a href="https://gist.github.com/simonw/4a7a9e75b666a58a0cf81495acddf529">for DeepSeek-V4-Flash</a>:</p>
+<p><img src="https://static.simonwillison.net/static/2026/deepseek-v4-flash.png" alt="Excellent bicycle - good frame shape, nice chain, even has a reflector on the front wheel. Pelican has a mean looking expression but has its wings on the handlebars and feet on the pedals. Pouch is a little sharp." style="max-width: 100%;" /></p>
+<p>And <a href="https://gist.github.com/simonw/9e8dfed68933ab752c9cf27a03250a7c">for DeepSeek-V4-Pro</a>:</p>
+<p><img src="https://static.simonwillison.net/static/2026/deepseek-v4-pro.png" alt="Another solid bicycle, albeit the spokes are a little jagged and the frame is compressed a bit. Pelican has gone a bit wrong - it has a VERY large body, only one wing, a weirdly hairy backside and generally loos like it was drown be a different artist from the bicycle." style="max-width: 100%;" /></p>
+<p>For comparison, take a look at the pelicans I got from <a href="https://simonwillison.net/2025/Dec/1/deepseek-v32/">DeepSeek V3.2 in December</a>, <a href="https://simonwillison.net/2025/Aug/22/deepseek-31/">V3.1 in August</a>, and <a href="https://simonwillison.net/2025/Mar/24/deepseek/">V3-0324 in March 2025</a>.</p>
+<p>So the pelicans are pretty good, but what's really notable here is the <em>cost</em>. DeepSeek V4 is a very, very inexpensive model.</p>
+<p>This is <a href="https://api-docs.deepseek.com/quick_start/pricing">DeepSeek's pricing page</a>. They're charging $0.14/million tokens input and $0.28/million tokens output for Flash, and $1.74/million input and $3.48/million output for Pro.</p>
+<p>Here's a comparison table with the frontier models from Gemini, OpenAI and Anthropic:</p>
+<center>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Input ($/M)</th>
+<th>Output ($/M)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DeepSeek V4 Flash</strong></td>
+<td>$0.14</td>
+<td>$0.28</td>
+</tr>
+<tr>
+<td>GPT-5.4 Nano</td>
+<td>$0.20</td>
+<td>$1.25</td>
+</tr>
+<tr>
+<td>Gemini 3.1 Flash-Lite</td>
+<td>$0.25</td>
+<td>$1.50</td>
+</tr>
+<tr>
+<td>Gemini 3 Flash Preview</td>
+<td>$0.50</td>
+<td>$3</td>
+</tr>
+<tr>
+<td>GPT-5.4 Mini</td>
+<td>$0.75</td>
+<td>$4.50</td>
+</tr>
+<tr>
+<td>Claude Haiku 4.5</td>
+<td>$1</td>
+<td>$5</td>
+</tr>
+<tr>
+<td><strong>DeepSeek V4 Pro</strong></td>
+<td>$1.74</td>
+<td>$3.48</td>
+</tr>
+<tr>
+<td>Gemini 3.1 Pro</td>
+<td>$2</td>
+<td>$12</td>
+</tr>
+<tr>
+<td>GPT-5.4</td>
+<td>$2.50</td>
+<td>$15</td>
+</tr>
+<tr>
+<td>Claude Sonnet 4.6</td>
+<td>$3</td>
+<td>$15</td>
+</tr>
+<tr>
+<td>Claude Opus 4.7</td>
+<td>$5</td>
+<td>$25</td>
+</tr>
+<tr>
+<td>GPT-5.5</td>
+<td>$5</td>
+<td>$30</td>
+</tr>
+</tbody>
+</table>
+</center>
+<p>DeepSeek-V4-Flash is the cheapest of the small models, beating even OpenAI's GPT-5.4 Nano. DeepSeek-V4-Pro is the cheapest of the larger frontier models.</p>
+<p>This note from <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/DeepSeek_V4.pdf">the DeepSeek paper</a> helps explain why they can price these models so low - they've focused a great deal on efficiency with this release, especially for longer context prompts:</p>
+<blockquote>
+<p>In the scenario of 1M-token context, even DeepSeek-V4-Pro, which has a larger number of activated parameters, attains only 27% of the single-token FLOPs (measured in equivalent FP8 FLOPs) and 10% of the KV cache size relative to DeepSeek-V3.2. Furthermore, DeepSeek-V4-Flash, with its smaller number of activated parameters, pushes efficiency even further: in the 1M-token context setting, it achieves only 10% of the single-token FLOPs and 7% of the KV cache size compared with DeepSeek-V3.2.</p>
+</blockquote>
+<p>DeepSeek's self-reported benchmarks <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/DeepSeek_V4.pdf">in their paper</a> show their Pro model competitive with those other frontier models, albeit with this note:</p>
+<blockquote>
+<p>Through the expansion of reasoning tokens, DeepSeek-V4-Pro-Max demonstrates superior performance relative to GPT-5.2 and Gemini-3.0-Pro on standard reasoning benchmarks. Nevertheless, its performance falls marginally short of GPT-5.4 and Gemini-3.1-Pro, suggesting a developmental trajectory that trails state-of-the-art frontier models by approximately 3 to 6 months.</p>
+</blockquote>
+<p>I'm keeping an eye on <a href="https://huggingface.co/unsloth/models">huggingface.co/unsloth/models</a> as I expect the Unsloth team will have a set of quantized versions out pretty soon. It's going to be very interesting to see how well that Flash model runs on my own machine.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/deepseek">deepseek</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/openrouter">openrouter</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Millisecond Converter]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/milliseconds/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/milliseconds/#atom-everything"/>
+        <updated>2026-04-24T04:23:11.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Tool:</strong> <a href="https://tools.simonwillison.net/milliseconds">Millisecond Converter</a></p>
+    <p><a href="https://llm.datasette.io/">LLM</a> reports prompt durations in milliseconds and I got fed up of having to think about how to convert those to seconds and minutes.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/tools">tools</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[It's a big one]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/weekly/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/weekly/#atom-everything"/>
+        <updated>2026-04-24T04:09:54.000Z</updated>
+        <summary type="html"><![CDATA[<p><a href="https://simonw.substack.com/p/gpt-55-chatgpt-images-20-qwen36-27b">This week's edition</a> of my email newsletter (aka <a href="https://simonwillison.net/2023/Apr/4/substack-observable/">content from this blog</a> delivered to your inbox) features 4 pelicans riding bicycles, 1 possum on an e-scooter, up to 5 raccoons with ham radios hiding in crowds, 5 blog posts, 8 links, 3 quotes and a new chapter of my Agentic Engineering Patterns guide.</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/newsletter">newsletter</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[russellromney/honker]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/honker/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/honker/#atom-everything"/>
+        <updated>2026-04-24T01:50:07.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/russellromney/honker">russellromney/honker</a></strong></p>
+"Postgres NOTIFY/LISTEN semantics" for SQLite, implemented as a Rust SQLite extension and various language bindings to help make use of it.</p>
+<p>The design of this looks very solid. It lets you write Python code for queues that looks like this:</p>
+<pre><span class="pl-k">import</span> <span class="pl-s1">honker</span>
+
+<span class="pl-s1">db</span> <span class="pl-c1">=</span> <span class="pl-s1">honker</span>.<span class="pl-c1">open</span>(<span class="pl-s">"app.db"</span>)
+<span class="pl-s1">emails</span> <span class="pl-c1">=</span> <span class="pl-s1">db</span>.<span class="pl-c1">queue</span>(<span class="pl-s">"emails"</span>)
+<span class="pl-c1">emails</span>.<span class="pl-c1">enqueue</span>({<span class="pl-s">"to"</span>: <span class="pl-s">"alice@example.com"</span>})
+
+<span class="pl-c"># Consume (in a worker process)</span>
+<span class="pl-k">async</span> <span class="pl-k">for</span> <span class="pl-s1">job</span> <span class="pl-c1">in</span> <span class="pl-s1">emails</span>.<span class="pl-c1">claim</span>(<span class="pl-s">"worker-1"</span>):
+    <span class="pl-en">send</span>(<span class="pl-s1">job</span>.<span class="pl-c1">payload</span>)
+    <span class="pl-s1">job</span>.<span class="pl-c1">ack</span>()</pre>
+<p>And Kafka-style durable streams like this:</p>
+<pre><span class="pl-s1">stream</span> <span class="pl-c1">=</span> <span class="pl-s1">db</span>.<span class="pl-c1">stream</span>(<span class="pl-s">"user-events"</span>)
+
+<span class="pl-k">with</span> <span class="pl-s1">db</span>.<span class="pl-c1">transaction</span>() <span class="pl-k">as</span> <span class="pl-s1">tx</span>:
+    <span class="pl-s1">tx</span>.<span class="pl-c1">execute</span>(<span class="pl-s">"UPDATE users SET name=? WHERE id=?"</span>, [<span class="pl-s1">name</span>, <span class="pl-s1">uid</span>])
+    <span class="pl-s1">stream</span>.<span class="pl-c1">publish</span>({<span class="pl-s">"user_id"</span>: <span class="pl-s1">uid</span>, <span class="pl-s">"change"</span>: <span class="pl-s">"name"</span>}, <span class="pl-s1">tx</span><span class="pl-c1">=</span><span class="pl-s1">tx</span>)
+
+<span class="pl-k">async</span> <span class="pl-k">for</span> <span class="pl-s1">event</span> <span class="pl-c1">in</span> <span class="pl-s1">stream</span>.<span class="pl-c1">subscribe</span>(<span class="pl-s1">consumer</span><span class="pl-c1">=</span><span class="pl-s">"dashboard"</span>):
+    <span class="pl-k">await</span> <span class="pl-en">push_to_browser</span>(<span class="pl-s1">event</span>)</pre>
+<p>It also adds 20+ custom SQL functions including these two:</p>
+<div class="highlight highlight-source-sql"><pre><span class="pl-k">SELECT</span> notify(<span class="pl-s"><span class="pl-pds">'</span>orders<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>{"id":42}<span class="pl-pds">'</span></span>);
+<span class="pl-k">SELECT</span> honker_stream_read_since(<span class="pl-s"><span class="pl-pds">'</span>orders<span class="pl-pds">'</span></span>, <span class="pl-c1">0</span>, <span class="pl-c1">1000</span>);</pre></div>
+<p>The extension requires WAL mode, and workers can poll the <code>.db-wal</code> file with a stat call every 1ms to get as close to real-time as possible without the expense of running a full SQL query.</p>
+<p>honker implements the <strong>transactional outbox pattern</strong>, which ensures items are only queued if a transaction successfully commits. My favorite explanation of that pattern remains <a href="https://brandur.org/job-drain">Transactionally Staged Job Drains in Postgres</a> by Brandur Leach. It's great to see a new implementation of that pattern for SQLite.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=47874647">Show HN</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/databases">databases</a>, <a href="https://simonwillison.net/tags/postgresql">postgresql</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/rust">rust</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[An update on recent Claude Code quality reports]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/recent-claude-code-quality-reports/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/recent-claude-code-quality-reports/#atom-everything"/>
+        <updated>2026-04-24T01:31:25.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.anthropic.com/engineering/april-23-postmortem">An update on recent Claude Code quality reports</a></strong></p>
+It turns out the high volume of complaints that Claude Code was providing worse quality results over the past two months was grounded in real problems.</p>
+<p>The models themselves were not to blame, but three separate issues in the Claude Code harness caused complex but material problems which directly affected users.</p>
+<p>Anthropic's postmortem describes these in detail. This one in particular stood out to me:</p>
+<blockquote>
+<p>On March 26, we shipped a change to clear Claude's older thinking from sessions that had been idle for over an hour, to reduce latency when users resumed those sessions. A bug caused this to keep happening every turn for the rest of the session instead of just once, which made Claude seem forgetful and repetitive.</p>
+</blockquote>
+<p>I <em>frequently</em> have Claude Code sessions which I leave for an hour (or often a day or longer) before returning to them. Right now I have 11 of those (according to <code>ps aux  | grep 'claude '</code>) and that's after closing down dozens more the other day.</p>
+<p>I estimate I spend more time prompting in these "stale" sessions than sessions that I've recently started!</p>
+<p>If you're building agentic systems it's worth reading this article in detail - the kinds of bugs that affect harnesses are deeply complicated, even if you put aside the inherent non-deterministic nature of the models themselves.
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=47878905">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Serving the For You feed]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/serving-the-for-you-feed/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/serving-the-for-you-feed/#atom-everything"/>
+        <updated>2026-04-24T01:08:17.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://atproto.com/blog/serving-the-for-you-feed">Serving the For You feed</a></strong></p>
+One of Bluesky's most interesting features is that anyone can run their own <a href="bluesky custom feed">custom "feed" implementation</a> and make it available to other users - effectively enabling custom algorithms that can use any mechanism they like to recommend posts.</p>
+<p>spacecowboy runs the <a href="https://bsky.app/profile/did:plc:3guzzweuqraryl3rdkimjamk/feed/for-you">For You Feed</a>, used by around 72,000 people. This guest post on the AT Protocol blog explains how it works.</p>
+<p>The architecture is <em>fascinating</em>. The feed is served by a single Go process using SQLite on a "gaming" PC in spacecowboy's living room - 16 cores, 96GB of RAM and 4TB of attached NVMe storage.</p>
+<p>Recommendations are based on likes: what else are the people who like the same things as you liking on the platform?</p>
+<p>That Go server consumes the Bluesky firehose and stores the relevant details in SQLite, keeping the last 90 days of relevant data, which currently uses around 419GB of SQLite storage.</p>
+<p>Public internet traffic is handled by a $7/month VPS on OVH, which talks to the living room server via Tailscale.</p>
+<p>Total cost is now $30/month: $20 in electricity, $7 in VPS and $3 for the two domain names. spacecowboy estimates that the existing system could handle all ~1 million daily active Bluesky users if they were to switch to the cheapest algorithm they have found to work.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/go">go</a>, <a href="https://simonwillison.net/tags/scaling">scaling</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/software-architecture">software-architecture</a>, <a href="https://simonwillison.net/tags/tailscale">tailscale</a>, <a href="https://simonwillison.net/tags/bluesky">bluesky</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Extract PDF text in your browser with LiteParse for the web]]></title>
+        <id>https://simonwillison.net/2026/Apr/23/liteparse-for-the-web/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/23/liteparse-for-the-web/#atom-everything"/>
+        <updated>2026-04-23T21:54:24.000Z</updated>
+        <summary type="html"><![CDATA[<p>LlamaIndex have a most excellent open source project called <a href="https://github.com/run-llama/liteparse">LiteParse</a>, which provides a Node.js CLI tool for extracting text from PDFs. I got a version of LiteParse working entirely in the browser, using most of the same libraries that LiteParse uses to run in Node.js.</p>
+<h4 id="spatial-text-parsing">Spatial text parsing</h4>
+<p>Refreshingly, LiteParse doesn't use AI models to do what it does: it's good old-fashioned PDF parsing, falling back to Tesseract OCR (or other pluggable OCR engines) for PDFs that contain images of text rather than the text itself.</p>
+<p>The hard problem that LiteParse solves is extracting text in a sensible order despite the infuriating vagaries of PDF layouts. They describe this as "spatial text parsing" - they use some very clever heuristics to detect things like multi-column layouts and group and return the text in a sensible linear flow.</p>
+<p>The LiteParse documentation describes a pattern for implementing <a href="https://developers.llamaindex.ai/liteparse/guides/visual-citations/">Visual Citations with Bounding Boxes</a>. I really like this idea: being able to answer questions from a PDF and accompany those answers with cropped, highlighted images feels like a great way of increasing the credibility of answers from RAG-style Q&amp;A.</p>
+<p>LiteParse is provided as a pure CLI tool, designed to be used by agents. You run it like this:</p>
+<pre><code>npm i -g @llamaindex/liteparse
+lit parse document.pdf
+</code></pre>
+<p>I <a href="https://claude.ai/share/44a5ed86-e5b5-4e14-90be-1eba1e0acd13">explored its capabilities with Claude</a> and quickly determined that there was no real reason it had to stay a CLI app: it's built on top of PDF.js and Tesseract.js, two libraries I've used for something similar in a browser <a href="https://simonwillison.net/2024/Mar/30/ocr-pdfs-images/">in the past</a>.</p>
+<p>The only reason LiteParse didn't have a pure browser-based version is that nobody had built one yet...</p>
+<h4 id="introducing-liteparse-for-the-web">Introducing LiteParse for the web</h4>
+<p>Visit <a href="https://simonw.github.io/liteparse/">https://simonw.github.io/liteparse/</a> to try out LiteParse against any PDF file, running entirely in your browser. Here's what that looks like:</p>
+<p><img src="https://static.simonwillison.net/static/2026/liteparse-web.jpg" alt="Screenshot of the LiteParse browser demo web page. Header reads &quot;LiteParse&quot; with subtitle &quot;Browser demo of LiteParse — parse PDFs in your browser. Nothing leaves your machine.&quot; A dashed-border drop zone says &quot;Drop a PDF here or click to choose / Your file stays in your browser.&quot; with a file pill labeled &quot;19720005243.pdf&quot;. Below are a checked &quot;Run OCR&quot; checkbox, an unchecked &quot;Render page screenshots&quot; checkbox, and a blue &quot;Parse&quot; button. Status text: &quot;Parsed 86 pages.&quot; Two side-by-side panels follow. Left panel titled &quot;Text&quot; with a Copy button shows monospace extracted text beginning &quot;Apollo 5 was an unmanned system, both propulsion systems ascent and descent stages&quot;. Right panel titled &quot;JSON&quot;, also with a copy button, contains JSON showing the dimensions and position and detected font of each piece of text." style="max-width: 100%;" /></p>
+<p>The tool can work with or without running OCR, and can optionally display images for every page in the PDF further down the page.</p>
+<h4 id="building-it-with-claude-code-and-opus-4-7">Building it with Claude Code and Opus 4.7</h4>
+<p>The process of building this started in the regular Claude app on my iPhone. I wanted to try out LiteParse myself, so I started by uploading a random PDF I happened to have on my phone along with this prompt:</p>
+<blockquote>
+<p><code>Clone https://github.com/run-llama/liteparse and try it against this file</code></p>
+</blockquote>
+<p>Regular Claude chat can clone directly from GitHub these days, and while by default it can't access most of the internet from its container it can also install packages from PyPI and npm.</p>
+<p>I often use this to try out new pieces of open source software on my phone - it's a quick way to exercise something without having to sit down with my laptop.</p>
+<p>You can follow my full conversation in <a href="https://claude.ai/share/44a5ed86-e5b5-4e14-90be-1eba1e0acd13">this shared Claude transcript</a>. I asked a few follow-up questions about how it worked, and then asked:</p>
+<blockquote>
+<p><code>Does this library run in a browser? Could it?</code></p>
+</blockquote>
+<p>This gave me a thorough enough answer that I was convinced it was worth trying getting that to work for real. I opened up my laptop and switched to Claude Code.</p>
+<p>I forked the original repo on GitHub, cloned a local copy, started a new <code>web</code> branch and pasted that last reply from Claude into a new file called <a href="https://github.com/simonw/liteparse/blob/web/notes.md">notes.md</a>. Then I told Claude Code:</p>
+<blockquote>
+<p><code>Get this working as a web app. index.html, when loaded, should render an app that lets users open a PDF in their browser and select OCR or non-OCR mode and have this run. Read notes.md for initial research on this problem, then write out plan.md with your detailed implementation plan</code></p>
+</blockquote>
+<p>I always like to start with a plan for this kind of project. Sometimes I'll use Claude's "planning mode", but in this case I knew I'd want the plan as an artifact in the repository so I told it to write <code>plan.md</code> directly.</p>
+<p>This also means I can iterate on the plan with Claude. I noticed that Claude had decided to punt on generating screenshots of images in the PDF, and suggested we defer a "canvas-encode swap" to v2. I fixed that by prompting:</p>
+<blockquote>
+<p><code>Update the plan to say we WILL do the canvas-encode swap so the screenshots thing works</code></p>
+</blockquote>
+<p>After a few short follow-up prompts, here's the <a href="https://github.com/simonw/liteparse/blob/web/plan.md">plan.md</a> I thought was strong enough to implement.</p>
+<p>I prompted:</p>
+<blockquote>
+<p><code>build it.</code></p>
+</blockquote>
+<p>And then mostly left Claude Code to its own devices, tinkered with some other projects, caught up on Duolingo and occasionally checked in to see how it was doing.</p>
+<p>I added a few prompts to the queue as I was working. Those don't yet show up in my exported transcript, but it turns out running <code>rg queue-operation --no-filename | grep enqueue | jq -r '.content'</code> in the relevant <code>~/.claude/projects/</code> folder extracts them.</p>
+<p>Here are the key follow-up prompts with some notes:</p>
+<ul>
+<li>
+<code>When you implement this use playwright and red/green TDD, plan that too</code> - I've written more <a href="https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/">about red/green TDD here</a>.</li>
+<li>
+<code>let's use PDF.js's own renderer</code> (it was messing around with pdfium)</li>
+<li>
+<code>The final UI should include both the text and the pretty-printed JSON output, both of those in textareas and both with copy-to-clipboard buttons - it should also be mobile friendly</code> - I had a new idea for how the UI should work</li>
+<li>
+<code>small commits along the way</code> - see below</li>
+<li>
+<code>Make sure the index.html page includes a link back to https://github.com/run-llama/liteparse near the top of the page</code> - it's important to credit your dependencies in a project like this!</li>
+<li><code>View on GitHub → is bad copy because that's not the repo with this web app in, it's the web app for the underlying LiteParse library</code></li>
+<li><code>Run OCR should be unchecked by default</code></li>
+<li>
+<code>When I try to parse a PDF in my browser I see 'Parse failed: undefined is not a function (near '...value of readableStream...')</code> - it was testing with Playwright in Chrome, turned out there was a bug in Safari</li>
+<li><code>... oh that is in safari but it works in chrome</code></li>
+<li><code>When "Copy" is clicked the text should change to "Copied!" for 1.5s</code></li>
+<li>
+<code>[Image #1] Style the file input so that long filenames don't break things on Firefox like this - in fact add one of those drag-drop zone UIs which you can also click to select a file</code> - dropping screenshots in of small UI glitches works surprisingly well</li>
+<li><code>Tweak the drop zone such that the text is vertically centered, right now it is a bit closer to the top</code></li>
+<li>
+<code>it breaks in Safari on macOS, works in both Chrome and Firefox. On Safari I see "Parse failed: undefined is not a function (near '...value of readableStream...')" after I click the Parse button, when OCR is not checked</code> - it still wasn't working in Safari...</li>
+<li>
+<code>works in safari now</code>  - but it fixed it pretty quickly once I pointed that out and it got Playwright working with that browser</li>
+</ul>
+<p>I've started habitually asking for "small commits along the way" because it makes for code that's easier to understand or review later on, and I have an unproven hunch that it helps the agent work more effectively too - it's yet another encouragement towards planning and taking on one problem at a time.</p>
+<p>While it was working I decided it would be nice to be able to interact with an in-progress version.  I asked a separate Claude Code session against the same directory for tips on how to run it, and it told me to use <code>npx vite</code>. Running that started a development server with live-reloading, which meant I could instantly see the effect of each change it made on disk - and prompt with further requests for tweaks and fixes.</p>
+<p>Towards the end I decided it was going to be good enough to publish. I started a fresh Claude Code instance and told it:</p>
+<blockquote>
+<p><code>Look at the web/ folder - set up GitHub actions for this repo such that any push runs the tests, and if the tests pass it then does a GitHub Pages deploy of the built vite app such that the web/index.html page is the index.html page for the thing that is deployed and it works on GitHub Pages</code></p>
+</blockquote>
+<p>After a bit more iteration <a href="https://github.com/simonw/liteparse/blob/web/.github/workflows/deploy-web.yml">here's the GitHub Actions workflow</a> that builds the app using Vite and deploys the result to <a href="https://simonw.github.io/liteparse/">https://simonw.github.io/liteparse/</a>.</p>
+<p>I love GitHub Pages for this kind of thing because it can be quickly configured (by Claude, in this case) to turn any repository into a deployed web-app, at zero cost and with whatever build step is necessary. It even works against private repos, if you don't mind your only security being a secret URL.</p>
+<p>With this kind of project there's always a major risk that the model might "cheat" - mark key features as "TODO" and fake them, or take shortcuts that ignore the initial requirements.</p>
+<p>The responsible way to prevent this is to review all of the code... but this wasn't intended as that kind of project, so instead I fired up OpenAI Codex with GPT-5.5 (I had preview access) and told it:</p>
+<blockquote>
+<p><code>Describe the difference between how the node.js CLI tool runs and how the web/ version runs</code></p>
+</blockquote>
+<p>The answer I got back was enough to give me confidence that Claude hadn't taken any project-threatening shortcuts.</p>
+<p>... and that was about it. Total time in Claude Code for that "build it" step was 59 minutes. I used my <a href="https://github.com/simonw/claude-code-transcripts">claude-code-transcripts</a> tool to export a readable version of the full transcript which you can <a href="https://gisthost.github.io/?d64889bfc1b897fea3867adfec62ed89/index.html">view here</a>, albeit without those additional queued prompts (here's my <a href="https://github.com/simonw/claude-code-transcripts/issues/98">issue to fix that</a>).</p>
+<h4 id="is-this-even-vibe-coding-any-more-">Is this even vibe coding any more?</h4>
+<p>I'm a pedantic stickler when it comes to <a href="https://simonwillison.net/2025/Mar/19/vibe-coding/">the original definition of vibe coding</a> - vibe coding does <em>not</em> mean any time you use AI to help you write code, it's when you use AI without reviewing or caring about the code that's written at all.</p>
+<p>By my own definition, this LiteParse for the web project is about as pure vibe coding as you can get! I have not looked at a <em>single line</em> of the HTML and TypeScript written for this project - in fact while writing this sentence I had to go and check if it had used JavaScript or TypeScript.</p>
+<p>Yet somehow this one doesn't feel as vibe coded to me as many of my other vibe coded projects:</p>
+<ul>
+<li>As a static in-browser web application hosted on GitHub Pages the blast radius for any bugs is almost non-existent: it either works for your PDF or doesn't.</li>
+<li>No private data is transferred anywhere - all processing happens in your browser - so a security audit is unnecessary. I've glanced once at the network panel while it's running and no additional requests are made when a PDF is being parsed.</li>
+<li>There was still a whole lot of engineering experience and knowledge required to use the models in this way. Identifying that porting LiteParse to run directly in a browser was critical to the rest of the project.</li>
+</ul>
+<p>Most importantly, I'm happy to attach my reputation to this project and recommend that other people try it out. Unlike most of my vibe coded tools I'm not convinced that spending significant additional engineering time on this would have resulted in a meaningfully better initial release. It's fine as it is!</p>
+<p>I haven't opened a PR against the <a href="https://github.com/run-llama/liteparse">origin repository</a> because I've not discussed it with the LiteParse team. I've <a href="https://github.com/run-llama/liteparse/issues/147">opened an issue</a>, and if they want my vibe coded implementation as a starting point for something more official they're welcome to take it.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/javascript">javascript</a>, <a href="https://simonwillison.net/tags/ocr">ocr</a>, <a href="https://simonwillison.net/tags/pdf">pdf</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Sign of the future: GPT-5.5]]></title>
         <id>https://www.oneusefulthing.org/p/sign-of-the-future-gpt-55</id>
@@ -84,6 +411,19 @@ llm -m openai-codex/gpt-5.5 <span class="pl-s"><span class="pl-pds">'</span>Gene
 The post Copilot Chat improvements for pull requests appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm-openai-via-codex 0.1a0]]></title>
+        <id>https://simonwillison.net/2026/Apr/23/llm-openai-via-codex/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/23/llm-openai-via-codex/#atom-everything"/>
+        <updated>2026-04-23T19:22:29.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/llm-openai-via-codex/releases/tag/0.1a0">llm-openai-via-codex 0.1a0</a></p>
+    <p>Hijacks your Codex CLI credentials to make API calls with LLM, as described <a href="https://simonwillison.net/2026/Apr/23/gpt-5-5/#llm-openai-via-codex">in my post about GPT-5.5</a>.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/codex-cli">codex-cli</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
@@ -295,6 +635,17 @@ The post GitHub Copilot for Jira: Our latest enhancements appeared first on The 
         <summary type="html"><![CDATA[Explore the GPT-5.5 Bio Bug Bounty: a red-teaming challenge to find universal jailbreaks for bio safety risks, with rewards up to $25,000.]]></summary>
         <author>
             <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Upcoming change to Copilot usage metrics report download URLs]]></title>
+        <id>https://github.blog/changelog/2026-04-22-upcoming-change-to-copilot-usage-metrics-report-download-urls</id>
+        <link href="https://github.blog/changelog/2026-04-22-upcoming-change-to-copilot-usage-metrics-report-download-urls"/>
+        <updated>2026-04-22T23:25:50.000Z</updated>
+        <summary type="html"><![CDATA[We are migrating the download URLs for Copilot usage metrics reports from Azure Front Door domains to a stable, GitHub-owned custom domain. This change will improve URL stability and make…
+The post Upcoming change to Copilot usage metrics report download URLs appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
         </author>
     </entry>
     <entry>
@@ -4498,141 +4849,6 @@ Sam Rose continues <a href="https://simonwillison.net/tags/sam-rose/">his streak
 The post Custom images for GitHub-hosted runners are now generally available appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[datasette-files-s3 0.1a1]]></title>
-        <id>https://simonwillison.net/2026/Mar/25/datasette-files-s3/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/25/datasette-files-s3/#atom-everything"/>
-        <updated>2026-03-25T21:57:05.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-files-s3/releases/tag/0.1a1">datasette-files-s3 0.1a1</a></p>
-    <p>A backend for <a href="https://github.com/datasette/datasette-files">datasette-files</a> that adds the ability to store and retrieve files using an S3 bucket. This release added <a href="https://github.com/datasette/datasette-files-s3/blob/main/README.md#credentials-broker-response">a mechanism</a> for fetching S3 configuration periodically from a URL, which means we can use time limited IAM credentials that are restricted to a prefix within a bucket.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/s3">s3</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Thoughts on slowing the fuck down]]></title>
-        <id>https://simonwillison.net/2026/Mar/25/thoughts-on-slowing-the-fuck-down/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/25/thoughts-on-slowing-the-fuck-down/#atom-everything"/>
-        <updated>2026-03-25T21:47:17.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://news.ycombinator.com/item?id=47517539">Thoughts on slowing the fuck down</a></strong></p>
-Mario Zechner created the <a href="https://github.com/badlogic/pi-mono">Pi agent framework</a> used by OpenClaw, giving considerable credibility to his opinions on current trends in agentic engineering. He's not impressed:</p>
-<blockquote>
-<p>We have basically given up all discipline and agency for a sort of addiction, where your highest goal is to produce the largest amount of code in the shortest amount of time. Consequences be damned.</p>
-</blockquote>
-<p>Agents and humans both make mistakes, but agent mistakes accumulate much faster:</p>
-<blockquote>
-<p>A human is a bottleneck. A human cannot shit out 20,000 lines of code in a few hours. Even if the human creates such booboos at high frequency, there's only so many booboos the human can introduce in a codebase per day. [...]</p>
-<p>With an orchestrated army of agents, there is no bottleneck, no human pain. These tiny little harmless booboos suddenly compound at a rate that's unsustainable. You have removed yourself from the loop, so you don't even know that all the innocent booboos have formed a monster of a codebase. You only feel the pain when it's too late. [...]</p>
-<p>You have zero fucking idea what's going on because you delegated all your agency to your agents. You let them run free, and they are merchants of complexity.</p>
-</blockquote>
-<p>I think Mario is exactly right about this. Agents let us move <em>so much faster</em>, but this speed also means that changes which we would normally have considered over the course of weeks are landing in a matter of hours.</p>
-<p>It's so easy to let the codebase evolve outside of our abilities to reason clearly about it. <a href="https://simonwillison.net/tags/cognitive-debt/">Cognitive debt</a> is real.</p>
-<p>Mario recommends slowing down:</p>
-<blockquote>
-<p>Give yourself time to think about what you're actually building and why. Give yourself an opportunity to say, fuck no, we don't need this. Set yourself limits on how much code you let the clanker generate per day, in line with your ability to actually review the code.</p>
-<p>Anything that defines the gestalt of your system, that is architecture, API, and so on, write it by hand. [...]</p>
-</blockquote>
-<p>I'm not convinced writing by hand is the best way to address this, but it's absolutely the case that we need the discipline to find a new balance of speed v.s. mental thoroughness now that typing out the code is no longer anywhere close to being the bottleneck on writing software.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/cognitive-debt">cognitive-debt</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[datasette-llm 0.1a1]]></title>
-        <id>https://simonwillison.net/2026/Mar/25/datasette-llm/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/25/datasette-llm/#atom-everything"/>
-        <updated>2026-03-25T21:24:31.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-llm/releases/tag/0.1a1">datasette-llm 0.1a1</a></p>
-    <p>New release of the base plugin that makes models from <a href="https://llm.datasette.io/">LLM</a> available for use by other Datasette plugins such as <a href="https://github.com/datasette/datasette-enrichments-llm">datasette-enrichments-llm</a>.</p>
-<blockquote>
-<ul>
-<li>New <a href="https://github.com/datasette/datasette-llm/blob/main/README.md#register_llm_purposes"><code>register_llm_purposes()</code> plugin hook</a> and <code>get_purposes()</code> function for retrieving registered purpose strings. <a href="https://github.com/datasette/datasette-llm/issues/1">#1</a></li>
-</ul>
-</blockquote>
-<p>One of the responsibilities of this plugin is to configure which models are used for which purposes, so you can say in one place "data enrichment uses GPT-5.4-nano but SQL query assistance happens using Sonnet 4.6", for example.</p>
-<p>Plugins that depend on this can use <code>model = await llm.model(purpose="enrichment")</code> to indicate the purpose of the prompts they wish to execute against the model. Those plugins can now also use the new <code>register_llm_purposes()</code> hook to register those purpose strings, which means future plugins can list those purposes in one place to power things like an admin UI for assigning models to purposes.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/annotated-release-notes">annotated-release-notes</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/plugins">plugins</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub Copilot for Jira — Public preview enhancements]]></title>
-        <id>https://github.blog/changelog/2026-03-25-github-copilot-for-jira-public-preview-enhancements</id>
-        <link href="https://github.blog/changelog/2026-03-25-github-copilot-for-jira-public-preview-enhancements"/>
-        <updated>2026-03-25T21:09:35.000Z</updated>
-        <summary type="html"><![CDATA[Since launching the public preview of GitHub Copilot coding agent for Jira, we’ve been listening closely to customer feedback. Thank you to everyone who has taken the time to try…
-The post GitHub Copilot for Jira — Public preview enhancements appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Updates to our Privacy Statement and Terms of Service: How we use your data]]></title>
-        <id>https://github.blog/changelog/2026-03-25-updates-to-our-privacy-statement-and-terms-of-service-how-we-use-your-data</id>
-        <link href="https://github.blog/changelog/2026-03-25-updates-to-our-privacy-statement-and-terms-of-service-how-we-use-your-data"/>
-        <updated>2026-03-25T18:56:45.000Z</updated>
-        <summary type="html"><![CDATA[Hey GitHub Community, We’ve made some important updates to our Privacy Statement and Terms of Service to keep you informed about how we handle your data. Notably, from April 24…
-The post Updates to our Privacy Statement and Terms of Service: How we use your data appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Copilot usage metrics now identify active Copilot coding agent users]]></title>
-        <id>https://github.blog/changelog/2026-03-25-copilot-usage-metrics-now-identify-active-copilot-coding-agent-users</id>
-        <link href="https://github.blog/changelog/2026-03-25-copilot-usage-metrics-now-identify-active-copilot-coding-agent-users"/>
-        <updated>2026-03-25T18:49:10.000Z</updated>
-        <summary type="html"><![CDATA[Copilot usage metrics now indicate which users have Copilot coding agent (CCA) activity. Enterprise and organization admins can identify which users are actively using Copilot coding agent on daily and…
-The post Copilot usage metrics now identify active Copilot coding agent users appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[LiteLLM Hack: Were You One of the 47,000?]]></title>
-        <id>https://simonwillison.net/2026/Mar/25/litellm-hack/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/25/litellm-hack/#atom-everything"/>
-        <updated>2026-03-25T17:21:04.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://futuresearch.ai/blog/litellm-hack-were-you-one-of-the-47000/">LiteLLM Hack: Were You One of the 47,000?</a></strong></p>
-Daniel Hnyk used the <a href="https://console.cloud.google.com/bigquery?p=bigquery-public-data&amp;d=pypi">BigQuery PyPI dataset</a> to determine how many downloads there were of <a href="https://simonwillison.net/2026/Mar/24/malicious-litellm/">the exploited LiteLLM packages</a> during the 46 minute period they were live on PyPI. The answer was 46,996 across the two compromised release versions (1.82.7 and 1.82.8).</p>
-<p>They also identified 2,337 packages that depended on LiteLLM - 88% of which did not pin versions in a way that would have avoided the exploited version.
-
-    <p><small></small>Via <a href="https://twitter.com/hnykda/status/2036834100342825369">@hnykda</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/packaging">packaging</a>, <a href="https://simonwillison.net/tags/pypi">pypi</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/supply-chain">supply-chain</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Disable comments on individual commits]]></title>
-        <id>https://github.blog/changelog/2026-03-19-disable-comments-on-individual-commits</id>
-        <link href="https://github.blog/changelog/2026-03-25-disable-comments-on-individual-commits"/>
-        <updated>2026-03-25T17:07:52.000Z</updated>
-        <summary type="html"><![CDATA[Repository admins can now disable comments on individual commits, a small but meaningful improvement for maintainers dealing with unwanted noise on old commits. A new “Commits” section in repository settings…
-The post Disable comments on individual commits appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Inside our approach to the Model Spec]]></title>
-        <id>https://openai.com/index/our-approach-to-the-model-spec</id>
-        <link href="https://openai.com/index/our-approach-to-the-model-spec"/>
-        <updated>2026-03-25T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Learn how OpenAI’s Model Spec serves as a public framework for model behavior, balancing safety, user freedom, and accountability as AI systems advance.]]></summary>
-        <author>
-            <name>OpenAI News</name>
         </author>
     </entry>
 </feed>
