@@ -2,10 +2,105 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-04-24T21:38:21.534Z</updated>
+    <updated>2026-04-25T14:35:06.050Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Quoting Romain Huet]]></title>
+        <id>https://simonwillison.net/2026/Apr/25/romain-huet/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/25/romain-huet/#atom-everything"/>
+        <updated>2026-04-25T12:06:55.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote cite="https://twitter.com/romainhuet/status/2047955381578838357"><p>Since GPT-5.4, we’ve unified Codex and the main model into a single system, so there’s no separate coding line anymore.</p>
+<p>GPT-5.5 takes this further, with strong gains in agentic coding, computer use, and any task on a computer.</p></blockquote>
+<p class="cite">&mdash; <a href="https://twitter.com/romainhuet/status/2047955381578838357">Romain Huet</a>, confirming OpenAI won't release a GPT-5.5-Codex model</p>
+
+    <p>Tags: <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/gpt">gpt</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GPT-5.5 prompting guide]]></title>
+        <id>https://simonwillison.net/2026/Apr/25/gpt-5-5-prompting-guide/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/25/gpt-5-5-prompting-guide/#atom-everything"/>
+        <updated>2026-04-25T04:13:36.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://developers.openai.com/api/docs/guides/prompt-guidance?model=gpt-5.5">GPT-5.5 prompting guide</a></strong></p>
+Now that GPT-5.5 is <a href="https://developers.openai.com/api/docs/models/gpt-5.5">available in the API</a>, OpenAI have released a wealth of useful tips on how best to prompt the new model.</p>
+<p>Here's a neat trick they recommend for applications that might spend considerable time thinking before returning a user-visible response:</p>
+<pre><code>Before any tool calls for a multi-step task, send a short user-visible update that acknowledges the request and states the first step. Keep it to one or two sentences.
+</code></pre>
+<p>I've already noticed their Codex app doing this, and it does make longer running tasks feel less like the model has crashed.</p>
+<p>OpenAI suggest running the following in Codex to upgrade your existing code using advice embedded in their <code>openai-docs</code> skill:</p>
+<pre><code>$openai-docs migrate this project to gpt-5.5
+</code></pre>
+<p>The upgrade guide the coding agent will follow <a href="https://github.com/openai/skills/blob/724cd511c96593f642bddf13187217aa155d2554/skills/.curated/openai-docs/references/upgrade-guide.md#model-string--light-prompt-rewrite">is this one</a>, which even includes light instructions on how to rewrite prompts to better fit the model.</p>
+<p>Also relevant is the <a href="https://developers.openai.com/api/docs/guides/latest-model">Using GPT-5.5 guide</a>, which opens with this warning:</p>
+<blockquote>
+<p>To get the most out of GPT-5.5, treat it as a new model family to tune for, not a drop-in replacement for <code>gpt-5.2</code> or <code>gpt-5.4</code>. Begin migration with a fresh baseline instead of carrying over every instruction from an older prompt stack. Start with the smallest prompt that preserves the product contract, then tune reasoning effort, verbosity, tool descriptions, and output format against representative examples.</p>
+</blockquote>
+<p>Interesting to see OpenAI recommend starting from scratch rather than trusting that existing prompts optimized for previous models will continue to work effectively with GPT-5.5.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/prompt-engineering">prompt-engineering</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/gpt">gpt</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm 0.31]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/llm/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/llm/#atom-everything"/>
+        <updated>2026-04-24T23:35:07.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/llm/releases/tag/0.31">llm 0.31</a></p>
+    <blockquote>
+<ul>
+<li>New GPT-5.5 OpenAI model: <code>llm -m gpt-5.5</code>. <a href="https://github.com/simonw/llm/issues/1418">#1418</a></li>
+<li>New option to set the <a href="https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools#1-verbosity-parameter">text verbosity level</a> for GPT-5+ OpenAI models: <code>-o verbosity low</code>. Values are <code>low</code>, <code>medium</code>, <code>high</code>.</li>
+<li>New option for setting the <a href="https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level">image detail level</a> used for image attachments to OpenAI models: <code>-o image_detail low</code> - values are <code>low</code>, <code>high</code> and <code>auto</code>, and GPT-5.4 and 5.5 also accept <code>original</code>.</li>
+<li>Models listed in <code>extra-openai-models.yaml</code> are now also registered as asynchronous. <a href="https://github.com/simonw/llm/issues/1395">#1395</a></li>
+</ul>
+</blockquote>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/gpt">gpt</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/llm">llm</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The people do not yearn for automation]]></title>
+        <id>https://simonwillison.net/2026/Apr/24/the-people-do-not-yearn-for-automation/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Apr/24/the-people-do-not-yearn-for-automation/#atom-everything"/>
+        <updated>2026-04-24T22:38:49.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.theverge.com/podcast/917029/software-brain-ai-backlash-databases-automation">The people do not yearn for automation</a></strong></p>
+This written and video essay by Nilay Patel explores why AI is unpopular with the general public even as usage numbers for ChatGPT continue to skyrocket.</p>
+<p>It’s a superb piece of commentary, and something I expect I’ll be thinking about for a long time to come.</p>
+<p>Nilay’s core idea is that people afflicted with “software brain” - who see the world as something to be automated as much as possible, and attempt to model everything in terms of information flows and data - are becoming detached from everyone else.</p>
+<blockquote>
+<p>[…] software brain has ruled the business world for a long time. AI has just made it easier than ever for more people to make more software than ever before — for every kind of business to automate big chunks of itself with software. It’s everywhere: the absolute cutting edge of advertising and marketing is automation with AI. It’s not being a creative.</p>
+<p>But: not everything is a business. Not everything is a loop! The entire human experience cannot be captured in a database. <em>That’s</em> the limit of software brain. That’s why people hate AI. It <em>flattens</em> them.</p>
+<p>Regular people don’t see the opportunity to write code as an opportunity at <em>all</em>. The people do not yearn for automation. I’m a full-on smart home sicko; the lights and shades and climate controls of my house are automated in dozens of ways. But huge companies like Apple, Google and Amazon have struggled for over a decade now to make regular people care about smart home automation at all. And they just don’t.</p>
+</blockquote>
+
+    <p><small></small>Via <a href="https://daringfireball.net/linked/2026/04/23/patel-software-brain">John Gruber</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/nilay-patel">nilay-patel</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Notice about upcoming new format for GitHub App installation tokens]]></title>
+        <id>https://github.blog/changelog/2026-04-24-notice-about-upcoming-new-format-for-github-app-installation-tokens</id>
+        <link href="https://github.blog/changelog/2026-04-24-notice-about-upcoming-new-format-for-github-app-installation-tokens"/>
+        <updated>2026-04-24T21:49:19.000Z</updated>
+        <summary type="html"><![CDATA[Starting April 27th 2026 and over the coming weeks, we will begin a staged rollout that updates the format of newly minted GitHub App installation tokens, making them more performant…
+The post Notice about upcoming new format for GitHub App installation tokens appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Changes to notification retention and archived repository watches]]></title>
         <id>https://github.blog/changelog/2026-04-24-changes-to-notification-retention-and-archived-repository-watches</id>
@@ -37,6 +132,16 @@ The post GPT-5.5 is generally available for GitHub Copilot appeared first on The
 The post Inline agent mode in preview and more in GitHub Copilot for JetBrains IDEs appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[deepseek-v4-flash]]></title>
+        <id>https://ollama.com/library/deepseek-v4-flash</id>
+        <link href="https://ollama.com/library/deepseek-v4-flash"/>
+        <updated>2026-04-24T08:29:00.000Z</updated>
+        <summary type="html"><![CDATA[DeepSeek-V4-Flash is a preview of the DeepSeek-V4 series, a Mixture-of-Experts model with 284B total parameters and 13B activated, built for efficient reasoning across a 1M-token context window.]]></summary>
+        <author>
+            <name>Ollama models</name>
         </author>
     </entry>
     <entry>
@@ -4719,169 +4824,6 @@ Exciting new browser library from Cheng Lou, previously a React core developer a
         <p>Tags: <a href="https://simonwillison.net/tags/macos">macos</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/swift">swift</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[We Rewrote JSONata with AI in a Day, Saved $500K/Year]]></title>
-        <id>https://simonwillison.net/2026/Mar/27/vine-porting-jsonata/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/27/vine-porting-jsonata/#atom-everything"/>
-        <updated>2026-03-27T00:35:01.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://www.reco.ai/blog/we-rewrote-jsonata-with-ai">We Rewrote JSONata with AI in a Day, Saved $500K/Year</a></strong></p>
-Bit of a hyperbolic framing but this looks like another case study of <strong>vibe porting</strong>, this time spinning up a new custom Go implementation of the <a href="https://jsonata.org">JSONata</a> JSON expression language - similar in focus to jq, and heavily associated with the <a href="https://nodered.org">Node-RED</a> platform.</p>
-<p>As with other vibe-porting projects the key enabling factor was JSONata's existing test suite, which helped build the first working Go version in 7 hours and $400 of token spend.</p>
-<p>The Reco team then used a shadow deployment for a week to run the new and old versions in parallel to confirm the new implementation exactly matched the behavior of the old one.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/go">go</a>, <a href="https://simonwillison.net/tags/json">json</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/vibe-porting">vibe-porting</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[My minute-by-minute response to the LiteLLM malware attack]]></title>
-        <id>https://simonwillison.net/2026/Mar/26/response-to-the-litellm-malware-attack/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/26/response-to-the-litellm-malware-attack/#atom-everything"/>
-        <updated>2026-03-26T23:58:22.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://futuresearch.ai/blog/litellm-attack-transcript/">My minute-by-minute response to the LiteLLM malware attack</a></strong></p>
-Callum McMahon reported the <a href="https://simonwillison.net/2026/Mar/24/malicious-litellm/">LiteLLM malware attack</a> to PyPI. Here he shares the Claude transcripts he used to help him confirm the vulnerability and decide what to do about it. Claude even suggested the PyPI security contact address after confirming the malicious code in a Docker container:</p>
-<blockquote>
-<p><strong>Confirmed</strong>. Fresh download from PyPI right now in an isolated Docker container:</p>
-<pre><code>Inspecting: litellm-1.82.8-py3-none-any.whl
-FOUND: litellm_init.pth
-SIZE: 34628 bytes
-FIRST 200 CHARS:
-import os, subprocess, sys; subprocess.Popen([sys.executable, "-c", "import base64; exec(base64.b64decode('aW1wb3J0IHN1YnByb2Nlc3MKaW1wb3J0IHRlbXBmaWxl...
-</code></pre>
-<p>The malicious <code>litellm==1.82.8</code> is <strong>live on PyPI right now</strong> and anyone installing or upgrading litellm will be infected. This needs to be reported to security@pypi.org immediately.</p>
-</blockquote>
-<p>I was chuffed to see Callum use my <a href="https://github.com/simonw/claude-code-transcripts">claude-code-transcripts</a> tool to publish the transcript of the conversation.
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=47531967">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/pypi">pypi</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/supply-chain">supply-chain</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Gemini 3 Pro deprecated]]></title>
-        <id>https://github.blog/changelog/2026-03-26-gemini-3-pro-deprecated</id>
-        <link href="https://github.blog/changelog/2026-03-26-gemini-3-pro-deprecated"/>
-        <updated>2026-03-26T18:46:54.000Z</updated>
-        <summary type="html"><![CDATA[We have deprecated Gemini 3 Pro across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) today, March 26, 2026. Model Deprecation date…
-The post Gemini 3 Pro deprecated appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Credential revocation API now supports GitHub OAuth and GitHub app credentials]]></title>
-        <id>https://github.blog/changelog/2026-03-26-credential-revocation-api-now-supports-github-oauth-and-github-app-credentials</id>
-        <link href="https://github.blog/changelog/2026-03-26-credential-revocation-api-now-supports-github-oauth-and-github-app-credentials"/>
-        <updated>2026-03-26T18:08:13.000Z</updated>
-        <summary type="html"><![CDATA[We’ve extended the Credential revocation API to support additional token types, enabling you to programmatically revoke any exposed credentials found on repositories or elsewhere. This helps you quickly limit the…
-The post Credential revocation API now supports GitHub OAuth and GitHub app credentials appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Ask @copilot to resolve merge conflicts on pull requests]]></title>
-        <id>https://github.blog/changelog/2026-03-26-ask-copilot-to-resolve-merge-conflicts-on-pull-requests</id>
-        <link href="https://github.blog/changelog/2026-03-26-ask-copilot-to-resolve-merge-conflicts-on-pull-requests"/>
-        <updated>2026-03-26T17:32:22.000Z</updated>
-        <summary type="html"><![CDATA[Copilot coding agent can now resolve merge conflicts on pull requests. To ask Copilot to resolve merge conflicts, mention @copilot in a comment and tell it what to do: @copilot…
-The post Ask @copilot to resolve merge conflicts on pull requests appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[New pull requests dashboard is in public preview]]></title>
-        <id>https://github.blog/changelog/2026-03-25-new-pull-requests-dashboard-is-in-public-preview</id>
-        <link href="https://github.blog/changelog/2026-03-26-new-pull-requests-dashboard-is-in-public-preview"/>
-        <updated>2026-03-26T17:00:33.000Z</updated>
-        <summary type="html"><![CDATA[A public preview of the refreshed pull requests dashboard is now available at github.com/pulls, introducing a new pull request inbox and saved views so you can organize and prioritize the…
-The post New pull requests dashboard is in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[View Agentic Workflow configs in the Actions run summary]]></title>
-        <id>https://github.blog/changelog/2026-03-25-view-agentic-workflow-configs-in-the-actions-run-summary</id>
-        <link href="https://github.blog/changelog/2026-03-26-view-agentic-workflow-configs-in-the-actions-run-summary"/>
-        <updated>2026-03-26T17:00:12.000Z</updated>
-        <summary type="html"><![CDATA[You can now view your Agentic Workflow markdown configs directly in the GitHub Actions run summary for any agentic workflow. This update makes it easier to review runs by: Reducing…
-The post View Agentic Workflow configs in the Actions run summary appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Agent activity in GitHub Issues and Projects]]></title>
-        <id>https://github.blog/changelog/2026-03-26-agent-activity-in-github-issues-and-projects</id>
-        <link href="https://github.blog/changelog/2026-03-26-agent-activity-in-github-issues-and-projects"/>
-        <updated>2026-03-26T16:59:45.000Z</updated>
-        <summary type="html"><![CDATA[Today, we’re shipping two new features that bring agent activity directly into your planning workflows. Agent sessions under assignees in GitHub Issues When a coding agent (e.g., Copilot, Claude, or…
-The post Agent activity in GitHub Issues and Projects appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quantization from the ground up]]></title>
-        <id>https://simonwillison.net/2026/Mar/26/quantization-from-the-ground-up/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/26/quantization-from-the-ground-up/#atom-everything"/>
-        <updated>2026-03-26T16:21:09.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://ngrok.com/blog/quantization">Quantization from the ground up</a></strong></p>
-Sam Rose continues <a href="https://simonwillison.net/tags/sam-rose/">his streak</a> of publishing spectacularly informative interactive essays, this time explaining how quantization of Large Language Models works (which he says might be "<a href="https://twitter.com/samwhoo/status/2036845101561835968">the best post I've ever made</a>".)</p>
-<p>Also included is the best visual explanation I've ever seen of how floating point numbers are represented using binary digits.</p>
-<p><img alt="Screenshot of an interactive float32 binary representation tool showing the value -48.92364502, with color-coded bit fields labeled S (sign), EXPONENT (blue), and SIGNIFICAND (pink), displaying the 32-bit pattern 11000010010000111101100001110100000, and a slider control at the bottom along with minus, plus, and reset buttons." src="https://static.simonwillison.net/static/2026/float.jpg" /></p>
-<p>I hadn't heard about <strong>outlier values</strong> in quantization - rare float values that exist outside of the normal tiny-value distribution - but apparently they're very important:</p>
-<blockquote>
-<p>Why do these outliers exist? [...] tl;dr: no one conclusively knows, but a small fraction of these outliers are <em>very</em> important to model quality. Removing even a <em>single</em> "super weight," as Apple calls them, can cause the model to output complete gibberish.</p>
-<p>Given their importance, real-world quantization schemes sometimes do extra work to preserve these outliers. They might do this by not quantizing them at all, or by saving their location and value into a separate table, then removing them so that their block isn't destroyed.</p>
-</blockquote>
-<p>Plus there's a section on <a href="https://ngrok.com/blog/quantization#how-much-does-quantization-affect-model-accuracy">How much does quantization affect model accuracy?</a>. Sam explains the concepts of <strong>perplexity</strong> and ** KL divergence ** and then uses the <a href="https://github.com/ggml-org/llama.cpp/tree/master/tools/perplexity">llama.cpp perplexity tool</a> and a run of the GPQA benchmark to show how different quantization levels affect Qwen 3.5 9B.</p>
-<p>His conclusion:</p>
-<blockquote>
-<p>It looks like 16-bit to 8-bit carries almost no quality penalty. 16-bit to 4-bit is more noticeable, but it's certainly not a quarter as good as the original. Closer to 90%, depending on how you want to measure it.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/computer-science">computer-science</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/explorables">explorables</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/sam-rose">sam-rose</a>, <a href="https://simonwillison.net/tags/qwen">qwen</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[datasette-llm 0.1a2]]></title>
-        <id>https://simonwillison.net/2026/Mar/26/datasette-llm/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Mar/26/datasette-llm/#atom-everything"/>
-        <updated>2026-03-26T15:52:32.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-llm/releases/tag/0.1a2">datasette-llm 0.1a2</a></p>
-    <blockquote>
-<ul>
-<li><code>actor</code> is now available to the <code>llm_prompt_context</code> plugin hook. <a href="https://github.com/datasette/datasette-llm/pull/2">#2</a></li>
-</ul>
-</blockquote>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Custom images for GitHub-hosted runners are now generally available]]></title>
-        <id>https://github.blog/changelog/2026-03-25-custom-images-for-github-hosted-runners-are-now-generally-available</id>
-        <link href="https://github.blog/changelog/2026-03-26-custom-images-for-github-hosted-runners-are-now-generally-available"/>
-        <updated>2026-03-26T14:30:13.000Z</updated>
-        <summary type="html"><![CDATA[Custom images for GitHub-hosted runners are now generally available. Originally introduced in public preview in October 2025, this feature lets you start with a GitHub-curated base image and build your…
-The post Custom images for GitHub-hosted runners are now generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
         </author>
     </entry>
 </feed>
