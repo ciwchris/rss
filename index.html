@@ -31,6 +31,242 @@
       <article>
           <details>
             <summary>
+              LLM 0.32a0  is a major backwards-compatible refactor
+              <span class="post-metadata">(7 min | 2234 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Apr/29/llm/#atom-everything>I just released LLM 0.32a0, an alpha release of my LLM Python library and CLI tool for accessing LLMs, with some consequential changes that I&#x27;ve been working towards for quite a while.
+
+Previous versions of LLM modeled the world in terms of prompts and responses. Send the model a text prompt, get back a text response.
+
+import llm
+
+model &#x3D; llm.get_model(&quot;gpt-5.5&quot;)
+response &#x3D; model.prompt(&quot;Capital of France?&quot;)
+print(response.text())
+
+This made sense when I started working on the library back in April 2023. A lot has changed since then!
+
+LLM provides an abstraction over thousands of different models via its plugin system. The original abstraction - of text input that returns text output - was no longer able to represent everything I needed it to.
+
+Over time LLM itself has grown attachments to handle image, audio, and video input, then schemas for outputting structured JSON, then tools for executing tool calls. Meanwhile LLMs kept evolving, adding reasoning support and the ability to return images and all kinds of other interesting capabilities.
+
+LLM needs to evolve to better handle the diversity of input and output types that can be processed by today&#x27;s frontier models.
+
+The 0.32a0 alpha has two key changes: model inputs can be represented as a sequence of messages, and model responses can be composed of a stream of differently typed parts.
+
+Prompts as a sequence of messages
+
+LLMs accept input as text, but ever since ChatGPT demonstrated the value of a two-way conversational interface, the most common way to prompt them has been to treat that input as a sequence of conversational turns.
+
+The first turn might look like this:
+
+user: Capital of France?
+assistant: 
+
+
+(The model then gets to fill out the reply from the assistant.)
+
+But each subsequent turn needs to replay the entire conversation up to that point, as a sort of screenplay:
+
+user: Capital of France?
+assistant: Paris
+user: Germany?
+assistant:
+
+
+Most of the JSON APIs from the major vendors follow this pattern. Here&#x27;s what the above looks like using the OpenAI chat completions API, which has been widely imitated by other providers:
+
+
+curl https://api.openai.com/v1/chat/completions \
+  -H &quot;Authorization: Bearer $OPENAI_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;model&quot;: &quot;gpt-5.5&quot;,
+    &quot;messages&quot;: [
+      {
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: &quot;Capital of France?&quot;
+      },
+      {
+        &quot;role&quot;: &quot;assistant&quot;,
+        &quot;content&quot;: &quot;Paris&quot;
+      },
+      {
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: &quot;Germany?&quot;
+      }
+    ]
+  }&#x27;
+
+Prior to 0.32, LLM modeled these as conversations:
+
+model &#x3D; llm.get_model(&quot;gpt-5.5&quot;)
+
+conversation &#x3D; model.conversation()
+r1 &#x3D; conversation.prompt(&quot;Capital of France?&quot;)
+print(r1.text())
+# Outputs &quot;Paris&quot;
+
+r2 &#x3D; conversation.prompt(&quot;Germany?&quot;)
+print(r2.text())
+# Outputs &quot;Berlin&quot;
+
+This worked if you were building a conversation with the model from scratch, but it didn&#x27;t provide a way to feed in a previous conversation from the start. This made tasks like building an emulation of the OpenAI chat completions API much harder than they should have been.
+
+The llm CLI tool worked around this through a custom mechanism for persisting and inflating conversations using SQLite, but that never became a stable part of the LLM API - and there are many places you might want to use the Python library without committing to SQLite as the storage layer.
+
+The new alpha now supports this:
+
+import llm
+from llm import user, assistant
+
+model &#x3D; llm.get_model(&quot;gpt-5.5&quot;)
+
+response &#x3D; model.prompt(messages&#x3D;[
+    user(&quot;Capital of France?&quot;),
+    assistant(&quot;Paris&quot;),
+    user(&quot;Germany?&quot;),
+])
+print(response.text())
+
+The llm.user() and llm.assistant() functions are new builder functions designed to be used within that messages&#x3D;[] array.
+
+The previous prompt&#x3D; option still works, but LLM upgrades it to a single-item messages array behind the scenes.
+
+You can also now reply to a response, as an alternative to building a conversation:
+
+response2 &#x3D; response.reply(&quot;How about Hungary?&quot;)
+print(response2) # Default __str__() calls .text()
+
+Streaming parts
+
+The other major new interface in the alpha concerns streaming results back from a prompt.
+
+Previously, LLM supported streaming like this:
+
+response &#x3D; model.prompt(&quot;Generate an SVG of a pelican riding a bicycle&quot;)
+for chunk in response:
+    print(chunk, end&#x3D;&quot;&quot;)
+
+Or this async variant:
+
+import asyncio
+import llm
+
+model &#x3D; llm.get_async_model(&quot;gpt-5.5&quot;)
+response &#x3D; model.prompt(&quot;Generate an SVG of a pelican riding a bicycle&quot;)
+
+async def run():
+    async for chunk in response:
+        print(chunk, end&#x3D;&quot;&quot;, flush&#x3D;True)
+
+asyncio.run(run())
+
+Many of today&#x27;s models return mixed types of content. A prompt run against Claude might return reasoning output, then text, then a JSON request for a tool call, then more text content.
+
+Some models can even execute tools on the server-side, for example OpenAI&#x27;s code interpreter tool or Anthropic&#x27;s web search. This means the results from the model can combine text, tool calls, tool outputs and other formats.
+
+Multi-modal output models are starting to emerge too, which can return images or even snippets of audio intermixed into that streaming response.
+
+The new LLM alpha models these as a stream of typed message parts. Here&#x27;s what that looks like as a Python API consumer:
+
+import asyncio
+import llm
+
+model &#x3D; llm.get_model(&quot;gpt-5.5&quot;)
+prompt &#x3D; &quot;invent 3 cool dogs, first talk about your motivations&quot;
+
+def describe_dog(name: str, bio: str) -&gt; str:
+    &quot;&quot;&quot;Record the name and biography of a hypothetical dog.&quot;&quot;&quot;
+    return f&quot;{name}: {bio}&quot;
+
+def sync_example():
+    response &#x3D; model.prompt(
+        prompt,
+        tools&#x3D;[describe_dog],
+    )
+    for event in response.stream_events():
+        if event.type &#x3D;&#x3D; &quot;text&quot;:
+            print(event.chunk, end&#x3D;&quot;&quot;, flush&#x3D;True)
+        elif event.type &#x3D;&#x3D; &quot;tool_call_name&quot;:
+            print(f&quot;\nTool call: {event.chunk}(&quot;, end&#x3D;&quot;&quot;, flush&#x3D;True)
+        elif event.type &#x3D;&#x3D; &quot;tool_call_args&quot;:
+            print(event.chunk, end&#x3D;&quot;&quot;, flush&#x3D;True)
+
+async def async_example():
+    model &#x3D; llm.get_async_model(&quot;gpt-5.5&quot;)
+    response &#x3D; model.prompt(
+        prompt,
+        tools&#x3D;[describe_dog],
+    )
+    async for event in response.astream_events():
+        if event.type &#x3D;&#x3D; &quot;text&quot;:
+            print(event.chunk, end&#x3D;&quot;&quot;, flush&#x3D;True)
+        elif event.type &#x3D;&#x3D; &quot;tool_call_name&quot;:
+            print(f&quot;\nTool call: {event.chunk}(&quot;, end&#x3D;&quot;&quot;, flush&#x3D;True)
+        elif event.type &#x3D;&#x3D; &quot;tool_call_args&quot;:
+            print(event.chunk, end&#x3D;&quot;&quot;, flush&#x3D;True)
+
+sync_example()
+asyncio.run(async_example())
+
+Sample output (from just the first sync example):
+
+
+My motivation: create three memorable dogs with distinct “cool” styles—one cinematic, one adventurous, and one charmingly chaotic—so each feels like they could star in their own story.
+
+Tool call: describe_dog({&quot;name&quot;: &quot;Nova Jetpaw&quot;, &quot;bio&quot;: &quot;A sleek silver-gray whippet who wears tiny aviator goggles and loves sprinting along moonlit beaches. Nova is fearless, elegant, and rumored to outrun drones just for fun.&quot;}
+
+Tool call: describe_dog({&quot;name&quot;: &quot;Mochi Thunderbark&quot;, &quot;bio&quot;: &quot;A fluffy corgi with a dramatic black-and-gold bandana and the confidence of a rock star. Mochi is short, loud, loyal, and leads a neighborhood &#x27;security patrol&#x27; made entirely of squirrels.&quot;}
+
+Tool call: describe_dog({&quot;name&quot;: &quot;Atlas Snowfang&quot;, &quot;bio&quot;: &quot;A massive white husky with ice-blue eyes and a backpack full of trail snacks. Atlas is calm, heroic, and always knows the way home—even during blizzards, fog, or confusing camping trips.&quot;}
+
+
+At the end of the response you can call response.execute_tool_calls() to actually run the functions that were requested, or send a response.reply() to have those tools called and their return values sent back to the model:
+
+print(response.reply(&quot;Tell me about the dogs&quot;))
+
+This new mechanism for streaming different token types means the CLI tool can now display &quot;thinking&quot; text in a different color from the text in the final response. The thinking text goes to stderr so it won&#x27;t affect results that are piped into other tools.
+
+This example uses Claude Sonnet 4.6 (with an updated streaming event version of the llm-anthropic plugin) as Anthropic&#x27;s models return their reasoning text as part of the response:
+
+
+llm -m claude-sonnet-4.6 &#x27;Think about 3 cool dogs then describe them&#x27; \
+  -o thinking_display 1
+
+
+
+You can suppress the output of reasoning tokens using the new -R/--no-reasoning flag. Surprisingly that ended up being the only CLI-facing change in this release.
+
+A mechanism for serializing and deserializing responses
+
+As mentioned earlier, LLM has quite inflexible code at the moment for persisting conversations to SQLite. I&#x27;ve added a new mechanism in 0.32a0 that should provide Python API users a way to roll their own alternative:
+
+serializable &#x3D; response.to_dict()
+# serializable is a JSON-style dictionary
+# store it anywhere you like, then inflate it:
+response &#x3D; Response.from_dict(serializable)
+
+The dictionary this returns is actually a TypedDict defined in the new llm/serialization.py module.
+
+What&#x27;s next?
+
+I&#x27;m releasing this as an alpha so I can upgrade various plugins and exercise the new design in real world environments for a few days. I expect the stable 0.32 release will be very similar to this alpha, unless alpha testing reveals some design flaw in the way I&#x27;ve put this all together.
+
+There&#x27;s one remaining large task: I&#x27;d like to redesign the SQLite logging system to better capture the more finely grained details that are returned by this new abstraction.
+
+Ideally I&#x27;d like to model this as a graph, to best support situations like an OpenAI-style chat completions API where the same conversations are constantly extended and then repeated with every prompt. I want to be able to store those without duplicating them in the database.
+
+I&#x27;m undecided as to whether that should be a feature in 0.32 or I should hold it for 0.33.
+Tags: projects, python, ai, annotated-release-notes, generative-ai, llms, llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Cybersecurity in the Intelligence Age
               <span class="post-metadata">(0 min |  words)</span> 
             </summary>
@@ -5641,6 +5877,18 @@ Tags: newsletter</a>
       <article>
           <details>
             <summary>
+              qwen3.5
+              <span class="post-metadata">(24 min | 7348 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/qwen3.5>Qwen 3.5 is a family of open-source multimodal models that delivers exceptional utility and performance.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               datasette-llm 0.1a6
               <span class="post-metadata">(3 min | 752 words)</span> 
             </summary>
@@ -6004,19 +6252,6 @@ The post CodeQL 2.25.0 adds Swift 6.2.4 support appeared first on The GitHub Blo
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2026-03-31-codeql-pull-requests-insights-on-security-overview-now-cover-all-protected-branches>The CodeQL pull request insights tab in GitHub security overview now reports Copilot Autofix and alert statistics from all protected branches, not just the default branch. This gives you a…
 The post CodeQL pull requests insights on security overview now cover all protected branches appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              EU data residency region expanding to include EFTA countries
-              <span class="post-metadata">(5 min | 1402 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-03-31-eu-data-residency-region-expanding-to-include-efta-countries>Starting May 1, 2026, the EU data residency region for GitHub Enterprise Cloud on ghe.com will include Azure infrastructure in EFTA (European Free Trade Association) countries—specifically Norway and Switzerland—in addition…
-The post EU data residency region expanding to include EFTA countries appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
