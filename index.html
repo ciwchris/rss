@@ -25,9 +25,236 @@
 
   <ul>
     <li>
+      <time>2026-05-20</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Google I/O, Gemini Spark, Antigravity
+              <span class="post-metadata">(4 min | 1137 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/May/20/google-io/#atom-everything>It&#x27;s hard to find much to write about Google I/O this year because I have a policy of not writing about anything that I can&#x27;t try out myself, and a lot of the big announcements are &quot;coming soon&quot;.
+I actually prefer to write about things that are in general availability, because I&#x27;ve had instances in the past where the previews didn&#x27;t match what was released to the general public later on.
+Aside from Gemini 3.5 Flash the most interesting announcement looks to be Google&#x27;s upcoming OpenClaw competitor Gemini Spark, described as &quot;your personal AI agent&quot; which can &quot;connect natively with your favorite Google apps like Gmail, Calendar, Drive, Docs, Sheets, Slides, YouTube, and Google Maps&quot;. The FAQ for that also includes this confusing detail:
+What Gemini model does Gemini Spark run on?
+Gemini Spark runs on Gemini 3.5 Flash and Antigravity.
+The antigravity.google website currently lists Antigravity as a desktop app, a CLI agent tool (written in Go), the Antigravity SDK (an open source Python wrapper around a bundled closed source Go binary), and the original Antigravity IDE (a VS Code fork).
+I guess Gemini Spark, the user-facing hosted agent product, might be running on that Go binary, but I&#x27;m not sure why that&#x27;s worth mentioning in the FAQ!
+Naturally I went looking for notes on how Gemini Spark intends to handle the risk of prompt injection. The best information I could find on that was in the Everything Google Cloud customers need to know coming out of Google I/O post aimed at enterprise customers, which includes:
+Spark operates in a fully managed, secure runtime on Google Cloud, meaning you get enterprise-grade security without ever having to manage the underlying infrastructure. Every task executes in a fresh, strictly isolated, ephemeral VM to help ensure data never overlaps between sessions. To protect your enterprise, all traffic routes through our secure Agent Gateway that enforces Data Loss Prevention (DLP) policies, while user credentials remain fully encrypted and are never exposed directly to the agent.
+Given how many people are going to be piping very sensitive data through Gemini Spark in the near future I hope they&#x27;ve made this bullet-proof, or this could be a top candidate for the agent security challenger disaster that we still haven&#x27;t seen.
+Also of note: in Transitioning Gemini CLI to Antigravity CLI Google announce that the open source Gemini CLI tool (Apache 2.0 licensed TypeScript) will stop working with their AI subscription plans on June 18th, replaced by the new closed source Antigravity CLI.
+Tags: gemini, google, generative-ai, ai, google-io, llms, prompt-injection</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Semantic issue search in Copilot Chat
+              <span class="post-metadata">(5 min | 1384 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-05-20-semantic-issue-search-in-copilot-chat>You can use natural language in GitHub Copilot Chat on web to quickly find, group, and analyze issues, with context-aware results powered by a new semantic issues index. What’s new…
+The post Semantic issue search in Copilot Chat appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              The next phase of OpenAI’s Education for Countries
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/the-next-phase-of-education-for-countries>OpenAI advances Education for Countries, expanding AI adoption in schools with new partnerships, teacher training, and tools to improve global learning outcomes.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-05-19</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              llm-gemini 0.32
+              <span class="post-metadata">(2 min | 747 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/May/19/llm-gemini-2/#atom-everything>Release: llm-gemini 0.32
+New model gemini-3.5-flash for Gemini 3.5 Flash.
+See also my notes on Gemini 3.5 Flash, and the pelican I drew using this upgrade to the plugin.
+Tags: gemini, llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Gemini 3.5 Flash: more expensive, but Google plan to use it for everything
+              <span class="post-metadata">(4 min | 1277 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/May/19/gemini-35-flash/#atom-everything>Today at Google I/O, Google released Gemini 3.5 Flash. This one skipped the -preview modifier and went straight to general availability, and Google appear to be using it for a whole lot of their key products:
+
+
+3.5 Flash is available today to billions of people globally:
+
+
+For everyone via the Gemini app and AI Mode in Google Search
+
+For developers in our agent-first development platform Google Antigravity and Gemini API in Google AI Studio and Android Studio
+
+For enterprises in Gemini Enterprise Agent Platform and Gemini Enterprise.
+
+
+
+As usual with Gemini, the most interesting details are tucked away in the What&#x27;s new in Gemini 3.5 Flash developer documentation. It mostly has the same set of platform features as the previous Gemini 3.x series, albeit with no computer use. The model ID is gemini-3.5-flash. The knowledge cut-off is January 2025, and it supports 1,048,576 input tokens and 65,536 maximum output tokens.
+
+Google are also pushing a new Interactions API, currently in beta, which looks to me like their version of the patterns introduced by OpenAI Responses - in particular server-side history management.
+
+The price has gone up
+
+Gemini 3.5 Flash is accompanied by a notable price bump. The previous models in the &quot;Flash&quot; family were Gemini 3 Flash Preview and Gemini 3.1 Flash-Lite. The new 3.5 Flash is 3x the price of 3 Flash Preview and 6x the price of 3.1 Flash-Lite (see price comparison here).
+
+At $1.50/million input and $9/million output it&#x27;s getting close in price to Google&#x27;s Gemini 3.1 Pro, which is $2 and $12.
+
+The Gemini team promise that 3.5 Pro will roll out &quot;next month&quot; - presumably at an even higher price.
+
+This fits a trend: OpenAI&#x27;s GPT-5.5 was 2x the price of GPT-5.4, and Claude Opus 4.7 is around 1.46x the price of 4.6 when you take the new tokenizer into account.
+
+Given the price increase it&#x27;s interesting to see Google roll it out for so many of their own free-to-consumer products. It feels like all three of the major AI labs are starting to probe the price tolerance of their API customers.
+
+Artificial Analysis publish the cost to run their proprietary benchmark against models, which is a useful way to take things like tokenization and increased volume of reasoning tokens into account. Some numbers worth comparing:
+
+
+
+Gemini 3.5 Flash (high): $1,551.60
+
+
+Gemini 3.1 Pro Preview: $892.28
+
+
+Gemini 3 Flash Preview (Reasoning): $278.26
+
+
+Gemini 3.1 Flash-Lite Preview: $93.60
+
+
+Running the benchmark for 3.5 Flash (high) cost significantly more than 3.1 Pro Preview!
+
+Here are some numbers from other vendors:
+
+
+
+Claude Opus 4.7 (Adaptive Reasoning, Max Effort): $5,117.14
+
+
+Claude Opus 4.7 (Non-reasoning, High Effort): $1,217.23
+
+
+GPT-5.5 (xhigh): $3,357.00
+
+
+GPT-5.5 (medium): $1,199.14
+
+
+A pelican on a bicycle
+
+I ran &quot;Generate an SVG of a pelican riding a bicycle&quot; against the Gemini API and got back this pelican, which is a lot:
+
+
+
+From the code comments: &lt;!-- Pelican Eye / Sunglasses (Cool Retro Aviators) --&gt;
+
+hedgehog on Hacker News:
+
+
+That pelican looks like it&#x27;s in Miami for a crypto conference.
+
+
+That one cost me 11 input tokens and 14,403 output tokens, for a total cost of just under 13 cents.
+Tags: google, ai, generative-ai, llms, gemini, llm-pricing, pelican-riding-a-bicycle, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Easily apply Copilot code review feedback with Copilot cloud agent
+              <span class="post-metadata">(5 min | 1543 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-05-19-easily-apply-copilot-code-review-feedback-with-copilot-cloud-agent>Copilot code review’s previous Implement suggestion button has now been renamed to Fix with Copilot and updated to support a UI dialog for more control over how suggestions are applied.…
+The post Easily apply Copilot code review feedback with Copilot cloud agent appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              datasette-llm-accountant 0.1a4
+              <span class="post-metadata">(2 min | 724 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/May/19/datasette-llm-accountant/#atom-everything>Release: datasette-llm-accountant 0.1a4
+Fixed bug tracking chains of responses. Refs datasette-llm#7
+Tags: llm, datasette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              llm-gemini 0.32a0
+              <span class="post-metadata">(2 min | 733 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/May/19/llm-gemini/#atom-everything>Release: llm-gemini 0.32a0
+Compatible with llm&gt;&#x3D;0.32a0 alpha - adds the ability to stream reasoning tokens.
+Tags: gemini, llm</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Introducing OpenAI for Singapore
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/introducing-openai-for-singapore>OpenAI for Singapore launches a multi-year AI partnership to expand deployment, build local talent, and support businesses and public services with AI.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              datasette-llm 0.1a8
+              <span class="post-metadata">(2 min | 731 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/May/19/datasette-llm/#atom-everything>Release: datasette-llm 0.1a8
+Fix for bug where llm_prompt_context() hook did not fully collect chains of responses. #7</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5029,80 +5256,6 @@ Tags: ai, generative-ai, llms, training-data, pelican-riding-a-bicycle</a>
               <a target="_blank" href=https://openai.com/index/introducing-chatgpt-images-2-0>ChatGPT Images 2.0 introduces a state-of-the-art image generation model with improved text rendering, multilingual support, and advanced visual reasoning.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Scaling Codex to enterprises worldwide
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/scaling-codex-to-enterprises-worldwide>OpenAI launches Codex Labs, partners with with Accenture, PwC, Infosys, and others to help enterprises deploy and scale Codex across the software development lifecycle, and hits 4M Codex WAU.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-04-20</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              kimi-k2.6
-              <span class="post-metadata">(9 min | 2552 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/kimi-k2.6>Kimi K2.6 is an open-source, native multimodal agentic model that advances practical capabilities in long-horizon coding, coding-driven design, proactive autonomous execution, and swarm-based task orchestration.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-openrouter 0.6
-              <span class="post-metadata">(3 min | 799 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Apr/20/llm-openrouter/#atom-everything>Release: llm-openrouter 0.6
-llm openrouter refresh command for refreshing the list of available models without waiting for the cache to expire.
-I added this feature so I could try Kimi 2.6 on OpenRouter as soon as it became available there.
-Here&#x27;s its pelican - this time as an HTML page because Kimi chose to include an HTML and JavaScript UI to control the animation. Transcript here.
-
-Tags: openrouter, llm, llm-release, pelican-riding-a-bicycle, kimi, ai-in-china, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Changes to GitHub Copilot plans for individuals
-              <span class="post-metadata">(5 min | 1583 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-04-20-changes-to-github-copilot-plans-for-individuals>As shared in our recent blog post, we’re making the following changes to Copilot plans for individuals as part of our ongoing efforts to ensure service reliability and a sustainable…
-The post Changes to GitHub Copilot plans for individuals appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Sunsetting SHA-1 in HTTPS on GitHub
-              <span class="post-metadata">(5 min | 1535 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-04-20-sunsetting-sha-1-in-https-on-github>What’s changing We’re going to remove the use of SHA-1 in HTTPS for GitHub and our CDNs. This impacts browsers that are used to view the GitHub website, any software…
-The post Sunsetting SHA-1 in HTTPS on GitHub appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
