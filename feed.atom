@@ -2,10 +2,151 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-05-21T16:33:25.338Z</updated>
+    <updated>2026-05-21T22:10:32.278Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Datasette Agent]]></title>
+        <id>https://simonwillison.net/2026/May/21/datasette-agent/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/May/21/datasette-agent/#atom-everything"/>
+        <updated>2026-05-21T19:52:19.000Z</updated>
+        <summary type="html"><![CDATA[<p>We just <a href="https://datasette.io/blog/2026/datasette-agent/">announced the first release of Datasette Agent</a>, a new extensible AI assistant for Datasette. I've been working on my <a href="https://llm.datasette.io/">LLM</a> Python library for just over three years now, and Datasette Agent represents the moment that LLM and <a href="https://datasette.io/">Datasette</a> finally come together. I'm really excited about it!</p>
+<p>Datasette Agent provides a conversational interface for asking questions of the data you have stored in Datasette. Add the <a href="https://github.com/datasette/datasette-agent-charts">datasette-agent-charts</a> plugin and it can generate charts of your data as well.</p>
+<h4 id="the-demo">The demo</h4>
+<p>The <a href="">announcement post</a> (on the new Datasette project blog) includes this <a href="https://www.youtube.com/watch?v=AFZKp6hbFjI">demo video</a>:</p>
+
+<iframe style="margin-bottom: 1.5em;" width="560" height="315" src="https://www.youtube-nocookie.com/embed/AFZKp6hbFjI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="allowfullscreen"> </iframe>
+
+
+<p>I recorded the video against the new <a href="https://agent.datasette.io/">agent.datasette.io</a> live demo instance, which runs Datasette Agent against example databases including the classic <a href="https://datasette.io/global-power-plants">global-power-plants</a> by <a href="https://www.wri.org/research/global-database-power-plants">WRI</a>, and a copy of the <a href="https://datasette.simonwillison.net/">Datasette backup</a> of my blog.</p>
+<p>The live demo runs on <a href="https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</a> - it's cheap, fast and has no trouble writing SQLite queries.</p>
+<p>A question I asked in the demo was:</p>
+<blockquote>
+<p>when did Simon most recently see a pelican?</p>
+</blockquote>
+<p>Which ran <a href="https://datasette.simonwillison.net/simonwillisonblog?sql=SELECT+title%2C+commentary%2C+created+FROM+blog_beat+WHERE+beat_type+%3D+%27sighting%27+AND+%28title+LIKE+%27%25pelican%25%27+OR+commentary+LIKE+%27%25pelican%25%27%29+ORDER+BY+created+DESC+LIMIT+5">this SQL query</a>:</p>
+<div class="highlight highlight-source-sql"><pre><span class="pl-k">SELECT</span>
+  title, commentary, created
+<span class="pl-k">FROM</span>
+  blog_beat
+<span class="pl-k">WHERE</span>
+  beat_type <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>sighting<span class="pl-pds">'</span></span>
+  <span class="pl-k">AND</span> (title <span class="pl-k">LIKE</span> <span class="pl-s"><span class="pl-pds">'</span>%pelican%<span class="pl-pds">'</span></span> <span class="pl-k">OR</span> commentary <span class="pl-k">LIKE</span> <span class="pl-s"><span class="pl-pds">'</span>%pelican%<span class="pl-pds">'</span></span>)
+<span class="pl-k">ORDER BY</span>
+  created <span class="pl-k">DESC</span>
+<span class="pl-k">LIMIT</span>
+  <span class="pl-c1">5</span></pre></div>
+<p>And replied:</p>
+<blockquote>
+<p>The most recent sighting of a pelican by Simon was recorded on <strong>May 20, 2026</strong>.</p>
+<p>The observation included a California Brown Pelican, along with a Common Loon, Canada Goose, Striped Shore Crab, and a California Sea Lion.</p>
+</blockquote>
+<p>Here's <a href="https://simonwillison.net/2026/May/20/sighting-363395265/">that sighting on my blog</a>, and the <a href="https://gist.github.com/simonw/a46d17b69659a4866adb1d868280091d">Markdown export</a> of the full conversation transcript.</p>
+<h4 id="the-plugins">The plugins</h4>
+<p>My favorite feature of Datasette Agent is that, like the rest of Datasette, it's extensible using plugins.</p>
+<p>We've shipped three plugins so far:</p>
+<ul>
+<li>
+<a href="https://github.com/datasette/datasette-agent-charts">datasette-agent-charts</a>, shown in the video, adds charts to Datasette Agent, powered by <a href="https://observablehq.com/plot/">Observable Plot</a>.</li>
+<li>
+<a href="https://github.com/datasette/datasette-agent-openai-imagegen">datasette-agent-openai-imagegen</a> adds an image generation tool to Datasette Agent using <a href="https://openai.com/index/introducing-chatgpt-images-2-0/">ChatGPT Images 2.0</a>.</li>
+<li>
+<a href="https://github.com/datasette/datasette-agent-sprites">datasette-agent-sprites</a> provides tools for executing code in a <a href="https://sprites.dev/">Fly Sprites</a> persistent sandbox.</li>
+</ul>
+<p>Building plugins is <em>really fun</em>. I have a bunch more prototypes that aren't quite alpha-quality yet.</p>
+<p>Claude Code and OpenAI Codex are both proving excellent at writing plugins - just point them at a checkout of the <a href="https://github.com/datasette/datasette-agent">datasette-agent repo</a> for reference and tell them what you want to build!</p>
+<h4 id="running-it-against-local-models">Running it against local models</h4>
+<p>I've also been having fun running the new plugin against local models. Here's a <code>uv</code> one-liner to run the plugin against <a href="https://huggingface.co/google/gemma-4-26B-A4B">gemma-4-26b-a4b</a> in <a href="https://lmstudio.ai">LM Studio</a> on a Mac:</p>
+<div class="highlight highlight-source-shell"><pre>uvx --prerelease=allow \
+  --with datasette-agent --with llm-lmstudio \
+  datasette --internal internal.db --root \
+  -s plugins.datasette-llm.default_model lmstudio/google/gemma-4-26b-a4b \
+  data.db</pre></div>
+<p>Datasette Agent needs reliable tool calls and the ability for a model to produce SQL queries that run against SQLite. The open weight models released in the past six months are increasingly able to handle that.</p>
+<h4 id="what-s-next">What's next</h4>
+<p>Datasette Agent opens up <em>so many</em> opportunities for the LLM and Datasette ecosystem in general.</p>
+<p>It's already informed <a href="https://simonwillison.net/2026/Apr/29/llm/">the major LLM 0.32a0 refactor</a> which I'm nearly ready to roll into a stable release, maybe with some additional "LLM agent" abstractions extracte from Datasette Agent itself.</p>
+<p>I've been exploring my own take on the Claude Artifacts, which is shaping up nicely as a plugin.</p>
+<p>I'm excited to use Datasette Agent to build my own <a href="https://simonwillison.net/2026/May/19/5-minute-llms/#5-minutes-llms.013.jpeg">Claw</a> - a personal AI assistant built around data imported from different parts of my digital life, which is a neat excuse to revisit my older <a href="https://dogsheep.github.io">Dogsheep</a> family of tools.</p>
+<p>We'll also be rolling out Datasette Agent for users of <a href="https://datasette.cloud/">Datasette Cloud</a>.</p>
+<p>Join our <a href="https://discord.gg/hdxyusUFv">#datasette-agent Discord channel</a> if you'd like to talk about the project.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[datasette-agent-sprites 0.1a0]]></title>
+        <id>https://simonwillison.net/2026/May/21/datasette-agent-sprites/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/May/21/datasette-agent-sprites/#atom-everything"/>
+        <updated>2026-05-21T18:21:07.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-agent-sprites/releases/tag/0.1a0">datasette-agent-sprites 0.1a0</a></p>
+        <p>A Datasette Agent plugin for running commands in a <a href="https://sprites.dev">Fly Sprites</a> sandbox.</p>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/sandboxing">sandboxing</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/fly">fly</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[May 21st, 2026 - Search API preview opens to all users]]></title>
+        <id>https://kagifeedback.org/d/10622-may-21st-2026-search-api-preview-opens-to-all-users/1</id>
+        <link href="https://kagifeedback.org/d/10622-may-21st-2026-search-api-preview-opens-to-all-users/1"/>
+        <updated>2026-05-21T17:40:33.000Z</updated>
+        <summary type="html"><![CDATA[Kagi Search API is now in public preview
+Today we’re making the Kagi Search API preview publicly available, giving builders access to Kagi search across web, images, videos, news, and podcasts. The API is ready to use today, and we’re using this preview to transition existing beta API users, collect feedback, and finish the remaining launch details before the official announcement.
+As a thank you to our subscribers, we’ve added $5 in API credits to your account. You can use them right away to try the API, explore what’s possible, and see how it fits into your workflow.
+ 
+
+Explore the API, read the docs, and check pricing to get started!
+
+The API is not just a generic search endpoint, queries can inherit the preferences attached to the Kagi account behind the API key, including lenses, upra…]]></summary>
+        <author>
+            <name>Activity in the release-notes tag</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[datasette-agent-charts 0.1a2]]></title>
+        <id>https://simonwillison.net/2026/May/21/datasette-agent-charts/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/May/21/datasette-agent-charts/#atom-everything"/>
+        <updated>2026-05-21T15:15:58.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-agent-charts/releases/tag/0.1a2">datasette-agent-charts 0.1a2</a></p>
+        <blockquote>
+<ul>
+<li>"View SQL query" buttons below rendered charts.</li>
+</ul>
+</blockquote>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[datasette-agent 0.1a3]]></title>
+        <id>https://simonwillison.net/2026/May/21/datasette-agent-2/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/May/21/datasette-agent-2/#atom-everything"/>
+        <updated>2026-05-21T15:04:09.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-agent/releases/tag/0.1a3">datasette-agent 0.1a3</a></p>
+        <blockquote>
+<ul>
+<li>"View SQL query" buttons for both visible tables and collapsed SQL result tool calls.</li>
+<li>Don't display empty reasoning chunks</li>
+<li>Improved handling of truncated responses - table still displays to the user even if the SQL results were truncated when showing the agent.</li>
+</ul>
+</blockquote>
+<p>See <a href="https://datasette.io/blog/2026/datasette-agent/">Datasette Agent, an extensible AI assistant for Datasette</a>.</p>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Issue fields are now in public preview for all organizations]]></title>
         <id>https://github.blog/changelog/2026-05-21-issue-fields-are-now-in-public-preview-for-all-organizations</id>
@@ -15,6 +156,16 @@
 The post Issue fields are now in public preview for all organizations appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[AdventHealth advances whole-person care with OpenAI]]></title>
+        <id>https://openai.com/index/adventhealth</id>
+        <link href="https://openai.com/index/adventhealth"/>
+        <updated>2026-05-21T12:00:00.000Z</updated>
+        <summary type="html"><![CDATA[AdventHealth is using ChatGPT for Healthcare to streamline workflows, reduce administrative burden, and return more time to patient care.]]></summary>
+        <author>
+            <name>OpenAI News</name>
         </author>
     </entry>
     <entry>
@@ -104,6 +255,27 @@ The post Updates to available models in Copilot on web appeared first on The Git
 The post Auto model selection now routes based on your task in VS Code appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[datasette-agent-charts 0.1a1]]></title>
+        <id>https://simonwillison.net/2026/May/20/datasette-agent-charts/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/May/20/datasette-agent-charts/#atom-everything"/>
+        <updated>2026-05-20T14:52:16.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-agent-charts/releases/tag/0.1a1">datasette-agent-charts 0.1a1</a></p>
+        <blockquote>
+<ul>
+<li>More color! Bar and waffle charts without a color column are shaded by magnitude with a sequential color scheme; color columns holding text values use the <code>observable10</code> categorical scheme. #2</li>
+<li>Now checks <code>execute-sql</code> permission before running the query to find the column names.</li>
+<li>Charts now display interactive tooltips.</li>
+<li>Fixed a bug where <code>waffleY</code> charts were not described to the agent.</li>
+</ul>
+</blockquote>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
@@ -894,6 +1066,24 @@ The post Timestamp fields in GitHub Projects appeared first on The GitHub Blog.]
         </author>
     </entry>
     <entry>
+        <title type="html"><![CDATA[datasette-agent 0.1a2]]></title>
+        <id>https://simonwillison.net/2026/May/15/datasette-agent/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/May/15/datasette-agent/#atom-everything"/>
+        <updated>2026-05-15T00:03:00.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-agent/releases/tag/0.1a2">datasette-agent 0.1a2</a></p>
+        <blockquote>
+<ul>
+<li>Tool availability can now be attached to a <code>required_permission</code>. The default background agent tools now require the new <code>datasette-agent-background</code> permission. #10</li>
+</ul>
+</blockquote>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[How business operations teams use Codex]]></title>
         <id>https://openai.com/academy/codex-for-work/how-business-operations-teams-use-codex</id>
         <link href="https://openai.com/academy/codex-for-work/how-business-operations-teams-use-codex"/>
@@ -984,6 +1174,24 @@ The post Team-level Copilot usage metrics now available via API appeared first o
 <p class="cite">&mdash; <a href="https://twitter.com/mitchellh/status/2055039647924007222">Mitchell Hashimoto</a>, on Bun porting from Zig to Rust</p>
 
     <p>Tags: <a href="https://simonwillison.net/tags/zig">zig</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/mitchell-hashimoto">mitchell-hashimoto</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/rust">rust</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/bun">bun</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[datasette-agent 0.1a1]]></title>
+        <id>https://simonwillison.net/2026/May/14/datasette-agent/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/May/14/datasette-agent/#atom-everything"/>
+        <updated>2026-05-14T22:01:42.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-agent/releases/tag/0.1a1">datasette-agent 0.1a1</a></p>
+        <blockquote>
+<ul>
+<li>Now uses the <code>execute-sql</code> permission when deciding which tables to list to the user. #8</li>
+</ul>
+</blockquote>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
@@ -2504,6 +2712,26 @@ Matt Webb:</p>
     <p>Tags: <a href="https://simonwillison.net/tags/atom">atom</a>, <a href="https://simonwillison.net/tags/matt-webb">matt-webb</a>, <a href="https://simonwillison.net/tags/rss">rss</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[April 30th, 2026 - Kagi API preview and ecosystem updates]]></title>
+        <id>https://kagifeedback.org/d/10468-april-30th-2026-kagi-api-preview-and-ecosystem-updates/1</id>
+        <link href="https://kagifeedback.org/d/10468-april-30th-2026-kagi-api-preview-and-ecosystem-updates/1"/>
+        <updated>2026-04-30T16:44:20.000Z</updated>
+        <summary type="html"><![CDATA[Kagi APIs: the same search technology that powers Kagi is opening up to developers
+Starting next week, we’ll begin onboarding developers to the Kagi API dashboard. Access will roll out first to people who joined the API waitlist or contacted Kagi support.
+With the new Search API developers can bring Kagi Search into their own apps, tools, and AI systems. Here's an early look:
+
+If you'd like to join this early preview of the Kagi API, please fill out this form. We'll reach out next week!
+Kagi Search
+New landing
+We updated our landing page to bring awareness to Kagi's wider ecosystem beyond search. Check it out!
+This is the first of many steps toward helping more people discover everything Kagi has to offer.
+IP address and subnet search to bring up the Wolfram Alpha answer #10147 @dronics
+Wr…]]></summary>
+        <author>
+            <name>Activity in the release-notes tag</name>
         </author>
     </entry>
     <entry>
@@ -4102,61 +4330,6 @@ The post Bring your own language model key in VS Code now available appeared fir
         <summary type="html"><![CDATA[OpenAI makes ChatGPT for Clinicians free for verified U.S. physicians, nurse practitioners, and pharmacists, supporting clinical care, documentation, and research.]]></summary>
         <author>
             <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Introducing workspace agents in ChatGPT]]></title>
-        <id>https://openai.com/index/introducing-workspace-agents-in-chatgpt</id>
-        <link href="https://openai.com/index/introducing-workspace-agents-in-chatgpt"/>
-        <updated>2026-04-22T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Workspace agents in ChatGPT are Codex-powered agents that automate complex workflows, run in the cloud, and help teams scale work across tools securely.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Speeding up agentic workflows with WebSockets in the Responses API]]></title>
-        <id>https://openai.com/index/speeding-up-agentic-workflows-with-websockets</id>
-        <link href="https://openai.com/index/speeding-up-agentic-workflows-with-websockets"/>
-        <updated>2026-04-22T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[A deep dive into the Codex agent loop, showing how WebSockets and connection-scoped caching reduced API overhead and improved model latency.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Workspace agents]]></title>
-        <id>https://openai.com/academy/workspace-agents</id>
-        <link href="https://openai.com/academy/workspace-agents"/>
-        <updated>2026-04-22T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Learn how to build, use, and scale workspace agents in ChatGPT to automate repeatable workflows, connect tools, and streamline team operations.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[C++ code intelligence for GitHub Copilot CLI in public preview]]></title>
-        <id>https://github.blog/changelog/2026-04-20-c-code-intelligence-for-github-copilot-cli-in-public-preview</id>
-        <link href="https://github.blog/changelog/2026-04-22-c-code-intelligence-for-github-copilot-cli-in-public-preview"/>
-        <updated>2026-04-22T07:00:26.000Z</updated>
-        <summary type="html"><![CDATA[The Microsoft C++ Language Server is now available in public preview for the Copilot CLI. Powered by the same IntelliSense engine used in Visual Studio and VS Code, it extends…
-The post C++ code intelligence for GitHub Copilot CLI in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Bobby Holley]]></title>
-        <id>https://simonwillison.net/2026/Apr/22/bobby-holley/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Apr/22/bobby-holley/#atom-everything"/>
-        <updated>2026-04-22T05:40:56.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://blog.mozilla.org/en/privacy-security/ai-security-zero-day-vulnerabilities/"><p>As part of our continued collaboration with Anthropic, we had the opportunity to apply an early version of Claude Mythos Preview to Firefox. This week’s release of Firefox 150 includes fixes for <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2026-30/">271 vulnerabilities</a> identified during this initial evaluation. [...]</p>
-<p>Our experience is a hopeful one for teams who shake off the vertigo and get to work. You may need to reprioritize everything else to bring relentless and single-minded focus to the task, but there is light at the end of the tunnel. We are extremely proud of how our team rose to meet this challenge, and others will too. Our work isn’t finished, but we’ve turned the corner and can glimpse a future much better than just keeping up. <strong>Defenders finally have a chance to win, decisively</strong>.</p></blockquote>
-<p class="cite">&mdash; <a href="https://blog.mozilla.org/en/privacy-security/ai-security-zero-day-vulnerabilities/">Bobby Holley</a>, CTO, Firefox</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/firefox">firefox</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/mozilla">mozilla</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/ai-security-research">ai-security-research</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
 </feed>
