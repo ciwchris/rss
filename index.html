@@ -25,9 +25,245 @@
 
   <ul>
     <li>
+      <time>2026-06-06</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              micropython-wasm 0.1a2
+              <span class="post-metadata">(3 min | 769 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/6/micropython-wasm/#atom-everything>Release: micropython-wasm 0.1a2
+I added a CLI to micropython-wasm (issue #7), inspired by the first draft of the blog entry when I realized it would be a great way to illustrate the Try it yourself section.
+Tags: python, sandboxing, webassembly, micropython</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Running Python code in a sandbox with MicroPython and WASM
+              <span class="post-metadata">(8 min | 2428 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/6/micropython-in-a-sandbox/#atom-everything>I&#x27;ve been experimenting with different approaches to running code in a sandbox for several years now, but my latest attempt feels like it might finally have all of the characteristics I&#x27;ve been looking for. I&#x27;ve released it as an alpha package called micropython-wasm, and I&#x27;m using it for a code execution sandbox plugin for Datasette Agent called datasette-agent-micropython.
+
+
+  
+Why do I want a sandbox?
+
+  
+What I want from a sandbox
+
+  
+WebAssembly looks really promising here
+
+  
+MicroPython in WebAssembly
+
+  
+Building the first version
+
+  
+Try it yourself
+
+  
+Should you trust my vibe-coded sandbox?
+
+
+Why do I want a sandbox?
+
+My key open source projects - Datasette, LLM, even sqlite-utils - all support plugins.
+
+I absolutely love plugins as a mechanism for extending software. A carefully designed plugin system reduces the risk involved in trying new things to almost nothing - even the wildest ideas won&#x27;t leave a lasting influence on the core application itself. My software can grow a new feature overnight and I don&#x27;t even have to review a pull request!
+
+There&#x27;s one major drawback: my plugin systems all use Python and Pluggy, and plugin code executes with full privileges within my applications. A buggy or malicious plugin could break everything or leak private data.
+
+I&#x27;d love to be able to run plugin-style code in an environment where it is unable to read unapproved files, connect to a network, or generally operate in a way that&#x27;s risky or harmful to the rest of the application or the user&#x27;s computer.
+
+My interest covers more than just plugins. For Datasette in particular there are many features I&#x27;d like to support where arbitrary code execution would be useful. I&#x27;ve already experimented with this for Datasette Enrichments, where code can be used to transform values stored in a table. I&#x27;d love to build a mechanism where you can run code on a schedule that fetches JSON from an approved location, runs a tiny bit of code to reformat it into a list of dictionaries, then inserts those as rows in a SQLite database table.
+
+What I want from a sandbox
+
+My goal is to execute code safely within my own Python applications. Here&#x27;s what I need:
+
+
+Dependencies that cleanly install from PyPI, including binary wheels across multiple platforms if necessary. I don&#x27;t want people using my software to have to take any extra steps beyond directly installing my Python package.
+
+Executed code must be subject to both memory and CPU limits. I don&#x27;t want while True: s +&#x3D; &quot;longer string&quot; to crash my application or the user&#x27;s computer.
+
+
+File access must be strictly controlled. Either no filesystem access at all or I get to define exactly which files can be read and which files can be written to.
+
+
+Network access is controlled as well. Sandboxed code should not be able to communicate with anything without going through a layer I fully control.
+
+Support for interaction with host functions. A sandbox isn&#x27;t much use if I can&#x27;t carefully expose selected platform features to the code that it&#x27;s running.
+
+It has to be robust, supported, and clearly documented. I&#x27;ve lost count of the number of sandbox projects I&#x27;ve seen in repos with warnings that they aren&#x27;t actively maintained!
+
+
+WebAssembly looks really promising here
+
+Web browsers operate in the most hostile environment imaginable when it comes to malicious code. Their job is to download and execute untrusted code from the web on almost every page load.
+
+Given this, JavaScript engines should be excellent candidates for sandboxes. Sadly those engines are also extremely complicated, and are not designed for easy embedding in other projects. Most of the v8-in-Python projects I&#x27;ve seen are infrequently maintained and come with warnings not to use them with completely untrusted code.
+
+WebAssembly is a much better candidate. It was designed from the start to support all of the characteristics I care about and has been tested in browsers for nearly a decade. The wasmtime Python library is actively maintained and has binary wheels.
+
+MicroPython in WebAssembly
+
+WebAssembly engines like wasmtime run WebAssembly binaries. Some programming languages like Rust are easy to compile directly to WebAssembly. Dynamic languages like JavaScript and Python are harder - they support language primitives like eval(), which means they need a full interpreter available at runtime.
+
+To run Python we need a full Python interpreter compiled to WebAssembly, wired up in a way that makes it easy to feed it code, hook up host functions and access the results.
+
+Pyodide offers an outstanding package for running Python using WebAssembly in the browser, but using Pyodide in server-side Python isn&#x27;t supported. The most recent advice I could find was from October 2024 stating &quot;Pyodide is built by the Emscripten toolchain and can only run in a browser or Node.js&quot;.
+
+The other day I decided to take a look at MicroPython as an option for this. The MicroPython site says:
+
+
+MicroPython is a lean and efficient implementation of the Python 3 programming language that includes a small subset of the Python standard library and is optimised to run on microcontrollers and in constrained environments.
+
+
+WebAssembly sure feels like a constrained environment to me!
+
+Building the first version
+
+I had GPT-5.5 Pro do some research for me, which turned up this PR against MicroPython by Yamamoto Takahashi titled &quot;Experimental WASI support for ports/unix&quot;.
+
+It then produced this research.md document, so I let Codex Desktop and GPT-5.5 high loose on it to see what would happen:
+
+
+read the research.md document and build this. You will probably need to write a script that compiles a custom WASM version of MicroPython as part of this project - fetch the MicroPython code to a /tmp directory for this as part of that script.
+
+
+It worked. I now had a prototype Python library that could execute Python code inside a WebAssembly sandbox!
+
+The trickiest piece to solve was persistent interpreter state. The WASM build we are using here exposes a single entry point which starts the interpreter, runs the code and then stops the interpreter at the end.
+
+This works fine for one-off scripts, but for Datasette Agent I want variables and functions to stay resident in memory so I can reuse them across multiple code execution calls.
+
+A neat thing about working with coding agents is that you can get from an idea to a proof of concept quickly. I prompted:
+
+
+For keeping variables resident: what if we ran code inside micropython itself which called a host function get_next_python_code() and then passed that to eval() - and that host function blocked until new code was available, maybe by running in a thread with a queue? Could that or a similar idea help here?
+
+
+After some iteration we got to a version of this that works! In Python code you can now do this:
+
+from micropython_wasm import MicroPythonSession
+
+with MicroPythonSession() as session:
+    print(session.run(&quot;x &#x3D; 10\nprint(x)&quot;).stdout)
+    print(session.run(&quot;x +&#x3D; 5\nprint(x)&quot;).stdout)
+    print(session.run(&quot;print(x * 2)&quot;).stdout)
+
+Under the hood this starts a thread, sets up a request queue and then sends messages to that queue for the session.run() command, each time waiting on a reply queue for the result of that execution. Inside WASM the MicroPython interpreter blocks waiting for a __session_next__() host function to return the next line of code, which it runs eval() on before calling __session_result__({&quot;id&quot;: request_id, &quot;ok&quot;: True}) when each block has been successfully executed.
+
+The other piece of complexity was supporting host functions, so my Python library could selectively expose functions that could then be called by code running in MicroPython.
+
+Codex ended up solving this with 78 lines of C, which ends up compiled into the 362KB WebAssembly blob I&#x27;m distributing with the package.
+
+I am by no means a C programmer, but I&#x27;ve read the C and had two different models explain it to me (here&#x27;s Claude&#x27;s explanation) and I&#x27;ve subjected it to a barrage of tests.
+
+The great thing about working with WebAssembly is that if the C turns out to be fatally flawed the worst that can happen is the WebAssembly execution will fail with an exception. I can live with that risk.
+
+Memory limits are directly supported by wasmtime. CPU limits are a little harder: wasmtime offers a &quot;fuel&quot; concept to limit how many operations a WebAssembly call can execute, and that&#x27;s the correct fit for this problem, but the units are hard to reason about. I&#x27;m experimenting with a 20 million default &quot;fuel&quot; setting now but I&#x27;m not confident that it&#x27;s the most appropriate value.
+
+Try it yourself
+
+The micropython-wasm alpha is now live on PyPI.
+
+You can try it from your own Python code as described in the README. I&#x27;ve also added a simple CLI mode in version 0.1a2 which means you can try it using uvx without first installing it like so:
+
+
+uvx micropython-wasm -c &#x27;print(&quot;Hello world&quot;)&#x27;
+# To see it run out of fuel:
+uvx micropython-wasm -c &#x27;s &#x3D; &quot;&quot;; while True: s +&#x3D; &quot;longer&quot;&#x27;
+# Outputs: micropython-wasm: guest exited with code 1
+
+You can also try it in Datasette Agent like this:
+
+
+uvx llm keys set openai
+# Paste in an OpenAI key, then:
+uvx --with datasette-agent \
+  --with datasette-agent-micropython \
+  --prerelease allow \
+  datasette --internal internal.db \
+    -s plugins.datasette-llm.default_model gpt-5.5 \
+    --root -o
+
+Then navigate to http://127.0.0.1:8001/-/agent and run the prompt:
+
+
+show me some micropython
+
+
+
+
+
+
+Should you trust my vibe-coded sandbox?
+
+Having complained about immature, loosely-maintained sandboxing libraries, it&#x27;s deeply ironic that I&#x27;ve now built my own!
+
+I deliberately slapped an alpha release version on it, and I&#x27;m not ready to recommend it to anyone who isn&#x27;t willing to take a significant risk.
+
+I&#x27;ve put it through enough testing that I&#x27;m OK using it myself. I&#x27;ve shipped my first plugin that uses it, datasette-agent-micropython. I&#x27;ve also locked GPT-5.5 xhigh in that Datasette Agent plugin and challenged it to break out of the sandbox and so far it has not managed to.
+
+I&#x27;m hoping this implementation can convince some companies with professional security teams and high-stakes problems to commit to using Python in WebAssembly as a sandboxing approach and open source their own solutions.
+Tags: python, sandboxing, ai, datasette, webassembly, generative-ai, llms, ai-assisted-programming, codex, datasette-agent, micropython</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-06-05</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              OpenAI Help: Lockdown Mode
+              <span class="post-metadata">(3 min | 974 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/5/openai-help-lockdown-mode/#atom-everything>OpenAI Help: Lockdown Mode
+in February, but now it&#x27;s live and &quot;rolling out to eligible personal accounts, including Free, Go, Plus, and Pro, and self-serve ChatGPT Business accounts&quot;:
+Lockdown Mode is designed to help prevent the final stage of data exfiltration from a prompt injection attack by limiting outbound network requests that could transfer sensitive data to an attacker. Lockdown Mode does not prevent prompt injections from appearing in the content ChatGPT processes. For example, a prompt injection could appear in cached web content or in an uploaded file, and could still affect the behavior or accuracy of a response.
+This looks really good to me.
+The Lethal Trifecta occurs when an LLM system has access to all three of access to private data, exposure to untrusted content and a way to steal data and transmit it back to the attacker.
+The only way to solve the trifecta is to cut off one of the three legs, and by far the easiest leg to restrict without making your LLM systems far less useful is the exfiltration vectors to steal data.
+It looks to me like lockdown mode directly attacks that leg, using mechanisms that are deterministic and, crucially, are not evaluated by AI systems that themselves can be subverted by sufficiently devious attacks.
+The existence of lockdown mode does however imply that ChatGPT, in its default settings, does not provide robust protection against sufficiently determined data exfiltration attacks!
+
+
+    
+Tags: security, ai, openai, prompt-injection, llms, lethal-trifecta</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GPT-5.2 and GPT-5.2-Codex deprecated
+              <span class="post-metadata">(4 min | 1345 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-06-05-gpt-5-2-and-gpt-5-2-codex-deprecated>As of today, June 5, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note…
+The post GPT-5.2 and GPT-5.2-Codex deprecated appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4509,214 +4745,6 @@ The post More flexible secrets and variables for Copilot cloud agent appeared fi
 The post CodeQL 2.25.3 adds Swift 6.3 support appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Upcoming deprecation of GPT-4.1
-              <span class="post-metadata">(4 min | 1336 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-07-upcoming-deprecation-of-gpt-4-1>We will deprecate the following model across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) on 6/1/2026: Model Deprecation date Suggested alternative…
-The post Upcoming deprecation of GPT-4.1 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-05-07</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Claude Sonnet 4 deprecated
-              <span class="post-metadata">(4 min | 1335 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-07-claude-sonnet-4-deprecated>We have deprecated the following model across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) on May 6, 2026. Model Deprecation date…
-The post Claude Sonnet 4 deprecated appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enterprise Live Migrations is now in public preview
-              <span class="post-metadata">(5 min | 1551 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-07-enterprise-live-migrations-is-now-in-public-preview>Enterprise Live Migrations (ELM) is now available in public preview. ELM gives enterprise administrators a new way to migrate repositories from GitHub Enterprise Server (GHES) to GitHub Enterprise Cloud with…
-The post Enterprise Live Migrations is now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-gemini 0.31
-              <span class="post-metadata">(3 min | 761 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/7/llm-gemini/#atom-everything>Release: llm-gemini 0.31
-gemini-3.1-flash-lite is no longer a preview. 
-Here&#x27;s my write-up of the Gemini 3.1 Flash-Lite Preview model back in March. I don&#x27;t believe this new non-preview model has changed since then.
-Tags: llm-release, gemini, llm, google, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Big Words
-              <span class="post-metadata">(3 min | 780 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/7/big-words/#atom-everything>Tool: Big Words
-I&#x27;m using my vibe coded macOS presentations tool to put together a talk, and I wanted to add a slide with some text on it. The tool only accepts URLs, so I put together a quick page that accepts query string arguments and turns them into a simple slide.
-Here&#x27;s an example: https://tools.simonwillison.net/big-words?text&#x3D;simonwillison.net&amp;gradient&#x3D;1&amp;size&#x3D;9.5
-Double click or double tap the page to access a form for modifying the different options.
-
-Tags: vibe-coding, tools</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Behind the Scenes Hardening Firefox with Claude Mythos Preview
-              <span class="post-metadata">(3 min | 954 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/7/firefox-claude-mythos/#atom-everything>Behind the Scenes Hardening Firefox with Claude Mythos Preview
-Suddenly, the bugs are very good
-Just a few months ago, AI-generated security bug reports to open source projects were mostly known for being unwanted slop. Dealing with reports that look plausibly correct but are wrong imposes an asymmetric cost on project maintainers: it’s cheap and easy to prompt an LLM to find a “problem” in code, but slow and expensive to respond to it.
-It is difficult to overstate how much this dynamic changed for us over a few short months. This was due to a combination of two main factors. First, the models got a lot more capable. Second, we dramatically improved our techniques for harnessing these models — steering them, scaling them, and stacking them to generate large amounts of signal and filter out the noise.
-They include some detailed bug descriptions too, including a 20-year old XSLT bug and a 15-year-old bug in the &lt;legend&gt; element.
-A lot of the attempts made by the harness were blocked by Firefox&#x27;s existing defense-in-depth measures, which is reassuring.
-Mozilla were fixing around 20-30 security bugs in Firefox per month through 2025. That jumped to 423 in April.
-
-
-    
-Via Lobste.rs
-Tags: firefox, mozilla, security, ai, generative-ai, llms, anthropic, claude, ai-security-research</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Notes on the xAI/Anthropic data center deal
-              <span class="post-metadata">(4 min | 1256 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/7/xai-anthropic/#atom-everything>There weren&#x27;t a lot of big new announcements from Anthropic at yesterday&#x27;s Code w/ Claude event, but the biggest by far was the deal they&#x27;ve struck with SpaceX/xAI to use &quot;all of the capacity of their Colossus data center&quot;.
-
-As I mentioned in my live blog of the keynote, that&#x27;s the one with the particularly bad environmental record. The gas turbines installed to power the facility initially ran without Clean Air Act permits or pollution control devices, which they got away with by classifying them as &quot;temporary&quot;. Credible reports link it to increases in hospital admissions relating to low air quality.
-
-Andy Masley, one of the most prolific voices pushing back against misleading rhetoric about data centers (see The AI water issue is fake and Data center land issues are fake), had this to say about Colossus:
-
-
-I would simply not run my computing out of this specific data center
-
-
-I get that Anthropic are severely compute-constrained, but in a world where the very existence of &quot;AI data centers&quot; is a red-hot political issue (see recent news out of Utah for a fresh example), signing up with this particular data center is a really bad look.
-
-There was a lot of initial chatter about how this meant xAI were clearly giving up on their own Grok models, since all of their capacity would be sold to Anthropic instead. That was a misconception - Anthropic are getting Colossus 1, but xAI are keeping their larger Colossus 2 data center for their own work.
-
-As an interesting side note, the night before the Anthropic announcement, xAI sent out a deprecation notice for Grok 4.1 Fast and several other models providing just two weeks&#x27; notice before shutdown, reported here by @xlr8harder from SpeechMap:
-
-
-
-
-This is terrible @xai. I just spent time and money to migrate to grok 4.1 fast, and you&#x27;re disabling it with less than two weeks notice, after releasing it in November, with no migration path to a fast/cheap alternative.
-
-I will never depend on one of your products again.
-
-
-Here&#x27;s SpeechMap&#x27;s detailed explanation of how they selected Grok 4.1 Fast for their project in March.
-
-Were xAI serving those models out of Colossus 1?
-
-xAI owner Elon Musk (who previously delighted in calling Anthropic &quot;Misanthropic&quot;) tweeted the following:
-
-
-By way of background for those who care, I spent a lot of time last week with senior members of the Anthropic team to understand what they do to ensure Claude is good for humanity and was impressed. [...]
-
-After that, I was ok leasing Colossus 1 to Anthropic, as SpaceXAI had already moved training to Colossus 2.
-
-
-And then shortly afterwards:
-
-
-Just as SpaceX launches hundreds of satellites for competitors with fair terms and pricing, we will provide compute to AI companies that are taking the right steps to ensure it is good for humanity.
-
-We reserve the right to reclaim the compute if their AI engages in actions that harm humanity.
-
-
-Presumably the criteria for &quot;harm humanity&quot; are decided by Elon himself. Sounds like a new form of supply chain risk for Anthropic to me!
-Tags: ai, llms, anthropic, ai-ethics, ai-energy-usage, xai, andy-masley</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Rubber Duck in GitHub Copilot CLI now supports more models
-              <span class="post-metadata">(5 min | 1362 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-07-rubber-duck-in-github-copilot-cli-now-supports-more-models>Rubber Duck, the cross-family review agent in GitHub Copilot CLI, is now available using a Claude-powered critic agent when your session is using a GPT model. For sessions using Claude…
-The post Rubber Duck in GitHub Copilot CLI now supports more models appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Repository rulesets: User bypass and branch renaming
-              <span class="post-metadata">(5 min | 1503 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-07-repository-rulesets-user-bypass-and-branch-renaming>GitHub repository rulesets now support two frequently requested features: adding individual users as bypass actors and renaming branches covered by organization rulesets. Add individual users as bypass actors You can…
-The post Repository rulesets: User bypass and branch renaming appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Scaling Trusted Access for Cyber with GPT-5.5 and GPT-5.5-Cyber
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/gpt-5-5-with-trusted-access-for-cyber>OpenAI expands Trusted Access for Cyber with GPT-5.5 and GPT-5.5-Cyber, helping verified defenders accelerate vulnerability research and protect critical infrastructure.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Parloa builds service agents customers want to talk to
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/parloa>Parloa leverages OpenAI models to power scalable, voice-driven AI customer service agents, enabling enterprises to design, simulate, and deploy reliable, real-time interactions.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
