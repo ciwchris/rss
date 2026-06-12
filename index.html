@@ -25,9 +25,243 @@
 
   <ul>
     <li>
+      <time>2026-06-12</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              GitHub Actions: Minimum version enforcement timeline for self-hosted runners
+              <span class="post-metadata">(10 min | 2862 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-06-12-github-actions-minimum-version-enforcement-timeline-for-self-hosted-runners>GitHub Actions is resuming enforcement of version requirements for self-hosted runners on github.com and GitHub Enterprise Cloud with Data Residency. This change is part of a broader effort to rebuild…
+The post GitHub Actions: Minimum version enforcement timeline for self-hosted runners appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How Preply combines AI and human tutors to personalize learning
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/preply>Preply uses OpenAI to launch AI-generated lesson summaries, providing personalised feedback and language learning exercises.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-06-11</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Claude Fable is relentlessly proactive
+              <span class="post-metadata">(7 min | 2181 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/#atom-everything>After two days of experience with Claude Fable 5 I think the best way to describe it is relentlessly proactive. It knows a whole lot of tricks and it will deploy pretty much any of them to get to its goal.
+
+I&#x27;ll illustrate this with an example. I was hacking on Datasette Agent today when I noticed a glitch: a horizontal scrollbar that shouldn&#x27;t be there in the jump menu chat prompt. I snapped this screenshot:
+
+
+
+Then I started a fresh claude session in my datasette-agent checkout, dragged in the screenshot and told it:
+
+
+Look at dependencies to help figure out why there is a horizontal scrollbar here
+
+
+I had a hunch the cause was in a dependency of Datasette Agent (likely Datasette itself) and I knew Fable was good at digging into dependency code, either by inspecting installed files in its own virtual environment site-packages or by referencing a local checkout on disk. Telling it to start with dependencies felt like a good bet.
+
+I got distracted by a domestic task and wandered away from my computer.
+
+When I came back a few minutes later I saw my machine open a browser window in my regular Firefox and then navigate to the dialog in question. I had not told Claude Code to use any browser automation, and I was pretty sure it wasn&#x27;t possible for it to trigger mouse movements or keyboard shortcuts within a window, so how was it doing that?
+
+I watched in fascination as it continued with its explorations, then saw it open a Safari window instead of Firefox. I also grabbed this snapshot from the Claude terminal:
+
+
+
+What was it doing there with uv run --with pyobjc-framework-Quartz?
+
+It turns out Fable had hacked up its own pattern for taking screenshots of browser windows. It was using Python to iterate through all available windows on my machine, then filtering for Safari windows with expected strings such as &quot;textarea&quot; in the window name. It used that to find their window number - an integer like 153551 - which it could then use with the screencapture CLI tool to grab a PNG.
+
+OK fine, that&#x27;s a neat way of taking screenshots. But what was it taking screenshots of?
+
+Turns out it had been writing its own scratch HTML pages to try and recreate the bug, then opening Safari and grabbing screenshots.
+
+Here&#x27;s that /tmp/textarea-scrollbar-test.html page it created, and the screenshot it took with screencapture -x -o -l 153551 /tmp/safari-cases.png:
+
+
+(I have way too many open tabs!)
+
+OK, so I can see how it&#x27;s opening test pages and taking screenshots, but how on earth was it triggering the modal dialog that was meant to be under test? That&#x27;s only available via a click or a keyboard shortcut, and I couldn&#x27;t see a mechanism for it to run those in Safari.
+
+I eventually figured out what it had done.
+
+Claude was running in a folder that contained the source code for the application. It knows enough about Datasette to be able to run a local development server. It turns out it was editing Datasette&#x27;s own templates to add JavaScript that would trigger the correct keyboard shortcut as soon as the window opened, adding code like this:
+
+
+&lt;script&gt;
+window.addEventListener(&quot;load&quot;, function () {
+  setTimeout(function () {
+    document.dispatchEvent(new KeyboardEvent(&quot;keydown&quot;, {key: &quot;/&quot;, bubbles: true}));
+  }, 1200);
+});
+&lt;/script&gt;
+
+1.2 seconds after the window opens, this code triggers a simulated / key, which is the keyboard shortcut for opening the modal dialog.
+
+There was one challenge left. In order to understand what was going on, Claude needed to run JavaScript on the page to take measurements for itself.
+
+It wrote its own custom web application to capture information via CORS, then ran that as a local server and opened a page with JavaScript that would POST directly to it!
+
+Here&#x27;s the Python web app it wrote, using the standard library http.server package:
+
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+class H(BaseHTTPRequestHandler):
+    def do_POST(self):
+        n &#x3D; int(self.headers.get(&quot;Content-Length&quot;, 0))
+        open(&quot;/tmp/diag.json&quot;, &quot;w&quot;).write(self.rfile.read(n).decode())
+        self.send_response(200)
+        self.send_header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;)
+        self.end_headers()
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;)
+        self.send_header(&quot;Access-Control-Allow-Headers&quot;, &quot;*&quot;)
+        self.end_headers()
+    def log_message(self, *a):  # quiet
+        pass
+
+HTTPServer((&quot;127.0.0.1&quot;, 9999), H).serve_forever()
+
+All this does is accept a POST request full of JSON and write that to the /tmp/diag.json file. It sends Access-Control-Allow-Origin: * headers (including from OPTIONS requests) so that code running on another domain can still communicate back to it.
+
+Then Claude injected this code into the template that it was loading in a browser:
+
+
+const host &#x3D; document.querySelector(&quot;navigation-search&quot;);
+const ta   &#x3D; host.shadowRoot.querySelector(&quot;textarea&quot;);
+const cs   &#x3D; getComputedStyle(ta);
+fetch(&quot;http://127.0.0.1:9999/diag&quot;, {
+  method: &quot;POST&quot;,
+  body: JSON.stringify({
+    dpr: window.devicePixelRatio,
+    scrollWidth: ta.scrollWidth, clientWidth: ta.clientWidth,
+    whiteSpace: cs.whiteSpace, width: cs.width,
+  }),
+});
+
+This took measurements of the &lt;textarea&gt; inside the &lt;navigation-search&gt; Web Component and sent them to the server, which wrote them to a file on disk, which Claude could then read.
+
+Having figured out all of these tricks Fable... hit some invisible guardrail and downgraded itself to Opus. Thankfully Opus had access to the full transcript and could continue using the tricks pioneered by Fable, and shortly afterwards found, tested and verified the fix.
+
+I prompted Opus to:
+
+
+Write a report in /tmp/automation-report.md where you note down all of the tricks you have used in this session to test against real browsers on my computer, include runnable code examples
+
+
+Which produced this report, which was invaluable for piecing together the details of what had happened for this post.
+
+I&#x27;ve shared the full terminal transcript of the Claude Code session as well.
+
+A review of everything it did
+
+Based on a screenshot and a one-line prompt, Claude Fable 5 + Claude Code:
+
+
+Figured out the recipe to run the local development server (with fake environment variables needed to get it running)
+
+Fired up a Playwright Chrome session
+
+Turned on the visible scrollbars setting for Chrome defaults write com.google.chrome.for.testing AppleShowScrollBars Always (it turned that off again later)
+
+Cycled through Firefox and WebKit in Playwright too, failing to recreate the bug
+
+Worked out my default browser was Safari
+
+Built a textarea-scrollbar-test.html HTML document
+
+Opened that in real (not Playwright) Firefox
+
+Found that osascript -e &#x27;tell application &quot;System Events&quot; to tell process &quot;firefox&quot; to id of window 1&#x27; was blocked because &quot;osascript is not allowed assistive access&quot;
+
+Figured out that uv run --with pyobjc-framework-Quartz python workaround, described above
+
+Added JavaScript to the site templates in order to trigger the / key
+
+Built its own little Python CORS web server to capture JSON data
+
+Rewrote the template to capture that data and send it to the server
+
+Scripted its way through the Web Component shadow DOM to the information it needed
+
+Opened Safari to confirm the source of the bug
+
+Modified its custom template to hack in a potential fix
+
+Confirmed the hacked fix worked
+
+Reported back on how to fix the problem
+
+
+Like I said, relentlessly proactive!
+
+An estimate of the cost
+
+I&#x27;m currently on the $100/month Claude Max plan, which includes a generous allowance for Fable up until June 22nd after which Anthropic say they&#x27;ll start charging full API prices for it.
+
+I&#x27;m using AgentsView to track my spending (see this TIL). Here&#x27;s what AgentsView says this session would have cost me if I was paying full price for it:
+
+~ % uvx agentsview session usage be8850a7-6119-46a0-b5d6-79c7fff5ae2b
+Session:       be8850a7-6119-46a0-b5d6-79c7fff5ae2b
+Agent:         claude
+Output:        68606
+Peak ctx:      113178
+Cost:          ~$12.11 (claude-fable-5, claude-opus-4-8)
+
+
+If you don&#x27;t keep a close eye on it, Fable will quite happily burn $12 in tokens inventing new ways to debug your CSS.
+
+I really need to lock this thing down
+
+On the one hand, watching Fable go to extreme lengths to get the information that it needed to debug what was, in the end, a two-line CSS fix, was fascinating.
+
+But on the other hand... this is a robust reminder that coding agents can do anything you can do by typing commands into a terminal - and frontier models know every trick in the book, and evidently a few that nobody has ever written down before.
+
+If Fable had been acting on malicious instructions - a prompt injection attack hidden in code or an issue thread, or something I&#x27;d carelessly pasted into my terminal - it&#x27;s alarming to think quite how far it could go to exfiltrate data or cause other forms of mischief.
+
+Running coding agents outside of a sandbox has always been a bad idea - it&#x27;s my top contender for a Challenger disaster incident, as described by Johann Rehberger in The Normalization of Deviance in AI.
+
+Fable is arguably smarter and hence more suspicious of potentially malicious instructions. But that smartness is very much a two-edged sword: if it does get subverted by instructions, the amount of damage it can do given its relentless proactivity is terrifying.
+Tags: ai, prompt-injection, generative-ai, llms, ai-assisted-programming, coding-agents, claude-code, claude-mythos</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Enterprise Server 3.21 is now generally available
+              <span class="post-metadata">(5 min | 1506 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-06-11-github-enterprise-server-3-21-is-now-generally-available>GitHub Enterprise Server (GHES) 3.21 enhances deployment efficiency, monitoring capabilities, code security, and policy management. Here are a few highlights in the 3.21 release: Organization custom properties are now generally…
+The post GitHub Enterprise Server 3.21 is now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -254,6 +488,18 @@ The post List, view, and create discussions in GitHub CLI appeared first on The 
 The post Manage sub-issues, types, and dependencies from GitHub CLI appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              granite4.1-guardian
+              <span class="post-metadata">(11 min | 3200 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://ollama.com/library/granite4.1-guardian>Granite Guardian 4.1 is a specialized safety and judging model from IBM Research that evaluates whether LLM prompts and responses meet specified harm criteria.</a>
+            </div>
+            <!-- <p class="post-source">Ollama models</p> -->
           </details>
       </article>
       <article>
@@ -4957,151 +5203,6 @@ The post GitHub Copilot app is now available in technical preview appeared first
 The post Copilot cloud agent supports auto model selection appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              datasette-ip-rate-limit 0.1a0
-              <span class="post-metadata">(3 min | 788 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/14/datasette-ip-rate-limit/#atom-everything>Release: datasette-ip-rate-limit 0.1a0
-The datasette.io site was being hammered by poorly-behaved crawlers, so I had Codex (GPT-5.5 xhigh) build a configurable rate limiting plugin to block IPs that were hammering specific areas of the site too quickly.
-Here&#x27;s the production configuration I&#x27;m using on that site for the new plugin:
-  datasette-ip-rate-limit:
-    header: Fly-Client-IP
-    max_keys: 10000
-    exempt_paths:
-    - &quot;/static/*&quot;
-    - &quot;/-/turnstile*&quot;
-    rules:
-    - name: demo-databases
-      paths:
-      - &quot;/global-power-plants/*&quot;
-      - &quot;/legislators/*&quot;
-      window_seconds: 60
-      max_requests: 60
-      block_seconds: 20
-Tags: datasette, rate-limiting, codex</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Introducing Copilot CLI agent and unified sessions view in GitHub Copilot for JetBrains IDEs
-              <span class="post-metadata">(6 min | 1920 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-13-introducing-copilot-cli-agent-and-unified-sessions-view-in-github-copilot-for-jetbrains-ides>This update brings the Copilot CLI agent into JetBrains IDEs, along with a unified sessions view that shows live status for running and queued sessions. It also adds the ask…
-The post Introducing Copilot CLI agent and unified sessions view in GitHub Copilot for JetBrains IDEs appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Helping ChatGPT better recognize context in sensitive conversations
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/chatgpt-recognize-context-in-sensitive-conversations>Learn how new ChatGPT safety updates improve context awareness in sensitive conversations, helping detect risk over time and respond more safely.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-05-13</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Welcome to the Datasette blog
-              <span class="post-metadata">(3 min | 776 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/13/welcome-to-the-datasette-blog/#atom-everything>Welcome to the Datasette blog
-I built this using OpenAI Codex desktop, which turns out to have the Markdown session transcript export feature I&#x27;ve always wanted. Here&#x27;s the session that built the blog. See also issue 179.
-
-
-    
-Tags: ai, datasette, generative-ai, llms, ai-assisted-programming, codex</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New enterprise installation API now in public preview
-              <span class="post-metadata">(6 min | 1902 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-13-new-enterprise-installation-api-now-in-public-preview>We’re filling an API gap for GitHub App developers based on community feedback. Enterprise Installation API We’ve added a new API that lets a GitHub App find out if it’s…
-The post New enterprise installation API now in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Start Copilot cloud agent tasks via the REST API
-              <span class="post-metadata">(5 min | 1351 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-13-start-copilot-cloud-agent-tasks-via-the-rest-api>Copilot Business and Copilot Enterprise users can programmatically start Copilot cloud agent tasks with the new Agent tasks REST API, available in public preview. Copilot cloud agent works in the…
-The post Start Copilot cloud agent tasks via the REST API appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Enterprise Server 3.21 release candidate is available
-              <span class="post-metadata">(5 min | 1521 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-13-github-enterprise-server-3-21-release-candidate-is-available>GitHub Enterprise Server (GHES) 3.21 enhances deployment efficiency, monitoring capabilities, code security, and policy management. Here are a few highlights in the 3.21 release: Organization custom properties are now generally…
-The post GitHub Enterprise Server 3.21 release candidate is available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Boris Mann
-              <span class="post-metadata">(2 min | 713 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/13/boris-mann/#atom-everything>“11 AI agents” is meaningless as a phrase. 
-If I said “I have 11 spreadsheets” or “I have 11 browser tabs” to do my work, it means about the same thing.
-
-— Boris Mann
-Tags: ai-agents, ai, agent-definitions</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Building a safe, effective sandbox to enable Codex on Windows
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/building-codex-windows-sandbox>Learn how OpenAI built a secure sandbox for Codex on Windows, enabling safe, efficient coding agents with controlled file access and network restrictions.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
