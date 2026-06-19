@@ -25,9 +25,175 @@
 
   <ul>
     <li>
+      <time>2026-06-19</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              AI credits consumed per user now in the Copilot usage metrics API
+              <span class="post-metadata">(5 min | 1504 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-06-19-ai-credits-consumed-per-user-now-in-the-copilot-usage-metrics-api>The Copilot usage metrics API now reports how many AI credits each user consumed per day, derived from the same AI credits consumption data used in the usage-based billing API.…
+The post AI credits consumed per user now in the Copilot usage metrics API appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-06-18</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Datasette Apps: Host custom HTML applications inside Datasette
+              <span class="post-metadata">(8 min | 2374 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/18/datasette-apps/#atom-everything>Today we launched a new plugin for Datasette, datasette-apps, with this launch announcement post on the Datasette project blog. That post has the what, but I&#x27;m going to expand on that a little bit here to provide the why.
+
+The TL;DR
+
+Datasette Apps are self-contained HTML+JavaScript applications that run in a tightly constrained &lt;iframe&gt; sandbox hosted on your Datasette application. They can use JavaScript to run read-only SQL queries against data in Datasette, and can run write queries too if you configure them with some stored queries.
+
+Here&#x27;s a very simple example and a more complex custom timeline example - the latter looks like this:
+
+
+
+Apps are allowed to run JavaScript and render HTML and CSS. They are limited in terms of access - the &lt;iframe sandbox&#x3D;&quot;allow-scripts allow-forms&quot;&gt; they run in prevents them from accessing cookies or localStorage and they also have an injected CSP header (thanks to this research) which prevents them from making HTTP requests to outside hosts, preventing a malicious or buggy app from exfiltrating private data.
+
+Datasette Apps started out as my attempt at building a Claude Artifacts mechanism for Datasette Agent, but I quickly realised that the sandboxed pattern is interesting for way more than just adding custom apps to the interface surface and promoted it to its own top-level concept within the Datasette ecosystem.
+
+They&#x27;re also a fun way to turn my multi-year experiment in vibe-coded HTML tools into a core feature of my main project!
+
+You can try out Datasette Apps by signing in with GitHub to the agent.datasette.io demo instance.
+
+Why build this?
+
+Since the very first release, Datasette has offered a flexible backend for creating custom HTML apps via its JSON API.
+
+One of my earliest Datasette projects was an internal search engine for documentation when I worked at Eventbrite - it worked by importing documents from different systems into SQLite on a cron and then serving them through a Datasette instance with a custom HTML+JavaScript search interface that directly queried the Datasette API.
+
+I had client-side JavaScript constructing SQL queries, which originally was intended as an engineering joke but turned out to be a really productive way of iterating on the app!
+
+That project, combined with my experience building my HTML tools collection and my experiments with Claude Artifacts, has convinced me that adding a Datasette-style backend to a self-contained HTML frontend is an astonishingly powerful combination.
+
+Imagine how much more useful Claude Artifacts could be if they had access to a persistent relational database. That&#x27;s what I&#x27;m building with Datasette Apps!
+
+Neat ideas in Datasette Apps
+
+Here are a few of the ideas and patterns I&#x27;ve figured out building this which I think have staying power.
+
+
+&lt;iframe sandbox&#x3D;&quot;allow-scripts&quot; srcdoc&#x3D;&quot;...&quot;&gt; + &lt;meta http-equiv&#x3D;&quot;Content-Security-Policy&quot; content&#x3D;&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; img-src data: blob:;&quot;&gt;
+
+This is the magic combination that makes Datasette Apps feasible in the first place. I need to run untrusted HTML and JavaScript on a highly sensitive domain - an authenticated Datasette instance can contain all sorts of private data. The sandbox&#x3D; attribute lets me run that untrusted code in a way that cannot interact with the parent application - it can&#x27;t read the DOM, or access cookies, or steal secrets from localStorage. It can however use fetch() and friends to load content (or exfiltrate data) from other domains. But... it turns out if you start an HTML page with a &lt;meta http-equiv&#x3D;&quot;Content-Security-Policy&quot;&gt; header you can set additional policies that lock down access to other domains. I was worried that malicious JavaScript would be able to update or remove that header but it turns out that doesn&#x27;t work - once set, the CSP policy is immutable for the content of that frame.
+
+Locked down APIs with postMessage() and MessageChannel()
+
+Having locked down those iframes to the point that they couldn&#x27;t do anything interesting at all, the challenge was to open them back again such that they could run an allow-list of operations, starting with read-only SQL queries against specified databases.
+
+I built the first version of this with postMessage(), which allows a child iframe to send messages to the parent window. I created a simple protocol for requesting that the parent run a SQL query - the parent could then verify it was against an allow-listed database before executing it.
+
+One of the LLM tools, I think it was GPT-5.5, suggested that postMessage() on its own can be exploited if the iframe somehow loads additional code from an untrusted domain. I don&#x27;t think that applies to Datasette Apps, but I also believe in defense in depth, so I had GPT-5.5 help me port to a MessageChannel() based transport instead.
+
+MessageChannel() has the advantage that if a page navigates to somewhere else the channel closes automatically, removing any chance of executing commands sent from an untrusted external page.
+
+Visible logs, for queries and errors
+
+If you navigate to the timeline demo and search for the string usercontent you&#x27;ll pull in some search results that embed images from the user-images.githubusercontent.com domain. This domain is not in the CSP allow-list, so it trips an error.
+
+Those errors are captured and transmitted back to the parent frame, where they can be displayed in a useful error log. This is meant to make hacking on apps more productive by surfacing otherwise-invisible problems.
+
+I built an experiment demonstrating that you can even turn this into a one-click-to-allow mechanism for building the CSP allow-list based on what breaks, but I haven&#x27;t integrated that idea into datasette-apps just yet.
+
+SQL queries are also visibly logged - scroll to the bottom of the timeline page to see that in action.
+
+Stored queries for write operations
+
+I want apps to be able to conditionally write to the database, but this is an even more dangerous proposition than SQL reads!
+
+My solution involves Datasette&#x27;s stored queries feature, rebranded from &quot;canned queries&quot; and given a major upgrade in the recent Datasette 1.0a31 - work that was directly inspired by Datasette Apps.
+
+Users can create a stored write query that performs an insert or update, then allow-list that specific query for an app to use. Usage from code inside an app looks like this:
+
+
+const result &#x3D; await datasette.storedQuery(&quot;todos&quot;, &quot;add_todo&quot;, {
+  title: &quot;Buy milk&quot;,
+  due_date: &quot;2026-06-20&quot;,
+  priority: &quot;high&quot;,
+  completed: false
+});
+
+I&#x27;m only just beginning to explore the possibilities this unlocks myself, but my goal is to support full read-write applications built safely as Datasette Apps.
+
+Copy and paste a prompt to build an app
+
+The Datasette Apps plugin has no dependency on LLMs at all, but these self-contained apps are the perfect shape to be written by a modern LLM.
+
+The create app form includes a copyable prompt at the end. This prompt has everything a model needs to know to build a new app, including the schema of any selected databases.
+
+
+
+This means you can click &quot;copy&quot;, paste it into ChatGPT or Claude or Gemini, tell it what you need, and there&#x27;s a good chance the model will spit out the code necessary to build the app.
+
+If you have Datasette Agent installed your AI assistant will also gain tools to both create new apps and edit existing ones, Claude Artifacts style.
+
+
+
+
+Built with so much AI assistance
+
+Datasette Apps started life back in April as datasette-agent-artifacts, a plugin I have since renamed to datasette-agent-edit keeping only its editing tools. I built that as one of the first plugins for Datasette Agent, to help get the plugin hooks into the right shape. That first prototype was mainly built using Claude Opus 4.6 in Claude Code.
+
+When I switched track to Datasette Apps I started with a plan constructed using Codex Desktop and GPT-5.5 xhigh, based on extensive dialog and feeding in both datasette-agent-artifacts and other prototypes I had built.
+
+Most of the work that followed stuck with Codex, but in the few short days that we had access to Claude Fable 5 I had it run a security evaluation of the product (an ability that would get it banned by the US government shortly afterwards) and it found a very real problem.
+
+I was allowing users to allow-list CSP hosts for their apps, but Fable pointed out the following attack:
+
+
+A less privileged user with create-app permission creates an app that queries SQLite for all available tables and selects and exfiltrates all of the data to a host they had allow-listed via CSP.
+
+They then trick an administrator user with access to private data into visiting their app.
+
+... and the app can now run queries as that user and steal their private data!
+
+
+That&#x27;s clearly unacceptable. I fixed it by restricting the ability to allow-list any domain to a new apps-set-csp permission, which is intended just for trusted staff. Site administrators can also configure Datasette with a list of allowed_csp_origins, which regular users can then select. This means you can do things like allow cdnjs.cloudflare.com and your users will be able to build apps that load extra JavaScript libraries from the cdnjs CDN.
+
+I&#x27;ve reviewed Datasette Apps extremely closely, especially the security-adjacent parts of it. The critical sandbox and CSP configuration are based on multiple AI-assisted prototypes and tests.
+
+It&#x27;s looking good so far
+
+I&#x27;m really pleased with this initial release.
+
+Datasette is growing beyond its origins as an application for serving read-only data into a much richer ecosystem of tools for doing useful things with that data once it has been collected.
+
+Datasette&#x27;s roots are in data journalism. I&#x27;ve always been interested in the question of what comes next after a journalist gets their hands on a giant dump of data about the world. Datasette supports exploring and publishing it. Datasette Agent adds interrogating it with AI assistance. Now Datasette Apps expands that to building custom interfaces and visualizations to help unlock the stories that are hidden within.
+Tags: iframes, javascript, projects, sandboxing, ai, datasette, generative-ai, llms, ai-assisted-programming, content-security-policy</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Upcoming deprecation of Opus 4.6 (fast)
+              <span class="post-metadata">(5 min | 1365 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-06-18-upcoming-deprecation-of-opus-4-6-fast>We will deprecate Opus 4.6 (fast) across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions), on June 29th, 2026: Model Deprecation date…
+The post Upcoming deprecation of Opus 4.6 (fast) appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -52,6 +218,21 @@ The post MAI-Code-1-Flash available on more Copilot surfaces appeared first on T
 The post Copilot code review: AGENTS.md support and UI improvements appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              datasette-acl 0.6a0
+              <span class="post-metadata">(3 min | 769 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/18/datasette-acl/#atom-everything>Release: datasette-acl 0.6a0
+This release expands datasette-acl from table-only permissions toward a general resource-sharing system.
+Alex Garcia did most of the work for this release - we&#x27;re fleshing out the plugin that will allow multi-user Datasette instances finely grained control over who can access which resources within Datasette.
+Tags: datasette, alex-garcia</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
       <article>
@@ -650,6 +831,38 @@ Tags: captchas, cloudflare, model-context-protocol, claude-code</a>
 The post Copilot usage metrics now include more of your active users appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              datasette-apps 0.1a3
+              <span class="post-metadata">(3 min | 789 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/15/datasette-apps-2/#atom-everything>Release: datasette-apps 0.1a3
+Fixed a bug where users without the create-app permission could still create apps. #27
+Fixed a bug where it was impossible to grant permission to edit an app to users who were not the app&#x27;s owner. The rules for edit/delete are now the same as view: if the app is private only the owner can modify it, otherwise permission is controlled by Datasette&#x27;s regular permission system. #29
+Tags: datasette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              datasette-apps 0.1a2
+              <span class="post-metadata">(3 min | 799 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/15/datasette-apps/#atom-everything>Release: datasette-apps 0.1a2
+Custom network/CSP origins for apps are now guarded by a new apps-set-csp permission, with an optional allowed_csp_origins plugin allow-list for non-privileged users. The Datasette Agent app creation tool enforces the same rules. #24
+Stored query picker now supports keyboard navigation and shows the three most recent accessible stored queries when focused.
+#fragment links inside apps are no longer intercepted by the external-link confirmation modal. #23
+Fixed link confirmation modal and logging panels in ?full&#x3D;1 full-screen mode. #26
+Tags: datasette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
       <article>
@@ -4781,138 +4994,6 @@ The post Issue fields are now in public preview for all organizations appeared f
               <a target="_blank" href=https://openai.com/index/adventhealth>AdventHealth is using ChatGPT for Healthcare to streamline workflows, reduce administrative burden, and return more time to patient care.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-05-20</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Copilot usage metrics reports now use GitHub-owned download URLs
-              <span class="post-metadata">(7 min | 2028 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-20-copilot-usage-metrics-reports-now-use-github-owned-download-urls>As previously announced, the download URLs for Copilot usage metrics reports have migrated from Azure Front Door domains to a stable, GitHub-owned custom domain. This change improves URL stability and…
-The post Copilot usage metrics reports now use GitHub-owned download URLs appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting SpaceX S-1
-              <span class="post-metadata">(3 min | 808 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/20/spacex-s1/#atom-everything>We have the ability to use compute resources to support our proprietary AI applications (such as Grok 5, which is currently being trained at COLOSSUS II), while also providing access to select compute capacity to third-party customers. For example, in May 2026, we entered into Cloud Services Agreements with Anthropic PBC (“Anthropic”), an AI research and development public benefit corporation, with respect to access to compute capacity across COLOSSUS and COLOSSUS II. Pursuant to these agreements, the customer has agreed to pay us $1.25 billion per month through May 2029, with capacity ramping in May and June 2026 at a reduced fee. The agreements may be terminated by either party upon 90 days’ notice.
-
-— SpaceX S-1, highlights mine
-Tags: anthropic, grok, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How fast is 10 tokens per second really?
-              <span class="post-metadata">(3 min | 770 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/20/tokens-per-second/#atom-everything>How fast is 10 tokens per second really?
-source code here) which simulates LLM token output speeds from 5/second to 800/second.
-Useful if you see a model advertised as &quot;30 tokens/second&quot; and want to get a feel for what that actually looks like.
-
-    
-Via Hacker News
-Tags: ai, generative-ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Updates to available models in Copilot on web
-              <span class="post-metadata">(5 min | 1370 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-20-updates-to-available-models-in-copilot-on-web>We have updated our available model selection for Copilot Chat on the web to deliver more consistent, high-quality responses. What’s changed While model choice is valuable, we are limiting the…
-The post Updates to available models in Copilot on web appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Google I/O, Gemini Spark, Antigravity
-              <span class="post-metadata">(4 min | 1137 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/20/google-io/#atom-everything>It&#x27;s hard to find much to write about Google I/O this year because I have a policy of not writing about anything that I can&#x27;t try out myself, and a lot of the big announcements are &quot;coming soon&quot;.
-I actually prefer to write about things that are in general availability, because I&#x27;ve had instances in the past where the previews didn&#x27;t match what was released to the general public later on.
-Aside from Gemini 3.5 Flash the most interesting announcement looks to be Google&#x27;s upcoming OpenClaw competitor Gemini Spark, described as &quot;your personal AI agent&quot; which can &quot;connect natively with your favorite Google apps like Gmail, Calendar, Drive, Docs, Sheets, Slides, YouTube, and Google Maps&quot;. The FAQ for that also includes this confusing detail:
-What Gemini model does Gemini Spark run on?
-Gemini Spark runs on Gemini 3.5 Flash and Antigravity.
-The antigravity.google website currently lists Antigravity as a desktop app, a CLI agent tool (written in Go), the Antigravity SDK (an open source Python wrapper around a bundled closed source Go binary), and the original Antigravity IDE (a VS Code fork).
-I guess Gemini Spark, the user-facing hosted agent product, might be running on that Go binary, but I&#x27;m not sure why that&#x27;s worth mentioning in the FAQ!
-Naturally I went looking for notes on how Gemini Spark intends to handle the risk of prompt injection. The best information I could find on that was in the Everything Google Cloud customers need to know coming out of Google I/O post aimed at enterprise customers, which includes:
-Spark operates in a fully managed, secure runtime on Google Cloud, meaning you get enterprise-grade security without ever having to manage the underlying infrastructure. Every task executes in a fresh, strictly isolated, ephemeral VM to help ensure data never overlaps between sessions. To protect your enterprise, all traffic routes through our secure Agent Gateway that enforces Data Loss Prevention (DLP) policies, while user credentials remain fully encrypted and are never exposed directly to the agent.
-Given how many people are going to be piping very sensitive data through Gemini Spark in the near future I hope they&#x27;ve made this bullet-proof, or this could be a top candidate for the agent security challenger disaster that we still haven&#x27;t seen.
-Also of note: in Transitioning Gemini CLI to Antigravity CLI Google announce that the open source Gemini CLI tool (Apache 2.0 licensed TypeScript) will stop working with their AI subscription plans on June 18th, replaced by the new closed source Antigravity CLI.
-Tags: gemini, google, generative-ai, ai, google-io, llms, prompt-injection</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Auto model selection now routes based on your task in VS Code
-              <span class="post-metadata">(5 min | 1525 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-20-auto-model-selection-now-routes-based-on-your-task-in-vs-code>GitHub Copilot auto model selection now routes to the best model for your task, using utilization and model health metrics for a high quality, reliable, and token-efficient experience. How it…
-The post Auto model selection now routes based on your task in VS Code appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              datasette-agent-charts 0.1a1
-              <span class="post-metadata">(3 min | 773 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/20/datasette-agent-charts/#atom-everything>Release: datasette-agent-charts 0.1a1
-More color! Bar and waffle charts without a color column are shaded by magnitude with a sequential color scheme; color columns holding text values use the observable10 categorical scheme. #2
-Now checks execute-sql permission before running the query to find the column names.
-Charts now display interactive tooltips.
-Fixed a bug where waffleY charts were not described to the agent.
-Tags: datasette, datasette-agent</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Semantic issue search in Copilot Chat
-              <span class="post-metadata">(5 min | 1384 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-05-20-semantic-issue-search-in-copilot-chat>You can use natural language in GitHub Copilot Chat on web to quickly find, group, and analyze issues, with context-aware results powered by a new semantic issues index. What’s new…
-The post Semantic issue search in Copilot Chat appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
