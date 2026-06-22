@@ -25,6 +25,246 @@
 
   <ul>
     <li>
+      <time>2026-06-22</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              New features and Claude as agent provider preview in JetBrains IDEs
+              <span class="post-metadata">(7 min | 2178 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-06-22-new-features-and-claude-as-agent-provider-preview-in-jetbrains-ides>This update adds support for organization and enterprise agents from GitHub, lets you queue and steer messages in Copilot CLI sessions, introduces a new agent debug logs summary view, and…
+The post New features and Claude as agent provider preview in JetBrains IDEs appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Patch the Planet: a Daybreak initiative to support open source maintainers
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/patch-the-planet>OpenAI introduces Patch the Planet, a Daybreak initiative helping open-source maintainers find, validate, and fix vulnerabilities with AI and expert review.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Daybreak: Tools for securing every organization in the world
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/daybreak-securing-the-world>OpenAI introduces new Daybreak tools, including Codex Security and GPT-5.5-Cyber, to help organizations find, validate, and patch vulnerabilities at scale.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2026-06-21</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 4.0rc1 adds migrations and nested transactions
+              <span class="post-metadata">(5 min | 1643 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/21/sqlite-utils-40rc1/#atom-everything>sqlite-utils is my combined Python library and CLI tool for working with SQLite databases. It provides an extensive set of higher-level operations on top of Python&#x27;s default sqlite3 package, including support for complex table transformations, automatic table creation from JSON data and a whole lot more.
+
+I released sqlite-utils 4.0rc1, the first release candidate for sqlite-utils v4. The major version bump indicates some (minor) backwards incompatible changes, so I&#x27;m interested in having people try this out before I commit to a stable release.
+
+New feature: migrations
+
+There are two significant new features in this RC compared to the previous 4.0 alphas.
+
+The first is support for database migrations. This isn&#x27;t a completely new implementation - it&#x27;s a slightly modified port of the sqlite-migrate package I released a few years ago. I think that package has proved itself over time, so I&#x27;m now ready to bundle it with sqlite-utils directly.
+
+Here&#x27;s what a set of migrations in a migrations.py file looks like:
+
+from sqlite_utils import Database, Migrations
+
+migrations &#x3D; Migrations(&quot;creatures&quot;)
+
+@migrations()
+def create_table(db):
+    db[&quot;creatures&quot;].create(
+        {&quot;id&quot;: int, &quot;name&quot;: str, &quot;species&quot;: str},
+        pk&#x3D;&quot;id&quot;,
+    )
+
+@migrations()
+def add_weight(db):
+    db[&quot;creatures&quot;].add_column(&quot;weight&quot;, float)
+
+This defines a set of two migrations, one creating the creatures table and another adding a column to it.
+
+You can then run those migrations either using Python:
+
+db &#x3D; Database(&quot;creatures.db&quot;)
+migrations.apply(db)
+
+Or with the command-line migrate command:
+
+
+sqlite-utils migrate creatures.db migrations.py
+
+The system is deliberately small: it doesn&#x27;t provide reverse migrations, so any mistakes you make should be fixed by deploying a fresh migration to undo them.
+
+Its predecessor has been used by LLM and various other projects for several years, so I&#x27;m confident that the design is stable and works well.
+
+The new migrations feature is documented here.
+
+New feature: db.atomic() transactions
+
+This feature is a lot less exercised than migrations, so it deserves more attention from testers.
+
+Previously, sqlite-utils mostly left transaction management up to its users, via a with db.conn: construct that reused the sqlite3 mechanism directly.
+
+SQLite supports nested transactions in the form of savepoints, so I wanted an abstraction that could make those as easy to use as possible.
+
+I borrowed the terminology &quot;atomic&quot; from Django and Peewee. Here&#x27;s what the new API looks like:
+
+with db.atomic():
+    db.table(&quot;dogs&quot;).insert({&quot;id&quot;: 1, &quot;name&quot;: &quot;Cleo&quot;}, pk&#x3D;&quot;id&quot;)
+    try:
+        with db.atomic():
+            db.table(&quot;dogs&quot;).insert({&quot;id&quot;: 2, &quot;name&quot;: &quot;Pancakes&quot;})
+            raise ValueError(&quot;skip this one&quot;)
+    except ValueError:
+        pass
+    db.table(&quot;dogs&quot;).insert({&quot;id&quot;: 3, &quot;name&quot;: &quot;Marnie&quot;})
+
+More details in the documentation.
+
+Backwards incompatible changes
+
+The backwards incompatible changes in v4 were described in the alpha release notes. For 4.0a0:
+
+
+
+Upsert operations now use SQLite&#x27;s INSERT ... ON CONFLICT SET syntax on all SQLite versions later than 3.23.1. This is a very slight breaking change for apps that depend on the previous INSERT OR IGNORE followed by UPDATE behavior. (#652)
+
+Python library users can opt-in to the previous implementation by passing use_old_upsert&#x3D;True to the Database() constructor, see Alternative upserts using INSERT OR IGNORE.
+
+Dropped support for Python 3.8, added support for Python 3.13. (#646)
+
+
+sqlite-utils tui is now provided by the sqlite-utils-tui plugin. (#648)
+
+Test suite now also runs against SQLite 3.23.1, the last version (from 2018-04-10) before the new INSERT ... ON CONFLICT SET syntax was added. (#654)
+
+
+
+And for 4.0a1:
+
+
+
+
+Breaking change: The db.table(table_name) method now only works with tables. To access a SQL view use db.view(view_name) instead. (#657)
+
+The table.insert_all() and table.upsert_all() methods can now accept an iterator of lists or tuples as an alternative to dictionaries. The first item should be a list/tuple of column names. See Inserting data from a list or tuple iterator for details. (#672)
+
+
+Breaking change: The default floating point column type has been changed from FLOAT to REAL, which is the correct SQLite type for floating point values. This affects auto-detected columns when inserting data. (#645)
+
+Now uses pyproject.toml in place of setup.py for packaging. (#675)
+
+Tables in the Python API now do a much better job of remembering the primary key and other schema details from when they were first created. (#655)
+
+
+Breaking change: The table.convert() and sqlite-utils convert mechanisms no longer skip values that evaluate to False. Previously the --skip-false option was needed, this has been removed. (#542)
+
+
+Breaking change: Tables created by this library now wrap table and column names in &quot;double-quotes&quot; in the schema. Previously they would use [square-braces]. (#677)
+
+The --functions CLI argument now accepts a path to a Python file in addition to accepting a string full of Python code. It can also now be specified multiple times. (#659)
+
+
+Breaking change: Type detection is now the default behavior for the insert and upsert CLI commands when importing CSV or TSV data. Previously all columns were treated as TEXT unless the --detect-types flag was passed. Use the new --no-detect-types flag to restore the old behavior. The SQLITE_UTILS_DETECT_TYPES environment variable has been removed. (#679)
+
+
+
+Try it out
+
+You can install the new RC like this:
+
+
+pip install sqlite-utils&#x3D;&#x3D;4.0rc1
+
+Or try the CLI version directly with uvx like this:
+
+
+uvx --with sqlite-utils&#x3D;&#x3D;4.0rc1 sqlite-utils --help
+
+Come chat with us about it in the sqlite-utils Discord channel, or file any bugs in GitHub Issues.
+Tags: migrations, projects, sqlite, sqlite-utils, annotated-release-notes</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 4.0rc1
+              <span class="post-metadata">(2 min | 732 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/21/sqlite-utils/#atom-everything>Release: sqlite-utils 4.0rc1
+See sqlite-utils 4.0rc1 adds migrations and nested transactions.
+Tags: sqlite-utils</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Samsung Electronics brings ChatGPT and Codex to employees
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/samsung-electronics-chatgpt-codex-deployment>Samsung Electronics deploys ChatGPT Enterprise and Codex to employees worldwide, marking one of OpenAI’s largest enterprise AI rollouts.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Temporary Cloudflare Accounts for AI agents
+              <span class="post-metadata">(3 min | 859 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jun/21/temporary-cloudflare-accounts/#atom-everything>Temporary Cloudflare Accounts for AI agents
+Short version: you can now create a Cloudflare Workers project and run this, without even creating a Cloudflare account:
+npx wrangler deploy --temporary
+
+Cloudflare will deploy the application to a new, ephemeral project which will stay live for 60 minutes.
+I had GPT-5.5 xhigh in Codex Desktop build this test application providing a tool for following HTTP redirects and returning the final destination. The temporary deployment worked as advertised.
+Running the deployment spits out the URL to a page for claiming the new project, for if you want it to last for more than 60 minutes. Here&#x27;s what that claim screen looks like:
+
+
+    
+Via Hacker News
+Tags: cloudflare</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-06-19</time>
 
       <section>
@@ -4636,44 +4876,6 @@ Build a vanilla JS artifact that exactly recreates the game Mad House from this 
 Credit the book title and link to https://usborne.com/us/books/computer-and-coding-books
 
 Tags: computer-history, games, tools</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-05-23</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              On the
-              <span class="post-metadata">(3 min | 811 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/May/23/on-the-dl/#atom-everything>On the &lt;dl&gt;
-&lt;dl&gt; element from this article by Ben Meyer:
-A &lt;dt&gt; can be followed by multiple &lt;dd&gt;
-You can optionally group the &lt;dt&gt; and &lt;dd&gt; elements in a &lt;div&gt; for styling - but only a &lt;div&gt;.
-You can label them using ARIA.
-They&#x27;ve been called &quot;description lists&quot;, not &quot;definition lists&quot;, since an HTML5 draft in 2008.
-So this is valid:
-&lt;h2 id&#x3D;&quot;credits&quot;&gt;Credits&lt;/h2&gt;
-&lt;dl aria-labelledby&#x3D;&quot;credits&quot;&gt;
-  &lt;div&gt;
-    &lt;dt&gt;Author&lt;/dt&gt;
-    &lt;dd&gt;Jeffrey Zeldman&lt;/dd&gt;
-    &lt;dd&gt;Ethan Marcotte&lt;/dd&gt;
-  &lt;/div&gt;
-&lt;/dl&gt;
-Here&#x27;s a useful note from Adrian Roselli on screen reader support for description lists.
-
-    
-Via Hacker News
-Tags: css, html, screen-readers, web-standards</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
