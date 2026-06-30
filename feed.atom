@@ -2,10 +2,265 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-06-30T16:14:35.615Z</updated>
+    <updated>2026-06-30T22:08:11.115Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[What's new in Claude Sonnet 5]]></title>
+        <id>https://simonwillison.net/2026/Jun/30/claude-sonnet-5/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jun/30/claude-sonnet-5/#atom-everything"/>
+        <updated>2026-06-30T21:23:02.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-sonnet-5">What&#x27;s new in Claude Sonnet 5</a></strong></p>
+Claude Sonnet 5 came out <a href="https://www.anthropic.com/news/claude-sonnet-5">this morning</a>. I always head straight for the "what's new" developer docs because they tend to have more actionable information than the official announcement post.</p>
+<p>Anthropic say of Sonnet 5 that "its performance is close to that of Opus 4.8, but at lower prices". The <a href="https://www-cdn.anthropic.com/9e6a1044980d8c4ed85669faf9c2a8342e2e9f1e/Claude%20Sonnet%205%20System%20Card.pdf">system card</a> helps explain how they were able to release the model without being blocked by the US government:</p>
+<blockquote>
+<p>Sonnet 5 is significantly less capable at cyber tasks than Mythos 5: its safeguards are thus similar to those we apply to Opus 4.7 and Opus 4.8 (models that are more capable than Sonnet 5 but much less capable than Mythos 5).</p>
+</blockquote>
+<p>Of note from the "what's new" API changes:</p>
+<ul>
+<li>Sampling parameters <code>temperature</code>, <code>top_p</code>, <code>top_k</code> are no longer supported.</li>
+<li>It has a 1 million token context window and 128,000 maximum output tokens.</li>
+<li>It features "the same set of tools and platform features as Claude Sonnet 4.6"</li>
+<li>Adaptive thinking is on by default, unless you specify <code>"thinking": {type: "disabled"}</code>.</li>
+<li>The pricing is the same as Sonnet 4.6: $3/million input, $15/million input, with an introductory discount to $2/$10 until 31st August. But...</li>
+<li>The model has a new tokenizer, where "The same input text produces approximately 30% more tokens than on Claude Sonnet 4.6." - effectively a 30% price increase.</li>
+</ul>
+<p>I used my <a href="https://tools.simonwillison.net/claude-token-counter">Claude Token Counter</a> tool to try out the new tokenizer. Here are my results for several larger documents:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Document</th>
+      <th>Sonnet 4.6</th>
+      <th>Opus 4.7</th>
+      <th>Sonnet 5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/simonw/udhr-markdown/blob/main/declarations/eng.md">Universal Declaration of Human Rights (English)</a></td>
+      <td><b>2,356</b></td>
+      <td><b>3,347</b><br>1.42x</td>
+      <td><b>3,341</b><br>1.42x</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/simonw/udhr-markdown/blob/main/declarations/spa.md">Universal Declaration of Human Rights (Spanish)</a></td>
+      <td><b>3,572</b></td>
+      <td><b>4,753</b><br>1.33x</td>
+      <td><b>4,747</b><br>1.33x</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/simonw/udhr-markdown/blob/main/declarations/cmn_hans.md">Universal Declaration of Human Rights (Chinese, Mandarin Simplified)</a></td>
+      <td><b>3,334</b></td>
+      <td><b>3,366</b><br>1.01x</td>
+      <td><b>3,360</b><br>1.01x</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/simonw/sqlite-utils/blob/79117b9d110d72f46dab5fe2cda412ff4789ab55/sqlite_utils/db.py">sqlite_utils/db.py</a> (4,279 lines of Python)</td>
+      <td><b>44,014</b></td>
+      <td><b>56,118</b><br>1.28x</td>
+      <td><b>56,113</b><br>1.27x</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>So the new token is roughly 1.4x times more expensive for English, 1.33x for Spanish, 1.28x for Python code and effectively the same cost for Simplified Mandarin.</p>
+<p>Here's <a href="https://gist.github.com/simonw/a89e756b621a31e8ffc210e3428efa77">the pelican</a>. It's nothing to write home about. Sonnet 5 thinks it looks like a goose.</p>
+<p><img alt="Illustration of a white goose riding a bicycle, with one wing extended forward to grip the handlebar, set against a plain white background with a brown ground line." src="https://static.simonwillison.net/static/2026/sonnet-5-pelican.png" />
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=48736605">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/llm-pricing">llm-pricing</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The AI Compass]]></title>
+        <id>https://simonwillison.net/2026/Jun/30/the-ai-compass/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jun/30/the-ai-compass/#atom-everything"/>
+        <updated>2026-06-30T17:39:23.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://bambamramfan.github.io/ai-compass/">The AI Compass</a></strong></p>
+This political compass style quiz <a href="https://bambamramfan.tumblr.com/post/820505178072580096/the-ai-compass">by bambamramfan</a> is pretty neat - answer 29 questions about AI and AI ethics to see which of the 30 archetypes you best fit.</p>
+<p>I'm impressed that my answers on my first time through the quiz categorized me as "The Garage Tinkerer", patron saint myself!</p>
+<p><img src="https://static.simonwillison.net/static/2026/garage-tinkerer.jpg"   style="display: block; width: 100%; max-width: 400px; margin: 0 auto;" alt="Screenshot of a quiz result screen on a dark background. The top half shows a square scatter-plot quadrant chart with axes labeled GOOD (top), BAD (bottom), OVERHYPED (left of center) and TRANSFORMATIVE (right of center), filled with colored regions and scattered dots; a glowing white-ringed teal dot marks the user&#39;s position in the upper-right (good/transformative) area. Below, a card reads: &quot;YOU ARE...&quot; / &quot;The Garage Tinkerer&quot; / &quot;patron saint: Simon Willison&quot; / &quot;You&#39;re running local models, building little tools, and having a genuinely great time. You don&#39;t care about the discourse — you care about making the thing do cool stuff. The technology is interesting and everyone arguing about it would be happier if they just opened a terminal.&quot;"></p>
+<p>It's implemented as a single page React app using the <code>&lt;script type="text/babel"&gt;</code> trick to avoid the necessary build step. <a href="https://github.com/bambamramfan/ai-compass/blob/main/index.html">Here's the code</a>.
+
+    <p><small></small>Via <a href="https://bsky.app/profile/erisianrite.com/post/3mphwpqgd4c2y">@erisianrite.com</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai-ethics">ai-ethics</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude Sonnet 5 is generally available for GitHub Copilot]]></title>
+        <id>https://github.blog/changelog/2026-06-30-claude-sonnet-5-is-generally-available-for-github-copilot</id>
+        <link href="https://github.blog/changelog/2026-06-30-claude-sonnet-5-is-generally-available-for-github-copilot"/>
+        <updated>2026-06-30T17:25:51.000Z</updated>
+        <summary type="html"><![CDATA[Claude Sonnet 5 is Anthropic’s latest Sonnet-class model, now available in GitHub Copilot. It brings strong coding performance to everyday development and agentic workflows, giving developers a new Sonnet-class option…
+The post Claude Sonnet 5 is generally available for GitHub Copilot appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Have your agent record video demos of its work with shot-scraper video]]></title>
+        <id>https://simonwillison.net/2026/Jun/30/shot-scraper-video/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jun/30/shot-scraper-video/#atom-everything"/>
+        <updated>2026-06-30T16:54:26.000Z</updated>
+        <summary type="html"><![CDATA[<p><a href="https://shot-scraper.datasette.io/en/stable/video.html">shot-scraper video</a> is a new command introduced in today's <a href="https://github.com/simonw/shot-scraper/releases/tag/1.10">shot-scraper 1.10</a> release which accepts a <code>storyboard.yml</code> file defining a routine to run against a web application and uses Playwright to record a video of that routine. I've written before about the importance of <a href="https://simonwillison.net/2026/Feb/10/showboat-and-rodney/#proving-code-actually-works">having coding agents produce demos</a> of their work; this is my latest attempt at enabling them to do that.</p>
+<p>Here's an example video created using <code>shot-scraper video</code>, exercising a <a href="https://github.com/simonw/datasette/pull/2813">still in development</a> feature adding the ability to create new tables in Datasette from pasted CSV, TSV or JSON data:</p>
+<div style="max-width: 100%; margin-bottom: 0.4em">
+    <video controls="controls" preload="none" aria-label="Video demo of the new CSV import for Datasette" poster="https://static.simonwillison.net/static/2026/datasette-bulk-insert-demo.jpg" loop="loop" style="width: 100%; height: auto;" muted="muted">
+        <source src="https://static.simonwillison.net/static/2026/datasette-bulk-insert-demo.mp4" type="video/mp4" />
+    </video>
+</div>
+<p>That video was created <a href="">by running this command</a>:</p>
+<div class="highlight highlight-source-shell"><pre>shot-scraper video datasette-bulk-insert-storyboard.yml \
+  --auth datasette-demo-auth.json --mp4</pre></div>
+<p>(That <code>--auth</code> JSON file <a href="https://gist.github.com/simonw/287b26aff53fcb72942b19f5b69d7e5c">contains a cookie</a>, as <a href="https://shot-scraper.datasette.io/en/stable/authentication.html">described here</a> in the documentation.)</p>
+<p>Here's the <code>datasette-bulk-insert-storyboard.yml</code> file:</p>
+<div class="highlight highlight-source-yaml"><pre><span class="pl-ent">output</span>: <span class="pl-s">/tmp/datasette-bulk-insert-demo.webm</span>
+<span class="pl-ent">server</span>:
+  - <span class="pl-s">uv</span>
+  - <span class="pl-s">--directory</span>
+  - <span class="pl-s">/Users/simon/Dropbox/dev/datasette</span>
+  - <span class="pl-s">run</span>
+  - <span class="pl-s">datasette</span>
+  - <span class="pl-s">-p</span>
+  - <span class="pl-c1">6419</span>
+  - <span class="pl-s">--root</span>
+  - <span class="pl-s">--secret</span>
+  - <span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>
+  - <span class="pl-s">/tmp/demo.db</span>
+<span class="pl-ent">url</span>: <span class="pl-s">http://127.0.0.1:6419/demo/tasks</span>
+<span class="pl-ent">viewport</span>:
+  <span class="pl-ent">width</span>: <span class="pl-c1">1280</span>
+  <span class="pl-ent">height</span>: <span class="pl-c1">720</span>
+<span class="pl-ent">cursor</span>: <span class="pl-c1">true</span>
+<span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">'</span>button[data-table-action="insert-row"]<span class="pl-pds">'</span></span>
+<span class="pl-ent">javascript</span>: <span class="pl-s">|</span>
+<span class="pl-s">  (() =&gt; {</span>
+<span class="pl-s">    let clipboardText = "";</span>
+<span class="pl-s">    Object.defineProperty(navigator, "clipboard", {</span>
+<span class="pl-s">      configurable: true,</span>
+<span class="pl-s">      get: () =&gt; ({</span>
+<span class="pl-s">        writeText: async (text) =&gt; {</span>
+<span class="pl-s">          clipboardText = String(text);</span>
+<span class="pl-s">        },</span>
+<span class="pl-s">        readText: async () =&gt; clipboardText,</span>
+<span class="pl-s">      }),</span>
+<span class="pl-s">    });</span>
+<span class="pl-s">  })();</span>
+<span class="pl-s"></span><span class="pl-ent">scenes</span>:
+  - <span class="pl-ent">name</span>: <span class="pl-s">Bulk insert existing table rows</span>
+    <span class="pl-ent">do</span>:
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.8</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">'</span>button[data-table-action="insert-row"]<span class="pl-pds">'</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>#row-edit-dialog[open]<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.5</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.row-edit-bulk-insert<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>.row-edit-bulk-textarea<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.5</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.row-edit-copy-template<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>text=Copied<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.8</span>
+      - <span class="pl-ent">fill</span>:
+          <span class="pl-ent">into</span>: <span class="pl-s"><span class="pl-pds">"</span>.row-edit-bulk-textarea<span class="pl-pds">"</span></span>
+          <span class="pl-ent">text</span>: <span class="pl-s">|</span>
+<span class="pl-s">            title,owner,status,priority,notes</span>
+<span class="pl-s">            Prepare release video,Ana,doing,1,Recorded with shot-scraper</span>
+<span class="pl-s">            Check pasted CSV import,Ben,review,3,Previewed before inserting</span>
+<span class="pl-s">            Share the branch demo,Chen,queued,2,Bulk insert creates three rows</span>
+<span class="pl-s"></span>      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.8</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.row-edit-save<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>text=Previewing 3 rows.<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">1.2</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.row-edit-save<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>text=3 rows inserted.<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">1.0</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.row-edit-cancel<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>text=Prepare release video<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">1.0</span>
+  - <span class="pl-ent">name</span>: <span class="pl-s">Create a table from pasted CSV</span>
+    <span class="pl-ent">open</span>: <span class="pl-s">http://127.0.0.1:6419/demo</span>
+    <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">'</span>details.actions-menu-links summary<span class="pl-pds">'</span></span>
+    <span class="pl-ent">do</span>:
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.8</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">'</span>details.actions-menu-links summary<span class="pl-pds">'</span></span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">'</span>button[data-database-action="create-table"]<span class="pl-pds">'</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>#table-create-dialog[open]<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.5</span>
+      - <span class="pl-ent">fill</span>:
+          <span class="pl-ent">into</span>: <span class="pl-s"><span class="pl-pds">"</span>.table-create-table-name<span class="pl-pds">"</span></span>
+          <span class="pl-ent">text</span>: <span class="pl-s"><span class="pl-pds">"</span>launch_metrics<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.table-create-from-data<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>.table-create-data-textarea<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.5</span>
+      - <span class="pl-ent">fill</span>:
+          <span class="pl-ent">into</span>: <span class="pl-s"><span class="pl-pds">"</span>.table-create-data-textarea<span class="pl-pds">"</span></span>
+          <span class="pl-ent">text</span>: <span class="pl-s">|</span>
+<span class="pl-s">            metric_id,name,score,recorded_on</span>
+<span class="pl-s">            m001,Activation rate,87.5,2026-06-29</span>
+<span class="pl-s">            m002,Retention check,72.25,2026-06-30</span>
+<span class="pl-s">            m003,CSV import health,95,2026-07-01</span>
+<span class="pl-s"></span>      - <span class="pl-ent">pause</span>: <span class="pl-c1">0.8</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.table-create-save<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>text=Previewing 3 rows.<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">1.2</span>
+      - <span class="pl-ent">click</span>: <span class="pl-s"><span class="pl-pds">"</span>.table-create-save<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for_url</span>: <span class="pl-s"><span class="pl-pds">"</span>**/demo/launch_metrics<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">wait_for</span>: <span class="pl-s"><span class="pl-pds">"</span>text=Activation rate<span class="pl-pds">"</span></span>
+      - <span class="pl-ent">pause</span>: <span class="pl-c1">1.2</span></pre></div>
+<p>The <a href="https://shot-scraper.datasette.io/en/stable/video.html">video command documentation</a> includes simpler examples, but for the purpose of this post I thought I'd go with something more comprehensive.</p>
+<p>That demo YAML storyboard was constructed entirely by GPT-5.5 xhigh running in Codex Desktop, using the following prompt run inside my <code>~/dev/datasette</code> checkout of <a href="https://github.com/simonw/datasette/commits/b759ea548606bc9bf9a4bf0e33e2d57ead7e0ab8/">this branch</a>:</p>
+<blockquote>
+<p><code>Review the changes on this branch.</code></p>
+<p><code>cd to ~/dev/shot-scraper and run the command "uv run shot-scraper video --help"</code></p>
+<p><code>Now use that new video command to record a video demo of the new features from this branch, including running a "uv run datasette -p 6419 --root --secret 1 /tmp/demo.db" development server so you can record the video against a demo DB that you first create.</code></p>
+</blockquote>
+<p>Now that I've released the feature the prompt could say "<code>run uvx shot-scraper video --help</code>" instead and it should achieve the same result.</p>
+<p>I really like this pattern where the <code>--help</code> output for a command provides enough detail that a coding agent can use it - it works kind of like bundling a <code>SKILL.md</code> file directly inside the tool. I used the same pattern for <a href="https://simonwillison.net/2026/Feb/10/showboat-and-rodney/">showboat and rodney</a>.</p>
+<h4 id="how-i-built-this">How I built this</h4>
+<p><code>shot-scraper video</code> started as an experimental prototype. <code>shot-scraper</code> is built on top of <a href="https://playwright.dev/">Playwright</a>, and the key feature it needed was for Playwright to be able to record video of browser sessions with enough control to create the desired demo.</p>
+<p>I first tried this a few years ago and found that the Playwright-produced videos included additional chrome that was useful for debugging a test failure but unwanted for a product demo.</p>
+<p>They fixed that a while ago, but there were still some minor blockers. In particular I was getting <a href="https://github.com/simonw/shot-scraper/pull/194/changes/c2f3b3a52ba84f2adcf3ad6da4d39c2570328584#issuecomment-4724459369">a few white frames at the start of the videos</a>, since the recording mechanism kicked in before the first URL was loaded by the browser.</p>
+<p>Playwright 1.59 added a new <a href="https://playwright.dev/python/docs/api/class-screencast">screencast mechanism</a> providing much more finely grained control over video recording. This was very nearly what I needed, but the resulting videos were fixed at 800px wide.</p>
+<p>I found a <a href="https://github.com/microsoft/playwright/pull/41183">landed PR fixing that</a> but it wasn't yet in a release. Then yesterday they shipped it in <a href="https://github.com/microsoft/playwright-python/releases/tag/v1.61.0">playwright-python 1.61.0</a> and I was finally unblocked to finish implementing the feature!</p>
+<p>The code itself was all written by GPT-5.5 xhigh in Codex Desktop. I had it write the documentation as well which gave me a very useful frame for reviewing the design - much of the iteration on the feature came from reviewing that documentation, spotting things that were redundant, inconsistent or confusing, and requesting (or dictating) a better design.</p>
+<p>The YAML format itself was mostly defined by the coding agent. I had it <a href="https://github.com/simonw/shot-scraper/blob/1.10/shot_scraper/video.py#L24">use Pydantic</a> to both define and validate the format, partly to make the design easier to review.</p>
+<p>This is a great example of the kind of feature that I almost certainly wouldn't have taken on without coding agent support. I filed the <a href="https://github.com/simonw/shot-scraper/issues/142">original issue</a> in February 2024, and had difficulty finding the necessary time to solve this in amongst all of my other projects.</p>
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/yaml">yaml</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/playwright">playwright</a>, <a href="https://simonwillison.net/tags/shot-scraper">shot-scraper</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pydantic">pydantic</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[GitHub code coverage merge protection for pull requests]]></title>
+        <id>https://github.blog/changelog/2026-06-30-github-code-coverage-merge-protection-for-pull-requests</id>
+        <link href="https://github.blog/changelog/2026-06-30-github-code-coverage-merge-protection-for-pull-requests"/>
+        <updated>2026-06-30T16:42:21.000Z</updated>
+        <summary type="html"><![CDATA[You can now use branch rulesets to block pull requests from merging when test coverage drops below thresholds you set. You can set a minimum coverage percentage, a maximum allowed…
+The post GitHub code coverage merge protection for pull requests appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Releases: Sidebar navigation and per-asset download counts]]></title>
+        <id>https://github.blog/changelog/2026-06-30-releases-sidebar-navigation-and-per-asset-download-counts</id>
+        <link href="https://github.blog/changelog/2026-06-30-releases-sidebar-navigation-and-per-asset-download-counts"/>
+        <updated>2026-06-30T16:36:06.000Z</updated>
+        <summary type="html"><![CDATA[You can now scan and navigate release pages more easily with a dedicated sidebar table of contents. We also updated release metadata placement for a more consistent layout so it’s…
+The post Releases: Sidebar navigation and per-asset download counts appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Copilot Agent is now available in JetBrains AI Assistant]]></title>
         <id>https://github.blog/changelog/2026-06-18-copilot-agent-is-now-available-in-jetbrains-ai-assistant</id>
@@ -15,6 +270,31 @@
 The post Copilot Agent is now available in JetBrains AI Assistant appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Open source license compliance is in public preview]]></title>
+        <id>https://github.blog/changelog/2026-06-26-open-source-license-compliance-is-in-public-preview</id>
+        <link href="https://github.blog/changelog/2026-06-30-open-source-license-compliance-is-in-public-preview"/>
+        <updated>2026-06-30T16:00:17.000Z</updated>
+        <summary type="html"><![CDATA[Enterprises can now manage their dependencies’ licenses at scale with sophisticated, ruleset-based checks that enforce a centralized policy. Open source license compliance is in public preview, letting you block noncompliant…
+The post Open source license compliance is in public preview appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[shot-scraper 1.10]]></title>
+        <id>https://simonwillison.net/2026/Jun/30/shot-scraper/#atom-everything</id>
+        <link href="https://simonwillison.net/2026/Jun/30/shot-scraper/#atom-everything"/>
+        <updated>2026-06-30T15:10:14.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/shot-scraper/releases/tag/1.10">shot-scraper 1.10</a></p>
+        <p>The big new feature is <code>shot-scraper video storyboard.yml</code>, described in detail in <a href="https://simonwillison.net/2026/Jun/30/shot-scraper-video/">Have your agent record video demos of its work with shot-scraper video</a>.</p>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/shot-scraper">shot-scraper</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
@@ -45,6 +325,36 @@ The post Upcoming cloud data retention policy for closed security alerts appeare
         <link href="https://openai.com/index/how-chatgpt-adoption-has-expanded"/>
         <updated>2026-06-30T09:00:00.000Z</updated>
         <summary type="html"><![CDATA[New OpenAI Signals data shows how ChatGPT adoption is growing globally, with users increasing usage, exploring more capabilities, and driving growth across regions and languages.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Per-user AI credit budgets available for cost centers]]></title>
+        <id>https://github.blog/changelog/2026-06-26-per-user-ai-credit-budgets-available-for-cost-centers</id>
+        <link href="https://github.blog/changelog/2026-06-30-per-user-ai-credit-budgets-available-for-cost-centers"/>
+        <updated>2026-06-30T07:45:13.000Z</updated>
+        <summary type="html"><![CDATA[Enterprise admins can now set a cost center user-level budget: one per-user AI credit budget on a cost center that applies to every individual in it. As membership changes, the…
+The post Per-user AI credit budgets available for cost centers appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing GeneBench-Pro]]></title>
+        <id>https://openai.com/index/introducing-genebench-pro</id>
+        <link href="https://openai.com/index/introducing-genebench-pro"/>
+        <updated>2026-06-30T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Introducing GeneBench-Pro, a new benchmark testing AI performance in genomics, biology, and scientific research using complex, real-world datasets.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Inside Genebench-Pro]]></title>
+        <id>https://openai.com/index/genebench-pro/case-studies</id>
+        <link href="https://openai.com/index/genebench-pro/case-studies"/>
+        <updated>2026-06-30T00:00:00.000Z</updated>
         <author>
             <name>OpenAI News</name>
         </author>
@@ -136,6 +446,17 @@ This is an interesting new open weights (MIT licensed) model, the first model re
 The post Restrict issue creation to collaborators only appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Agent Harness: Working with your data, safely]]></title>
+        <id>https://devblogs.microsoft.com/agent-framework/?p=5547</id>
+        <link href="https://devblogs.microsoft.com/agent-framework/agent-harness-working-with-your-data-safely/"/>
+        <updated>2026-06-29T10:41:33.000Z</updated>
+        <summary type="html"><![CDATA[Part 2 of Build your own claw and agent harness with Microsoft Agent Framework. In Part 1 we stood up a harness and gave our personal finance assistant its first abilities: a custom tool, web search, and planning. It can talk about the markets – but it can’t yet touch your data, and nothing stops […]
+The post Agent Harness: Working with your data, safely appeared first on Microsoft Agent Framework.]]></summary>
+        <author>
+            <name>Wes Steyn</name>
         </author>
     </entry>
     <entry>
@@ -3785,38 +4106,6 @@ The post Updates to GitHub Copilot billing and plans appeared first on The GitHu
         <summary type="html"><![CDATA[OpenAI breaks ground on a 1GW data center project in Michigan as part of Stargate, building AI infrastructure to expand access, create jobs, and support communities.]]></summary>
         <author>
             <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[OpenAI frontier models and Codex are now available on AWS]]></title>
-        <id>https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws</id>
-        <link href="https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws"/>
-        <updated>2026-06-01T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[OpenAI frontier models and Codex are now generally available on AWS, giving enterprises a new path to build with OpenAI through the AWS environments, controls, and procurement workflows they already use. Customers can get started with OpenAI on AWS and move faster from evaluation to production.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[May 2026 newsletter]]></title>
-        <id>https://simonwillison.net/2026/Jun/1/may-newsletter/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jun/1/may-newsletter/#atom-everything"/>
-        <updated>2026-06-01T04:45:00.000Z</updated>
-        <summary type="html"><![CDATA[<p>I just sent out the May edition of my <a href="https://github.com/sponsors/simonw/">sponsors-only monthly newsletter</a>. If you are a sponsor (or if you start a sponsorship now) you can <a href="https://github.com/simonw-private/monthly/blob/main/2026-05-may.md">access it here</a>.</p>
-<p>This month:</p>
-<ul>
-<li>Al got expensive, and Anthropic had a really good month</li>
-<li>The model releases were a little disappointing</li>
-<li>Conferences and podcasts</li>
-<li>I launched Datasette Agent and made a lot of progress on Datasette</li>
-<li>What I'm using, May 2026 edition</li>
-<li>Miscellaneous extras</li>
-</ul>
-<p>Here's <a href="https://github.com/simonw/monthly-newsletter-archive/blob/main/2026-04-april.md">a copy of the April newsletter</a> as a preview of what you'll get. Pay $10/month to stay a month ahead of the free copy!</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/newsletter">newsletter</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
 </feed>
