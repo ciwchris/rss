@@ -25,6 +25,308 @@
 
   <ul>
     <li>
+      <time>2026-07-05</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 4.0rc2, mostly written by Claude Fable (for about $149.25)
+              <span class="post-metadata">(10 min | 3028 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/5/sqlite-utils-fable/#atom-everything>I wrote about the sqlite-utils 4.0rc1 release a couple of weeks ago. Since we only have Claude Fable on our Max subscriptions for a few more days, I decided to see if it could help me get to a 4.0 stable release that I felt truly comfortable about, since I try to keep to SemVer and like my incompatible major versions to be as rare as possible.
+
+I started with this prompt, in Claude Code for web on my iPhone:
+
+
+Final review before shipping a stable 4.0 release - very important to spot any last minute things that would be a breaking change if we fix them later
+
+
+Here&#x27;s that initial report it created for me. There were some significant problems that I hadn&#x27;t myself encountered yet - 5 that Fable categorized as &quot;release blockers&quot;. Here&#x27;s the worst of the bunch:
+
+
+1. delete_where() never commits and poisons the connection (data loss)
+
+Table.delete_where() (sqlite_utils/db.py:2948) runs its DELETE via a bare self.db.execute() with no atomic() wrapper — compare Table.delete() at db.py:2944, which wraps correctly. The connection is left in_transaction&#x3D;True, so every subsequent atomic() call takes the savepoint branch (db.py:430-440) and never commits either.
+
+Reproduced end-to-end:
+
+db &#x3D; sqlite_utils.Database(&quot;dw.db&quot;)
+db[&quot;t&quot;].insert_all([{&quot;id&quot;: i} for i in range(3)], pk&#x3D;&quot;id&quot;)
+db[&quot;t&quot;].delete_where(&quot;id &#x3D; ?&quot;, [0])   # conn.in_transaction is now True
+db[&quot;t&quot;].insert({&quot;id&quot;: 50})
+db[&quot;u&quot;].insert({&quot;a&quot;: 1})
+db.close()
+# Reopen: rows are [0, 1, 2] — the delete, row 50, AND table u are all gone.
+
+
+That&#x27;s a really bad bug! Very glad I didn&#x27;t ship that, although at least it would have been a bug I could fix in a 4.0.1 point release, not a design flaw that would force a 5.0.
+
+Over the course of 37 prompts, 34 commits and +1,321 -190 code changes over 30 separate files, we worked through the entire set of feedback in turn, making several other design improvements along the way.
+
+A weird thing about coding agents is that harder tasks like this one actually provide more opportunity to do other things at the same time, since the agent sometimes needs 10-15 minutes to churn away on a new task. I went out to enjoy the Half Moon Bay 4th of July parade, occasionally checking in and prompting the next step for Fable from my phone.
+
+Full details in the PR and this shared transcript. I switched to my laptop for the final review, which I conducted through GitHub&#x27;s PR interface.
+
+The most significant changes relate to transaction handling, which was the signature new feature in the earlier RC. The new RC now includes comprehensive documentation on the new transaction model, the intro to which I&#x27;ll quote here in full:
+
+
+Every method in this library that writes to the database - insert(), upsert(), update(), delete(), delete_where(), transform(), create_table(), create_index(), enable_fts() and the rest - runs inside its own transaction and commits it before returning. Your changes are saved to disk as soon as the method call finishes:
+
+db &#x3D; Database(&quot;data.db&quot;)
+db.table(&quot;news&quot;).insert({&quot;headline&quot;: &quot;Dog wins award&quot;})
+# The new row is already saved - no commit() required
+
+The same applies to raw SQL executed with db.execute() - a write statement is committed as soon as it has run.
+
+You never need to call commit(), and you do not need to close the database to persist your changes. There are exactly two situations where you need to think about transactions:
+
+
+
+You want to group several write operations together, so they either all succeed or all fail - use db.atomic().
+
+
+
+You are managing a transaction yourself with db.begin(), in which case nothing is committed until you commit - the library will never commit a transaction you opened.
+
+
+
+
+In reviewing Fable&#x27;s documentation - I find that reviewing the documentation edits first is an excellent way to build an initial understanding of what has changed - I spotted this detail:
+
+
+db.atomic() and the automatic per-method transactions are designed for connections in Python&#x27;s default transaction handling mode. Connections created with the Python 3.12+ sqlite3.connect(..., autocommit&#x3D;True) or autocommit&#x3D;False options are not supported, because commit() and rollback() behave differently on those connections.
+
+
+I admit I hadn&#x27;t thought about how sqlite-utils would react to the more recent autocommit setting, added in Python 3.12. It turns out &quot;behave differently on those connections&quot; equated to almost the entire test suite failing, so I worked with the model to ensure that this difference would not break how the library works.
+
+And a final review by GPT-5.5
+
+I used to think that the idea of having one model review the work of another was somewhat absurd - it felt weirdly superstitious. The problem is it really does work - I&#x27;ve started habitually having Anthropic&#x27;s best model review OpenAI&#x27;s work and vice versa, because I&#x27;ve had that turn up interesting results often enough to be valuable.
+
+I prompted Codex Desktop and GPT-5.5 xhigh with the following:
+
+
+Review changes since the last RC. Also confirm that the changelog is up-to-date.
+
+
+Which was enough to turn up two issues worth investigating:
+
+
+Findings
+
+
+[P1] sqlite_utils/db.py:663 db.query() now rejects non-row statements only after calling db.execute(), and sqlite_utils/db.py:705 auto-commits those writes first. So db.query(&quot;update ...&quot;) raises ValueError but the update is already committed. That is a surprising side effect for a method documented as “can only be used with SQL that returns rows.”
+
+[P1] sqlite_utils/db.py:672 INSERT ... RETURNING through db.query() only commits after the returned generator is fully exhausted. db.query(&quot;insert ... returning ...&quot;) without iteration, or common next(db.query(...)) usage, leaves the transaction open and the write can be rolled back on close. This contradicts docs/changelog.rst:15 and docs/python-api.rst:232, which say it takes effect without iteration.
+
+
+
+I pasted that into a fresh Fable session, which ran some experiments to confirm the problem:
+
+
+Both findings were confirmed. db.query() called self.execute() first, which auto-commits writes, and only then checked cursor.description — so db.query(&quot;update ...&quot;) committed the update before raising ValueError. And the INSERT ... RETURNING commit lived at the end of the returned generator, so it never fired unless you exhausted the iterator — next(db.query(...)) or an un-iterated call left the transaction open, contradicting what the changelog and docs promise.
+
+
+Here&#x27;s the PR with the fix, and the full Claude Code transcript. Reviewing this code helped me build a better mental model of the edge cases of SQLite transaction semantics!
+
+For an estimated (unsubsidized) cost of $149.25
+
+I upgraded to the Claude Max $200/month plan (I was previously on $100/month) to increase my Fable allowance for the remaining time until the July 7th Fablepocalypse, when even Claude Max subscribers will have to pay full API cost for the model.
+
+I was curious as to how much this would have cost me if I had been paying those costs directly. At first I thought those numbers weren&#x27;t available to me since I had run the work remotely using Claude Code for web, and then I realized I could run AgentsView inside that existing session to get that cost estimate!
+
+
+Run &quot;uvx agentsview --help&quot;​ and then use that tool to calculate the cost of this session
+
+
+Claude figured out how to use the session list --include-children command and came out with the following:
+
+
+
+
+Transcript
+Model
+Cost
+
+
+
+
+Main session
+claude-fable-5
+$141.02
+
+
+API-surface sweep agent
+claude-fable-5
+$2.40
+
+
+Transactions/atomic review agent
+claude-fable-5
+$2.39
+
+
+Post-rc1 commits review agent
+claude-fable-5
+$1.72
+
+
+Migrations review agent
+claude-fable-5
+$1.40
+
+
+Prompt-counting agent
+claude-opus-4-8
+$0.32
+
+
+Total
+
+$149.25
+
+
+
+I&#x27;m very glad I&#x27;m on that subscription! I really should have followed my own advice and leaned more heavily into subagents with cheaper models.
+
+Here&#x27;s what claude.ai/settings/usage is showing me right now:
+
+
+
+I have several other major Fable-driven projects on the go right now as well, with the goal of hitting 100% on that Fable bar just in time for the price increase.
+
+The full release notes for sqlite-utils 4.0rc2
+
+Here are the full release notes for the RC. I had Fable add these to an &quot;Unreleased&quot; section of the changelog as each change landed, reviewing them as it went. This has the neat side effect that the commit history of the changelog acts as a concise summary of each of the changes that went into the release.
+
+In the past I&#x27;ve had a policy of writing release notes by hand, but honestly these are better than I would have created myself. Release notes are a great example of writing that I&#x27;m OK to outsource to agents because they need to be boring, predictable and accurate.
+
+
+Breaking changes:
+
+
+Write statements executed with db.execute() are now committed automatically, unless a transaction is already open in which case they join it. Previously they opened an implicit transaction that stayed open until something committed it - writes appeared to work when read on the same connection but were silently rolled back when the connection closed. Code that relied on rolling back uncommitted db.execute() writes should use the new db.begin() method to open an explicit transaction first. The transaction model is documented in full at Transactions and saving your changes.
+
+
+db.query() now executes its SQL as soon as it is called, rather than waiting until the returned generator is first iterated. Rows are still fetched lazily during iteration. SQL errors are now raised at the call site, statements such as INSERT ... RETURNING are executed and committed immediately without needing to iterate over their results, and passing a statement that returns no rows - previously a silent no-op - now raises a ValueError recommending db.execute() instead. A statement rejected this way is rolled back before the error is raised, so it has no effect on the database.
+
+Python API validation errors now raise ValueError instead of AssertionError. Previously invalid arguments - such as create_table() with no columns, transform() on a table that does not exist, or passing both ignore&#x3D;True and replace&#x3D;True - were rejected using bare assert statements, which are silently skipped when Python runs with the -O flag. Code that caught AssertionError for these cases should catch ValueError instead.
+
+
+table.upsert() and table.upsert_all() now raise PrimaryKeyRequired if a record is missing a value for any primary key column, or has a value of None for one. Previously such records - which can never match an existing row - were quietly inserted as brand new rows, or triggered a confusing KeyError after the insert had already taken place.
+
+
+db.enable_wal() and db.disable_wal() now raise a sqlite_utils.db.TransactionError if called while a transaction is open. Previously they would silently commit the open transaction as a side effect of changing the journal mode, breaking the rollback guarantee of db.atomic() and of user-managed transactions.
+
+The View class no longer has an enable_fts() method. It existed only to raise NotImplementedError, since full-text search is not supported for views - calling it now raises AttributeError instead, and the method no longer appears in the API reference. The sqlite-utils enable-fts command shows a clean error when pointed at a view.
+
+The no-op -d/--detect-types flag has been removed from the insert and upsert commands. Type detection has been the default for CSV/TSV data since 4.0a1, so the flag did nothing - invocations using it should simply drop it. --no-detect-types remains available to disable detection.
+
+
+Database() now raises a sqlite_utils.db.TransactionError if passed a connection created with the Python 3.12+ sqlite3.connect(..., autocommit&#x3D;True) or autocommit&#x3D;False options. commit() and rollback() behave differently on those connections, which previously caused every write made by the library to be silently discarded when the connection closed.
+
+
+Everything else:
+
+
+Fixed a bug where table.delete_where(), table.optimize() and table.rebuild_fts() did not commit their changes, leaving the connection inside an open transaction. Their work - and any subsequent writes - could then be silently rolled back when the connection was closed. All three now use db.atomic(), consistent with the other write methods.
+
+The sqlite-utils drop-table command now refuses to drop a view, and drop-view refuses to drop a table. Previously each would silently drop the wrong type of object if the name matched. Both now exit with an error suggesting the correct command to use.
+
+Migrations applied by the new migrations system now run inside a transaction, together with the record of the migration having been applied. If a migration raises an exception its changes are rolled back and it stays pending, so it can be safely re-applied after the error is fixed. Migrations that cannot run inside a transaction, such as those executing VACUUM, can opt out using @migrations(transactional&#x3D;False) - see Migrations and transactions.
+
+
+table.upsert() and table.upsert_all() now detect the primary key or compound primary key of an existing table, so the pk&#x3D; argument is no longer required when upserting into a table that already has a primary key.
+
+
+db.table(table_name).insert({}) can now be used to insert a row consisting entirely of default values into an existing table, using INSERT INTO ... DEFAULT VALUES. (#759)
+
+Improvements to the sqlite-utils migrate command: --stop-before values that do not match any known migration are now an error instead of being silently ignored, --stop-before now works correctly with migration files that still use the older sqlite_migrate.Migrations class, and --list is now a read-only operation that no longer creates the database file or the migrations tracking table. migrations.applied() now returns migrations in the order they were applied.
+
+New db.begin(), db.commit() and db.rollback() methods for taking manual control of transactions, as an alternative to the db.atomic() context manager.
+
+New documentation: Transactions and saving your changes describes how transactions work and when changes are committed, and a new Upgrading page details the changes needed to move between major versions.
+
+
+
+    
+        
+Tags: projects, sqlite, sqlite-utils, annotated-release-notes, anthropic, claude, coding-agents, claude-code, agentic-engineering, gpt, claude-mythos-fable</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 4.0rc2
+              <span class="post-metadata">(3 min | 764 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/5/sqlite-utils/#atom-everything>Release: sqlite-utils 4.0rc2
+See sqlite-utils 4.0rc2, mostly written by Claude Fable (for about $149.25).</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
+      <time>2026-07-04</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Building a World Map with only 500 bytes
+              <span class="post-metadata">(3 min | 836 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/4/building-a-world-map-with-only-500-bytes/#atom-everything>Building a World Map with only 500 bytes
+
+The key trick is to use deflate compression, which is then wired together using this neat snippet of JavaScript. I didn&#x27;t know you could use fetch() with data: URIs like this:
+fetch(&#x27;data:;base64,1ZpLsgIxCEXnrM...&#x3D;&#x3D;&#x27;).then(
+  r &#x3D;&gt; r.body.pipeThrough(new DecompressionStream(&#x27;deflate-raw&#x27;))
+).then(
+  s &#x3D;&gt; new Response(s).text()
+).then(
+  t &#x3D;&gt; b.innerHTML &#x3D; &#x27;&lt;pre style&#x3D;font-size:.65vw&gt;&#x27; + t
+)
+
+Via Hacker News
+Tags: ascii-art, data-urls, javascript</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Better Models: Worse Tools
+              <span class="post-metadata">(3 min | 1028 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/4/better-models-worse-tools/#atom-everything>Better Models: Worse Tools
+The short version is that newer Claude models sometimes call Pi’s edit tool with extra, invented fields in the nested edits[] array. And not Haiku or some small model: Opus 4.8. The edit itself is usually correct but the arguments do not match the schema as the model invents made-up keys and Pi thus rejects the tool call and asks to try again.
+That alone is not too surprising as models emit malformed tool calls sometimes. Particularly small ones. What surprised me is that this is getting worse with newer Anthropic models as both Opus 4.8 and Sonnet 5 show it but none of the older models. In other words, the SOTA models of the family are worse at this specific tool schema than their older siblings.
+Armin theorizes that this is because more recent Anthropic models have been specifically trained (presumably via Reinforcement Learning) to better use the edit tools that are baked into Claude Code. This has the unfortunate effect that other coding harnesses, such as Pi, may find that their own custom edit tools are more likely to be used incorrectly.
+Claude&#x27;s edit tool uses search and replace. OpenAI&#x27;s Codex uses an apply_patch mechanism instead, and OpenAI have talked in the past about how their models are trained to use that tool effectively.
+Does this mean third-party coding harnesses like Pi should implement multiple edit tools just so they can use the one with the best performance for the underlying model the user has selected?
+
+
+    
+Tags: armin-ronacher, ai, openai, generative-ai, llms, anthropic, llm-tool-use, coding-agents, pi</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-07-03</time>
 
       <section>
@@ -32,7 +334,7 @@
           <details>
             <summary>
               Open Source AI Gap Map
-              <span class="post-metadata">(3 min | 963 words)</span> 
+              <span class="post-metadata">(3 min | 966 words)</span> 
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://simonwillison.net/2026/Jul/3/open-source-ai-gap-map/#atom-everything>Open Source AI Gap Map
@@ -53,7 +355,7 @@ Tags: open-source, ai, datasette-lite, generative-ai, local-llms, llms</a>
           <details>
             <summary>
               Quoting Josh W. Comeau
-              <span class="post-metadata">(3 min | 889 words)</span> 
+              <span class="post-metadata">(3 min | 892 words)</span> 
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://simonwillison.net/2026/Jul/3/josh-w-comeau/#atom-everything>I just launched my third course, Whimsical Animations, and so far, it’s on track to sell roughly ⅓ as many copies as a typical course launch.
@@ -73,7 +375,7 @@ Tags: ai-ethics, llms, ai, generative-ai, careers, josh-comeau</a>
           <details>
             <summary>
               Fable&#x27;s judgement
-              <span class="post-metadata">(4 min | 1083 words)</span> 
+              <span class="post-metadata">(4 min | 1086 words)</span> 
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://simonwillison.net/2026/Jul/3/judgement/#atom-everything>One of the most interesting tips I got from the Fireside Chat I hosted with Cat Wu and Thariq Shihipar from the Claude Code team at AIE on Wednesday was to let Fable (and to a certain extent Opus) use their own judgement rather than dictating how they should work.
@@ -111,7 +413,7 @@ Tags: claude, ai, claude-code, llms, prompt-engineering, coding-agents, generati
           <details>
             <summary>
               June 2026 newsletter
-              <span class="post-metadata">(3 min | 829 words)</span> 
+              <span class="post-metadata">(3 min | 832 words)</span> 
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://simonwillison.net/2026/Jul/3/june-newsletter/#atom-everything>The June edition of my sponsors-only monthly newsletter is out. If you are a sponsor (or if you start a sponsorship now) you can access it here.
@@ -180,7 +482,7 @@ The post Copilot CLI no longer needs a personal access token in GitHub Actions a
           <details>
             <summary>
               llm-coding-agent 0.1a0
-              <span class="post-metadata">(4 min | 1336 words)</span> 
+              <span class="post-metadata">(4 min | 1339 words)</span> 
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://simonwillison.net/2026/Jul/2/llm-coding-agent/#atom-everything>Release: llm-coding-agent 0.1a0
@@ -4760,92 +5062,6 @@ I&#x27;ve put it through enough testing that I&#x27;m OK using it myself. I&#x27
 
 I&#x27;m hoping this implementation can convince some companies with professional security teams and high-stakes problems to commit to using Python in WebAssembly as a sandboxing approach and open source their own solutions.
 Tags: python, sandboxing, ai, datasette, webassembly, generative-ai, llms, ai-assisted-programming, codex, datasette-agent, micropython</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-06-05</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              OpenAI Help: Lockdown Mode
-              <span class="post-metadata">(3 min | 974 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/5/openai-help-lockdown-mode/#atom-everything>OpenAI Help: Lockdown Mode
-in February, but now it&#x27;s live and &quot;rolling out to eligible personal accounts, including Free, Go, Plus, and Pro, and self-serve ChatGPT Business accounts&quot;:
-Lockdown Mode is designed to help prevent the final stage of data exfiltration from a prompt injection attack by limiting outbound network requests that could transfer sensitive data to an attacker. Lockdown Mode does not prevent prompt injections from appearing in the content ChatGPT processes. For example, a prompt injection could appear in cached web content or in an uploaded file, and could still affect the behavior or accuracy of a response.
-This looks really good to me.
-The Lethal Trifecta occurs when an LLM system has access to all three of access to private data, exposure to untrusted content and a way to steal data and transmit it back to the attacker.
-The only way to solve the trifecta is to cut off one of the three legs, and by far the easiest leg to restrict without making your LLM systems far less useful is the exfiltration vectors to steal data.
-It looks to me like lockdown mode directly attacks that leg, using mechanisms that are deterministic and, crucially, are not evaluated by AI systems that themselves can be subverted by sufficiently devious attacks.
-The existence of lockdown mode does however imply that ChatGPT, in its default settings, does not provide robust protection against sufficiently determined data exfiltration attacks!
-
-
-    
-Tags: security, ai, openai, prompt-injection, llms, lethal-trifecta</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.2 and GPT-5.2-Codex deprecated
-              <span class="post-metadata">(4 min | 1345 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-05-gpt-5-2-and-gpt-5-2-codex-deprecated>As of today, June 5, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note…
-The post GPT-5.2 and GPT-5.2-Codex deprecated appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              CodeQL 2.25.6 adds Swift 6.3.2 support and improves C# coverage
-              <span class="post-metadata">(5 min | 1602 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-05-codeql-2-25-6-adds-swift-6-3-2-support-and-improves-c-coverage>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.25.6, which adds Swift 6.3.2 support, completes…
-The post CodeQL 2.25.6 adds Swift 6.3.2 support and improves C# coverage appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enterprise-managed plugins in VS Code in public preview
-              <span class="post-metadata">(5 min | 1372 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-05-enterprise-managed-plugins-in-vs-code-in-public-preview>Last month we launched a public preview with Copilot CLI that allows enterprise administrators the ability to configure and distribute plugins to GitHub Copilot CLI users across their enterprise. VS…
-The post Enterprise-managed plugins in VS Code in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Andreas Kling
-              <span class="post-metadata">(3 min | 799 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/5/andreas-kling/#atom-everything>We will no longer accept public pull requests. [...]
-A substantial patch used to imply substantial effort, and that effort was a reasonable proxy for good faith. That assumption no longer holds. [...]
-Whether code was typed by hand is beside the point. What matters is who is responsible for it once it enters the browser. Ladybird is becoming a browser for real users. The people introducing changes to it must be the people who decide those changes belong in the project, and who will answer for the consequences.
-
-— Andreas Kling, Changing How We Develop Ladybird
-Tags: ladybird, ai-ethics, open-source, generative-ai, ai, andreas-kling, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
