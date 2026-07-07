@@ -31,6 +31,344 @@
       <article>
           <details>
             <summary>
+              sqlite-utils 4.0, now with database schema migrations
+              <span class="post-metadata">(9 min | 2736 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/7/sqlite-utils-4/#atom-everything>This morning I released sqlite-utils 4.0, the 124th release of that project and the first major version bump since 3.0 in November 2020. In addition to some small but significant breaking changes (described in this upgrade guide), this version introduces three major features: database migrations, nested transactions (via a new db.atomic() method), and support for compound foreign keys.
+
+Database schema migrations using sqlite-utils
+
+Schema migrations define a sequence of changes to be made to a SQLite database, plus a mechanism for tracking which migrations have been applied and applying any that are found to be pending.
+
+Migrations are defined in Python files using the sqlite-utils Python library, which includes a powerful table.transform() method providing enhanced alter table capabilities that are not supported by SQLite&#x27;s ALTER TABLE statement.
+
+(table.transform() implements the pattern recommended by the SQLite documentation - create a new temporary table with the new schema, copy across the data, then drop the old table and rename the temporary one in its place.)
+
+Here&#x27;s an example migration file which creates a table called creatures, adds an additional column to it in a second step, then changes the types of two of the columns in a third:
+
+from sqlite_utils import Migrations
+
+migrations &#x3D; Migrations(&quot;creatures&quot;)
+
+@migrations()
+def create_table(db):
+    db[&quot;creatures&quot;].create(
+        {&quot;id&quot;: int, &quot;name&quot;: str, &quot;species&quot;: str},
+        pk&#x3D;&quot;id&quot;,
+    )
+
+@migrations()
+def add_weight(db):
+    db[&quot;creatures&quot;].add_column(&quot;weight&quot;, float)
+
+@migrations()
+def change_column_types(db):
+    db[&quot;creatures&quot;].transform(types&#x3D;{&quot;species&quot;: int, &quot;weight&quot;: str})
+
+Save that as migrations.py and run it against a fresh database like this:
+
+
+uvx sqlite-utils migrate data.db migrations.py
+
+Then if you check the schema of that database:
+
+
+uvx sqlite-utils schema data.db
+
+You&#x27;ll see this SQL:
+
+
+CREATE TABLE &quot;_sqlite_migrations&quot; (
+   &quot;id&quot; INTEGER PRIMARY KEY,
+   &quot;migration_set&quot; TEXT,
+   &quot;name&quot; TEXT,
+   &quot;applied_at&quot; TEXT
+);
+CREATE UNIQUE INDEX &quot;idx__sqlite_migrations_migration_set_name&quot;
+    ON &quot;_sqlite_migrations&quot; (&quot;migration_set&quot;, &quot;name&quot;);
+CREATE TABLE &quot;creatures&quot; (
+   &quot;id&quot; INTEGER PRIMARY KEY,
+   &quot;name&quot; TEXT,
+   &quot;species&quot; INTEGER,
+   &quot;weight&quot; TEXT
+);
+
+The _sqlite_migrations table is used to keep track of which migration functions have been run. The creatures table above is the schema after all three migrations have been applied.
+
+To see a list of migrations, both pending and applied, run this:
+
+
+uvx sqlite-utils migrate data.db migrations.py --list
+
+Output:
+
+Migrations for: creatures
+
+  Applied:
+    create_table - 2026-07-07 17:58:41.360051+00:00
+    add_weight - 2026-07-07 17:58:41.360608+00:00
+    change_column_types - 2026-07-07 18:01:15.802000+00:00
+
+  Pending:
+    (none)
+
+
+If you don&#x27;t specify a migrations file, the sqlite-utils migrate data.db command will scan the current directory and its subdirectories for files called migrations.py and apply any Migrations() instances it finds in them.
+
+You can also execute migrations from Python code using the migrations.apply(db) method, which is useful for building tools that manage their own database schemas over multiple versions. My own LLM tool has been using a version of this pattern for several years now, as shown in llm/embeddings_migrations.py.
+
+Prior art
+
+My favorite implementation of this pattern remains Django&#x27;s Migrations, developed by Andrew Godwin based on his earlier project South. Fun fact: Andrew, Russ Keith-Magee, and I presented our competing approaches to schema migrations for Django on the Schema Evolution panel at the very first DjangoCon back in 2008! My attempt was called dmigrations, developed with a team at Global Radio in London.
+
+Django&#x27;s migrations can be automatically generated from model definitions and include the ability to roll back to a previous version. The sqlite-utils approach is deliberately simpler: unlike Django, sqlite-utils encourages programmatic table creation rather than a model definition ORM, so there isn&#x27;t anything we can use to automatically generate migrations.
+
+I decided to skip rollback, since in my experience it&#x27;s a feature that is rarely used. With a SQLite project, an easy way to achieve rollback is to create a copy of your database file before you apply the migrations!
+
+Migrating from sqlite-migrate
+
+The design of sqlite-utils migrations is three years old now - I had originally released it as a separate package called sqlite-migrate, which never quite graduated beyond a beta release.
+
+I&#x27;ve used that package in enough places now that I&#x27;m confident in the design, so I&#x27;ve decided to promote it to a feature of sqlite-utils to make it available by default to all of the other tools in the growing sqlite-utils/Datasette/LLM ecosystem.
+
+I made one last release of sqlite-migrate, which switches it to depend on sqlite-utils&gt;&#x3D;4 and replaces the __init__.py file with the following:
+
+from sqlite_utils import Migrations
+
+__all__ &#x3D; [&quot;Migrations&quot;]
+
+Any existing project that depends on sqlite-migrate should continue to work without alterations.
+
+Everything else in sqlite-utils 4.0
+
+Here are the release notes for this version, with some inline annotations:
+
+
+The 4.0 release includes some minor backwards-incompatible fixes (hence the major version number bump) and introduces three major new features:
+
+
+
+Database migrations, providing a structured mechanism for evolving a project’s schema over time. (#752)
+
+
+
+I think of migrations as the signature new feature, hence this blog post.
+
+
+
+
+Nested transaction support via db.atomic(), plus numerous improvements to how transactions work across the library. (#755)
+
+
+
+sqlite-utils has long had a confused relationship with database transactions, partly because when I started designing the library back in 2018 I didn&#x27;t yet have a great feel for how those worked in SQLite itself.
+
+Adding migrations to the core library made me determined to finally crack this nut, since transactions make migration systems a whole lot safer and easier to reason about.
+
+I ended up building this around a db.atomic() context manager which looks like this:
+
+with db.atomic():
+    db.table(&quot;dogs&quot;).insert({&quot;id&quot;: 1, &quot;name&quot;: &quot;Cleo&quot;}, pk&#x3D;&quot;id&quot;)
+    db.table(&quot;dogs&quot;).insert({&quot;id&quot;: 2, &quot;name&quot;: &quot;Pancakes&quot;})
+
+SQLite supports Savepoints, and as a result db.atomic() can be nested to carry out transactions inside of transactions. It&#x27;s pretty neat!
+
+
+
+Support for compound foreign keys, including creation, transformation and introspection through table.foreign_keys. (#594)
+
+
+
+This came about when I asked a coding agent to review all open issues and PRs for things that should be included in a 4.0 release since they would represent breaking changes if I added them later, and it correctly identified that compound foreign keys were exactly that kind of feature.
+
+I started with a breaking change to the table.foreign_keys introspection method, and then decided to see if Claude Fable 5 could handle the more fiddly job of integrating compound foreign key creation into the library. The API design it helped create felt exactly right to me - consistent with how the rest of the library worked already.
+
+
+Other notable changes include:
+
+
+Upserts now use SQLite’s INSERT ... ON CONFLICT ... DO UPDATE SET syntax, detect existing table primary keys automatically and reject records that are missing required primary key values. (#652)
+
+
+
+This was the change that first pushed me to consider a breaking-change 4.0 version bump. I built this to help support sqlite-chronicle, which uses triggers to keep track of rows in a table that have been inserted, updated or deleted.
+
+
+
+
+db.query() now executes immediately and rejects statements that do not return rows; use db.execute() for writes and DDL.
+
+
+
+Probably the most disruptive breaking change - I&#x27;ve had to update a few places in my own code to switch from db.query() to db.execute() as a result.
+
+
+
+CSV and TSV imports now detect column types by default, while inserts into existing tables preserve those tables’ column types. (#679)
+
+
+
+The sqlite-utils insert data.db creatures creatures.csv --detect-types flag was a later addition to allow column types (text, integer, real) to be automatically detected based on the data in a CSV. It should be the default, and releasing a 4.0 means I can make it so.
+
+
+
+
+table.extract() and extracts&#x3D; no longer create lookup table records for all-null values. (#186)
+
+
+
+The oldest issue addressed by this release - the underlying bug was opened (by me) in October 2020.
+
+
+See Upgrading from 3.x to 4.0 for details on backwards-incompatible changes.
+
+The detailed release notes for the features and fixes shipped during the 4.0 pre-release cycle are available in 4.0a0, 4.0a1, 4.0rc1, 4.0rc2, 4.0rc3 and 4.0rc4.
+
+
+The upgrade guide was entirely written by Claude Fable 5, Claude Opus 4.8 and GPT-5.5. The same is true of the release notes.
+
+This is the kind of documentation I&#x27;ve slowly become comfortable outsourcing to the robots. It doesn&#x27;t need to convince people of anything, or express any opinions - its job is to be as accurate and detailed as possible. I&#x27;ve reviewed the release notes closely and can confirm they are accurate and comprehensive.
+
+Claude Fable 5 helped a lot
+
+I released the first alpha of sqlite-utils 4.0 over a year ago. I&#x27;ve been dragging my heels on the stable release because of the amount of work it would take to track down and clean up the many other minor design flaws that a major version number allowed me to take on.
+
+Assistance from Claude Fable 5 (and to a lesser extent Opus 4.8 and GPT-5.5) gave me just the boost I needed to overcome inertia and make the most of the time I could afford to spend on this library.
+
+Fable has really good taste in API design, and is relentlessly proactive if you give it a more open goal. My most successful prompt was a review task that I issued against what I thought was the last release candidate:
+
+
+review the changes on main since the last tagged 3.x release - I am about to ship them as sqlite-utils 4.0, a stable version that promises no backwards-incompatible fixes for a very long time.
+
+review the changelog and upgrade guide, and write yourself scratch scripts to try out all of the new features in v4 - save those scripts but don&#x27;t commit them
+
+
+I tried this with GPT-5.5 xhigh in Codex Desktop and Fable 5 in Claude Code.
+
+GPT-5.5 wrote 5 Python scripts and didn&#x27;t turn up anything particularly interesting - its final report is here.
+
+Fable 5 wrote 12 scripts, identified 4 release blockers and 10 additional issues in its report, and built a neat combined repro script, which, when run, output the following:
+
+&#x3D;&#x3D;&#x3D; 1. Failed db.execute() write leaves an implicit transaction open &#x3D;&#x3D;&#x3D;
+  in_transaction after failed write: True
+  BUG: table &#x27;other&#x27; silently lost when connection closed
+
+&#x3D;&#x3D;&#x3D; 2. Leading &#x27;;&#x27; bypasses the query() first-token scanner &#x3D;&#x3D;&#x3D;
+  BUG: raised OperationalError: no such savepoint: sqlite_utils_query
+  BUG: row persisted despite rollback (count&#x3D;1)
+
+&#x3D;&#x3D;&#x3D; 3. Rejected write PRAGMA via query() still takes effect &#x3D;&#x3D;&#x3D;
+  BUG: user_version&#x3D;5 after &#x27;rejected&#x27; statement (docs say no effect)
+
+&#x3D;&#x3D;&#x3D; 4. Implicit compound FK resolves pk columns in table order, not PK order &#x3D;&#x3D;&#x3D;
+  BUG: other_columns reported as (&#x27;b&#x27;, &#x27;a&#x27;), should be (&#x27;a&#x27;, &#x27;b&#x27;)
+  BUG: transform of valid data raised IntegrityError: FOREIGN KEY constraint failed
+
+&#x3D;&#x3D;&#x3D; 5. ForeignKey (now a dataclass) is no longer hashable &#x3D;&#x3D;&#x3D;
+  BUG: cannot use &#x27;sqlite_utils.db.ForeignKey&#x27; as a set element (unhashable type: &#x27;ForeignKey&#x27;)
+
+&#x3D;&#x3D;&#x3D; 6. Mixed ForeignKey objects and tuples in foreign_keys&#x3D; rejected &#x3D;&#x3D;&#x3D;
+  BUG: foreign_keys&#x3D; should be a list of tuples
+
+&#x3D;&#x3D;&#x3D; 7. insert --csv into an EXISTING table transforms its column types &#x3D;&#x3D;&#x3D;
+  BUG: existing zip &#x27;01234&#x27; is now 1234 (column type: int)
+
+&#x3D;&#x3D;&#x3D; 8. insert(pk&#x3D;, alter&#x3D;True) regression: InvalidColumns before alter runs &#x3D;&#x3D;&#x3D;
+  BUG: InvalidColumns: Invalid primary key column [&#x27;id&#x27;] for table t with columns [&#x27;a&#x27;]
+
+&#x3D;&#x3D;&#x3D; 9. migrate --stop-before an already-applied migration applies everything &#x3D;&#x3D;&#x3D;
+  BUG: m2 was applied despite --stop-before m1 (m1 already applied)
+
+&#x3D;&#x3D;&#x3D; 10. ensure_autocommit_on() silently commits an open transaction &#x3D;&#x3D;&#x3D;
+  BUG: row survived rollback (count&#x3D;1) - transaction was committed
+
+
+I found myself agreeing with almost all of them. Here&#x27;s the PR with 16 commits where we worked through them in turn.
+
+There&#x27;s no doubt in my mind that sqlite-utils 4.0 is a significantly higher-quality release than if I had built it without the assistance of the latest frontier models.
+Tags: schema-migrations, projects, sqlite, ai, sqlite-utils, annotated-release-notes, generative-ai, llms, ai-assisted-programming, anthropic, claude, agentic-engineering, claude-mythos-fable</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Per-user budgets for cost centers in the billing UI
+              <span class="post-metadata">(4 min | 1340 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-07-per-user-budgets-for-cost-centers-in-the-billing-ui>Enterprise admins can now create cost center user-level budgets directly in the billing UI where you manage cost centers and budgets. This feature is available for GitHub Enterprise Cloud. This…
+The post Per-user budgets for cost centers in the billing UI appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Secret scanning extended metadata and multipart validation
+              <span class="post-metadata">(5 min | 1493 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-07-secret-scanning-extended-metadata-and-multipart-validation>To help you understand ownership and impact of a leaked secret, GitHub secret scanning surfaces enriched metadata for supported secret types. Extended metadata checks are now generally available, including support…
+The post Secret scanning extended metadata and multipart validation appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              sqlite-migrate 0.2
+              <span class="post-metadata">(3 min | 771 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/7/sqlite-migrate/#atom-everything>Release: sqlite-migrate 0.2
+The version that retires the library, instead implementing a compatibility shim against the new sqlite-utils 4.0 dependency.
+Tags: sqlite-utils</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              github-code Web Component
+              <span class="post-metadata">(3 min | 823 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/7/github-code-component/#atom-everything>Tool: github-code Web Component
+An experimental Web Component built using GPT-5.5 and the following prompt:
+let&#x27;s build a Web Component for embedding code from GitHub
+&lt;github-code href&#x3D;&quot;https://github.com/simonw/sqlite-ast/blob/437c759129154f05296324a7f82aa1246340dd14/sqlite_ast/parser.py#L9-L18&quot;&gt;&lt;/github-code&gt;
+It takes URLs like that, converts them to https://raw.githubusercontent.com/simonw/sqlite-ast/437c759129154f05296324a7f82aa1246340dd14/sqlite_ast/parser.py, then uses fetch() to fetch them and displays the specified range of lines - with line numbers, no syntax highlighting though
+Show me a preview web browser so I can see your work
+Here&#x27;s what it looks like embedded on this page:
+
+Tags: github, web-components, gpt</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 4.0
+              <span class="post-metadata">(3 min | 763 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/7/sqlite-utils/#atom-everything>Release: sqlite-utils 4.0
+See sqlite-utils 4.0, now with database schema migrations for details.
+Tags: sqlite-utils</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Restrict who can dismiss reviews in rulesets
               <span class="post-metadata">(5 min | 1448 words)</span> 
             </summary>
@@ -65,6 +403,32 @@ The post GitHub Copilot app available to all appeared first on The GitHub Blog.<
 The post Copilot Billing Preview app will be retired on August 3 appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              sqlite-utils 4.0rc4
+              <span class="post-metadata">(3 min | 774 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/7/sqlite-utils-2/#atom-everything>Release: sqlite-utils 4.0rc4
+The last RC before the 4.0 stable release. Mainly implements feedback from a detailed review by Claude Fable 5.
+Tags: sqlite-utils, claude-mythos-fable</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Australian Payments Plus moves faster with ChatGPT and Codex
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/australian-payments-plus>See how Australian Payments Plus uses ChatGPT Enterprise and Codex to move faster through payments complexity. AP+ saves time, improves quality, and keeps human judgment central.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
@@ -1855,6 +2219,18 @@ The post GitHub Copilot for Jira is now generally available appeared first on Th
       <article>
           <details>
             <summary>
+              Designing Organisations That Can Keep Up With AI
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/deployco/news/designing-organisations-that-can-keep-up-with-ai>Why organisational latency is becoming the biggest barrier to fully realising AI’s benefits</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Cost centers now support enterprise teams
               <span class="post-metadata">(7 min | 1950 words)</span> 
             </summary>
@@ -2105,6 +2481,18 @@ The post Deprecation of Python 3.9 for Dependabot appeared first on The GitHub B
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/helping-build-shared-standards-for-advanced-ai>OpenAI helps build shared standards for advanced AI, supporting evaluation frameworks, safety practices, and global cooperation through the Appia Foundation.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Meta-Harness R&amp;D: Enterprise-Grade Self-Improvement for Long-Horizon AI Workflows
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/deployco/news/meta-harness-enterprise-self-improvement-long-horizon-ai-workflows>How autonomous code improvement can be made disciplined enough for enterprise use</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
