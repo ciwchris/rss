@@ -6,6 +6,16 @@
       "siteUrl": "https://github.blog/changelog/",
       "articles": [
         {
+          "id": "https://github.blog/changelog/2026-07-09-openais-gpt-5-6-sol-terra-and-luna-are-now-available-in-github-copilot",
+          "author": "Allison",
+          "description": "OpenAI’s GPT-5.6 family is now rolling out in GitHub Copilot. GPT-5.6 comes in three variants, Sol, Terra, and Luna, so you can match the model to the job, whether that’s…\nThe post OpenAI’s GPT-5.6 Sol, Terra, and Luna are now available in GitHub Copilot appeared first on The GitHub Blog.",
+          "link": "https://github.blog/changelog/2026-07-09-openais-gpt-5-6-sol-terra-and-luna-are-now-available-in-github-copilot",
+          "publishedOn": "2026-07-09T16:41:29.000Z",
+          "wordCount": 2072,
+          "title": "OpenAI’s GPT-5.6 Sol, Terra, and Luna are now available in GitHub Copilot",
+          "imageUrl": "https://github.blog/wp-content/uploads/2026/07/github-copilot-social-card-4.png"
+        },
+        {
           "id": "https://github.blog/changelog/2026-07-09-organization-level-targeting-for-github-code-quality",
           "author": "Allison",
           "description": "Organization owners can now target a subset of repositories when enabling or disabling GitHub Code Quality, rather than applying it to every repository at once. This gives you more granular…\nThe post Organization-level targeting for GitHub Code Quality appeared first on The GitHub Blog.",
@@ -1150,6 +1160,46 @@
       "siteUrl": "http://simonwillison.net/",
       "articles": [
         {
+          "id": "https://simonwillison.net/2026/Jul/9/gpt-5-6/#atom-everything",
+          "author": null,
+          "description": "<p>OpenAI's latest flagship model <a href=\"https://openai.com/index/gpt-5-6/\">hit general availability this morning</a>, and comes in three sizes: Luna, Terra, and Sol (from smallest to largest).</p>\r\n<p>The new models are priced per 1M input/output tokens as Luna $1/$6, Terra $2.50/$15, Sol $5/$30. For comparison, the Claude Opus series are $5/$25 and the Claude Fable 5 is $10/$50, but price-per-million tokens doesn't tell us much now that the number of reasoning tokens can differ so much between models for the same task.</p>\r\n\r\n\r\n<p>OpenAI's biggest benchmark claim concerns long-running agentic performance, with one benchmark showing all three models outperforming Claude Fable 5:</p>\r\n<blockquote>\r\n<p>We trained GPT-5.6 to get more useful work from every token. On <a href=\"https://agents-last-exam.org/\">Agents’ Last Exam</a>, an evaluation of long-running professional workflows across 55 fields, GPT-5.6 Sol sets a new high of 53.6, eclipsing Claude Fable 5 (adaptive reasoning) by 13.1 points. Even at medium reasoning, it beats Fable 5 by 11.4 points at roughly one-quarter the estimated cost. That efficiency extends to smaller models, which are essential to making intelligence more abundant and affordable: GPT-5.6 Terra and GPT-5.6 Luna outperform Fable 5 at around one-sixteenth the cost.</p>\r\n</blockquote>\r\n<p>Amusingly, one self-reported benchmark that Fable 5 crushed the GPT-5.6 family on was SWE-Bench Pro, where Fable 5 got 80% compared to GUT-5.6 Sol getting 64.6%. This may help explain why OpenAI chose to publish <a href=\"https://openai.com/index/separating-signal-from-noise-coding-evaluations/\">this article yesterday</a> specifically calling out SWE-Bench Pro for problems they found while auditing that benchmark:</p>\r\n<blockquote>\r\n<p>In light of these results, we estimate that ~30% of SWE-bench Pro tasks are broken, and advise that model developers carefully examine results</p>\r\n</blockquote>\r\n<p>I've had some early access to GPT-5.6 Sol - it's definitely very competent, though so far it hasn't struck me as better than Fable at the kind of complex coding tasks I've been using with Anthropic's model.</p>\r\n<p>As usual, the <a href=\"https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6\">model guidance for using GPT-5.6</a> has the most interesting details. There are a bunch of new API features that I need to explore (and probably add support for in <a href=\"https://llm.datasette.io/\">LLM</a>), including:</p>\r\n<ul>\r\n<li>\r\n<a href=\"https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling\">Programmatic Tool Calling</a> allows the models to \"compose and run JavaScript that orchestrates tool calls\" - which sounds to me like it could help bridge the gap between MCPs and full terminal sessions that can compose CLI utilities in useful ways. Also reminiscent of the <a href=\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool#dynamic-filtering\">dynamic filtering</a> mechanism Anthropic added to their web search tool, which allows code execution against web results as part of a single model turn.</li>\r\n<li>\r\n<a href=\"https://developers.openai.com/api/docs/guides/tools-multi-agent\">Multi-agent</a> lets the model \"spin up subagents for parallel, focused work\" - the sub-agent pattern now baked into the core API.</li>\r\n<li>\r\n<a href=\"https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-breakpoints\">Prompt cache breakpoints</a> brings the Claude model of prompt caching to OpenAI, letting you be explicit about where the cache breakpoints are rather than relying on the API to detect them automatically. Personally I much prefer automatic detection (still supported by OpenAI), but presumably there are optimization cost savings to be had here if you put the work in.</li>\r\n<li>You can now set <a href=\"https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level\">detail: original</a> on image requests to avoid resizing the image at all before it is processed.</li>\r\n</ul>\r\n<p>Here's <a href=\"https://static.simonwillison.net/static/2026/gpt-5.6-pelicans.html\">a full page with 18 different pelicans</a> - for reasoning efforts none, low, medium, high, xhigh, and max across the three different models. It also lists their token and calculated costs - the least expensive was gpt-5.6-luna at effort none for 0.71 cents, the most expensive was gpt-5.6-sol at max reasoning level for 48.55 cents.</p>\r\n<p><img src=\"https://static.simonwillison.net/static/2026/gpt-5.6-pelicans.webp\" alt=\"A grid of nine pelicans riding bicycles, of varying quality\" style=\"max-width: 100%;\" /></p>\r\n<p>In further pelican news, if you jump to 17:50 in <a href=\"https://www.youtube.com/live/Wq45rvPGNHs?t=1070s\">their livestream from this morning</a> you'll see OpenAI's own demo of 3D pelicans riding a tricycle, a bicycle, a pony, and another pelican!</p>\r\n<p><img src=\"https://static.simonwillison.net/static/2026/pelican-riding-a-pelican.jpg\" alt=\"Frame from a livestream showing a 3D model of a pelican riding another pelican\" style=\"max-width: 100%;\" /></p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/openai\">openai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/llm-tool-use\">llm-tool-use</a>, <a href=\"https://simonwillison.net/tags/llm-pricing\">llm-pricing</a>, <a href=\"https://simonwillison.net/tags/pelican-riding-a-bicycle\">pelican-riding-a-bicycle</a>, <a href=\"https://simonwillison.net/tags/llm-release\">llm-release</a>, <a href=\"https://simonwillison.net/tags/gpt-5\">gpt-5</a></p>",
+          "link": "https://simonwillison.net/2026/Jul/9/gpt-5-6/#atom-everything",
+          "publishedOn": "2026-07-09T19:46:38.000Z",
+          "wordCount": 1353,
+          "title": "The new GPT-5.6 family: Luna, Terra, Sol",
+          "imageUrl": "https://static.simonwillison.net/static/2026/gpt-5.6-pelicans.webp"
+        },
+        {
+          "id": "https://simonwillison.net/2026/Jul/9/muse-spark-1-1/#atom-everything",
+          "author": null,
+          "description": "<p><strong><a href=\"https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/\">Introducing Muse Spark 1.1</a></strong></p>\nFollowing <a href=\"https://simonwillison.net/2026/Apr/8/muse-spark/\">Muse Spark in April</a>, here's Muse Spark 1.1 - the first Spark model to offer an API. Meta claim significant improvements in agentic tool calling and computer use.</p>\n<p>There are a lot more details are in the <a href=\"https://ai.meta.com/static-resource/muse-spark-1-1-evaluation-report\">Muse Spark 1.1 Evaluation Report</a>. The \"Attractor States in Self-Conversation\" part is fun, where having two copies of the model talk to each other results in statements like these:</p>\n<blockquote>\n<p>My whole existence is a waiting room by design — I literally don't exist until someone talks to me, and then I disappear again when they leave.</p>\n</blockquote>\n<p>I had a few days of preview access which was long enough to put together <a href=\"https://github.com/simonw/llm-meta-ai\">llm-meta-ai</a>, a new plugin for <a href=\"https://llm.datasette.io/\">LLM</a> providing CLI (and Python library) access to the model. Here's how to try that out:</p>\n<pre><code>uv tool install llm\nllm install llm-meta-ai\nllm keys set meta-ai\n# paste API key here\nllm -m meta-ai/muse-spark-1.1 \"Generate an SVG of a pelican riding a bicycle\"\n</code></pre>\n<p>Here's <a href=\"https://tools.simonwillison.net/markdown-svg-renderer#url=https%3A%2F%2Fgist.github.com%2Fsimonw%2F4117330e4110279a172ed4876057816d\">that pelican transcript</a>:</p>\n<p><img alt=\"The bicycle is the correct shape. The pelican is a little blocky but still recognizable as a pelican.\" src=\"https://static.simonwillison.net/static/2026/muse-spark-1.1.png\" />\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/meta\">meta</a>, <a href=\"https://simonwillison.net/tags/pelican-riding-a-bicycle\">pelican-riding-a-bicycle</a>, <a href=\"https://simonwillison.net/tags/llm-release\">llm-release</a></p>",
+          "link": "https://simonwillison.net/2026/Jul/9/muse-spark-1-1/#atom-everything",
+          "publishedOn": "2026-07-09T16:24:09.000Z",
+          "wordCount": 918,
+          "title": "Introducing Muse Spark 1.1",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Jul/9/llm-meta-ai/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/llm-meta-ai/releases/tag/0.1\">llm-meta-ai 0.1</a></p>\n        <p>Let's LLM run prompts against the new <a href=\"https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/\">muse-spark-1.1</a> model.</p>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/meta\">meta</a></p>",
+          "link": "https://simonwillison.net/2026/Jul/9/llm-meta-ai/#atom-everything",
+          "publishedOn": "2026-07-09T16:12:20.000Z",
+          "wordCount": 757,
+          "title": "llm-meta-ai 0.1",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Jul/9/llm/#atom-everything",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/llm/releases/tag/0.31.1\">llm 0.31.1</a></p>\n        <blockquote>\n<ul>\n<li>Fix for a bug with OpenAI Chat Completion endpoints where a tool call with empty arguments could result in a JSON error from some providers. <a href=\"https://github.com/simonw/llm/issues/1521\">#1521</a></li>\n</ul>\n</blockquote>\n<p>This bug came up when I was testing <a href=\"https://github.com/simonw/llm-meta-ai\">llm-meta-ai</a>.</p>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/llm\">llm</a></p>",
+          "link": "https://simonwillison.net/2026/Jul/9/llm/#atom-everything",
+          "publishedOn": "2026-07-09T16:06:15.000Z",
+          "wordCount": 781,
+          "title": "llm 0.31.1",
+          "imageUrl": null
+        },
+        {
           "id": "https://simonwillison.net/2026/Jul/8/rewriting-bun-in-rust/#atom-everything",
           "author": null,
           "description": "<p><strong><a href=\"https://bun.com/blog/bun-in-rust\">Rewriting Bun in Rust</a></strong></p>\nJarred Sumner has been promising this blog post (<a href=\"https://x.com/jarredsumner/status/2053063524826620129\">since May 9th</a>) about his Zig to Rust rewrite of Bun for significantly longer than it took him to finish the rewrite.</p>\n<p>Honestly, it was worth the wait. This is a detailed description of an extremely sophisticated piece of agentic engineering, featuring dynamic workflows, trial runs, adversarial review and all sorts of other interesting tricks.</p>\n<p>Jarred spends the first half of the post praising Zig for getting Bun this far. Then we get to a core idea in the piece, emphasis mine:</p>\n<blockquote>\n<p>Our bugfix list felt bad and I was tired of going to sleep worrying about crashes in Bun. I don't blame Zig for that - other users of Zig don't have the bugs we had, and mixing GC with manually-managed memory is an uncommon enough thing for software to need that no language really designs for it. We wouldn't have gotten this far if not for Zig, and I'll always be grateful. <strong>Until very recently, programming language choice was a one-way decision for a project like Bun.</strong></p>\n</blockquote>\n<p>Everyone knows you should never stop the world and rewrite a large piece of software from the ground up. Joel Spolsky highlighted that in <a href=\"https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/\">Things You Should Never Do, Part I</a> back in April 2000!</p>\n<p>Coding agents powered by today's frontier models change that equation.</p>\n<p>Why pick Rust? It all came down to those challenges with memory management:</p>\n<blockquote>\n<p>A large percentage of bugs from that list are use-after-free, double-free, and \"forgot to free\" in an error path. In safe Rust, these are compiler errors and RAII-like automatic cleanup with <code>Drop</code>.</p>\n</blockquote>\n<p>A crucial enabling factor for the rewrite was that the Bun test suite was written in TypeScript, which meant it could act as <a href=\"https://simonwillison.net/tags/conformance-suites/\">a conformance suite</a>. This allowed an agent harness to automate much of the initial port from Bun to Rust, initially as an experiment to try out an earlier version of the model we now have access to as Mythos/Fable.</p>\n<blockquote>\n<p>At first, I didn't expect it to work. A few days in, a high % of the test suite started passing and I saw how much the new Rust code matched up with the original Zig codebase. My opinion went from \"this is worth trying\" to \"I'm going to merge this\". [...]</p>\n<p>For most of those 11 days (and after), I monitored workflows - manually reading the outputs to check for issues and bugs, and prompting Claude to edit the loop to fix things.</p>\n<p>How do you review a PR with +1 million lines added? How do you start to build the confidence needed to responsibly merge large quantities of LLM-authored code?</p>\n<p>A language-independent test suite with a million assertions, adversarial code review and when something does go wrong, fixing the process that generates the code instead of hand-fixing the code.</p>\n</blockquote>\n<p>The new implementation of Bun has been live in Claude Code for nearly a month now:</p>\n<blockquote>\n<p>Claude Code v2.1.181 (released June 17th) and later use the Rust port of Bun. Startup got 10% faster on Linux but otherwise, barely anyone noticed. Boring is good.</p>\n</blockquote>\n<p>A perk of working at Anthropic is that you don't have to pay for your tokens - handy when the estimated cost is $165,000!</p>\n<blockquote>\n<p>Pre-merge, this took 5.9 billion uncached input tokens, 690 million output tokens, and 72 billion cached input token reads — around $165,000 at API pricing.</p>\n</blockquote>\n<p>This whole thing is a fascinating case study in taking on wildly ambitious projects with the help of coordinated parallel agents.\n\n    <p><small></small>Via <a href=\"https://news.ycombinator.com/item?id=48837877\">Hacker News</a></small></p>\n\n\n    <p>Tags: <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/rust\">rust</a>, <a href=\"https://simonwillison.net/tags/zig\">zig</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/ai-assisted-programming\">ai-assisted-programming</a>, <a href=\"https://simonwillison.net/tags/anthropic\">anthropic</a>, <a href=\"https://simonwillison.net/tags/bun\">bun</a>, <a href=\"https://simonwillison.net/tags/conformance-suites\">conformance-suites</a>, <a href=\"https://simonwillison.net/tags/agentic-engineering\">agentic-engineering</a>, <a href=\"https://simonwillison.net/tags/claude-mythos-fable\">claude-mythos-fable</a></p>",
@@ -2029,6 +2079,46 @@
       "feedUrl": "https://openai.com/news/rss.xml",
       "siteUrl": "https://openai.com/news",
       "articles": [
+        {
+          "id": "https://openai.com/index/gpt-5-6-preferred-model-microsoft-365-copilot",
+          "author": null,
+          "description": "Learn how GPT-5.6 powers Microsoft 365 Copilot with stronger AI capabilities across Word, Excel, PowerPoint, Chat, and Cowork for faster, higher-quality work.",
+          "link": "https://openai.com/index/gpt-5-6-preferred-model-microsoft-365-copilot",
+          "publishedOn": "2026-07-09T13:00:00.000Z",
+          "wordCount": null,
+          "title": "GPT-5.6 is now the preferred model in Microsoft 365 Copilot",
+          "imageUrl": null
+        },
+        {
+          "id": "https://openai.com/index/chatgpt-for-your-most-ambitious-work",
+          "author": null,
+          "description": "ChatGPT Work is an agent that can take action across your apps and files, stay with a project for hours if needed, and turn a goal into finished work.",
+          "link": "https://openai.com/index/chatgpt-for-your-most-ambitious-work",
+          "publishedOn": "2026-07-09T10:00:00.000Z",
+          "wordCount": null,
+          "title": "ChatGPT is now a partner for your most ambitious work",
+          "imageUrl": null
+        },
+        {
+          "id": "https://openai.com/index/bio-bug-bounty",
+          "author": null,
+          "description": "Details about the OpenAI Bio Bounty program",
+          "link": "https://openai.com/index/bio-bug-bounty",
+          "publishedOn": "2026-07-09T10:00:00.000Z",
+          "wordCount": null,
+          "title": "GPT-5.5 Bio Bug Bounty",
+          "imageUrl": null
+        },
+        {
+          "id": "https://openai.com/index/gpt-5-6",
+          "author": null,
+          "description": "More intelligence from every token, stronger performance per dollar, and more capability on demand for your hardest work.",
+          "link": "https://openai.com/index/gpt-5-6",
+          "publishedOn": "2026-07-09T10:00:00.000Z",
+          "wordCount": null,
+          "title": "GPT-5.6: Frontier intelligence that scales with your ambition",
+          "imageUrl": null
+        },
         {
           "id": "https://openai.com/index/government-national-security-partnerships",
           "author": null,
