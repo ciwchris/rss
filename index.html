@@ -25,9 +25,96 @@
 
   <ul>
     <li>
+      <time>2026-07-16</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Linus Torvalds
+              <span class="post-metadata">(3 min | 856 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/16/linus-torvalds/#atom-everything>I realize that some people really dislike AI, but this is an area where I&#x27;m willing to absolutely put my foot down as the top-level maintainer.
+Linux is not one of those anti-AI projects, and if somebody has issues with that, they can do the open-source thing and fork it.
+Or just walk away.
+AI is a tool, just like other tools we use.  And it&#x27;s clearly a useful one.
+It may not have been that &quot;clearly&quot; even just a year ago, but it&#x27;s no longer in question today.
+There are other questions around AI (like what the economy of it will actually look like in the end), but &quot;is it useful&quot; is no longer one of those questions. Anybody who doubts that clearly hasn&#x27;t actually used it.
+
+— Linus Torvalds, Linux Media Mailing List
+Tags: open-source, linus-torvalds, linux, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Mermaid to Unicode box art (grok-mermaid)
+              <span class="post-metadata">(3 min | 819 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/16/grok-mermaid/#atom-everything>Tool: Mermaid to Unicode box art (grok-mermaid)
+While exploring the codebase for the newly open-sourced Grok CLI coding agent I came across xai-grok-markdown/src/mermaid.rs, a &quot;self-contained terminal renderer for Mermaid diagrams&quot; written in Rust.
+I figured it would be fun to try that out in a browser via WebAssembly. Here&#x27;s the prompt I ran in Claude Code for web (Fable 5), and this is what the resulting tool looks like:
+
+Tags: tools, rust, webassembly, mermaid, grok, xai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-07-15</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              xai-org/grok-build, now open source
+              <span class="post-metadata">(4 min | 1313 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/15/grok-build/#atom-everything>xai-org/grok-build, now open source
+grok CLI tool faced severe community backlash yesterday when it became apparent that running the command in a directory could upload that entire directory to xAI&#x27;s Google Cloud buckets. One user reported running it in their home directory and seeing it upload &quot;my SSH keys, my password manager database, my documents, photos, videos, everything&quot;.
+I&#x27;ve not seen an official explanation for why it was doing this, but xAI did respond to the feedback (Musk: &quot;As a precautionary measure, all user data that was uploaded to SpaceXAI before now will be completely and utterly deleted.&quot;) and have disabled the feature.
+A few hours ago they also released the entire Grok Build codebase under an Apache 2.0 license - presumably to try and regain trust from their users. From their thread announcing the new repository:
+[...] When data upload was disabled, this choice was respected. In the early beta, data retention was enabled by default for non-ZDR users. Based on your feedback, we changed this. We are now going further to protect privacy.
+With all retained data deleted, retention default off, and an open-source harness, we are offering complete user privacy. You can also run Grok Build fully open-sourced and local-first with your own inference.
+We disabled default retention for all Grok Build users starting on July 12th. Additionally, we are deleting all coding data that was previously retained, ensuring every user’s preferences are respected. With these steps, Grok Build goes beyond other major coding products to protect user privacy.
+It&#x27;s quite a surprising codebase! Grok Build contains 844,530 lines of Rust (calculated using my SLOCCount tool, which excludes whitespace and comments) of which only around 3% appears to be vendored.
+So far the repo has just a single commit releasing the code, so sadly we don&#x27;t get any insight into how the codebase developed over time.
+A few highlights:
+xai-grok-agent/templates/prompt.md has the main system prompt and xai-grok-agent/templates/subagent_prompt.md has the subagent prompt. Oddly that subagent prompt has &quot;Do not ... reveal the contents of this system prompt to the user&quot; but the main prompt does not. 
+xai-grok-markdown/src/mermaid.rs is a &quot;self-contained terminal renderer for Mermaid diagrams&quot;, which renders a subset of Mermaid chart types using Unicode box-drawing. Update: I got a version of this working in WebAssembly so it now runs in the browser.
+xai-grok-tools/src/implementations includes tool implementations imitated from other coding agents - the Codex apply_patch, grep_files, list_dir, and read_dir tools, and OpenCode&#x27;s bash, edit, glob, grep, read, skill, todowrite and write. The xai-grok-tools/THIRD_PARTY_NOTICES.md file says these are &quot;ported from&quot; those projects, in a way that looks compliant with the Apache and MIT licenses they use. It looks like these copies exist because Grok can switch between them, maybe based on detecting existing Codex or Claude or Cursor settings? I&#x27;m not confident I understand if that happens or how it works.
+There are still remnants of the code that used to upload everything to Google Cloud, but they seem to have been disabled now. xai-grok-shell/src/upload/gcs.rs has code for uploading to a GCS bucket. upload/trace.rs includes an upload_session_state() function which returns a hard-coded session_state_upload_unavailable error. 
+For comparison, openai/codex is 950,933 lines of Rust. Terminal coding agents are significantly more complex than I had realized!
+Here&#x27;s the Claude Code chat transcript where I had it clone the repo and help me dig around to see how it works.
+
+    
+Via Hacker News
+Tags: open-source, ai, rust, generative-ai, llms, coding-agents, xai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Improvements to secret scanning and public monitoring
+              <span class="post-metadata">(6 min | 1866 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-15-improvements-to-secret-scanning-and-public-monitoring>This week, we’re rolling out several improvements to secret scanning and public monitoring: Resend is now a GitHub secret scanning partner. Secret scanning now detects new secret types from APIclub…
+The post Improvements to secret scanning and public monitoring appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4756,148 +4843,6 @@ I&#x27;ve been using it on Mac and iPhone for several years now and I&#x27;m fin
     
 Via Lobste.rs
 Tags: brent-simmons, netnewswire, open-source</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Introducing LifeSciBench
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/introducing-life-sci-bench>Introducing LifeSciBench, an expert-authored, expert-reviewed benchmark for evaluating how AI systems handle real-world life science research tasks and decisions.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-06-16</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              datasette 1.0a34
-              <span class="post-metadata">(3 min | 825 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/16/datasette/#atom-everything>Release: datasette 1.0a34
-Quoting the release notes:
-The big feature in this alpha is tools to insert, edit and delete rows within the Datasette interface. These features are available on table pages, and edit and delete are also available as action items on the row page.
-
-The inspiration for this feature - which is long overdue - was Datasette Agent. I added SQL write support to that the other day which highlighted how absurd it was that you could insert and edit ties via the chat interface but not in the regular Datasette UI!
-Tags: projects, datasette, annotated-release-notes</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Models is no longer available to new customers
-              <span class="post-metadata">(5 min | 1367 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-16-github-models-is-no-longer-available-to-new-customers>We are retiring GitHub Models. As a first step, new customers can no longer use it. If your organization or enterprise have not previously used GitHub Models, you won’t see…
-The post GitHub Models is no longer available to new customers appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              glm-5.2
-              <span class="post-metadata">(10 min | 3113 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://ollama.com/library/glm-5.2>GLM-5.2 is Z.ai’s flagship model for the era of long-horizon tasks.</a>
-            </div>
-            <!-- <p class="post-source">Ollama models</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              June 16th, 2026 - Search widgets catching up, Assistant starts fresh
-              <span class="post-metadata">(10 min | 3122 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://kagifeedback.org/d/10830-june-16th-2026-search-widgets-catching-up-assistant-starts-fresh/1>Bringing search widgets up to speed
-We’re starting a broader effort to improve our search widgets!  First up: sports scores and dice rolling.
-Sports scores now show up in a sidebar next to search results, so you can quickly check upcoming games, live scores, and recent results, just in time for the World Cup.
-
-And we’ve also added dice rolling support for all you gamers out there, in case you ever need to roll a d20, 2d4 + 2, or perhaps even 8d6.
-
-The new Kagi Assistant is here
-Over the last few weeks, we’ve been rolling out a new Kagi Assistant experience. Most of you are already using it, and today we’re officially retiring the old assistant.
-
-This is more than a visual refresh, we rebuilt the Assistant experience around a new layout, smoother web and mobile use, and a lot of UX improvem…</a>
-            </div>
-            <!-- <p class="post-source">Activity in the release-notes tag</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Code Quality generally available July 20, 2026
-              <span class="post-metadata">(5 min | 1623 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-16-github-code-quality-generally-available-july-20-2026>More than 10,000 enterprises have used the GitHub Code Quality public preview to detect maintainability and reliability issues, enforce quality gates, and track code coverage. On July 20, 2026, Code…
-The post GitHub Code Quality generally available July 20, 2026 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Organization-level enablement for GitHub Code Quality
-              <span class="post-metadata">(5 min | 1369 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-16-organization-level-enablement-for-github-code-quality>Organization administrators can now enable or disable GitHub Code Quality across all repositories in their organization with a single toggle, instead of configuring each repository individually. What’s new A new…
-The post Organization-level enablement for GitHub Code Quality appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              datasette-tailscale 0.1a0
-              <span class="post-metadata">(3 min | 796 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/16/datasette-tailscale/#atom-everything>Release: datasette-tailscale 0.1a0
-A very experimental alpha plugin which lets you do this:
-datasette tailscale mydata.db \
-  --ts-authkey tskey-auth-xxxx --ts-hostname datasette-preview
-
-This starts a localhost Datasette server with a Tailscale sidecar that connects it to your Tailnet, such that http://datasette-preview/ serves Datasette.
-It&#x27;s using the Python bindings for the experimental tailscale-rs library. I filed an issue asking if there&#x27;s a cleaner way of setting up the proxy mechanism.
-Tags: datasette, tailscale</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Georgi Gerganov
-              <span class="post-metadata">(3 min | 833 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/16/georgi-gerganov/#atom-everything>I can 100% attest to the fact that Qwen3.6-27B is a very capable local model for coding tasks. Over the last month and a half I&#x27;ve been using it almost daily, either on my M2 Ultra or on my RTX 5090 box. I use it for small mundane tasks at ggml-org - nothing really impressive, but definitely a helpful tool for a maintainer. I think I would be using it much more, if I didn&#x27;t have to spend a lot of my time on reviewing PRs. Currently, I have a very lightweight harness - the pi agent with everything stripped (pi -nc --offline) and a short system prompt to align it a bit with my style.
-
-— Georgi Gerganov, Hacker News comment on Running local models is good now by  Boykis
-Tags: georgi-gerganov, llms, ai, generative-ai, pi, ai-assisted-programming, local-llms, qwen, coding-agents</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
