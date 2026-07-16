@@ -31,6 +31,230 @@
       <article>
           <details>
             <summary>
+              Kimi K3, and what we can still learn from the pelican benchmark
+              <span class="post-metadata">(6 min | 1849 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/16/kimi-k3/#atom-everything>Chinese AI lab Moonshot AI announced Kimi K3 this morning, describing it as their &quot;most capable model to date, with 2.8 trillion parameters&quot;. It&#x27;s currently available via their website and API, but an open weight release is promised &quot;by July 27, 2026&quot;.
+
+Moonshot are calling this the first &quot;open 3T-class model&quot; (I guess they&#x27;re rounding 2.8 trillion up to 3 trillion), taking the crown from DeepSeek&#x27;s 1.6T v4 Pro. Their self-reported benchmarks have K3 mostly beating Claude Opus 4.8 max and GPT-5.5 high, while losing out to Claude Fable 5 and GPT-5.6 Sol.
+
+A few highlights from the Artificial Analysis report on the model:
+
+
+&quot;On our private long-horizon knowledge work evaluation, Kimi K3 reaches an overall Elo of 1547, +732 points from Kimi K2.6 and behind only Claude Fable 5.&quot;
+
+&quot;Cost per task ($0.94) is similar to GPT-5.6 Sol ($1.04), ~1/2 the price of Opus 4.8 ($1.80) and higher than open weights peers&quot;
+
+&quot;Kimi K3’s token usage on the Artificial Analysis Intelligence Index decreased significantly, using 21% fewer output tokens than K2.6.&quot;
+
+
+The model is also now the leading model on Arena.ai&#x27;s Frontend Code arena, surpassing even Claude Fable 5.
+
+The new model is notable for the pricing: $3/million input tokens and $15/million output tokens, putting it at the same level as Anthropic&#x27;s Claude Sonnet series and making it the most expensive model released by a Chinese AI lab to date. This is a significant increase on their earlier models such as Kimi K2.6 at $0.95/$4. 2.8 trillion parameters is also more than twice the size of that 1T model.
+
+But how does it pelican?
+
+I used OpenRouter (to avoid signing up for a Moonshot API key) with the llm-openrouter plugin to generate an SVG of a pelican riding a bicycle:
+
+llm -m openrouter/moonshotai/kimi-k3 &#x27;Generate an SVG of a pelican riding a bicycle&#x27;
+
+
+Here&#x27;s the transcript. It looks like this:
+
+
+
+That pelican took 95 input tokens and 16,658 output tokens (13,241 were reasoning tokens), for a total cost of 25 cents!
+
+Since K3 accepts image input I ran it against that rendered SVG above (with my alt text prompt) and got back (for 0.6 cents):
+
+
+Cartoon illustration of a white pelican wearing a red scarf, riding a red bicycle along a gray road with white dashed lines; the pelican has a large orange beak and webbed orange feet pedaling, with white motion lines behind it; the background shows a light blue sky with white clouds, a yellow sun, two small black birds in flight, and green grass with tiny white flowers in the foreground
+
+
+What can we learn from the pelican?
+
+My Generate an SVG of a pelican riding a bicycle test is 21 months old now. It was never a particularly great benchmark. It started out as a joke on how absurdly difficult it is to compare these models, but then for the first year it turned out to have a surprising correlation to how good the models actually were.
+
+That connection has been mostly severed now. The GPT-5.6 and Claude Fable 5  pelicans are outclassed by GLM-5.2, and much as I love GLM I don&#x27;t think that&#x27;s a Fable-class model.
+
+(I&#x27;m still not convinced that labs are training for the benchmark - if they were, I&#x27;d expect much better results. There&#x27;s a chance that Gemini has optimized for any combination of an animal on a vehicle though!)
+
+The biggest limitation of the pelican is that it doesn&#x27;t touch at all on the thing that matters most for today&#x27;s model: agentic tool calling and the ability to operate tools reliably as conversations grow in length.
+
+So don&#x27;t go using pelicans to compare models!
+
+
+All of that said, I still get a decent amount of value out of running the benchmark myself.
+
+Firstly, it&#x27;s a forcing function for actually trying the model. If I show you a pelican, that means I&#x27;ve managed to run a prompt through it. If the model has an official API I&#x27;ll use that, if it&#x27;s open weight (and small enough to fit a 128GB M5 MacBook Pro) I&#x27;ll try running it on my own machine, usually via llama.cpp or LM Studio or Ollama. I&#x27;ll frequently use OpenRouter since that usually provides a proxy to an official API without me needing a new API key.
+
+Most of my pelicans are generated using my LLM CLI tool, which helps encourage me to ensure the latest models are supported by that (via one of its plugins).
+
+More importantly though, even the act of a single prompt to &quot;Generate an SVG of a pelican riding a bicycle&quot; can reveal interesting model characteristics.
+
+Consider the result for Kimi K3 today. Running those simple prompts helped emphasize several points about the model.
+
+
+It only has one reasoning effort right now, &quot;max&quot; - and it shows. The model consumed 13,241 reasoning tokens to output 3,417 tokens of response. This is expensive - the pelican cost 25 cents!
+
+How does the prompt &quot;Generate an SVG of a pelican riding a bicycle&quot; add up to 95 input tokens?  OpenAI&#x27;s tokenizer  counts 10, Anthropic&#x27;s counts 10 for Opus 4.6, 30 for Opus 4.7 and 25 for Sonnet 5/Fable 5. Prompting &quot;hi&quot; to Kimi K3 counted 86 tokens, suggesting there may be an 85 token hidden system prompt. It refused to leak it though.
+
+Vision works well: the alt text it generated is very good.
+
+
+K3 currently only has one thinking effort level, but I&#x27;ve been deriving quite a bit of value recently from running the same pelican prompt through different effort levels to get a quick idea for what impact those have. Here&#x27;s my matrix for the GPT-5.6 model family, for example.
+
+Really though the main things I gain from the pelican test are:
+
+
+It&#x27;s a &quot;hello world&quot; exercise for prompting a model
+
+A rough cost and reasoning estimate for a simple task
+
+Confirmation that the model can output valid SVG and has a basic idea of geometry and spatial awareness. This is a much bigger deal for the smaller models that run on my laptop.
+
+It&#x27;s still interesting to compare pelicans between releases in the same model family. K3&#x27;s pelican is a notable improvement from Kimi 2.5.
+
+It&#x27;s something I can share that demonstrates I&#x27;ve tried it. Plus a comment with a pelican in it is kind of a tradition on Hacker News at this point, any time I&#x27;m late I get comments asking where it is!
+
+
+    
+        
+Tags: ai, generative-ai, llms, llm-pricing, pelican-riding-a-bicycle, llm-release, ai-in-china, artificial-analysis, moonshot, kimi</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Repository admins can archive pull requests
+              <span class="post-metadata">(6 min | 1830 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-16-repository-admins-can-archive-pull-requests>Repository admins can now archive pull requests to remove them from public view without permanently deleting them. When a pull request is archived, it is closed and locked. Pull requests…
+The post Repository admins can archive pull requests appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              REST API endpoints for Visual Studio Subscription management
+              <span class="post-metadata">(5 min | 1372 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-16-rest-api-endpoints-for-visual-studio-subscription-management>GitHub Enterprise Cloud admins can now use the following REST API endpoints to programmatically manage Visual Studio Subscription (VSS) assignments: GET /enterprises/{enterprise}/visual-studio-subscriptions: Returns all VSS assignments for an enterprise, including…
+The post REST API endpoints for Visual Studio Subscription management appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Xcode 27 runner image now in public preview
+              <span class="post-metadata">(7 min | 1976 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-16-xcode-27-runner-image-now-in-public-preview>You can now build and test your Apple applications against Xcode 27 on GitHub-hosted macOS runners. This is now available in public preview. With early access to the latest Xcode…
+The post Xcode 27 runner image now in public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Thibault Sottiaux
+              <span class="post-metadata">(3 min | 798 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/16/bad-codex-bug/#atom-everything>On file deletions. We’ve investigated a handful of reports where GPT-5.6 unexpectedly deleted files. 
+What we have  found is that this most commonly occurs when:
+Full access mode is enabled and codex is run without sandboxing protections, including without auto review being enabled
+The model attempts  to override the $HOME env var to define a temporary directory.
+The model makes an honest mistake and mistakenly deletes $HOME instead.
+
+— Thibault Sottiaux, describing a pretty gnarly Codex bug
+Tags: codex, coding-agents, generative-ai, ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Why teens deserve access to safe AI
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/why-teens-deserve-access-safe-ai>Learn how OpenAI is making ChatGPT safer for teens with age-appropriate protections, learning tools, parental controls, and expert partnerships.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Inkling: Our open-weights model
+              <span class="post-metadata">(5 min | 1368 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/16/inkling/#atom-everything>Inkling: Our open-weights model
+They&#x27;re also promising Inkling-Small, a 276B (12B active) model, but that&#x27;s still being tested and the weights will be released &quot;once that work is complete&quot;.
+The model card is much shorter than I&#x27;ve come to expect from US AI labs. It links to even shorter Training Data Documentation with almost nothing of interest in it - it&#x27;s best summarized by these two paragraphs:
+The datasets Thinking Machines Lab uses to develop its AI services includes content that is in the public domain as well as content that may be subject to intellectual property protection.
+Thinking Machines Lab’s services were developed using publicly available content obtained from the open internet and publicly accessible data repositories. Certain datasets were also obtained from third parties.
+By Thinking Machines&#x27; own admission, this is not a frontier model. It&#x27;s instead intended as a strong base model for fine-tuning using their own Tinker training platform:
+Inkling is not the strongest overall model available today, open or closed. Instead, a combination of qualities makes it a good open-weights base for customization: multimodal capabilities, efficient thinking, and availability on Tinker for fine-tuning.
+There&#x27;s a lot to like about this release. It&#x27;s Apache-2.0 licensed, and looks competitive with the open weight models coming out of China - it&#x27;s good to see the US open weights ecosystem gain a new viable contender to join NVIDIA Nemotron and Gemma 4.
+Here&#x27;s its attempt at an SVG pelican riding a bicycle, which I generated using this curl command against the Thinking Machines API:
+curl &quot;https://tinker.thinkingmachines.dev/services/tinker-prod/oai/api/v1/chat/completions&quot; \
+  -H &quot;Authorization: Bearer $TINKER_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;model&quot;: &quot;thinkingmachines/Inkling&quot;,
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate an SVG of a pelican riding a bicycle&quot;}
+    ],
+    &quot;stream&quot;: false
+  }&#x27;
+
+
+Full response here.
+
+Since it&#x27;s a multi-modal model I had it describe its own image (after I rendered it to a JPEG) by sending this JSON:
+{
+  &quot;model&quot;: &quot;thinkingmachines/Inkling&quot;,
+  &quot;messages&quot;: [{
+    &quot;role&quot;: &quot;user&quot;,
+    &quot;content&quot;: [
+      {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;data:image/jpeg;base64,$BASE_64_JPEG&quot;}},
+      {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Describe this image in detail&quot;},
+    ],
+  }],
+  &quot;stream&quot;: false
+}
+
+
+Here&#x27;s the full response. It thought it had drawn a &quot;stork or seagull&quot;:
+This is a cheerful, flat-vector cartoon illustration featuring a white bird riding a bicycle across a green landscape.
+The Bird: The central figure is a stylized white bird—resembling a stork or seagull—with a plump, rounded body. It has a long, prominent orange beak that is slightly open, revealing a black line for the mouth. Its eye is small and black with a tiny white highlight. The bird has black wing and tail feathers with white edges, and thin orange legs ending in black feet that rest on the bicycle&#x27;s orange pedals.
+The Bicycle: The bike has a simple black frame with two large wheels featuring black tires, gray inner rims, and black spokes arranged in a cross pattern. The handlebars are black, and there are bright orange pedals attached to a black crank. A white seat is visible behind the bird&#x27;s body.
+The Setting: The scene is set against a clear, light blue sky. There are two fluffy white clouds—one on the left side and a smaller one near the bird&#x27;s head on the right. A bright, solid yellow sun shines in the upper right corner. At the bottom, there are rolling green hills with a smooth, curved top edge where the bicycle rests.
+The overall style is playful, simple, and colorful, with clean lines and a bright, sunny atmosphere.
+Via Hacker News
+Tags: ai, generative-ai, llms, training-data, pelican-riding-a-bicycle, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Linus Torvalds
               <span class="post-metadata">(3 min | 856 words)</span> 
             </summary>
@@ -62,6 +286,18 @@ I figured it would be fun to try that out in a browser via WebAssembly. Here&#x2
 Tags: tools, rust, webassembly, mermaid, grok, xai</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How Cars24 scales conversations and builds faster with OpenAI
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/cars24>Cars24 uses OpenAI-powered voice and chat agents to handle 1M+ monthly conversation minutes, recover 12% of lost leads, and bring agentic workflows to teams across the company.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
@@ -4804,47 +5040,6 @@ The post GitHub Copilot app generally available appeared first on The GitHub Blo
               <a target="_blank" href=https://openai.com/index/ai-chemist-improves-reaction>OpenAI and Molecule.one show how a near-autonomous AI chemist using GPT-5.4 improved a key drug-making reaction, advancing medicinal chemistry research.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              — a still that plays
-              <span class="post-metadata">(3 min | 811 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/17/click-to-play-component/#atom-everything>Tool: &lt;click-to-play&gt; — a still that plays
-A progressive enchantment Web Component that turns this markup:
-&lt;click-to-play&gt;
-  &lt;a href&#x3D;&quot;URL to GIF&quot;&gt;
-    &lt;img src&#x3D;&quot;URL to first frame&quot; alt&#x3D;&quot;...&quot;&gt;
-  &lt;/a&gt;
-&lt;/click-to-play&gt;
-
-Into a still frame with a click to play button which loads the GIF on demand. For when you don&#x27;t want big GIFs to be loaded unless people want to play them.
-Here&#x27;s an example that demonstrates the new row editing tools in Datasette - in fact I built this Web Component for that post.
-Tags: gif, javascript, progressive-enhancement, web-components</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              NetNewsWire Status
-              <span class="post-metadata">(3 min | 795 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/17/netnewswire-status/#atom-everything>NetNewsWire Status
-really good - free from any commercial pressure.
-The software is NetNewsWire - &quot;it&#x27;s like podcasts, but for reading&quot; - first released in 2002 and made open source in 2018.
-I&#x27;ve been using it on Mac and iPhone for several years now and I&#x27;m finding it indispensable.
-
-    
-Via Lobste.rs
-Tags: brent-simmons, netnewswire, open-source</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
