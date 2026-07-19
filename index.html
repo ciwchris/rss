@@ -25,6 +25,70 @@
 
   <ul>
     <li>
+      <time>2026-07-19</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              AI Mania Is Eviscerating Global Decision-Making
+              <span class="post-metadata">(3 min | 1009 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/19/ai-mania/#atom-everything>AI Mania Is Eviscerating Global Decision-Making
+In one extreme case, I have seen an executive confess that they had never even used ChatGPT or any AI tool in their life, immediately after producing a technical strategy for an organisation with $2B+ in revenue which was entirely centered around AI.
+Here&#x27;s a report from an engineer at a company with a token leaderboard:
+Checking out a parallel copy of our Go repository and telling the AI to rewrite the whole thing in Zig while I work on something else just so I can keep my job.
+I particularly enjoyed this conversation with a skeptical executive at an over-enthusiastic company:
+I asked why this was being repeated without opposition. Was it just sales fluff?
+The answer was a lot more interesting. It was partially ridiculous sales material being delivered to an easily excitable audience, but this was not the dominant factor constraining honesty. Executives at their customers were saying absurd things about achieving 100x productivity, and this meant that if any executive at the vendor said that these gains were not plausible, it would undermine the credibility of the customer’s executive, be perceived as an attack (or heresy), and possibly result in an enterprise contract cancellation. And getting enterprise contracts cancelled because you wanted to opine on something that doesn’t really matter to your organisation’s mission is a great way to get fired.
+Via Hacker News
+Tags: ai, ai-ethics, ai-misuse</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude Code uses Bun written in Rust now
+              <span class="post-metadata">(3 min | 985 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/19/claude-code-in-bun-in-rust/#atom-everything>In Rewriting Bun in Rust Jarred Sumner made the following claim:
+Claude Code v2.1.181 (released June 17th) and later use the Rust port of Bun. Startup got 10% faster on Linux but otherwise, barely anyone noticed. Boring is good.
+I decided to have a poke at my own Claude Code installation to see if I could find evidence that it was using Bun written in Rust.
+I found these two commands convincing:
+strings ~/.local/bin/claude | grep -m1 &#x27;Bun v1&#x27;
+
+For me this outputs Bun v1.4.0 (macOS arm64). The most recent release of Bun on GitHub is currently v1.3.14 from May 12th, so that v1.4.0 version number in Claude supports them shipping a preview of a not-yet-released Bun version.
+(Update: The Rust version has been released as Bun canary - running bun upgrade --canary will install this release.)
+strings ~/.local/bin/claude | grep -Eo &#x27;src/[[:alnum:]_./-]+\.rs&#x27;
+
+This outputs a list of 563 filenames, starting with these:
+src/runtime/bake/dev_server/mod.rs
+src/runtime/bake/production.rs
+src/bundler/bundle_v2.rs
+
+It looks like Bun in Rust is indeed being run in production across millions of different devices. Like Jarred said, &quot;Boring is good&quot;.
+Update: Here&#x27;s a neat trick from Ajan Raj:
+cat &gt; /tmp/bun-version.ts &lt;&lt;&#x27;EOF&#x27;
+console.log(&quot;embedded bun:&quot;, Bun.version);
+process.exit(0);
+EOF
+BUN_OPTIONS&#x3D;&quot;--preload&#x3D;/tmp/bun-version.ts&quot; claude --version
+
+This outputs 1.4.0 for me.
+Here&#x27;s the commit from May 17th that updated the version in package.json to 1.4.0. That version hasn&#x27;t been changed since then, but also hasn&#x27;t yet made it into a tagged release outside of canary.
+Tags: bun, rust, anthropic, claude-code, jarred-sumner</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-07-18</time>
 
       <section>
@@ -4717,42 +4781,6 @@ Via Hacker News
 Tags: cloudflare</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-06-19</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Quoting Sean Lynch
-              <span class="post-metadata">(3 min | 752 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/19/sean-lynch/#atom-everything>The real valuable capability MCP offers over skills/CLI is isolating the auth flow outside of the agent’s context window, and potentially out of the harness completely. [...]
-Maybe the idealized form of MCP is just an auth gateway for the API and nothing else. That’d still be a win.
-
-— Sean Lynch, comment on Hacker News
-Tags: model-context-protocol, llms, ai, generative-ai, skills</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              AI credits consumed per user now in the Copilot usage metrics API
-              <span class="post-metadata">(5 min | 1504 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-19-ai-credits-consumed-per-user-now-in-the-copilot-usage-metrics-api>The Copilot usage metrics API now reports how many AI credits each user consumed per day, derived from the same AI credits consumption data used in the usage-based billing API.…
-The post AI credits consumed per user now in the Copilot usage metrics API appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
