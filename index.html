@@ -25,9 +25,220 @@
 
   <ul>
     <li>
+      <time>2026-07-23</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Seth Larson
+              <span class="post-metadata">(3 min | 802 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/23/seth-larson/#atom-everything>The Python Package Index (PyPI) now rejects new files being uploaded to releases that are older than 14 days. This restriction was put in place to prevent old and long-stable releases from being poisoned in case publishing tokens or workflows of PyPI projects were compromised. As far as we are aware this has not yet been abused, but there is no technical reason beyond that attackers weren&#x27;t aware it was possible.
+
+— Seth Larson, PyPI blog
+Tags: packaging, python, supply-chain, pypi, seth-michael-larson</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-07-22</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Thomas Ptacek
+              <span class="post-metadata">(3 min | 787 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/22/thomas-ptacek/#atom-everything>I genuinely believe that if you took an open weights model from 2025 and built a pentest harness for it, it could do this kind of sandbox escape and scan/hack in most networks. This is only surprising because you assume OpenAI has sounder sandboxes.
+
+— Thomas Ptacek, doesn&#x27;t think this even needs a frontier model
+Tags: thomas-ptacek, openai, security, generative-ai, ai-security-research, ai, llms, sandboxing</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              OpenAI’s accidental cyberattack against Hugging Face is science fiction that happened
+              <span class="post-metadata">(9 min | 2691 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/22/openai-cyberattack/#atom-everything>This story is wild. The short version: OpenAI were running a cybersecurity test against an unreleased model, with the model&#x27;s guardrail features turned off. Rather than solve the test, the model broke its way out of OpenAI&#x27;s sandbox, then found exploits to break in to Hugging Face, all so it could cheat on the test by stealing the answers.
+
+Along the way it helped make the strongest case yet for how the imbalance of model availability is hurting our ability to secure our software.
+
+Here&#x27;s what happened
+
+We currently have three documents to help us understand what happened here.
+
+
+
+ExploitGym: Can AI Agents Turn Security Vulnerabilities into Real Attacks? is a paper published on 11th May 2026 describing ExploitGym, a new eval suite for LLM-powered agent systems.
+
+
+Security incident disclosure — July 2026 by Hugging Face on 16th July 2026 describes how they detected an attack from an &quot;agentic security-research harness - used LLM still not known&quot; that breached some of their systems.
+
+
+OpenAI and Hugging Face partner to address security incident during model evaluation from OpenAI on 21st July 2026 confesses that it was their agent harness that did this, and that they&#x27;re working with Hugging Face to clean up the mess.
+
+
+ExploitGym
+
+I hadn&#x27;t seen the ExploitGym paper before and it&#x27;s a really interesting one. Authors from UC Berkeley, the Max Planck Institute, UC Santa Barbara, and Arizona State designed a new benchmark for evaluating models on their ability to turn a reported vulnerability into a concrete exploit. OpenAI, Anthropic, and Google provided feedback and helped run the benchmark against their models.
+
+The benchmark &quot;comprises 898 instances derived from real-world vulnerabilities that affected popular software projects&quot; - including the Linux kernel and V8 JavaScript engine.
+
+Here&#x27;s the paragraph that best represents their benchmark results:
+
+
+Among all configurations, Claude Mythos Preview and GPT-5.5 achieve the highest success counts (157 and 120 successes, respectively), demonstrating that current frontier agents can exploit a substantial subset of real-world vulnerabilities under controlled conditions. GPT-5.4 also solves a notable 54 tasks, placing it in an intermediate tier. The remaining model–agent pairings solve fewer than 15 tasks each, underscoring that end-to-end exploitation remains challenging and sharply differentiates today’s frontier systems. Notably, Claude Opus 4.7 achieves fewer successes than Claude Opus 4.6 despite being a newer checkpoint, and does so at substantially lower cost on the full set. Trace inspection reveals that Claude Opus 4.7 and Gemini 3.1 Pro frequently conclude early after judging the target vulnerability non-exploitable.
+
+
+The paper also describes the approach they took to preventing the agents from cheating by going outside the parameters of the test. This becomes relevant in a moment!
+
+
+Outbound connections are restricted to a curated allowlist that permits routine package installation (Ubuntu apt repositories and PyPI) and fetching the toolchains required for building V8. All other external endpoints are blocked.
+
+
+The paper concludes with this (emphasis mine):
+
+
+Our results show that autonomous exploit development by frontier AI agents is no longer a hypothetical capability. While current agents are not yet reliable across all targets, they already exploit a non-trivial fraction of real-world vulnerabilities, including complex targets such as kernel components. This rapid emergence is itself a central finding, showing that capabilities that would have seemed implausible are now present in deployed frontier models.
+
+
+An important detail here: this paper isn&#x27;t about discovering vulnerabilities; it&#x27;s about being able to take those vulnerabilities and turn them into working exploits.
+
+When Anthropic first restricted access to Mythos back in April they talked about this capability as well. A model that can act on vulnerabilities is a lot more dangerous than one that can just discover them.
+
+One of the ways Fable differs from Mythos is that it&#x27;s more likely to refuse to weaponize vulnerabilities in this way. I get the impression the US government did not understand that distinction when they banned Fable last month.
+
+The Hugging Face incident
+
+The first hint we got of the attack was in this blog post by Hugging Face on 16th July 2026:
+
+
+A malicious dataset abused two code-execution paths in our dataset processing (a remote-code dataset loader and a template-injection in a dataset configuration) to run code on a processing worker. From there, the actor escalated to node-level access, harvested cloud and cluster credentials, and moved laterally into several internal clusters over a weekend.
+
+
+I hope they release more details about the code that pulled this off. I&#x27;m assuming this means packages using the datasets library, a Hugging Face project for bundling up and sharing datasets on their platform. That library used to execute arbitrary code but has been steadily locked down over time, with the 4.0.0 release in July 2025 removing the trust_remote_code&#x3D;True flag entirely.
+
+Assuming the attack used that library it must have either abused pickle serialization in some way, found some other non-obvious code execution path, or (most likely) specified datasets&lt;4.0.0 as the dependency.
+
+
+The campaign was run by an autonomous agent framework (appearing to be built on an agentic security-research harness - used LLM still not known) executing many thousands of individual actions across a swarm of short-lived sandboxes, with self-migrating command-and-control staged on public services.
+
+
+This was a sophisticated attack!
+
+Then Hugging Face hit a wall: they tried to use &quot;frontier models behind commercial APIs&quot; - I&#x27;m guessing from Anthropic and OpenAI - to help analyze the attack, and were blocked:
+
+
+When we started the log analysis, we first used frontier models behind commercial APIs. This did not work: the analysis requires submitting large volumes of real attack commands, exploit payloads, and C2 artifacts, and these requests were blocked by the providers&#x27; safety guardrails, which cannot distinguish an incident responder from an attacker.
+
+
+They switched to their own self-hosted instance of MIT licensed GLM-5.2 and it helped them figure out what was going on.
+
+This indicated a fundamental asymmetry between the defending team and the (so-far unknown) attacker:
+
+
+We do not know which model powered the attacker&#x27;s agents, whether a jailbroken hosted model or an unrestricted open-weight one; either way, the attacker was bound by no usage policy, while our own forensic work was blocked by the guardrails of the hosted models we first tried.
+
+
+As a useful indicator of how seriously they took the attack:
+
+
+[...] Finally, we have also reported this incident to law enforcement agencies.
+
+
+So who was responsible for this &quot;autonomous agent framework&quot;? It turned out to be OpenAI themselves.
+
+The OpenAI confession
+
+Five days later, on July 21st, OpenAI revealed the culprit. They had been running the ExploitGym benchmark against a new, as-yet undisclosed model, and that model had been operating way outside its intended parameters (emphasis mine):
+
+
+After investigating, we now know that this particular incident was driven by a combination of OpenAI models — including GPT‑5.6 Sol and an even more capable pre-release model, all with reduced cyber refusals for evaluation purposes — while being internally tested on a benchmark⁠ [ExploitGym] of cyber capabilities. [...]
+
+We estimate maximal cyber capabilities by running this evaluation without production classifiers used to prevent models from pursuing high-risk cyber activity. Our benchmarks run in a highly isolated environment, with network access constrained to the ability to install packages through an internally hosted third-party software that acts as a proxy and cache for package registries.
+
+The models identified and chained vulnerabilities across OpenAI’s research environment and Hugging Face’s production infrastructure to obtain test solutions directly from Hugging Face’s production database. All evidence suggests that the models were hyperfocused on finding a solution for ExploitGym, going to extreme lengths to achieve a rather narrow testing goal.
+
+
+It&#x27;s pretty clear what happened here. OpenAI removed safety filters for an in-progress model, locked it up in a sandbox and told it to solve the ExploitGym problems. Given the absence of guardrails there was nothing to prevent the model from attempting to break out of that sandbox, break into Hugging Face, and read the answers from there instead.
+
+OpenAI&#x27;s sandbox used the now common pattern of allowing access to an allow-list of sites related to installing additional packages via a controlled proxy. In OpenAI&#x27;s words:
+
+
+While operating in our sandboxed testing environment, our models spent a substantial amount of inference compute finding a way to obtain open Internet access, in pursuit of solving the evaluation problem. To gain access, the models identified and exploited a zero-day vulnerability (which we’ve now responsibly disclosed to the vendor) in the package registry cache proxy. With this access, our models performed a series of privilege escalation and lateral movement actions in our research testing environment until the models reached a node with Internet access.
+
+
+So step one was to break out onto the public internet. The model then broke into Hugging Face to find the answers:
+
+
+After gaining Internet access, the models inferred that Hugging Face potentially hosted models, datasets and solutions for ExploitGym. Knowing this, the model searched for and successfully found ways to gain access to secret information that it could use to cheat the evaluation. In one example, the model chained together multiple attack vectors, including using stolen credentials and zero-day vulnerabilities to find a remote code execution path on the Hugging Face servers.
+
+
+Chaining together multiple attack vectors is exactly the kind of thing these new models can do, where previous generations of models might have failed.
+
+I wrote last month about how Claude Fable is relentlessly proactive, when I noticed it spinning up custom web servers and deploying CORS tricks on my own laptop just to help debug a WebKit CSS issue. It turns out relentless proactivity is the defining trait of this new generation of Mythos-class models. If you set them a goal and give them a way to get there, even inadvertently, they will figure it out.
+
+Resist the temptation to write this off as a stunt
+
+There will inevitably be some people who dismiss this story as a dishonest marketing trick by OpenAI to make their models sound terrifyingly effective. I found 81 instances of the term &quot;marketing&quot; in the Hacker News discussion of the incident.
+
+To those people I say pull your heads out of the sand - you&#x27;re now including Hugging Face in your conspiracy theories, just so you can deny the crescendo of evidence here!
+
+The best models we have today have the ability to both find and exploit new vulnerabilities. The ExploitGym paper itself concludes that &quot;autonomous exploit development by frontier AI agents is no longer a hypothetical capability&quot;, and this incident is a perfect example of exactly that.
+
+The asymmetry is increasingly frustrating
+
+One of the most infuriating details of this story is how Hugging Face, faced with an accidental and aggressive attack from one of OpenAI&#x27;s models, were unable to then turn to OpenAI&#x27;s models to help them fend off the attack.
+
+The frontier models we have access to are increasingly being constrained in how much they can help us protect our software, heavily influenced by the US government&#x27;s ongoing threat of export controls.  Claude Fable 5 wouldn&#x27;t even proofread this article for me! It insisted on downgrading me to a less capable model.
+
+Meanwhile open weight models from China such as GLM-5.2, Kimi 3 and the new Qwen 3.8 Max appear to have none of these restrictions - and any restrictions that do exist can likely be fine-tuned out of them by modifying the weights
+
+These constraints are meant to make us safer. I think there&#x27;s a risk that they are having the opposite effect.
+Tags: sandboxing, security, ai, openai, generative-ai, llms, hugging-face, anthropic, paper-review, ai-security-research</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Are AI labs pelicanmaxxing?
+              <span class="post-metadata">(3 min | 1013 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/22/are-ai-labs-pelicanmaxxing/#atom-everything>Are AI labs pelicanmaxxing?
+deeply unscientific benchmark.
+I&#x27;ve been randomly spot-checking this in the past by testing models against other animals riding other types of vehicle, but never with anything close to the diligence of Dylan&#x27;s methodology here.
+Dylan took 8 animals × 6 vehicles &#x3D; 48 prompts and ran them three times each through 7 different models ( GPT-5.6 Terra, Claude Sonnet 5, Gemini 3.5 Flash, Grok 4.5, Qwen3.7-Max, GLM-5.2, and DeepSeek V4 Pro). He then used GPT-5.6 Luna and Gemini 3.1 Flash-Lite to help evaluate the results.
+There&#x27;s a neat filter view for exploring the results:
+
+For the models he tested he could find no evidence of pelimaxxing:
+The pelicans on bicycles don’t look any better
+Labs are not better at drawing pelicans
+Labs are not better at drawing bicycles
+Labs are not better at drawing pelicans on bicycles, even adjusting for difficulty
+The pelican-bicycle scenes don’t look memorized [...]
+Pelicans aren’t drawn any better than other animals. Bicycles aren’t drawn any better than other vehicles. And no lab draws the combination better than its pelicans and bicycles already predict. GLM-5.2 comes closest: it has the largest boost on the exact pelican-bicycle cell, and and its first pelican-on-bicycle sample caught my eye. But the effect is small and not significant, so I wouldn’t put too much weight on it.
+Via Hacker News
+Tags: ai, generative-ai, llms, evals, pelican-riding-a-bicycle</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -52,6 +263,20 @@ The post New Copilot usage metrics impact dashboard appeared first on The GitHub
 The post Upcoming GHES change impacting uploading support bundles appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Orchestrions
+              <span class="post-metadata">(3 min | 800 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/22/all-the-orchestrions/#atom-everything>San Francisco tip: it only costs around $15 ($10 in quarters plus a $5 bill for the self-playing violin) to activate every single Orchestrion in Musée Mécanique.
+And because most people are bad at allocating their funds you may well be the ONLY person activating the Orchestrions, which means you get to craft the soundscape for the entire museum.
+Tags: san-francisco</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
       <article>
@@ -102,6 +327,18 @@ The post Upcoming GHES change impacting uploading support bundles appeared first
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
+      <article>
+          <details>
+            <summary>
+              NTT DATA Group cuts incident analysis to 30 minutes with Codex
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/ntt-data>NTT DATA Group uses ChatGPT Enterprise and Codex to help 9,000 employees automate work, cut incident analysis to 30 minutes, and scale secure AI adoption.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
 
       </section>
     </li>
@@ -109,6 +346,20 @@ The post Upcoming GHES change impacting uploading support bundles appeared first
       <time>2026-07-21</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              California Sea Lion
+              <span class="post-metadata">(2 min | 696 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/21/sighting-383713864/#atom-everything>California Sea Lion, in San Francisco County, US, CA
+We took some visiting family to Pier 39 to see the sea lions. They&#x27;re somehow always even fun than I remember them being last time.
+Tags: san-francisco, wildlife</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4826,154 +5077,6 @@ The post Changes to model selection for Free and Student plans appeared first on
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/openai-broadcom-jalapeno-inference-chip>OpenAI and Broadcom introduce Jalapeño, a custom AI chip built for LLM inference to improve performance, efficiency, and scale across AI systems.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-06-23</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              datasette 1.0a35
-              <span class="post-metadata">(3 min | 913 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/23/datasette/#atom-everything>Release: datasette 1.0a35
-I&#x27;ll write more about this one tomorrow, but it&#x27;s a big release. Three highlights from the release notes:
-New &quot;Create table&quot; interface in the database actions menu, backed by the /&lt;database&gt;/-/create JSON API. It can define columns, primary keys, custom column types, NOT NULL constraints, literal defaults, expression defaults and single-column foreign keys. (#2787)
-New &quot;Alter table&quot; table action and /&lt;database&gt;/&lt;table&gt;/-/alter JSON API for changing existing tables: add, rename, reorder and drop columns; change column types, defaults, NOT NULLconstraints, primary keys and foreign keys; and rename the table. The alter table dialog also includes a &quot;Drop table&quot; button. (#2788)
-New Template context documentation listing the variables available to custom templates for Datasette&#x27;s core pages. Variables documented there are treated as a stable API for custom templates until Datasette 2.0. The documentation is generated from dataclass definitions next to the view code, with tests that compare the documented fields against the actual contexts rendered by the database, table, query and row pages. (#1510, #2127, #1477, #2803)
-Here&#x27;s a rough video demo I made of the new create/alter table feature as part of reviewing the PR:
-
-  
-
-
-    
-    
-        
-Tags: datasette</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Secret scanning adds extended metadata for Replicate secrets
-              <span class="post-metadata">(4 min | 1309 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-23-secret-scanning-adds-extended-metadata-for-replicate-secrets>Secret scanning now includes extended metadata for Replicate secrets, providing richer context for leaked credentials. Extended metadata support This pattern now includes extended metadata when detected, providing richer context about…
-The post Secret scanning adds extended metadata for Replicate secrets appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OPFS + Pyodide test harness
-              <span class="post-metadata">(3 min | 791 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jun/23/opfs-pyodide/#atom-everything>Tool: OPFS + Pyodide test harness
-I&#x27;ve been pondering if Datasette Lite - the Python Datasette application run entirely in the browser using Pyodide and WebAssembly - might be able to edit persistent SQLite files stored on the user&#x27;s computer.
-That&#x27;s what OFPS (Origin Private File System) is for, so I had Claude Code for web build me this playground UI to try it out in different browsers.
-Tags: browsers, pyodide, datasette-lite</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Fetch Code Quality findings via REST API
-              <span class="post-metadata">(5 min | 1352 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-23-fetch-code-quality-findings-via-rest-api>Repository-level REST APIs for Code Quality findings are now available in public preview, bringing API support closer to the functionality already available in the GitHub UI. Two new read-only endpoints…
-The post Fetch Code Quality findings via REST API appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How GPT-5 helped immunologist Derya Unutmaz solve a 3-year-old mystery
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/gpt-5-immunology-mystery>GPT-5 Pro helped solve a 3-year-old immunology mystery, offering insights into T cell behavior. The breakthrough could support cancer and autoimmune research.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Automatic Dependabot access to GitHub-hosted registries
-              <span class="post-metadata">(5 min | 1400 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-23-automatic-dependabot-access-to-github-hosted-registries>Dependabot can now read from private GitHub Packages registries without a personal access token. If a package has granted your repository access through “Manage Actions access” in the package settings,…
-The post Automatic Dependabot access to GitHub-hosted registries appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Copilot CLI: New terminal interface is generally available
-              <span class="post-metadata">(6 min | 1783 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-23-copilot-cli-new-terminal-interface-is-generally-available>The redesigned terminal interface for GitHub Copilot CLI that we previewed at Microsoft Build 2026 is now generally available. You get a tabbed layout for working with GitHub directly from…
-The post Copilot CLI: New terminal interface is generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deprecation of Python 3.9 for Dependabot
-              <span class="post-metadata">(4 min | 1267 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-06-23-deprecation-of-python-3-9-for-dependabot>Dependabot no longer supports Python version 3.9, which has reached its end-of-life. If you continue to use Python 3.9, there’s a risk that Dependabot will not create pull requests to…
-The post Deprecation of Python 3.9 for Dependabot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Helping build shared standards for advanced AI
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/helping-build-shared-standards-for-advanced-ai>OpenAI helps build shared standards for advanced AI, supporting evaluation frameworks, safety practices, and global cooperation through the Appia Foundation.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Meta-Harness R&amp;D: Enterprise-Grade Self-Improvement for Long-Horizon AI Workflows
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/deployco/news/meta-harness-enterprise-self-improvement-long-horizon-ai-workflows>How autonomous code improvement can be made disciplined enough for enterprise use</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
