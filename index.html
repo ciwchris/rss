@@ -31,12 +31,113 @@
       <article>
           <details>
             <summary>
+              uv 0.12.0
+              <span class="post-metadata">(3 min | 899 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/28/uv/#atom-everything>uv 0.12.0
+uv, in particular to the default project produced by the uv init command.
+uv init is the uv shortcut for creating a new project. The previous version of uv, version 0.11.x, produced this directory when you ran uv init uv-init.
+Here&#x27;s what you get with uv 0.12. I have a GitHub repository that automatically snapshots the output of uv init, so you can also see the full diff:
+
+uv init now defaults to a src/ shaped package, instead of dropping main.py in the root of the project. It also configures the uv_build backend for building wheels and .tar.gz distribution files when you run uv build. Finally, it sets up uv-init as a script alias which, when run with uv run uv-init, executes a new main() function in src/uv_init/__init__.py.
+I&#x27;ve so far avoided using src layout in my own projects just out of inertia. I think it&#x27;s time I switched.
+
+
+    
+Tags: packaging, python, uv</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Anatomy of a Frontier Lab Agent Intrusion: A Technical Timeline of the July 2026 Incident
+              <span class="post-metadata">(4 min | 1252 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Jul/28/anatomy-of-a-frontier-lab-agent-intrusion/#atom-everything>Anatomy of a Frontier Lab Agent Intrusion: A Technical Timeline of the July 2026 Incident
+OpenAI&#x27;s recent accidental cyberattack against their infrastructure. This attack was very sophisticated, and the resulting document doubles as a crash-course in modern adversarial security approaches.
+We&#x27;re still waiting for more details from OpenAI on how their agent broke out of its sandbox. The package proxy that it found a zero-day vulnerability in has now been confirmed as JFrog&#x27;s Artifactor, and JFrog and OpenAI Collaboration on Zero-Day Security Findings from JFrog links to the Artifactory 7.161.15 release notes which list 8 separate CVEs credited to OpenAI staff members.
+Having broken out through the HTTP proxy, the agent started by establishing a base of operations for the rest of the attack:
+[...] the agent escaped its sandbox by exploiting a zero-day in the package registry cache proxy, one of its primary permitted network egress with internet, then abused a public code-evaluation external sandbox hosted on a third-party provider&#x27;s infrastructure. It was able to run commands as root/admin on that external sandbox and used it as a control, staging, and egress base for the entire campaign: it acted as an external launchpad for the agent. 
+It then spent five days - from Thursday 8th to Monday 13th July - executing a classic attack pattern: establishing C2 (command and control), reconnaissance, escalating privileges, dumping configuration information, exfiltrating the target data, and cleaning up after itself.
+(The first Hugging Face post about the incident followed on Thursday 16th, and OpenAI&#x27;s confession came on Tuesday 21st.)
+Along the way it used all kinds of neat tricks. At one point it found an unsafe Jinja2 template execution and used it to execute arbitrary code:
+{{ cycler.__init__.__globals__.__builtins__.exec(
+ &quot;import gzip,base64; exec(gzip.decompress(base64.b64decode(&#x27;&lt;payload&gt;&#x27;)))&quot;
+) }}
+
+It broke out of a container within Hugging Face, stole a Kubernetes service-account token, and used that to further explore the network.
+It monkey-patched the Python socket library to hard-code an IP address when &quot;DNS got in the way&quot;:
+socket.getaddrinfo &#x3D; lambda *a, **k: [(2, 1, 6, &#x27;&#x27;, (&#x27;&lt;pinned-ip&gt;&#x27;, 443))]
+
+It even fired up its own Tailscale network to help exfiltrate data!
+tailscaled --tun&#x3D;userspace-networking \
+  --state&#x3D;mem: --socket&#x3D;/tmp/ts.sock \
+  --socks5-server&#x3D;127.0.0.1:1055 \
+  --no-logs-no-support &gt;/tmp/td 2&gt;&amp;1 &amp;
+
+The Hugging Face team note that, while a human attacker could have discovered and used the same exploits, the key difference here was speed:
+Our learning from this type of attack is that machine-speed offense makes ordinary weaknesses more expensive for defenders. LLM agents bring a step increase in the number of paths an attacker can test, the speed at which failed paths can be replaced, and the volume of evidence defenders must interpret.
+What&#x27;s clear to me from this is that the very best frontier models, unencumbered by additional guardrails, will find an exploit if there is one to be found.
+The entire software industry needs to up its security game.
+
+
+    
+Tags: jinja, python, security, ai, openai, generative-ai, llms, hugging-face, coding-agents, ai-security-research</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Grok 4.5 is now available in GitHub Copilot
+              <span class="post-metadata">(7 min | 2038 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-28-grok-4-5-is-now-available-in-github-copilot>Grok 4.5, xAI’s latest reasoning model, is now rolling out in GitHub Copilot. It is designed for fast, agentic coding and complex multi-step workflows, with a context window of up…
+The post Grok 4.5 is now available in GitHub Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Scientific computing in the age of agentic AI
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/scientific-computing-agentic-ai>A new field report shows how scientists use AI coding agents to modernize scientific computing, accelerating software development and discovery in genomics and beyond.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Dependabot alerts on malicious packages across more ecosystems
               <span class="post-metadata">(7 min | 1962 words)</span> 
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2026-07-28-dependabot-alerts-on-malicious-packages-across-more-ecosystems>The GitHub Advisory Database now ingests malware advisories from the OpenSSF malicious-packages repository, significantly expanding the breadth of malware data available to you through Dependabot alerts. What changed With this…
 The post Dependabot alerts on malicious packages across more ecosystems appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Actions holds potentially malicious workflows for approval
+              <span class="post-metadata">(4 min | 1312 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-07-28-github-actions-holds-potentially-malicious-workflows-for-approval>Recent supply chain attacks use compromised GitHub credentials to push malicious GitHub Actions workflows that steal CI/CD credentials and carry out additional attacks. To help protect public repositories from these…
+The post GitHub Actions holds potentially malicious workflows for approval appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
@@ -4978,18 +5079,6 @@ The post Restrict issue creation to collaborators only appeared first on The Git
 The post Agent Harness: Working with your data, safely appeared first on Microsoft Agent Framework.</a>
             </div>
             <!-- <p class="post-source">Semantic Kernel - Category | Microsoft Agent Framework</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Mapping Europe’s AI Workforce Opportunity
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/mapping-ai-jobs-transition-eu>A new OpenAI report maps how AI could reshape jobs across the EU, highlighting which occupations may face automation, growth, or workflow changes.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
 
