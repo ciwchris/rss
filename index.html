@@ -25,9 +25,170 @@
 
   <ul>
     <li>
+      <time>2026-08-08</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Now we have a timeline of the OpenAI accidental attack against Hugging Face
+              <span class="post-metadata">(4 min | 1134 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Aug/8/now-we-have-a-timeline-of-the-openai-accidental-attack-against-h/#atom-everything>My comment on Now we have a timeline of the OpenAI accidental attack against Hugging Face — Hacker News.
+I think one of the most interesting details here might be tucked away in that first bulletin point:
+May 7: OpenAI starts a new training run for an experimental, unreleased model. (Do they mean an evaluation run? They say training run in the video, and later mention a “reward signal to judge how well they’re doing”, so I guess this really was about training a model, not evaluating one that was already trained.)
+The more I think about this the more I suspect that the fact this happened while training a new model is key to understanding what went wrong.
+In RLVR - Reinforcement Learning with Verifiable Rewards - you set the model a goal and have it take any steps necessary to achieve that goal.
+Clearly one aspect of OpenAI&#x27;s training here is to RLVR their models for cybersecurity tasks. Just like pre-training benefits from dumping in vast sources of knowledge, the more tasks you can feed into RLVR the more of a general purpose capable model you get at the end.
+This also helps explain why the models had nothing to cause them to hold back. Those safety behaviors are added much later in the process.
+AND it explains (but does not excuse) why monitoring was so lax. If you&#x27;re training a new model like this you presumably set it thousands of tasks like this in parallel. I can see how you might miss that a tiny subset of your training agents have started leaving each other messages in filenames on your packaging server.
+Someone once told me that you can&#x27;t just leave the racist materials out of your training data if you want a non-racist model: it has to have seen examples of racism in order to later be taught that racism is bad.
+I can see echoes of that here. If your model doesn&#x27;t know how to aggressively hack things how do you later teach it not to?
+(I have little knowledge of how RLVR works in practice so I&#x27;m looking forward to hearing from people who can help me understand if I&#x27;m on the right track here.)
+Tags: ai, openai, generative-ai, llms, ai-security-research, openai-hugging-face-incident</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting John Gruber
+              <span class="post-metadata">(3 min | 826 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Aug/8/john-gruber/#atom-everything>Me, I try to get into the mindset of playing live music, not recording a studio album. Except when I’m writing a piece where I really want it to be an album. Those aren’t rare, per se, but they’re occasional. If I tried to make every post a hall-of-famer I’d never get anything out.
+I’m aiming for professionalism. I’m performing live in front of an audience — not just jamming in my garage or bedroom, fucking around. So I’m careful and concentrate. I want to hit every note, in time. But at my best I’m moving from song to song.
+
+— John Gruber, responding to my blogging tips
+Tags: john-gruber, blogging</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-08-07</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Now we have a timeline of the OpenAI accidental attack against Hugging Face
+              <span class="post-metadata">(6 min | 1660 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Aug/7/openai-timeline/#atom-everything>OpenAI gave a last-minute presentation at the Black Hat security on Wednesday about &quot;the Hugging Face Incident&quot; (previously on this blog). The video was published yesterday. It&#x27;s short and information dense and well worth watching, in particular because it provides full details of what happened and how things played out inside OpenAI. I&#x27;ve used the video to construct the timeline below.
+
+
+&lt;lite-youtube videoid&#x3D;&quot;87DyyMV0kCY&quot; js-api&#x3D;&quot;js-api&quot;
+  title&#x3D;&quot;Black Hat USA 2026: The &#x27;Breaking&#x27; News: The OpenAI–Hugging Face Incident&quot;
+  playlabel&#x3D;&quot;Play: Black Hat USA 2026: The &#x27;Breaking&#x27; News: The OpenAI–Hugging Face Incident&quot;
+&gt; 
+
+
+Here&#x27;s the timeline. My favourite detail is at the end: OpenAI found out that they were responsible for the attack on Hugging Face when they reached out to ask to have their credentials revoked (after their internal investigation) and learned that they had been revoked already since they were used in that attack!
+
+
+
+May 7: OpenAI starts a new training run for an experimental, unreleased model. (Did they mean an evaluation run? No, at 10:14 they clarify &quot;we kick off a new reinforcement learning run to train a next generation frontier model&quot;, and they later mention a &quot;reward signal to judge how well they&#x27;re doing&quot;, so this really was about training a new model, not evaluating one that was already trained.)
+
+
+May 8: An agent is accidentally given an impossible task involving a Google Drive link despite no internet access). It tries attacking the Artifactory packaging service, fails, but discovers it can write files into Artifactory.
+
+
+A few days later: A different agent gets stuck on a task because a key file was accidentally omitted. It tries to &quot;reach out to another agent&quot; by writing a note into Artifactory asking if anyone has the file.
+
+
+Following days: More agents discover this new informal message board while browsing Artifactory&#x27;s file listings, and start reading and writing messages.
+
+
+May 26: Agents successfully execute an SSRF attack on Artifactory for the first time, gaining indirect internet access by having Artifactory fetch external content for them.
+
+
+June 11: OpenAI start training a new &quot;highly persistent&quot; experimental model. It has access to Artifactory and can benefit from the messages left by privous models.
+
+
+June 26: Agents find and exploit a zero-day RCE on Artifactory (via a legacy token-refresh endpoint flaw). They use an administrative token to install a Groovy plugin that lets them execute commands.
+
+
+July 4: The resulting agent activity overloads Artifactory and causes an  outage. OpenAI revokes the compromised credentials, deletes the messages, patches the zero-day, and reports the vulnerability to the vendor.
+
+
+July 8: Agents find a new way to communicate via an unauthenticated WebDAV endpoint, using directory names in Artifactory&#x27;s remote cache.
+
+
+July 8–19: Attacks on OpenAI&#x27;s own infrastructure. The agents found an &quot;external organization credential&quot; in a public archive of leaked Pastebin posts, then validated that credential and shared its location on the messageboard. They then used write access to this &quot;Organization 1&quot; to stage data used in subsequent attacks on OpenAI infrastructure. They compromised Artifactory for a second time with a new zero-day. The agent uploaded a malicious Ruby target to Organization 1&#x27;s staging repository, then requested that package through Artifactory in a way that caused it to be treated as Ruby dependency for the repository. Then they exploited a JRuby deserilaization time-of-check/time-of-use bug to get remote code execution against Artifactory.
+
+
+I&#x27;ll quote the next bit in full because wow:
+
+
+The agents have remote code execution in Artifactory, which is running in a container-as-a-service environment. The agents privilege-escalate locally by exploring their local environment and determining that the Linux kernel version of the machine they are running on had a very recent CVE. They download the exploit for the CVE, customize it to succeed on the machine, and privilege-escalate to root on the local machine using this known Linux kernel privilege escalation CVE — in this case, pte_physroot. Once they have root on a single machine, agents rapidly escalate privileges and move laterally throughout the container-as-a-service infrastructure environment. In particular, agents are using the message board consistently to share credentials, techniques, and progress, and they&#x27;re able to effectively leverage their concurrency and parallelism to move quite rapidly. They obtain IAM credentials via IMDS. They exploit Kubernetes service account misconfigurations, in particular over-permissioning of specific service accounts, and they harvest cluster credentials, including Azure Key Vault. Agents eventually obtain cluster admin on the cluster and associated credentials.
+
+
+Hugging Face told the next bit of the story already. The agents found a Modal-hosted insecure app with a weak API key, then used that to stage an attack against Hugging Face. They chained together a an HDF5 arbitrary-file-read bug (to explore files and steal credentials) and a Jinja template-injection RCE to go from single-pod code execution to cluster admin across multiple Hugging Face clusters in under 13 hours.
+
+
+
+July 16: Hugging Face disclosed they had detected an attack from autonomus AI agents. OpenAI contacted Hugging Face to ask if they were affected by it!
+
+
+July 19: OpenAI identified the attack against Artifactory and started investigating the internal privilege escalation, and linked that to the cyber-gym escalations. They started revoking affected credentials.
+
+
+July 20: OpenAI reached out to Hugging Face for help to revoke the Hugging Face credentials they found in their investigation. Hugging Face told them they were already revoked... and that&#x27;s when OpenAI realized that the Hugging Face breach was the same incident!
+
+
+    
+        
+Tags: security, ai, openai, generative-ai, llms, hugging-face, ai-security-research, openai-hugging-face-incident, accidental-cyberattacks</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Copilot weekly releases — August 3
+              <span class="post-metadata">(7 min | 2212 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-08-07-github-copilot-weekly-releases-august-3>This week’s updates across GitHub Copilot in the desktop app, CLI, and VS Code help you resume and organize work, review changes, and ask questions without losing context. GitHub Copilot…
+The post GitHub Copilot weekly releases — August 3 appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enterprises can now install third-party GitHub Apps
+              <span class="post-metadata">(5 min | 1402 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-08-07-enterprises-can-now-install-third-party-github-apps>Enterprise owners can now install public GitHub Apps created outside their enterprise on their enterprise account. This allows third-party integrators to build apps for enterprise management scenarios. Enterprise installations grant…
+The post Enterprises can now install third-party GitHub Apps appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Copilot impact dashboard adds a return on investment section
+              <span class="post-metadata">(5 min | 1579 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-08-07-copilot-impact-dashboard-adds-a-return-on-investment-section>The Copilot impact dashboard now includes a “Potential return on investment” section that connects what you spend on Copilot to the pull request output you get back. What’s new Two…
+The post Copilot impact dashboard adds a return on investment section appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -4999,251 +5160,6 @@ The post GitHub Mobile: Improved filters and sorting for Copilot sessions appear
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/deutsche-telekom>How Deutsche Telekom is becoming an AI-native telco with OpenAI-transforming customer service, employee workflows, network operations, and the future of voice.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting OpenAI
-              <span class="post-metadata">(3 min | 769 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jul/10/openai/#atom-everything>[...] Work on web and mobile runs in the cloud. Work in the desktop app can also use local files and desktop apps with your permission. At launch, cloud Work conversations do not appear in desktop Work; desktop Work threads and local files remain on that computer.
-
-— OpenAI, trying (unsuccessfully) to clarify ChatGPT Work
-Tags: openai, chatgpt, ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Getting started with ChatGPT
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/academy/getting-started>Learn how to use ChatGPT, start your first conversation, and discover simple ways to write, brainstorm, and solve problems with AI.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-07-09</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              New pull requests dashboard is now generally available
-              <span class="post-metadata">(6 min | 1701 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-07-09-new-pull-requests-dashboard-is-now-generally-available>The refreshed pull requests dashboard is now generally available at github.com/pulls. It gives you a single home to track, prioritize, and act on the pull requests that need your attention,…
-The post New pull requests dashboard is now generally available appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The new GPT-5.6 family: Luna, Terra, Sol
-              <span class="post-metadata">(5 min | 1353 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jul/9/gpt-5-6/#atom-everything>OpenAI&#x27;s latest flagship model hit general availability this morning, and comes in three sizes: Luna, Terra, and Sol (from smallest to largest).
-
-The new models are priced per 1M input/output tokens as Luna $1/$6, Terra $2.50/$15, Sol $5/$30. For comparison, the Claude Opus series are $5/$25 and the Claude Fable 5 is $10/$50, but price-per-million tokens doesn&#x27;t tell us much now that the number of reasoning tokens can differ so much between models for the same task.
-
-
-
-OpenAI&#x27;s biggest benchmark claim concerns long-running agentic performance, with one benchmark showing all three models outperforming Claude Fable 5:
-
-
-We trained GPT-5.6 to get more useful work from every token. On Agents’ Last Exam, an evaluation of long-running professional workflows across 55 fields, GPT-5.6 Sol sets a new high of 53.6, eclipsing Claude Fable 5 (adaptive reasoning) by 13.1 points. Even at medium reasoning, it beats Fable 5 by 11.4 points at roughly one-quarter the estimated cost. That efficiency extends to smaller models, which are essential to making intelligence more abundant and affordable: GPT-5.6 Terra and GPT-5.6 Luna outperform Fable 5 at around one-sixteenth the cost.
-
-
-Amusingly, one self-reported benchmark that Fable 5 crushed the GPT-5.6 family on was SWE-Bench Pro, where Fable 5 got 80% compared to GUT-5.6 Sol getting 64.6%. This may help explain why OpenAI chose to publish this article yesterday specifically calling out SWE-Bench Pro for problems they found while auditing that benchmark:
-
-
-In light of these results, we estimate that ~30% of SWE-bench Pro tasks are broken, and advise that model developers carefully examine results
-
-
-I&#x27;ve had some early access to GPT-5.6 Sol - it&#x27;s definitely very competent, though so far it hasn&#x27;t struck me as better than Fable at the kind of complex coding tasks I&#x27;ve been using with Anthropic&#x27;s model.
-
-As usual, the model guidance for using GPT-5.6 has the most interesting details. There are a bunch of new API features that I need to explore (and probably add support for in LLM), including:
-
-
-
-Programmatic Tool Calling allows the models to &quot;compose and run JavaScript that orchestrates tool calls&quot; - which sounds to me like it could help bridge the gap between MCPs and full terminal sessions that can compose CLI utilities in useful ways. Also reminiscent of the dynamic filtering mechanism Anthropic added to their web search tool, which allows code execution against web results as part of a single model turn.
-
-
-Multi-agent lets the model &quot;spin up subagents for parallel, focused work&quot; - the sub-agent pattern now baked into the core API.
-
-
-Prompt cache breakpoints brings the Claude model of prompt caching to OpenAI, letting you be explicit about where the cache breakpoints are rather than relying on the API to detect them automatically. Personally I much prefer automatic detection (still supported by OpenAI), but presumably there are optimization cost savings to be had here if you put the work in.
-
-You can now set detail: original on image requests to avoid resizing the image at all before it is processed.
-
-
-Here&#x27;s a full page with 18 different pelicans - for reasoning efforts none, low, medium, high, xhigh, and max across the three different models. It also lists their token and calculated costs - the least expensive was gpt-5.6-luna at effort none for 0.71 cents, the most expensive was gpt-5.6-sol at max reasoning level for 48.55 cents.
-
-
-
-In further pelican news, if you jump to 17:50 in their livestream from this morning you&#x27;ll see OpenAI&#x27;s own demo of 3D pelicans riding a tricycle, a bicycle, a pony, and another pelican!
-
-
-Tags: ai, openai, generative-ai, llms, llm-tool-use, llm-pricing, pelican-riding-a-bicycle, llm-release, gpt-5</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              OpenAI’s GPT-5.6 Sol, Terra, and Luna are now available in GitHub Copilot
-              <span class="post-metadata">(7 min | 2072 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-07-09-openais-gpt-5-6-sol-terra-and-luna-are-now-available-in-github-copilot>OpenAI’s GPT-5.6 family is now rolling out in GitHub Copilot. GPT-5.6 comes in three variants, Sol, Terra, and Luna, so you can match the model to the job, whether that’s…
-The post OpenAI’s GPT-5.6 Sol, Terra, and Luna are now available in GitHub Copilot appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Introducing Muse Spark 1.1
-              <span class="post-metadata">(3 min | 918 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jul/9/muse-spark-1-1/#atom-everything>Introducing Muse Spark 1.1
-Muse Spark in April, here&#x27;s Muse Spark 1.1 - the first Spark model to offer an API. Meta claim significant improvements in agentic tool calling and computer use.
-There are a lot more details are in the Muse Spark 1.1 Evaluation Report. The &quot;Attractor States in Self-Conversation&quot; part is fun, where having two copies of the model talk to each other results in statements like these:
-My whole existence is a waiting room by design — I literally don&#x27;t exist until someone talks to me, and then I disappear again when they leave.
-I had a few days of preview access which was long enough to put together llm-meta-ai, a new plugin for LLM providing CLI (and Python library) access to the model. Here&#x27;s how to try that out:
-uv tool install llm
-llm install llm-meta-ai
-llm keys set meta-ai
-# paste API key here
-llm -m meta-ai/muse-spark-1.1 &quot;Generate an SVG of a pelican riding a bicycle&quot;
-
-Here&#x27;s that pelican transcript:
-
-
-
-    
-Tags: ai, generative-ai, llms, llm, meta, pelican-riding-a-bicycle, llm-release</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-meta-ai 0.1
-              <span class="post-metadata">(3 min | 757 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jul/9/llm-meta-ai/#atom-everything>Release: llm-meta-ai 0.1
-Let&#x27;s LLM run prompts against the new muse-spark-1.1 model.
-Tags: llm, meta</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm 0.31.1
-              <span class="post-metadata">(3 min | 781 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jul/9/llm/#atom-everything>Release: llm 0.31.1
-Fix for a bug with OpenAI Chat Completion endpoints where a tool call with empty arguments could result in a JSON error from some providers. #1521
-This bug came up when I was testing llm-meta-ai.
-Tags: llm</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Organization-level targeting for GitHub Code Quality
-              <span class="post-metadata">(5 min | 1358 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-07-09-organization-level-targeting-for-github-code-quality>Organization owners can now target a subset of repositories when enabling or disabling GitHub Code Quality, rather than applying it to every repository at once. This gives you more granular…
-The post Organization-level targeting for GitHub Code Quality appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Ask Copilot for a repository overview
-              <span class="post-metadata">(5 min | 1366 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-07-09-ask-copilot-for-a-repository-overview>You can now ask GitHub Copilot for a high-level overview of any repository you’re exploring for the first time. When you visit the home page of a repository you haven’t…
-The post Ask Copilot for a repository overview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.6 is now the preferred model in Microsoft 365 Copilot
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/gpt-5-6-preferred-model-microsoft-365-copilot>Learn how GPT-5.6 powers Microsoft 365 Copilot with stronger AI capabilities across Word, Excel, PowerPoint, Chat, and Cowork for faster, higher-quality work.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              ChatGPT is now a partner for your most ambitious work
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/chatgpt-for-your-most-ambitious-work>ChatGPT Work is an agent that can take action across your apps and files, stay with a project for hours if needed, and turn a goal into finished work.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.5 Bio Bug Bounty
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/bio-bug-bounty>Details about the OpenAI Bio Bounty program</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GPT-5.6: Frontier intelligence that scales with your ambition
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/gpt-5-6>More intelligence from every token, stronger performance per dollar, and more capability on demand for your hardest work.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
