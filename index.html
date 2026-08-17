@@ -25,9 +25,324 @@
 
   <ul>
     <li>
+      <time>2026-08-17</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              The Defender’s Window
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/the-defenders-window>AI is reshaping cybersecurity for attackers and defenders alike. Learn how OpenAI is strengthening its defenses and what security teams can do now.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              OpenAI joins PORTS-Pike project
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/openai-joins-ports-pike-project>OpenAI joins PORTS-Pike project, expanding community investment and supporting thousands of Southern Ohio jobs</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              New policy ideas for the Intelligence Age
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/new-policy-ideas-for-the-intelligence-age>OpenAI funds 14 independent projects exploring new AI policy ideas to expand economic opportunity and strengthen societal resilience in the Intelligence Age.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-08-16</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Markdown SVG upgrades
+              <span class="post-metadata">(3 min | 1018 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Aug/16/markdown-svg-upgrades/>I started building my markdown-svg-renderer tool in May, but I&#x27;ve since added enough features to it that it&#x27;s worth talking about here again.
+It&#x27;s evolved into my ideal tool for sharing Markdown transcripts that include SVG documents. Given my proclivity for drawing pelicans riding bicycles this is a problem that I needed to solve!
+The tool is very simple. Navigate to markdown-svg-renderer in your browser and paste in some Markdown to see it rendered... or save that Markdown to a CORS-friendly URL or a GitHub Gist and paste in a URL to that document.
+The URL option will give you a bookmarkable page, for example https://tools.simonwillison.net/markdown-svg-renderer#url&#x3D;https%3A%2F%2Fgist.github.com%2Fsimonw%2F6f9e48293be5c916652d29f0dc0b0657 - which bakes in the URL to this Gist.
+If you visit the Gist you&#x27;ll see raw SVG:
+
+In the rendered tool that looks like this instead:
+
+As you can see, that SVG block in the Markdown has been transformed into a rendered SVG (in this case animated) plus several tabs.
+The tabs are the really fun bit. The PNG and JPEG tabs render that SVG to those image formats in the browser and lets you copy or download them - useful for sharing on platforms that don&#x27;t support SVG directly.
+The MP4 tab is new today - it examines the SVG to see if it contains any animations, attempts to guess how long the looped video should be, then renders a whole bunch of frames of the animation and loads 30+MB of ffmpeg.wasm so it can compile those frames into an MP4 video using the full power of FFMPEG compiled to WebAssembly and running in the browser.
+Being able to turn an animated SVG into a MP4 again makes it easy to share on platforms that can&#x27;t support SVG animation natively. It&#x27;s a neat trick!
+Tags: svg, markdown, tools</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Qwen 3.8 27B is excellent, but it defaults to wildly overthinking things
+              <span class="post-metadata">(10 min | 2917 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Aug/16/qwen-38-27b/>Friday&#x27;s big release was Qwen 3.8 27B, an Apache 2 licensed 27B parameter vision-capable LLM from Alibaba&#x27;s Qwen research lab. I&#x27;ve been looking forward to this one: 27B is an excellent size for running a model on a reasonably specced laptop, and its predecessor Qwen 3.6 27B was impressive.
+
+Qwen&#x27;s self-reported benchmarks for this model are eye-opening. They show a boost from both Qwen 3.6 27B and the closed-weight Qwen 3.7-Plus, which was one of Qwen&#x27;s strongest models of any size as recently as May this year. It will be interesting to hear what independent benchmarks have to say about the model.
+
+I&#x27;ve been running the model on two different machines: my 128GB M5 Max MacBook Pro, and an NVIDIA DGX Spark. On both machines I&#x27;m running LM Studio and their 17GB Q4_K_M quantized build. I also tried  using llama-server directly on the Spark.
+
+The default of extra high results in spectacular over-thinking
+
+Qwen&#x27;s documentation describes the model as defaulting to xhigh for the reasoning effort, and the LM Studio GGUF I&#x27;ve been trying preserves that default:
+
+
+Qwen3.8 comes with official support for reasoning_effort, which can be used to adjust reasoning depth and control cost:
+
+
+
+xhigh (default): for complex tasks demanding thorough analysis
+
+
+medium: balancing accuracy and speed
+
+
+low: efficient reasoning optimizing for speed and cost
+
+
+
+This is a hilarious default. It&#x27;s absolutely not a good way to run the model, especially on consumer hardware. I&#x27;ve been finding the results extremely entertaining.
+
+I quickly ran into problems with LM Studio&#x27;s default context limit of 8,192 tokens - Qwen was using them all up thinking about even the most mundane of problems. I loaded the model with the full 262,144 maximum context length and that problem went away.
+
+Here&#x27;s the pelican riding a bicycle SVG I got from my first attempt with that increased context length. It took 21 minutes to generate, using 22,276 reasoning tokens to produce 3,223 tokens of output. You can read the reasoning trace here.
+
+
+
+This is by far the best pelican SVG I&#x27;ve been able to generate with a model that runs on a local machine - and this Qwen is pretty small, just a 17GB file on disk. There&#x27;s a lot to like about this:
+
+
+The bicycle frame is the right shape
+
+It has legs on each side of the bike - that&#x27;s very rare
+
+Good, clear pelican pouch
+
+The wings extend to touch the handlebars!
+
+The motion lines are behind, not in front
+
+It has a tasteful background - nice sun, clouds, hill, flowers and grass.
+
+
+Was that worth waiting 21 minutes for? Absolutely not.
+
+Here&#x27;s that same prompt run with reasoning turned off - transcript here. This one produced 3,715 tokens and took 137s - just over two minutes.
+
+
+And just for completeness, I used OpenRouter to run the same prompt through the much larger Qwen 3.8 2.4T-A95B (released last week) and got this snazzy animated SVG:
+
+&lt;video
+    controls&#x3D;&quot;controls&quot; loop&#x3D;&quot;loop•&quot;
+    preload&#x3D;&quot;none&quot;
+    poster&#x3D;&quot;https://static.simonwillison.net/static/2026/qwen-animated-first-frame.jpg&quot;
+    width&#x3D;&quot;720&quot;
+    height&#x3D;&quot;548&quot;
+    style&#x3D;&quot;display: block; width: 100%; height: auto;&quot;
+  &gt;
+    
+    Your browser does not support HTML5 video.
+  
+
+I said Qwen at xhigh has a tendency to over-think things, but how bad really is it?
+
+I tried a much simpler prompt, again with that default extra high setting:
+
+
+draw an svg of a circle
+
+
+Qwen&#x27;s reasoning trace started like this:
+
+
+The user is asking for an SVG drawing of a circle. Simple request — but I want it to be a carefully crafted piece. Let me make something that goes beyond just &lt;circle&gt;: a single self-contained SVG file with character — maybe a geometric &quot;circle study,&quot; with subtle animation, layered rings, and a distinctive palette.
+
+Keep the scope right: they asked for an SVG of a circle. So the core is a circle. But I can add craft: concentric guide circles (like a compass/geometry drawing), tick marks, a soft gradient fill on the main circle, restrained ambient motion (a slowly rotating dashed ring, pulsing glow). Respect prefers-reduced-motion? That&#x27;s more for CSS; SVG SMIL or CSS inside SVG will do.
+
+Palette options: deep teal ink on warm paper? Or bold vermilion circle on off-white with navy construction lines — Bauhaus/compass-drawing vibe. Let me go with a &quot;geometric study&quot; look: cool slate background, or bright paper white? Paper white is fine if it&#x27;s not the cream-and-terracotta combo. [...]
+
+
+Several minutes later it produced this absolutely beautiful animated circle, which was entirely not what I had asked for!
+
+&lt;video
+    controls&#x3D;&quot;controls&quot; loop&#x3D;&quot;loop&quot;
+    preload&#x3D;&quot;none&quot;
+    poster&#x3D;&quot;https://static.simonwillison.net/static/2026/circle-web-first-frame.jpg&quot;
+    width&#x3D;&quot;1078&quot;
+    height&#x3D;&quot;1080&quot;
+    style&#x3D;&quot;display: block; width: 100%; height: auto;&quot;
+  &gt;
+    
+    Your browser does not support HTML5 video.
+  
+
+My strong recommendation: ignore that default. Run Qwen 3.8 27B on low or even no reasoning levels at first. It&#x27;s a great model, but wow that default setting is a bad place to start.
+It&#x27;s very good at bounding boxes
+
+A fun way to test a vision model is to see how well it can return bounding boxes around items in a photograph. I&#x27;ve seen previous Qwen models deal well with this, so I decided to put it to the test drawing bounding boxes around some pelicans.
+
+I&#x27;ve seen asking for 0-1000 scale produce good results in the past. I tried this:
+
+
+llm -a https://static.inaturalist.org/photos/714731804/large.jpg \
+  -m lmstudio/qwen/qwen3.8-27b \
+  &#x27;Return JSON bounding boxes for the pelicans in this photo, 0-1000 scale for each dimension&#x27;
+
+Here&#x27;s the reasoning trace, which produced this:
+
+
+[
+  {&quot;bbox_2d&quot;: [195, 290, 370, 780], &quot;label&quot;: &quot;pelicans&quot;},
+  {&quot;bbox_2d&quot;: [445, 320, 675, 850], &quot;label&quot;: &quot;pelicans&quot;}
+]
+
+This is such a good match. Here are those boxes rendered on top of the photo:
+
+
+
+Building a tool to label bounding boxes
+
+That visualization of the bounding boxes was taken using a new custom tool that I had Qwen 3.8 27B build for me, running offline on my laptop.
+
+I forgot to dial down the thinking effort so it was massively over-engineered, but it did manage to produce this full interface from this single prompt:
+
+
+[
+   {&quot;bbox_2d&quot;: [195, 290, 370, 780], &quot;label&quot;: &quot;pelicans&quot;},
+   {&quot;bbox_2d&quot;: [445, 320, 675, 850], &quot;label&quot;: &quot;pelicans&quot;}
+]
+
+
+Build an HTML page which has an input box for accepting the URL to an image and a textarea for accepting the above style of JSON.
+
+It appends the image to the page, measures its width and height, then treats the coords in the bbox_2d as scaled from 0-1000 and scales them against the actual width and height, then it renders labelled boxes over the image.
+
+
+This screenshot shows one of the features I did not ask for - a demo scene, for if you don&#x27;t have a photograph to test the tool with:
+
+
+
+Here&#x27;s the relevant segment of the thinking trace, where it decided to draw its own pelicans purely because I had used the label &quot;pelicans&quot; in the example JSON I gave it in the prompt:
+
+
+Also a &quot;load sample&quot; that uses a known image? Can&#x27;t depend on external images, but… the image URL input is user-provided; I could add a &quot;try with sample&quot; button [...] Hmm, I can draw a simple scene on canvas, export it as a data URL, and load it into the image — that&#x27;s self-contained and demo-able! [...] But the user&#x27;s coords are for an actual pelican image; a generated placeholder can still demo the scaling. Generate a 1000x1000 placeholder: gradient water + two blob-like &quot;pelican&quot; silhouettes placed at the given bboxes (using the same scale — cute: silhouettes at the exact 0-1000 positions, showing the boxes align). This makes for a fun, self-contained demo. Keep it simple: sky gradient, sun, water, two pelican-ish shapes (ellipse body, circle head, beak). Place at bbox centers.
+
+
+(I&#x27;m slightly nervous that models around the world might have a bias towards drawing pelicans at any chance they can get, brought on by nearly two years of exposure to my own stupid benchmark.)
+
+Is all that over-thinking necessary? Maybe it is, at least a bit. I tried with reasoning turned off and got this version, (transcript here), which nearly works but shows the boxes in the wrong place:
+
+
+
+So without reasoning it didn&#x27;t quite one-shot a working tool. I&#x27;m sure it could get there with some follow-up prompts, but this is a good example of how reasoning can make a difference.
+
+Yes, it can drive coding agents
+
+One of the biggest questions around local models is whether or not they have enough horsepower to successfully run a coding agent loop. Coding agents require long context, strong code generation support and reliable tool-calling. On paper Qwen 3.8 27B has all three of these, so is it up to the task?
+
+My initial experiments with Pi have been very promising. I chose Pi because it has a shorter system prompt than most other options, making it a better fit for trying out smaller models.
+
+I configured Pi to use Qwen 3.8 27B running in LM Studio on the Spark (shared via tailscale serve) by adding this to ~/.pi/agent/models.json:
+
+
+{
+  &quot;providers&quot;: {
+    &quot;spark&quot;: {
+      &quot;baseUrl&quot;: &quot;https://spark-18b3.tail68a31.ts.net/v1&quot;,
+      &quot;api&quot;: &quot;openai-responses&quot;,
+      &quot;apiKey&quot;: &quot;dummy&quot;,
+      &quot;models&quot;: [
+        {
+          &quot;id&quot;: &quot;qwen3.8-27b&quot;,
+          &quot;reasoning&quot;: true
+        }
+      ]
+    }
+  }
+}
+
+Then ran pi --provider spark --model qwen3.8-27b in my ~/dev/datasette folder and prompted:
+
+
+how does auth work?
+
+
+After a sequence of reasoning and tool calls that accessed a bunch of different files it produced this reply, which is very solid.
+
+Just one problem: I wanted to share that transcript. So I pointed Pi and Qwen 3.8 27B at the JSONL transcript file in ~/.pi/agent/sessions/--Users-simon-Dropbox-dev-datasette-- and prompted:
+
+
+Write Python code to convert this jsonl to markdown
+
+
+And it built and tested this pi_jsonl_to_md.py, which did exactly what I needed. Here&#x27;s that session transcript, published using the tool that it created.
+
+The quest for speed
+
+So far this is all looking very promising. We have a 17GB model that runs on high-end consumer hardware and can write code, drive tools, annotate images and generally do everything that I need from an LLM for getting real work done.
+
+There&#x27;s one very significant catch: it feels slow - especially when it starts over-thinking, but even without that it&#x27;s not particularly sprightly.
+
+I&#x27;ve been getting around 15-30 tokens a second from LM Studio. That&#x27;s not terrible, but it&#x27;s slow enough that it&#x27;s going to be hard to win me away from hosted API models, which can return results a whole lot faster. Artificial Analysis track token speed and show OpenAI 5.6 Sol at 74 tokens/second and 5.6 Luna at an impressive 184/second.
+
+The good news is that the community have been exploring ways to speed things up since the model was first released two days ago.
+
+One of the most promising optimizations is baked into the model itself. Qwen supports Multi-Token Prediction, an architecture trick where a cheaper mechanism guesses several tokens ahead and the main model can then quickly verify if the guesses were correct. This can have quite a dramatic effect on inference performance.
+
+Based on this tweet from llama.cpp creator Georgi Gerganov I tried running the model with MTP like this on the Spark:
+
+
+llama serve \
+ -hf  ggml-org/Qwen3.8-27B-GGUF:Q4_K_M \
+ -hfd ggml-org/Qwen3.8-27B-GGUF:Q4_0 \
+ --spec-default \
+ --spec-type draft-mtp \
+ --reasoning-preserve
+
+And sure enough, this gave me a significant boost. I had GPT-5.6 in Codex run a comparative benchmark on the Spark and the --spec-type draft-mtp server outperformed the LM Studio default GGUF by around 72%.
+
+I expect we&#x27;ll see a whole lot more innovation around serving this model faster over the next few weeks. The MLX community likely have some tricks brewing as well.
+
+Some observations
+
+The fact that a 17GB file can do all of this stuff on my home machines is a miracle. Once again, I&#x27;m delighted and amazed at how much progress local models have made this year. A year ago this would have been competitive with the best and most expensive of the proprietary models - today it can run on a capable laptop.
+
+The only thing holding this back from being a daily driver is performance. It feels pretty slow on both the M5 Mac and the DGX Spark. That&#x27;s the catch with these dense (non-Mixture-of-Experts) models - they require a whole lot of memory bandwidth to perform well, and neither of the machines I have access to are top performers in that regard.
+
+The most important thing about Qwen 3.8 27B is what it demonstrates. We can have an open weights general purpose model with a long context, effective tool calling, strong vision ability, and competent code generation, and we can fit the whole thing in just a 17GB file.
+
+The models at this size continue to get better at an impressive rate. We don&#x27;t need to spend half a million dollars on datacenter-class hardware just to run a competent model.
+Tags: ai, generative-ai, local-llms, llms, qwen, pelican-riding-a-bicycle, llm-reasoning, llama-cpp, llm-release, coding-agents, lm-studio, ai-in-china, nvidia-spark, pi</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -5956,30 +6271,6 @@ BUN_OPTIONS&#x3D;&quot;--preload&#x3D;/tmp/bun-version.ts&quot; claude --version
 This outputs 1.4.0 for me.
 Here&#x27;s the commit from May 17th that updated the version in package.json to 1.4.0. That version hasn&#x27;t been changed since then, but also hasn&#x27;t yet made it into a tagged release outside of canary.
 Tags: bun, rust, anthropic, claude-code, jarred-sumner</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-07-18</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              SQLite Query Explainer
-              <span class="post-metadata">(3 min | 886 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jul/18/sqlite-query-explainer/#atom-everything>Tool: SQLite Query Explainer
-Julia Evan&#x27;s, in Learning a few things about running SQLite:
-Maybe one day I’ll learn to read a query plan.
-Big same.... which inspired me to have Fable build this interactive explain tool, which runs SQLite in Python in Pyodide in Web Assembly in the browser and adds a layer of explanation to the results of both EXPLAIN and EXPLAIN QUERY PLAN.
-Approach with caution, since I don&#x27;t know enough about SQLite query plans to verify the results myself, but it seems cromulent enough to me.
-Tags: sql, sqlite, tools, julia-evans, pyodide, claude-mythos-fable</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
