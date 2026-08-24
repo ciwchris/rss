@@ -2,10 +2,32 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-08-23T21:11:36.115Z</updated>
+    <updated>2026-08-24T14:31:02.320Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Your executable is a SQLite database]]></title>
+        <id>https://simonwillison.net/2026/Aug/24/your-executable-is-a-sqlite-database/</id>
+        <link href="https://simonwillison.net/2026/Aug/24/your-executable-is-a-sqlite-database/"/>
+        <updated>2026-08-24T11:38:15.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://fzakaria.com/2026/08/23/your-executable-is-a-sqlite-database">Your executable is a SQLite database</a></strong></p>
+Farid Zakaria describes a neat Linux pattern for creating a SQLite database file that can be directly used as an executable binary.</p>
+<p>The trick sets the SQLite file format's 4-byte application ID (68 bytes into the file) to SELF, standing for Structured Executable &amp; Linkable Format.  The various components of the ELF executable format are then arranged into a number of different SQLite tables, using <a href="https://github.com/fzakaria/selfdb/blob/main/schema/self.sql">this schema</a>.</p>
+<p>Their <code>self-exec</code> interpreter (<a href="https://github.com/fzakaria/selfdb/blob/main/loader/self-exec.c">C code here</a>) can then extract and execute the necessary pieces.</p>
+<p>You can additionally use a Linux mechanism called <a href="https://docs.kernel.org/admin-guide/binfmt-misc.html">binfmt_misc</a> to teach the kernel to execute that any time it encounters an executable matching that binary pattern. Farid uses NixOS here, but without NixOS I think registration looks something like this:</p>
+<pre><code>printf '%s\n' ':self:M:68:SELF::/usr/local/bin/self-exec:' \
+  &gt; /proc/sys/fs/binfmt_misc/register
+</code></pre>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=49415271">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/c">c</a>, <a href="https://simonwillison.net/tags/linux">linux</a>, <a href="https://simonwillison.net/tags/sqlite">sqlite</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Anthropic’s best AI model struggles to attract users as cheaper tools thrive]]></title>
         <id>https://simonwillison.net/2026/Aug/23/anthropics-best-ai-model-struggles-to-attract-users-as-cheaper-t/</id>
@@ -4985,72 +5007,6 @@ Fascinating investigation by Matt Lenhard into the market that has grown up arou
     
     
         <p>Tags: <a href="https://simonwillison.net/tags/sqlite-utils">sqlite-utils</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Ruff v0.16.0]]></title>
-        <id>https://simonwillison.net/2026/Jul/25/ruff/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/25/ruff/#atom-everything"/>
-        <updated>2026-07-25T22:44:05.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://astral.sh/blog/ruff-v0.16.0">Ruff v0.16.0</a></strong></p>
-Astral shipped a significant new version of their Ruff Python linting tool a few days ago on July 23rd. I noticed today because my various CI jobs all started failing thanks to new default Ruff checks and my unpinned <code>"ruff"</code> dev dependency.</p>
-<p>From Brent Westbrook's announcement post:</p>
-<blockquote>
-<p>Ruff now enables 413 rules by default, up from 59 in previous versions.</p>
-<p>Since Ruff's default rule set was last modified in <a href="https://github.com/astral-sh/ruff/blob/main/changelogs/0.1.x.md#breaking-changes">v0.1.0</a>, the number of rules in Ruff has grown from 708 to 968. Many of these rules catch severe issues, including <a href="https://docs.astral.sh/ruff/rules/load-before-global-declaration">syntax errors</a> and <a href="https://docs.astral.sh/ruff/rules/yield-in-init/">immediate runtime errors</a> but were not previously enabled by default. With the new rule set, Ruff will bring these issues and many others to your attention without any Ruff configuration.</p>
-</blockquote>
-<p>Here's a one-liner for trying it on any Python project:</p>
-<pre><code>uvx ruff@latest check .
-</code></pre>
-<p>I ran the latest Ruff against my three biggest projects - <a href="https://datasette.io/">Datasette</a>, <a href="https://sqlite-utils.datasette.io/">sqlite-utils</a>, and <a href="https://llm.datasette.io/">LLM</a> - and it found <em>hundreds</em> of minor issues that breached the new default rules.</p>
-<p>All three projects have very comprehensive test suites, executed in CI against Python 3.10 through Python 3.14, so upgrades like this are pretty safe. The following command did the bulk of the upgrades:</p>
-<pre><code>uvx ruff@latest check . --fix --unsafe-fixes
-</code></pre>
-<p>Against <code>sqlite-utils</code>, that command reported:</p>
-<pre><code>Found 1618 errors (1538 fixed, 80 remaining).
-</code></pre>
-<p>As an illustrative example, here are three of the remaining issues. Ruff does a nice job of explaining each one:</p>
-<pre><code>DTZ005 `datetime.datetime.now()` called without a `tz` argument
-  --&gt; tests/test_duplicate.py:17:10
-   |
-15 |     "datetime_col" TEXT)""")
-16 |     # Insert one row of mock data:
-17 |     dt = datetime.datetime.now()
-   |          ^^^^^^^^^^^^^^^^^^^^^^^
-18 |     data = {
-19 |         "text_col": "Cleo",
-   |
-help: Pass a `datetime.timezone` object to the `tz` parameter
-
-BLE001 Do not catch blind exception: `Exception`
-  --&gt; tests/test_plugins.py:16:12
-   |
-14 |         db.execute("select * from pragma_function_list()")
-15 |         return True
-16 |     except Exception:
-   |            ^^^^^^^^^
-17 |         return False
-18 |     finally:
-   |
-
-B018 Found useless attribute access. Either assign it to a variable or remove it.
-  --&gt; tests/test_update.py:46:5
-   |
-44 | def test_update_invalid_pk(fresh_db, pk, update_pk):
-45 |     table = fresh_db["table"]
-46 |     table.insert({"id1": 5, "id2": 3, "v": 1}, pk=pk).last_pk
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-47 |     with pytest.raises(NotFoundError):
-48 |         table.update(update_pk, {"v": 2})
-   |
-</code></pre>
-<p>Unsurprisingly, given Astral's <a href="https://simonwillison.net/2026/Mar/19/openai-acquiring-astral/">new home at OpenAI</a>, this output provides everything a coding agent would need to fix the problems.</p>
-<p>I had Codex (GPT-5.6 Sol high) <a href="https://github.com/simonw/llm/pull/1557">upgrade LLM</a> and <a href="https://github.com/simonw/sqlite-utils/pull/814">sqlite-utils</a>, and Claude Code (with Opus 5) <a href="https://github.com/simonw/datasette/pull/2857">upgrade Datasette</a>.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/ruff">ruff</a>, <a href="https://simonwillison.net/tags/astral">astral</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>

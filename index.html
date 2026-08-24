@@ -25,6 +25,33 @@
 
   <ul>
     <li>
+      <time>2026-08-24</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Your executable is a SQLite database
+              <span class="post-metadata">(3 min | 880 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Aug/24/your-executable-is-a-sqlite-database/>Your executable is a SQLite database
+The trick sets the SQLite file format&#x27;s 4-byte application ID (68 bytes into the file) to SELF, standing for Structured Executable &amp; Linkable Format.  The various components of the ELF executable format are then arranged into a number of different SQLite tables, using this schema.
+Their self-exec interpreter (C code here) can then extract and execute the necessary pieces.
+You can additionally use a Linux mechanism called binfmt_misc to teach the kernel to execute that any time it encounters an executable matching that binary pattern. Farid uses NixOS here, but without NixOS I think registration looks something like this:
+printf &#x27;%s\n&#x27; &#x27;:self:M:68:SELF::/usr/local/bin/self-exec:&#x27; \
+  &gt; /proc/sys/fs/binfmt_misc/register
+
+Via Hacker News
+Tags: c, linux, sqlite</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-08-23</time>
 
       <section>
@@ -5715,80 +5742,6 @@ Tags: ai, generative-ai, llms, llm-pricing, ai-ethics, ai-in-china</a>
               <a target="_blank" href=https://simonwillison.net/2026/Jul/26/sqlite-utils/#atom-everything>Release: sqlite-utils 3.39.1
 I back-ported a fix for table.delete_where() that shipped in version 4.
 Tags: sqlite-utils</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-07-25</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Ruff v0.16.0
-              <span class="post-metadata">(4 min | 1149 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Jul/25/ruff/#atom-everything>Ruff v0.16.0
-&quot;ruff&quot; dev dependency.
-From Brent Westbrook&#x27;s announcement post:
-Ruff now enables 413 rules by default, up from 59 in previous versions.
-Since Ruff&#x27;s default rule set was last modified in v0.1.0, the number of rules in Ruff has grown from 708 to 968. Many of these rules catch severe issues, including syntax errors and immediate runtime errors but were not previously enabled by default. With the new rule set, Ruff will bring these issues and many others to your attention without any Ruff configuration.
-Here&#x27;s a one-liner for trying it on any Python project:
-uvx ruff@latest check .
-
-I ran the latest Ruff against my three biggest projects - Datasette, sqlite-utils, and LLM - and it found hundreds of minor issues that breached the new default rules.
-All three projects have very comprehensive test suites, executed in CI against Python 3.10 through Python 3.14, so upgrades like this are pretty safe. The following command did the bulk of the upgrades:
-uvx ruff@latest check . --fix --unsafe-fixes
-
-Against sqlite-utils, that command reported:
-Found 1618 errors (1538 fixed, 80 remaining).
-
-As an illustrative example, here are three of the remaining issues. Ruff does a nice job of explaining each one:
-DTZ005 &#x60;datetime.datetime.now()&#x60; called without a &#x60;tz&#x60; argument
-  --&gt; tests/test_duplicate.py:17:10
-   |
-15 |     &quot;datetime_col&quot; TEXT)&quot;&quot;&quot;)
-16 |     # Insert one row of mock data:
-17 |     dt &#x3D; datetime.datetime.now()
-   |          ^^^^^^^^^^^^^^^^^^^^^^^
-18 |     data &#x3D; {
-19 |         &quot;text_col&quot;: &quot;Cleo&quot;,
-   |
-help: Pass a &#x60;datetime.timezone&#x60; object to the &#x60;tz&#x60; parameter
-
-BLE001 Do not catch blind exception: &#x60;Exception&#x60;
-  --&gt; tests/test_plugins.py:16:12
-   |
-14 |         db.execute(&quot;select * from pragma_function_list()&quot;)
-15 |         return True
-16 |     except Exception:
-   |            ^^^^^^^^^
-17 |         return False
-18 |     finally:
-   |
-
-B018 Found useless attribute access. Either assign it to a variable or remove it.
-  --&gt; tests/test_update.py:46:5
-   |
-44 | def test_update_invalid_pk(fresh_db, pk, update_pk):
-45 |     table &#x3D; fresh_db[&quot;table&quot;]
-46 |     table.insert({&quot;id1&quot;: 5, &quot;id2&quot;: 3, &quot;v&quot;: 1}, pk&#x3D;pk).last_pk
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-47 |     with pytest.raises(NotFoundError):
-48 |         table.update(update_pk, {&quot;v&quot;: 2})
-   |
-
-Unsurprisingly, given Astral&#x27;s new home at OpenAI, this output provides everything a coding agent would need to fix the problems.
-I had Codex (GPT-5.6 Sol high) upgrade LLM and sqlite-utils, and Claude Code (with Opus 5) upgrade Datasette.
-
-
-    
-Tags: python, ruff, astral</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
