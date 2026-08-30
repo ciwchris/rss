@@ -2,10 +2,45 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-08-29T22:55:02.694Z</updated>
+    <updated>2026-08-30T17:50:17.546Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[Introducing Hy4 Preview]]></title>
+        <id>https://simonwillison.net/2026/Aug/29/hy4/</id>
+        <link href="https://simonwillison.net/2026/Aug/29/hy4/"/>
+        <updated>2026-08-29T23:53:13.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://hy.tencent.ai/research/hy4-preview">Introducing Hy4 Preview</a></strong></p>
+New open weight text input (no vision)  LLM from Chinese company Tencent today: 770B total parameters, 49B active parameters, 1M token context window, <a href="https://huggingface.co/tencent/Hy4-preview">1.56TB on Hugging Face</a>.</p>
+<p>This is a big size increase from their previous <a href="https://huggingface.co/tencent/Hy3">Hy3</a> in July, which was 295B, 21B active, 256,000 context, 598GB.</p>
+<p>I recently started using model chat templates to better understand their capabilities. Here's Hy4's  <a href="https://huggingface.co/tencent/Hy4-preview/blob/main/chat_template.jinja">chat_template.jinja</a> on Hugging Face, which includes this section:</p>
+<div class="highlight highlight-text-html-django"><pre><span class="pl-e">{%</span>- <span class="pl-k">if</span> <span class="pl-k">not</span> <span class="pl-s">reasoning_effort</span> <span class="pl-s">is</span> <span class="pl-s">defined</span> <span class="pl-e">%}</span>
+    <span class="pl-e">{%</span>- <span class="pl-s">set</span> <span class="pl-s">reasoning_effort</span> = <span class="pl-s">'high'</span> <span class="pl-e">%}</span>
+<span class="pl-e">{%</span>- <span class="pl-s">elif</span> <span class="pl-s">reasoning_effort</span> <span class="pl-k">not</span> <span class="pl-k">in</span> [<span class="pl-s">'high'</span>, <span class="pl-s">'no_think'</span>] <span class="pl-e">%}</span>
+    <span class="pl-e">{%</span>- <span class="pl-k">if</span> <span class="pl-s">reasoning_effort</span> <span class="pl-s">is</span> <span class="pl-s">none</span> <span class="pl-e">%}</span>
+        {{- raise_exception('reasoning_effort error : None, should be no_think/high') }}
+    <span class="pl-e">{%</span>- <span class="pl-k">else</span> <span class="pl-e">%}</span>
+        {{- raise_exception('reasoning_effort error : ' + reasoning_effort + ', should be no_think/high') }}
+    <span class="pl-e">{%</span>- <span class="pl-k">endif</span> <span class="pl-e">%}</span>
+<span class="pl-e">{%</span>- <span class="pl-k">endif</span> <span class="pl-e">%}</span></pre></div>
+<p>So it looks like there are just two reasoning effort levels: "high" (the default) and "no_think" (reason by disabled).</p>
+<p>I tried my "Generate an SVG of a pelican riding a bicycle" prompt with the default high reasoning <a href="https://openrouter.ai/tencent/hy4-preview#apps">via OpenRouter</a> and <a href="https://tools.simonwillison.net/markdown-svg-renderer#url=https%3A%2F%2Fgist.github.com%2Fsimonw%2Fcb69816b3fb940f2782569a82a523af1">got this</a>:</p>
+<p><img alt="Flat vector cartoon illustration of a white pelican with a large orange bill riding a red bicycle to the right along a grey road with a dashed white centre line, its orange webbed feet on the pedals and grey tail feathers fanned out behind, against a pale blue sky with a yellow sun, white clouds and horizontal white motion lines suggesting speed" src="https://static.simonwillison.net/static/2026-08-29/IMG_7725.jpeg" /></p>
+<p>Quoting the reasoning trace:</p>
+<blockquote>
+<p>[...] Let's maybe add a helmet? It could improve riding theme, but may obscure head. Maybe a small cycling cap or helmet? The user didn't ask; can add red helmet? Might be cute. But pelican with big beak; a helmet might obscure. Better maybe no.</p>
+<p>Maybe add sunglasses? no.</p>
+<p>Maybe add water? no.</p>
+</blockquote>
+<p>It's interesting how the reasoning trace uses slightly truncated English, presumably because perfect grammar isn't useful or token efficient for hidden reasoning text.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/llm-reasoning">llm-reasoning</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Just a rumour of a bug is enough to find a security exploit these days]]></title>
         <id>https://simonwillison.net/2026/Aug/28/just-a-rumour-of-a-bug/</id>
@@ -4396,348 +4431,6 @@ A few days ago it was Anthropic <a href="https://simonwillison.net/2026/Jul/28/d
 
 
     <p>Tags: <a href="https://simonwillison.net/tags/mathematics">mathematics</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/openai">openai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/deep-blue">deep-blue</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Ten advances in mathematics and theoretical computer science]]></title>
-        <id>https://openai.com/index/ten-advances-in-mathematics</id>
-        <link href="https://openai.com/index/ten-advances-in-mathematics"/>
-        <updated>2026-08-01T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[OpenAI shares new results on long-standing open problems in mathematics and theoretical computer science, including advances in geometry, cryptography, and complexity.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[deepseek-ai/DeepSeek-V4-Flash-0731]]></title>
-        <id>https://simonwillison.net/2026/Jul/31/deepseek-v4-flash-0731/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/31/deepseek-v4-flash-0731/#atom-everything"/>
-        <updated>2026-07-31T23:59:44.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731">deepseek-ai/DeepSeek-V4-Flash-0731</a></strong></p>
-The latest release in DeepSeek's V4 family, "with substantially enhanced agentic capabilities". It's 304 billion parameters - 167GB on Hugging Face - but it appears to punch <em>well</em> above its weight.</p>
-<p>Artificial Analysis <a href="https://artificialanalysis.ai/models/deepseek-v4-flash">rank it</a> ahead of MiniMax M3 - a 428B model. It's $0.14/million input and $0.27/million output pricing means this may currently be the best value-per-intelligence model out there. It's looking very good on the <a href="https://artificialanalysis.ai/models/deepseek-v4-flash#intelligence-comparison-tabs">Intelligence Index vs. Cost per Intelligence Index Task</a> chart:</p>
-<p><img alt="Scatter plot from Artificial Analysis titled with axes &quot;Artificial Analysis Intelligence Index&quot; (20 to 65) and &quot;Cost per Task (USD, Log Scale)&quot; ($0.02 to $3), with a green &quot;Most attractive quadrant&quot; box in the upper left and a dotted &quot;Pareto line&quot;. DeepSeek V4 Flash 0731 (max) is highlighted in dark blue at roughly $0.028 and an intelligence score of 50, sitting alone at the far left edge of the green quadrant where the Pareto line jumps sharply upward. Models of similar or lower intelligence like MiniMax-M3, Kimi K3 (low), GLM-5.1 and Kimi K2.6 cost ten times more, and the models that beat it (Grok 4.5, Gemini 3.6 Flash, GLM-5.2, Kimi K3, Claude Opus 5, Claude Fable 5, GPT-5.6 Sol) all sit far to the right at $0.4 to $3 per task." src="https://static.simonwillison.net/static/2026/deepseek-flash-chart.webp" /></p>
-<p>I got <a href="https://gist.github.com/simonw/83bfb1171792f1e7a4d8935b5e82317e#prompt">a disappointing pelican</a> from it using the default reasoning level via OpenRouter:</p>
-<p><img alt="Flat vector illustration of a white pelican with a long neck and large orange beak pouch, hovering above a mangled blue and orange bicycle on a dark grey road with white dashed lane markings. The bike is drawn incorrectly: the wheels are just orange arcs with no rims or spokes, the frame tubes float apart and the handlebars connect to nothing. The background is pale blue with a yellow sun in the upper left, white clouds, and grey speed lines on the left suggesting motion." src="https://static.simonwillison.net/static/2026/deepseek-flash-v4-default.png" /></p>
-<p>But when I bumped reasoning level up to high I got <a href="https://gist.github.com/simonw/83bfb1171792f1e7a4d8935b5e82317e#options">something much better</a>:</p>
-<p><code>llm -m openrouter/deepseek/deepseek-v4-flash-0731 -t pelican -o reasoning_effort high</code></p>
-<p><img alt="Flat vector illustration of a white pelican riding a bicycle to the right against a pink background with a lighter pink circle behind it. The pelican grips the handlebars with its wings and one orange foot rests on the pedal, and a small blue fish is visible tucked in the corner of its large orange beak pouch. The bike has a red, blue and orange frame with dark tires, and grey speed lines trail behind to suggest motion." src="https://static.simonwillison.net/static/2026/deepseek-flash-v4-high.png" />
-
-    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=49120299">Hacker News</a></small></p>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/deepseek">deepseek</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/openrouter">openrouter</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a>, <a href="https://simonwillison.net/tags/artificial-analysis">artificial-analysis</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Stateless MCP has recaptured my interest (and inspired mcp-explorer and datasette-mcp)]]></title>
-        <id>https://simonwillison.net/2026/Jul/31/stateless-mcp/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/31/stateless-mcp/#atom-everything"/>
-        <updated>2026-07-31T23:13:22.000Z</updated>
-        <summary type="html"><![CDATA[<p>Tuesday was <a href="https://x.com/ade_oshineye/status/2082129440943866149">Stateless MCP day</a> - the rollout of MCP 2.0, or <a href="https://blog.modelcontextprotocol.io/posts/2026-07-28/">the 2026-07-28 Model Context Protocol specification</a> to use the more formal but less memorable name. This is the most significant change to the MCP spec since it first launched, and has also served to reignite my personal interest in the protocol.</p>
-<p>For background: MCP is the Model Context Protocol, which describes a standard way to expose new tools to LLM-powered agent frameworks. It was introduced by Anthropic back <a href="https://www.anthropic.com/news/model-context-protocol">in November 2024</a>, had a <em>huge</em> spike of interest through much of 2025, and then became somewhat eclipsed by <a href="https://simonwillison.net/2025/Oct/16/claude-skills/">Skills</a> (another Anthropic invention) when it became apparent that an agent harness with access to a terminal and <code>curl</code> could do most of what MCP did in a more flexible way. I wrote about that <a href="https://simonwillison.net/2025/Dec/31/the-year-in-llms/#the-only-year-of-mcp">in my review of 2025</a>.</p>
-<p>I'm coming back around to MCP now. Giving an agent a shell environment with the ability to access the internet is <a href="https://simonwillison.net/2026/Jul/22/openai-cyberattack/">fraught with risk</a>, and requires a strong model that is capable of effectively driving such an environment. MCP tools are easier to audit and control, and simple enough that smaller models that run on a laptop can still drive them reasonably well.</p>
-<p>The new stateless MCP specification also greatly decreases the complexity of implementing both clients and servers for the protocol. I built three of those this week!</p>
-<h4 id="what-s-easier-with-stateless-mcp">What's easier with stateless MCP</h4>
-<p>The best demonstration of the difference between stateful and stateless MCP is in this <a href="https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/">May 21st blog post</a> that introduced the RC for the new specification. It included a clear before-and-after example.</p>
-<p>The older stateful MCP (I'm going to call it "legacy MCP") required two HTTP requests - the first to initialize a session and obtain a <code>Mcp-Session-Id</code>, and the second to actually call the tool:</p>
-<pre><code>POST /mcp HTTP/1.1
-Content-Type: application/json
-
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "initialize",
-  "params": {
-    "protocolVersion": "2025-11-25",
-    "capabilities": {
-    },
-    "clientInfo": {
-      "name": "my-app",
-      "version": "1.0"
-    }
-  }
-}
-
-POST /mcp HTTP/1.1
-Mcp-Session-Id: 1868a90c-3a3f-4f5b
-Content-Type: application/json
-
-{
-  "jsonrpc": "2.0",
-  "id": 2,
-  "method": "tools/call",
-  "params": {
-    "name": "search",
-    "arguments": {
-      "q": "otters"
-    }
-  }
-}
-</code></pre>
-<p>The new stateless way uses a single HTTP request which looks like this:</p>
-<pre><code>POST /mcp HTTP/1.1
-MCP-Protocol-Version: 2026-07-28
-Mcp-Method: tools/call
-Mcp-Name: search
-Content-Type: application/json
-
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "search",
-    "arguments": {
-      "q": "otters"
-    },
-    "_meta": {
-      "io.modelcontextprotocol/clientInfo": {
-        "name": "my-app",
-        "version": "1.0"
-      }
-    }
-  }
-}
-</code></pre>
-<p>This is so much cleaner from both a client- and server-side implementation perspective. It's also a better fit for building scalable web applications, since now you don't need to maintain server-side state to keep track of those session IDs, or worry about routing the same session to the same backend machine.</p>
-<h4 id="mcp-explorer">mcp-explorer</h4>
-<p>I couldn't find a great CLI tool for interactively probing an MCP server, so I had Codex help build my own.</p>
-<p><strong><a href="https://github.com/simonw/mcp-explorer">mcp-explorer</a></strong> is the result. It's a stateless Python CLI tool, so you don't even need to install it to try it out - it works with <a href="https://docs.astral.sh/uv/guides/tools/#running-tools">uvx</a> like this:</p>
-<div class="highlight highlight-source-shell"><pre>uvx mcp-explorer list https://agentic-mermaid.dev/mcp</pre></div>
-<p>This queries Ade Oshineye's <a href="https://agentic-mermaid.dev/">agentic-mermaid.dev</a> demo MCP. The above command returns the following list of tools:</p>
-<pre><code>execute(code: string, timeoutMs?: integer) - Execute Mermaid SDK code
-  Run JavaScript in an isolated sandbox; return a value.
-
-describe_sdk(family: string, detail?: string) - Describe Mermaid SDK operations
-  Return version-matched mutation operations for one diagram family.
-
-render_svg(source: string, options?: object) - Render Mermaid as SVG
-  Render a Mermaid source string to themeable SVG. Returns { ok, svg }.
-
-render_ascii(source: string, useAscii?: boolean, targetWidth?: integer, options?: object) - Render Mermaid as text
-  Render a Mermaid source string to text. Returns { ok, text }.
-
-render_png(source: string, scale?: number, background?: string, fitTo?: object, options?: object) - Render Mermaid as PNG
-  Rasterize a Mermaid source string to PNG. Returns { ok, png_base64 }.
-...
-</code></pre>
-<p>Then to inspect a tool:</p>
-<div class="highlight highlight-source-shell"><pre>uvx mcp-explorer inspect render_svg</pre></div>
-<p>This outputs a whole bunch of information, including the JSON schema of the inputs and outputs.</p>
-<p>To call that tool and pass arguments to it:</p>
-<div class="highlight highlight-source-shell"><pre>uvx mcp-explorer call \
-  https://agentic-mermaid.dev/mcp \
-  render_svg \
-  -a <span class="pl-c1">source</span> <span class="pl-s"><span class="pl-pds">'</span>graph TD; A--&gt;B<span class="pl-pds">'</span></span> \
-  -a options <span class="pl-s"><span class="pl-pds">'</span>{"padding":24}<span class="pl-pds">'</span></span></pre></div>
-<p>Which returns:</p>
-<pre><code>{"ok":true,"svg":"&lt;svg xmlns=\"http://www.w3.org/2000/svg\" width=...
-</code></pre>
-<p>To get just the raw SVG try adding <code>| jq .svg -r</code> to that command. I got back <a href="https://gist.github.com/simonw/b07c62f0ce103be6932477659d5dd1ac">this image</a>:</p>
-<p><img src="https://static.simonwillison.net/static/2026/mermaid-example.svg" alt="SVG of as A box on top of a B box with an arrow from A to B" style="max-width: 100%;" /></p>
-<p>There are a <a href="https://github.com/simonw/mcp-explorer/blob/main/README.md">few more commands</a> in the README, but you get the general idea. I find building CLI tools like this to be a really productive way to get familiar with a specification, even if an agent writes most of the actual code.</p>
-<h4 id="datasette-mcp">datasette-mcp</h4>
-<p>The second project is <strong><a href="https://github.com/datasette/datasette-mcp">datasette-mcp</a></strong>, a Datasette plugin which adds a <code>/-/mcp</code> endpoint to any Datasette instance.</p>
-<p>This is probably the fourth time I've tried building this plugin, but thanks to the new stateless MCP specification I finally have a version that feels good to release.</p>
-<p>It provides just three tools: <code>list_databases()</code>, <code>get_database_schema(database_name)</code>, and <code>execute_sql(database_name, sql)</code>. They do exactly what you would expect them to do - though <code>execute_sql()</code> is read-only for the moment.</p>
-<p>Wire these into an agent, or a chat tool like ChatGPT or Claude, and they'll gain the ability to run SQL queries against your hosted Datasette instance.</p>
-<p>So far I'm running it on the Datasette mirror of my blog, at <a href="datasette.simonwillison.net/-/mcp">datasette.simonwillison.net/-/mcp</a>. It took a bit of fiddling to figure out how to attach that to ChatGPT and Claude, but I got there in the end. Here's <a href="https://til.simonwillison.net/llms/mcp-in-claude-and-chatgpt">a new TIL</a> showing exactly how to do that.</p>
-<p>Here's <a href="https://claude.ai/share/de1ad9bf-f7c2-4fb9-a9a0-2a1ae39995db">a shared Claude session</a> where I asked it:</p>
-<blockquote>
-<p><code>list tables in simonwillison.net</code></p>
-</blockquote>
-<p>And then:</p>
-<blockquote>
-<p><code>what has Simon said recently about MCP?</code></p>
-</blockquote>
-<p>It ran 7 separate SQL queries to figure out the answer.</p>
-<h4 id="llm-mcp-client">llm-mcp-client</h4>
-<p>My <a href="https://llm.datasette.io/">LLM tool</a> is long overdue for an official MCP integration. The new alpha <a href="https://github.com/simonw/llm-mcp-client">llm-mcp-client</a> plugin is my attempt at exactly that:</p>
-<div class="highlight highlight-source-shell"><pre>llm install llm-mcp-client
-llm -T <span class="pl-s"><span class="pl-pds">'</span>MCP("https://datasette.simonwillison.net/-/mcp")<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>count the notes<span class="pl-pds">'</span></span></pre></div>
-<p>Here's the output (including reasoning trace, I'm using <a href="https://simonwillison.net/2026/Jul/30/llm-rc2/">LLM 0.32rc2</a>):</p>
-<blockquote>
-<p><em><strong>Considering note count</strong></em></p>
-<p><em>I see the question "count the notes" is probably asking me to tally up blog notes. It could also mean published notes or drafts, so there's some ambiguity there. I'll need to figure out the total number of notes, likely by querying the count for both published notes and drafts to get a clear answer. Let's execute that count!</em></p>
-<p>There are <strong>151 notes</strong>.</p>
-</blockquote>
-<p>And <a href="https://gist.github.com/simonw/4e8f558766150658ce35eab4f0fc3e04">the output of llm logs</a> for that prompt.</p>
-<p>Once this is fully baked, I'm considering bringing it directly into LLM core. I'm excited to experiment with MCP in <a href="https://agent.datasette.io/">Datasette Agent</a> and <a href="https://github.com/simonw/llm-coding-agent">llm-coding-agent</a> as well.</p>
-<h4 id="mcp-is-a-safer-way-to-build-with-agents">MCP is a safer way to build with agents</h4>
-<p>A few months after MCP was first released, I wrote <a href="https://simonwillison.net/2025/Apr/9/mcp-prompt-injection/">Model Context Protocol has prompt injection security problems</a>, where I noted that the pattern of having end users mix and match tools pushed responsibility for avoiding data exfiltration attacks out to the users themselves. I hadn't coined <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">the Lethal Trifecta</a> yet, but that was absolutely what I had in mind.</p>
-<p>Then general agents with arbitrary shell and <code>curl</code> access came along, and that's so much harder to keep secure!</p>
-<p>Something I've come to appreciate about MCP is that it's much easier to reason about agent capabilities and what might go wrong than with arbitrary command execution in an open network environment - the default for most of today's general and coding agent tools.</p>
-<p>I plan to lean into MCP a whole lot more when I'm building sensitive applications on top of LLMs.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/mermaid">mermaid</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[llm-mcp-client 0.1a0]]></title>
-        <id>https://simonwillison.net/2026/Jul/31/llm-mcp-client/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/31/llm-mcp-client/#atom-everything"/>
-        <updated>2026-07-31T23:03:47.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/llm-mcp-client/releases/tag/0.1a0">llm-mcp-client 0.1a0</a></p>
-        <p>See <a href="https://simonwillison.net/2026/Jul/31/stateless-mcp/#llm-mcp-client">this blog entry</a>.</p>
-    
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/model-context-protocol">model-context-protocol</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Oxide and Friends: The Open Weight Revolution with Simon Willison]]></title>
-        <id>https://simonwillison.net/2026/Jul/31/oxide-and-friends/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/31/oxide-and-friends/#atom-everything"/>
-        <updated>2026-07-31T21:33:13.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://oxide-and-friends.transistor.fm/episodes/the-open-weight-revolution-with-simon-willison">Oxide and Friends: The Open Weight Revolution with Simon Willison</a></strong></p>
-On Monday Bryan Cantrill and Adam Leventhal invited me to join their podcast to talk about the <em>wild</em> week we've had - with Kimi K3 showing open weight models can stand toe-to-toe with proprietary frontier ones, <a href="https://simonwillison.net/2026/Jul/22/openai-cyberattack/">accidental cybersecurity attacks</a>, and public letters about <a href="https://www.microsoft.com/en-us/corporate-responsibility/topics/open-weight/">Open Weights and American AI Leadership</a> signed by almost every big name in AI (with one <a href="https://www.anthropic.com/news/position-open-weights-models">notable exception</a>).</p>
-<p>It was a great conversation, even though it's already out-of-date! <a href="https://artificialanalysis.ai/models/deepseek-v4-flash">DeepSeek V4 Flash 0731</a> and <a href="https://simonwillison.net/2026/Jul/30/three-real-world-incidents/">Anthropic's own embarrassing cyber incident</a> would absolutely have made the cut if we had recorded just a few days later.</p>
-<p>We also talk about <a href="https://www.anthropic.com/news/golden-gate-claude">Golden Gate Claude</a>, the <a href="https://en.wikipedia.org/wiki/Zizians">Zizians</a>, <a href="https://abc7news.com/post/83-year-old-alameda-woman-attacked-wild-turkeys-city-warns-residents-take-precautions-during-mating-season/19190785/">Alameda wild turkey attacks</a>, <a href="https://en.wikipedia.org/wiki/Soviet_biological_weapons_program">Soviet Marburg virus research</a>, the <a href="https://en.wikipedia.org/wiki/Lead–crime_hypothesis">Lead-crime hypothesis</a>, and a bunch of other worthy digressions.</p>
-<p>Finally, we revisited some of <a href="https://simonwillison.net/2026/Jan/8/llm-predictions-for-2026/">our predictions from January</a>, and we <a href="https://simonwillison.net/2026/May/25/encyclical-on-ai/#another-2026-prediction-down">added a new Pope prediction</a>:</p>
-<blockquote>
-<p>Prediction by the end of this year: the Pope says something about open models.</p>
-</blockquote>
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/predictions">predictions</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/local-llms">local-llms</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/oxide">oxide</a>, <a href="https://simonwillison.net/tags/bryan-cantrill">bryan-cantrill</a>, <a href="https://simonwillison.net/tags/ai-in-china">ai-in-china</a>, <a href="https://simonwillison.net/tags/ai-security-research">ai-security-research</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Upcoming August 2026 model deprecations in GitHub Copilot]]></title>
-        <id>https://github.blog/changelog/2026-07-31-upcoming-august-2026-model-deprecations-in-github-copilot</id>
-        <link href="https://github.blog/changelog/2026-07-31-upcoming-august-2026-model-deprecations-in-github-copilot"/>
-        <updated>2026-07-31T21:26:48.000Z</updated>
-        <summary type="html"><![CDATA[We will deprecate the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions), on September 1st, 2026: Model Deprecation date…
-The post Upcoming August 2026 model deprecations in GitHub Copilot appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[smevals - a small eval suite for evaluating models, prompts, and harnesses]]></title>
-        <id>https://simonwillison.net/2026/Jul/31/smevals/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/31/smevals/#atom-everything"/>
-        <updated>2026-07-31T21:15:23.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://primeradiant.com/blog/2026/smevals.html">smevals - a small eval suite for evaluating models, prompts, and harnesses</a></strong></p>
-I've been working with Jesse Vincent's <a href="https://primeradiant.com">Prime Radiant</a> applied AI research lab building out this evals framework to help answer questions about the capabilities of different models.</p>
-<p>The result is <strong><a href="https://github.com/prime-radiant-inc/smevals">smevals</a></strong>, a new tool for running small eval suites across different model configurations and grading the results.</p>
-<p>This blog entry describes the tool in detail. Here's the 10 second version:</p>
-<ol>
-<li>Tell your coding agent to <code>run uvx smevals docs</code> to learn the tool (this outputs <a href="https://github.com/prime-radiant-inc/smevals/blob/main/README.md">the README</a>)</li>
-<li>Then tell it to build you an eval suite</li>
-</ol>
-<p>Once you've created an eval - which takes the form of a directory with some YAML files - you can run it against models like this:</p>
-<pre><code>uvx smevals run path-to-eval/ -m gpt-5.5 -m claude-opus-4.6
-</code></pre>
-<p>Runs are treated separately from grading operations - you can grade your runs (against your defined set of checks) using:</p>
-<pre><code>uvx smevals grade path-to-eval/
-</code></pre>
-<p>Then you can run a localhost web server to explore the results:</p>
-<pre><code>uvx smevals serve path-to-eval/
-</code></pre>
-<p>Or run the <code>smevals build</code> command to build that report as static HTML, which you can then host anywhere. Here's <a href="https://static.simonwillison.net/static/2026/smevals-haiku-build/#/haiku">an example</a> showing an eval suite I built to evaluate how well models can write haikus.</p>
-<p><img alt="Screenshot of an evaluation dashboard for a haiku-writing benchmark, testing whether models can reply with exactly three non-empty lines. A header describes the eval, with panels below showing a leaderboard ranking three GPT models by score, lists of recent runs and recent grades, tag pass rates, the two haiku prompts that were tested, and details of the graders used with a 0.8 pass threshold." src="https://static.simonwillison.net/static/2026/smevals-report.webp" /></p>
-<p>I've been trying to figure out an approach I like for evals for several years now. <code>smevals</code> is my third iteration on the idea and it feels right to me. I'm looking forward to expanding this more in the future, as well as pointing it at some of my own projects.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/evals">evals</a>, <a href="https://simonwillison.net/tags/jesse-vincent">jesse-vincent</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Slack Emoji Maker]]></title>
-        <id>https://simonwillison.net/2026/Jul/31/slack-emoji-maker/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/31/slack-emoji-maker/#atom-everything"/>
-        <updated>2026-07-31T20:18:05.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong>Tool:</strong> <a href="https://tools.simonwillison.net/slack-emoji-maker">Slack Emoji Maker</a></p>
-        <p>I wanted to create a new Slack emoji, and their tool recommends a square that's 128x128 and has a transparent background... so I <a href="https://github.com/simonw/tools/pull/305">had Fable build me</a> this simple image editor against those requirements.</p>
-    
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/tools">tools</a>, <a href="https://simonwillison.net/tags/slack">slack</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Gemini 2.5 Pro and Gemini 3 Flash deprecated]]></title>
-        <id>https://github.blog/changelog/2026-07-31-gemini-2-5-pro-and-gemini-3-flash-deprecated</id>
-        <link href="https://github.blog/changelog/2026-07-31-gemini-2-5-pro-and-gemini-3-flash-deprecated"/>
-        <updated>2026-07-31T20:04:01.000Z</updated>
-        <summary type="html"><![CDATA[As of today, July 31, 2026, we have deprecated the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Model…
-The post Gemini 2.5 Pro and Gemini 3 Flash deprecated appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Enterprise teams model policy targeting in public preview]]></title>
-        <id>https://github.blog/changelog/2026-07-31-enterprise-teams-model-policy-targeting-in-public-preview</id>
-        <link href="https://github.blog/changelog/2026-07-31-enterprise-teams-model-policy-targeting-in-public-preview"/>
-        <updated>2026-07-31T18:11:50.000Z</updated>
-        <summary type="html"><![CDATA[You can now take advantage of user-based model policy targeting for GitHub Enterprise customers with Copilot Business or Copilot Enterprise licenses. This feature empowers AI administrators to set a baseline…
-The post Enterprise teams model policy targeting in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Restricting npm bypass-2FA granular access tokens]]></title>
-        <id>https://github.blog/changelog/2026-07-31-restricting-npm-bypass-2fa-granular-access-tokens</id>
-        <link href="https://github.blog/changelog/2026-07-31-restricting-npm-bypass-2fa-granular-access-tokens"/>
-        <updated>2026-07-31T16:45:50.000Z</updated>
-        <summary type="html"><![CDATA[npm granular access tokens (GATs) configured to bypass 2FA can no longer perform sensitive account, org, and package management actions. These now require an interactive 2FA challenge, closing one of…
-The post Restricting npm bypass-2FA granular access tokens appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Advancing responsible AI across Europe]]></title>
-        <id>https://openai.com/index/advancing-responsible-ai-across-europe</id>
-        <link href="https://openai.com/index/advancing-responsible-ai-across-europe"/>
-        <updated>2026-07-31T15:00:00.000Z</updated>
-        <summary type="html"><![CDATA[OpenAI shares how its safety, security, transparency, and provenance practices support responsible AI governance in Europe. The work will continue as the EU AI Act advances.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Building abundant intelligence]]></title>
-        <id>https://openai.com/index/building-abundant-intelligence</id>
-        <link href="https://openai.com/index/building-abundant-intelligence"/>
-        <updated>2026-07-31T15:00:00.000Z</updated>
-        <summary type="html"><![CDATA[A full-stack approach to making advanced AI more capable, more affordable, and more widely useful.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[datasette-agent 0.4a0]]></title>
-        <id>https://simonwillison.net/2026/Jul/31/datasette-agent/#atom-everything</id>
-        <link href="https://simonwillison.net/2026/Jul/31/datasette-agent/#atom-everything"/>
-        <updated>2026-07-31T14:14:23.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-agent/releases/tag/0.4a0">datasette-agent 0.4a0</a></p>
-        <blockquote>
-<ul>
-<li>New <code>await context.browser_task()</code> mechanism allowing agent tools to run code directly in the user's browser. <a href="https://github.com/datasette/datasette-agent/pull/33">#33</a></li>
-</ul>
-</blockquote>
-<p>This is an exciting new capability: it makes it easy for Datasette Agent plugins to provide tools that execute custom JavaScript <em>in the user's browser</em>.</p>
-    
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/llm-tool-use">llm-tool-use</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
         </author>
