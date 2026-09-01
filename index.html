@@ -31,6 +31,61 @@
       <article>
           <details>
             <summary>
+              Introducing wrapture
+              <span class="post-metadata">(4 min | 1118 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Aug/31/introducing-wrapture/>Introducing wrapture
+wrapt, mod_wsgi, and New Relic&#x27;s Python agent fame), who describes Wrapture as taking the monkeypatching ideas from wrapt and extending them to apply to testing and tracing at the same time.
+Wrapture (full documentation here) makes it easy to wrap any function or method such that all access can be traced, or can be overridden to return a different value.
+It acts as both an alternative to unittest.mock and a way to implement tracing against an existing project:
+Attaching observation to code you do not control, recording what flows through it, and doing so without disturbing the program being watched, is a problem I have never really stopped thinking about.
+Wrapture includes OpenTelemetry support and even has an entirely configuration-based mechanism for adding tracing to an existing Python project, which looks like this:
+capture &#x3D; &quot;summary&quot;
+
+[[observe]]
+target &#x3D; &quot;domain:Calculator&quot;
+name &#x3D; [&quot;outer&quot;, &quot;inner&quot;]
+
+[[sink]]
+type &#x3D; &quot;jsonlines&quot;
+path &#x3D; &quot;trace.jsonl&quot;
+
+This is still a very young project - just a few weeks old - but it&#x27;s off to a very promising start.
+Interestingly, this is also Graham&#x27;s first attempt at  large entirely agent-driven project:
+Every line of code and documentation in wrapture was written by an AI assistant working under my direction. I want to be upfront about that, and equally upfront about what it was not. This was not vibe coding, where a one-shot prompt produces a pile of generated code and the person driving hopes for the best because they lack the knowledge to judge what came back. Vibe coding has earned its bad reputation. I engineered wrapture carefully from the start. I have spent a long time in this particular corner of Python and knew exactly what the result needed to be, and the AI was the means of producing it rather than the source of the design.
+In a follow-up post, Unit testing with wrapture, Graham shows the testing patterns supported by the new library:
+def test_stub_with_wrapture():
+    with wrapture.binding(
+        Gateway, &quot;charge&quot;
+    ).on_call.returns({
+        &quot;id&quot;: &quot;stub&quot;, &quot;amount&quot;: 0}
+    ):
+        assert OrderService().place(
+            500
+        )[&quot;id&quot;] &#x3D;&#x3D; &quot;stub&quot;
+And this neat example of a test that calls and then modifies the return value from the original method:
+def test_pinned_result_with_wrapture():
+    charge &#x3D; wrapture.binding(
+        Gateway, &quot;charge&quot;
+    )
+    charge.on_call.transforms_result(
+        lambda r: {**r, &quot;id&quot;: &quot;ch_TEST&quot;}
+    )
+    with charge:
+        assert OrderService().place(
+           500
+        ) &#x3D;&#x3D; {
+            &quot;id&quot;: &quot;ch_TEST&quot;, &quot;amount&quot;: 500
+        }
+Tags: graham-dumpleton, monkey-patching, python</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               GitHub Copilot in VS Code, August 2026 releases
               <span class="post-metadata">(7 min | 1972 words)</span> 
             </summary>
@@ -39,6 +94,18 @@
 The post GitHub Copilot in VS Code, August 2026 releases appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Polimill builds Japan&#x27;s next-generation public AI infrastructure
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/polimill>Polimill uses OpenAI GPT models and Codex to help municipalities search and use administrative knowledge while accelerating development.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
       <article>
