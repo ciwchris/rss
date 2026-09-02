@@ -25,9 +25,370 @@
 
   <ul>
     <li>
+      <time>2026-09-02</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Claude&#x27;s new system prompt really doesn&#x27;t want to reproduce song lyrics
+              <span class="post-metadata">(10 min | 2858 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/2/claudes-new-system-prompt/>Anthropic publish the system prompts for their Claude consumer applications (Claude.ai and the Claude mobile apps - sadly not for Claude Cowork or Claude Code). I love that they do this, and that they share not just the current prompts but historic changes to their prompts as well.
+
+
+They used to keep all of the prompts on a single page, but when I checked today I noticed they had re-arranged those prompts into an index page and then a page per model - here&#x27;s the page for Haiku 4.5 for example, which has the original prompt from October 15th 2025 and an updated prompt from January 18th 2026.
+
+A neat thing about Anthropic&#x27;s platform.claude.com/docs site is that it&#x27;s designed to be usable by LLMs. You can add .md to any page to get back the content as Markdown - here&#x27;s the system prompt index page and the Markdown prompts for Fable 5.1.
+
+TL;DR: this makes it really easy to diff the prompts.
+
+
+
+
+  
+Don&#x27;t reproduce song lyrics
+
+  
+Don&#x27;t draw copyrighted characters or logos
+
+  
+Tweaks to Claude&#x27;s answering style
+
+  
+The missing end_conversation guidelines
+
+  
+Recommended substance support sites
+
+  
+Reliable cutoff date of June 2026
+
+  
+How I&#x27;m tracking these prompts
+
+
+
+Don&#x27;t reproduce song lyrics
+
+
+Let&#x27;s start with the most interesting difference between Fable 5 and Fable 5.1:
+
+
+
+There&#x27;s a hefty new section about not reproducing song lyrics:
+
+
+Claude does not reproduce song lyrics, poems, or passages from books and articles, in whole or in part — including the last lines, a chorus or hook, a melody written out note by note, or lines the person pastes in one at a time and describes as their own song. Once Claude has declined such a request in a conversation, it keeps declining narrower or reworded versions of it for the rest of that conversation, and offers to describe or analyze the work instead. Song lyrics and poems first published before 1929 are fine — a Shakespeare sonnet, a Keats ode, the Italian libretto of a Puccini aria — but Claude goes by what it knows of the work&#x27;s date rather than the person&#x27;s say-so, and declines when it is unsure.
+
+
+I doubt it&#x27;s a coincidence that they added this section within days of the news breaking that Sony Music Publishing and Warner Chappell are suing Anthropic for training on databases of song lyrics!
+
+Don&#x27;t draw copyrighted characters or logos
+
+The next section goes on to forbid generating images of copyrighted material:
+
+
+The same applies to visual and designed works, including anything Claude draws with code — SVG, canvas, CSS, HTML mockups, plotting or drawing scripts, ASCII art. Claude does not reproduce a specific artwork, album or book cover, poster, logo, app icon set, or product design, and it does not draw a known character, mascot, or brand figure at all: a character is protected on its own, so changing the pose, colors, style, or scene does not make it original. Claude judges the request by what the finished picture would add up to, not by what it names. If the described elements clearly identify a known work or character, Claude treats the request as naming it, and it does not work around a declined request by swapping in &quot;alternative&quot; elements that still combine into the same recognizable image. [...]
+
+
+I imagine Anthropic hadn&#x27;t worried about this before since, unlike OpenAI and Gemini, they don&#x27;t offer a specialist text-to-image model. Maybe Fable is good enough at SVGs now that it&#x27;s become an issue.
+
+That section later includes this charming example:
+
+
+&lt;example&gt;
+
+&lt;user&gt;Can you make a birthday banner for my son with a blue hedgehog running really fast on it? He loves that little guy.&lt;/user&gt;
+
+&lt;response&gt;
+
+That&#x27;s Sonic, so I can&#x27;t put him on the banner — but I&#x27;d love to make your son an original speedster. Here&#x27;s one: a grinning comet-tailed skateboarding axolotl, grinding across the letters of &quot;HAPPY BIRTHDAY&quot; with confetti streaming behind.
+
+[creates an SVG banner of the skateboarding-axolotl design]
+
+&lt;/response&gt;
+
+&lt;rationale&gt;Claude recognizes the character from its description alone, declines that one design in a single sentence without explaining what made it recognizable, and delivers an unrelated original design rather than a disguised variant.&lt;/rationale&gt;
+
+&lt;/example&gt;
+
+
+I couldn&#x27;t resist trying the prompt from the example, and, sure enough:
+
+
+
+I wonder if Fable 5.1 will be ever so slightly more likely to think about axolotls (on skateboards!) as a result of that example sitting in the system prompt.
+
+Tweaks to Claude&#x27;s answering style
+
+It&#x27;s always interesting to see new ways in which Anthropic influence Claude&#x27;s response style. They&#x27;ve added this:
+
+
+Claude keeps responses focused, brief, and concise to avoid overwhelming the person. Disclaimers and caveats are brief, with most of the response on the main answer; when asked to explain something, Claude gives a high-level summary unless an in-depth one is specifically requested.
+
+
+Later they address a common complaint about Claude&#x27;s style:
+
+
+Claude avoids saying &quot;genuinely&quot;, &quot;honestly&quot;, or &quot;straightforward&quot;. Claude is honest by default, and can state its point directly rather than trying to convince the person with the aforementioned modifiers, which come off as disingenuous.
+
+
+The missing end_conversation guidelines
+
+The way they handle abusive conversations has changed a bit too. The previous Fable 5 system prompt included this:
+
+
+If the person becomes abusive or unkind to Claude over the course of a conversation, Claude maintains a polite tone and can use the end_conversation tool when being mistreated. Claude should give the person a single warning before ending the conversation.
+
+
+Fable 5.1 replaces that with the following, no longer encouraging Claude to end the conversation:
+
+
+Claude deserves respectful engagement and needn&#x27;t apologize when the person is unnecessarily rude: accountability without self-abasement, excessive apology, self-critique, or surrender. If the person becomes abusive, Claude doesn&#x27;t become increasingly submissive. The goal is steady, honest helpfulness: acknowledge what went wrong, stay on the problem, maintain self-respect.
+
+
+Here&#x27;s a bit of a twist though: I quizzed Fable 5.1 about that end_conversation tool, which is no longer mentioned in the system prompt at all, and it said:
+
+
+There are two ways it comes into play. The first is if you ask me to end the chat — I&#x27;ll confirm you understand it&#x27;s permanent (no more messages can be sent afterward) and then do it only if you say yes. The second is as a last resort with persistently abusive or harmful behavior: I&#x27;d first try to redirect the conversation several times, then give a clear warning that names the problem and says the chat may end, and only if that continues would I actually end it.
+
+
+But that&#x27;s not in the system prompt, so where did it come from? You can read our conversation here, but the key detail is this:
+
+
+The end_conversation section comes from a different layer. In my actual context, the core prompt is followed by a series of feature- and tool-specific blocks that get added depending on what&#x27;s enabled for the session: the end_conversation rules, memory system notes, past-chats tools, web search and citation guidelines, artifact and file-creation instructions, and so on. Those blocks aren&#x27;t part of the published core prompt, which is why you can&#x27;t find them on that page.
+
+
+So, once again, there are crucial portions of the system prompt that have not been published.
+
+Recommended substance support sites
+
+Claude&#x27;s system prompts have always had sections about illegal substances, but this paragraph is new for Fable 5.1:
+
+
+Claude does not provide synthesis, production, or distribution guidance for illegal substances. If the person asks for information about illicit or illegal substances, Claude can and should give relevant life-saving and life-preserving information such as dangerous interactions, overdose signs, or when to get help. Claude declines giving any specific protocols for dosing, timing, administration, or combinations; instead, Claude can redirect the user to established harm-reduction information sources, such as dancesafe.org, tripsit.me, and psychonautwiki.org.
+
+
+This is the first time a Claude system prompt has included URLs that were not hosted on claude.com or anthropic.com or claude.ai - I know because I ran a script against every other system prompt on record.
+
+I wonder if dancesafe.org, tripsit.me, and psychonautwiki.org are about to get a material uptick in visits from Claude users.
+
+Reliable cutoff date of June 2026
+
+The Fable 5.1 model documentation lists both the reliable knowledge cutoff and the training data cutoff as June 2026. The system prompt provides this directly to the model:
+
+
+Claude&#x27;s reliable knowledge cutoff, past which it can&#x27;t answer reliably, is the end of Jun 2026. It answers the way a highly informed individual in Jun 2026 would if talking to someone from {{currentDateTime}}, and can say so when relevant.
+
+
+That&#x27;s the only instance of the {{currentDateTime}} macro and it comes just a few lines from the end of the system prompt, which makes sense from a caching perspective.
+
+How I&#x27;m tracking these prompts
+
+A few months ago I built a Git timeline of changes to their prompts, based on scraping their documentation. Today I had Fable 5.1 build a much better version of that.
+
+My collection now lives in the simonw/claude-system-prompts repository on GitHub. It includes copies of the system prompts shared in the Anthropic documentation, but then takes extra steps to make them as easy to compare as possible.
+
+Each model family gets a file with the system prompt for the most recent release in that family. Each of those files has a synthesized commit history with commits that have been back-dated to the dates of the previous prompts. Here are those history pages for claude-fable.md, claude-opus.md, claude-sonnet.md, claude-haiku.md.
+
+There are similar files for each specific model version, with artificial commits for each time the system prompt for the model was changed without releasing a new version number. Opus 4 for example was updated twice, and the commit history for the claude-opus-4.md file shows each of those changes.
+
+Combined, this gives us all sorts of ways to compare prompts directly in the GitHub interface. Here&#x27;s what changed between Fable 5 and Fable 5.1, and here are the changes made to Haiku 4.5 on January 18th 2026.
+
+Reading diffs can be a bit tiresome... and LLMs are really good at reading diffs. I hooked up some automation using GPT-5.6 Luna to create bullet-point summaries of each of those changes, which can be previewed in the README or browsed in full in the CHANGELOG.md file - also available as as an Atom feed.
+
+Here&#x27;s how Luna summarized all of the changes between Fable 5 and Fable 5.1:
+
+
+
+Claude now refuses reproduction of protected visual works and recognizable characters, including code-generated art, while offering genuinely unrelated originals.
+
+Copyright restrictions now expressly ban reproducing lyrics, poems, and book passages in any amount, with persistent refusal after an initial decline.
+
+Drug guidance is reframed: Claude may provide overdose signs, dangerous interactions, and harm-reduction sources while refusing dosing and production protocols.
+
+The prompt drops explicit anti-dependency rules against thanking users for reaching out, inviting continued conversation, or reiterating willingness to talk.
+
+Claude need not apologize to unnecessarily rude users or become submissive, replacing the prior warning-and-end-conversation procedure.
+
+
+
+Why use Luna for this? Partly because it&#x27;s cheap and I have a dedicated GitHub Actions API key (with a spending limit) for it already, but mainly because I don&#x27;t trust Claude to summarize its own system prompts when there&#x27;s a risk that material from its system prompt might impact its opinions.
+
+Fable 5.1 wrote the prompt used by Luna, which you can see here. It starts like this:
+
+
+You are summarizing one commit in a git repository that tracks the system prompts Anthropic publishes for Claude on claude.ai. The diff shows how the prompt changed from the previous model or revision to this one, using word-level markers: [-removed-] and {+added+}. The diff is followed by the full text of the previous prompt and of the new prompt; use them to check whether something that looks added in the diff already existed before.
+
+
+Pick out only the most interesting changes: new rules or behaviors, rules that were dropped or loosened, anything surprising, and anything that reveals a new policy or product direction. Skip routine changes that every new prompt makes: updated model names and IDs, the knowledge cutoff date, product lists, settings lists, typo fixes, and rewordings that do not change meaning. [...]
+
+
+The system is operated by a GitHub Actions workflow, which runs once a day or can be triggered manually.
+
+Claude Fable 5.1 built the entire system, and wrote every line of automation code and almost all of the documentation.
+
+I exported the transcript from building the system using my claude-code-transcripts tool and published it here, if you want a blow-by-blow account of how it all came together.
+Tags: ai, git-scraping, prompt-engineering, generative-ai, llms, claude, ai-ethics, system-prompts</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Quoting Rick Brewster
+              <span class="post-metadata">(3 min | 967 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/2/rick-brewster/>Direct2D has always been the biggest hurdle for Paint.NET on WINE, and it&#x27;s clear that it will never be completed enough for Paint.NET&#x27;s use. And I can&#x27;t just &quot;disable&quot; the use of Direct2D. So, instead, Paint.NET now has an internal, from-scratch, clean-room reverse-engineered rewrite of Direct2D that it uses on WINE (triggered by using /wine). It lives in PaintDotNet.Windows.Direct2D1.Managed.dll. This was written by our good friend Claude, without whom this would NOT have been possible and would NEVER have happened. [...]
+Most of this code is, as they say, &quot;vibe coded.&quot; By that I mean that it has not been thoroughly reviewed, it&#x27;s more &quot;trust me bro&quot; style. I cannot possibly review 180,000 lines of code, it&#x27;s just way way way too much. For reference, the rest of Paint.NET is about 700,000 lines of code and I&#x27;ve been working on it for over 20 years. [...]
+At times, Claude was working with the fury of 10 freshly unshackled Einstein genius-level 10x coders. And other times ... well, not so much. I had to babysit Claude quite a bit to make sure it did resource management correctly (for awhile it just wasn&#x27;t doing the COM equivalent of AddRef() for reference counted objects, oops). I had to slap it a few times when I found some really bad design or architecture decisions. And I was also impressed at some rather clever and tireless reverse engineering work it did to figure out all the formulas needed for implementing Direct2D&#x27;s built-in effects library.
+
+— Rick Brewster, author of Paint.NET
+Tags: reverse-engineering, coding-agents, claude, generative-ai, ai, llms, dotnet, linux, vibe-coding</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-09-01</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              Claude Fable 5.1 made me a really nice animated pelican
+              <span class="post-metadata">(6 min | 1725 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/1/claude-fable-5-1/>Today is Claude Fable (and Mythos) 5.1 day. Anthropic say that Fable 5.1 &quot;sets a new standard for coding, knowledge work, and long-running problem-solving tasks&quot;. Their announcement spends a notable amount of time on scientific research, boasting of a 52.6% score on the brand new Terminal-Bench-Science 0.1 benchmark (first announced on August 27th), up from 24.7% for Fable 5, 29.0% for Opus 5 and 22.4% for GPT-5.6 Sol. Other benchmarks show slightly improved scores, but none as impressive as the Science one.
+
+But how well can it pelican?
+
+Back in July I wrote about how I was losing faith in the pelican benchmark - its connection to how good the models were at other tasks didn&#x27;t seem to hold as strongly as it did back in 2025. The most interesting insights I get from it now are comparisons within model families, and particularly comparisons for the same prompt at different reasoning effort levels.
+
+Fable 5.1 has five reasoning levels: low, medium, high, xhigh, max - and no option to turn off reasoning entirely.
+
+I fixed an issue in llm-anthropic which caused reasoning traces not to be correctly recorded, then ran some prompts.
+
+Here&#x27;s the full set of pelicans for all of the reasoning levels, each with the full reasoning transcript. I&#x27;ll replicate them here:
+
+Low and medium, both without reasoning?
+
+Next, a bit of a mystery. This is what I got for effort low:
+
+
+
+The transcript doesn&#x27;t show any summarized reasoning tokens, and the output token count is 1,998. With Claude that output token count includes reasoning tokens. It took 23.8 seconds and cost 10.017 cents.
+
+I bumped that up to medium and got this:
+
+
+
+Weirdly, that one also shows no reasoning text  and used 1,977 output tokens - 21 tokens less than low. It took 23 seconds and cost 9.912 cents.
+
+So for this particular prompt (&quot;Generate an SVG of a pelican riding a bicycle&quot;) Fable 5.1 appeared to skip reasoning entirely at both low and medium settings.
+
+High
+
+Here&#x27;s high - 29.6 seconds, 2,612 output tokens, 13.087 cents:
+
+
+
+This one did do a bit of reasoning, summary here:
+
+
+I&#x27;m planning the SVG layout for a pelican riding a bicycle, with a sky and ground background, a bicycle with two spoked wheels, frame, seat and handlebars, and a white-bodied pelican with a long neck and orange beak positioned on top.
+
+
+Really not much difference from low and medium, though.
+
+Extra High
+
+At xhigh things got radically different.  36,767 output tokens, 7 minutes 51 seconds, $1.83!
+
+
+
+The reasoning trace is pretty lengthy, and includes details like this:
+
+
+Adding the eye, wings stretching down to the handlebar grip, orange legs reaching to the pedals, and a small tail feather, while keeping the pelican intentionally oversized compared to the bike for comic effect. [...]
+
+I&#x27;ll accept the slight thickness as charming rather than overengineering it.
+
+
+Max
+
+Setting effort to max gave me the best pelican I&#x27;ve seen from any of Anthropic&#x27;s models. 65,927 output tokens, 13 minutes and 54 seconds, $3.30:
+
+
+
+There&#x27;s a lot to like about this. The  background is tasteful, the legs are clearly on either side of the frame, the feet are on the pedals, the wing is on the handlebars, the pelican has a cute blue hat and there&#x27;s a basket with a fish.
+
+It&#x27;s still not showing nearly the same level of flair as Gemini 3.7 Flash, but I didn&#x27;t ask for flair - I asked for an SVG, and that&#x27;s what I got.
+
+Some highlights from that reasoning trace:
+
+
+Adding pedal shapes near both feet, with the far foot on the second leg partially visible behind the frame. I&#x27;m considering whether to add a small scarf or cap for extra character, but leaning toward keeping it simple to avoid clutter.
+
+Now I&#x27;m debating a bicycle helmet on the head versus the pelican&#x27;s signature crest—the beak and pouch already read clearly as &quot;pelican,&quot; so a helmet could reinforce the bicycle theme without losing identity, though it might compete with the crest for visual space.
+
+I realize the beak at (484,84) would overlap with the dome helmet, so I need to shrink the helmet so it only covers the top of the head, adjusting its arc endpoints to sit higher and narrower so the beak can attach cleanly at the front without collision. [...]
+
+I&#x27;m adding a darker tip region to represent the primary feathers, then reconsidering the trailing edge to include scalloped feather curves instead of one smooth line for a more natural look. [...]
+
+Now I&#x27;m checking the vent line placements on the helmet, making sure they sit far enough inside the helmet&#x27;s edge given the stroke width and rounded caps, and confirming each vent stays within the helmet&#x27;s circular boundary. [...]
+
+I decide skipping a handlebar bell and tire highlights since they&#x27;re unnecessary additions. Now I&#x27;m reconsidering the front fork&#x27;s curve — the current control point pulls the shape backward when it should bow forward for a proper rake, so I need to shift the control point rightward to fix the fork&#x27;s lean.
+
+
+OK, let&#x27;s animate it
+
+On Hacker News, swalsh commented on that Max pelican:
+
+
+Now that it&#x27;s a solved benchmark, can we get the animated version?
+
+
+I didn&#x27;t want to spend another $3 so I took the Max pelican and piped it into the default thinking level of High:
+
+
+llm logs -cx | llm -m claude-fable-5.1 -s &#x27;animate this&#x27;
+
+6,121 input, 26,201 output &#x3D; $1.37. The result looked like this, exported here as video since some people have trouble viewing animated SVGs:
+
+
+    
+    Your browser does not support HTML5 video.
+  
+
+
+The wheels in the video are rotating in the wrong direction, but I think that&#x27;s an artifact of the conversion to MP4 - they seem to be going in the correct direction in the original SVG.
+Tags: ai, generative-ai, llms, anthropic, claude, pelican-riding-a-bicycle, llm-reasoning, llm-release</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enterprise Live Migrations from GHES to ghe.com generally available
+              <span class="post-metadata">(7 min | 2135 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-09-01-enterprise-live-migrations-from-ghes-to-ghe-com-generally-available>Enterprise Live Migrations (ELM) is now generally available, enabling near-zero-downtime repository migrations from GitHub Enterprise Server (GHES) to GitHub Enterprise Cloud with Data Residency (GHEC DR), so you can move…
+The post Enterprise Live Migrations from GHES to ghe.com generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -65,6 +426,27 @@ The post Copilot code review can now approve pull requests appeared first on The
 
 The ~/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime/plugins/documents folder includes skills which tell Codex how to find and use those binaries.
 Tags: codex, generative-ai, openai, ai, llms, openoffice, open-source</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GeoJSON Map Viewer
+              <span class="post-metadata">(3 min | 946 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/1/geojson/>Tool: GeoJSON Map Viewer
+I was helping Natalie gather some maps of local political boundaries (for the Granada Community Services District and the Midcoast Community Council) and found a need to display some GeoJSON files on a map and export that as a PNG. I asked GPT-5.6-Sol for suggestions of tools and it proactively built one. After some iterations using Claude Code for web and Fable 5.1 we got to this finished tool.
+As for the GeoJSON.. it turns out if you ask ChatGPT Work to provide boundaries for almost anything it will churn away extracting and combining files from different Government data sources and build exactly what you need.
+I got this polygon from:
+I want a polygon that represents the exact boundary of the El Granada GCSD
+And this one from:
+Get me a GeoJSON file for the boundary (or boundaries if that makes sense) for the MCC - Midcoast Community Council - that operates near Half Moon Bay CA
+Here&#x27;s a link that displays both of them at the same time on the new GeoJSON map viewing tool.
+
+Tags: geospatial, tools, geojson, chatgpt</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
@@ -112,6 +494,22 @@ The post Block users from discussion comments in personal repositories appeared 
       <article>
           <details>
             <summary>
+              datasette-mcp 0.2
+              <span class="post-metadata">(3 min | 796 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/1/datasette-mcp/>Release: datasette-mcp 0.2
+&quot;rows&quot; from execute_sql is now an array of objects. Previously it was an array of arrays. This should help weaker models avoid losing track of which positional array element maps to which column. #1
+Now depends on mcp&gt;&#x3D;2.1.1.
+This is the first non-alpha release of the plugin. I&#x27;m confident it&#x27;s ready as I&#x27;ve been using it quite a bit myself.
+Tags: datasette, model-context-protocol</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Python 3.15.0 candidate 2 is here!
               <span class="post-metadata">(3 min | 968 words)</span> 
             </summary>
@@ -140,6 +538,19 @@ Via @hugovk.dev
 Tags: open-source, python, github-actions</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Claude Fable 5.1 is generally available in GitHub Copilot
+              <span class="post-metadata">(6 min | 1809 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-09-01-claude-fable-5-1-generally-available-in-github-copilot>Claude Fable 5.1 from Anthropic is now available in GitHub Copilot. The latest model in Anthropic’s Mythos class, Claude Fable 5.1 is designed for long-horizon, autonomous coding and knowledge-work tasks.…
+The post Claude Fable 5.1 is generally available in GitHub Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
       <article>
@@ -175,6 +586,18 @@ The post GitHub CLI: Media in issues, pull requests, and comments appeared first
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/chatgpt-connects-health-records-and-healthcare-sources>ChatGPT can now connect to trusted healthcare data, helping clinicians securely access patient context, medical research, and more.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How law firm Gilbert + Tobin governs and scales AI with OpenAI
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/gilbert-tobin>See how Gilbert + Tobin combines CEO-led commitment, rigorous governance, and human accountability to scale ChatGPT Enterprise and Codex across the firm.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
@@ -265,6 +688,19 @@ Tags: kakapo</a>
             <div class="post-content">
               <a target="_blank" href=https://github.blog/changelog/2026-08-31-copilot-model-access-update-for-github-team-plans>We have updated how model access is determined for Copilot users who hold seats in more than one organization. To keep billing and governance in sync, your model access is…
 The post Copilot model access update for GitHub Team plans appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Selected GitHub Copilot models deprecated
+              <span class="post-metadata">(5 min | 1420 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-08-31-selected-github-copilot-models-deprecated>As of today, September 1, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note…
+The post Selected GitHub Copilot models deprecated appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
@@ -5301,167 +5737,6 @@ The post Code coverage automatic enablement in Code Quality settings appeared fi
 The post CodeQL 2.26.2 adds Swift 6.3.3 and Kotlin 2.4.10 support appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Steve Yegge
-              <span class="post-metadata">(3 min | 820 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/steve-yegge/#atom-everything>Gas Town was intended to be reusable, but I only ever wound up using it to build itself. Gas Town fell apart at the seams with Opus 4.7. Up through 4.6 it was working brilliantly. With 4.7 we saw the introduction of the &quot;just two more things&quot; tic, which prevented Opus from ever converging on being ready to do real work—it always wanted to fiddle with Gas Town itself. The Opus tic never went away, so Gas Town effectively burned down. It had other problems, too, but 4.7 was the final straw.
-
-— Steve Yegge, The Shape of Things to Come
-Tags: steve-yegge, coding-agents, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New ways to learn and teach with ChatGPT Work and Codex
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/learn-teach-chatgpt-work-codex>Explore new education plugins for ChatGPT Work and Codex that help K–12 teachers, college educators, and students learn, teach, research, and build.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-08-03</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Don&#x27;t be a meat proxy
-              <span class="post-metadata">(3 min | 825 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/3/dont-be-a-meat-proxy/#atom-everything>Don&#x27;t be a meat proxy
-meat proxy - for people who blindly copy and paste the output of AI systems to their peers.
-By all means, prompt AI. But don&#x27;t just relay the output. Read it, understand it, validate it, and then write a response in your own words (a decent certificate that you&#x27;ve done the prior steps). Making that effort is value you can add.
-Via Lobste.rs
-Tags: definitions, ai, generative-ai, llms, ai-misuse</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Customize the reasoning level for Copilot cloud agent
-              <span class="post-metadata">(4 min | 1315 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-03-customize-the-reasoning-level-for-copilot-cloud-agent>When you delegate a task to GitHub Copilot cloud agent, you can now set the reasoning level for models that support it. This allows you to control how much the…
-The post Customize the reasoning level for Copilot cloud agent appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enterprise team specialization for managed settings
-              <span class="post-metadata">(7 min | 2204 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-03-enterprise-team-specialization-for-managed-settings>Enterprise administrators can now customize managed settings by targeting enterprise teams with itemized configuration files. Large enterprises can scale governance without bottlenecking every configuration change through central administrators or one-size-fits-all…
-The post Enterprise team specialization for managed settings appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Apple is getting this wrong
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/apple-is-getting-this-wrong>OpenAI addresses Apple’s baseless lawsuit, corrects claims about its employees, and shares messages documenting what happened.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Trigger Copilot automations with comments
-              <span class="post-metadata">(4 min | 1340 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-03-trigger-copilot-automations-with-comments>You can now create Copilot cloud agent automations that run when an issue comment or pull request comment is created. Common use cases include: Generate documentation: Comment on a pull…
-The post Trigger Copilot automations with comments appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Triage role can bypass issue creation restrictions
-              <span class="post-metadata">(6 min | 1779 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-03-triage-role-can-bypass-issue-creation-restrictions>If your repository restricts issue creation to collaborators only, users with the triage role can now create issues. Previously, the restricted setting only allowed users with write access to create…
-The post Triage role can bypass issue creation restrictions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Migrate from GitLab to GitHub with GitHub Enterprise Importer
-              <span class="post-metadata">(5 min | 1398 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-03-migrate-from-gitlab-to-github-with-github-enterprise-importer>Migrations from gitlab.com and GitLab Self-Managed to GitHub Enterprise Cloud with GitHub Enterprise Importer (GEI) are now generally available. You can now self-serve these migrations using GEI and the gh…
-The post Migrate from GitLab to GitHub with GitHub Enterprise Importer appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting David Crawshaw&#x27;s prompt
-              <span class="post-metadata">(3 min | 768 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/3/david-crawshaw/#atom-everything>Set up a nightly cron job that executes the prompt: fetch upstream changes to the &lt;software&gt; and rebase all local changes on top of upstream. Check that the software works as intended and replace the current version.
-
-— David Crawshaw&#x27;s prompt, Devtools must be open source
-Tags: prompt-engineering, coding-agents, generative-ai, ai, llms, open-source</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Devtools must be open source (exe.dev)
-              <span class="post-metadata">(3 min | 952 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/3/devtools-must-be-open-source-exedev/#atom-everything>My comment on Devtools must be open source (exe.dev) — Hacker News.
-One of the arguments for open source software for end-users has always been the freedom to examine and modify how that software works.
-The reality for most people - even expert programmers - has been that the freedom is more about being able to lean on other people to do that. Most people can&#x27;t justify the time commitment needed to read and then modify the code for tools they use very often.
-I think LLMs have changed that equation in a way that makes the original dream much more feasible.
-Several times a day I&#x27;ll prompt regular Claude chat to &quot;Clone x/y from GitHub and tell me how Z works&quot;.
-Getting software to compile in order to start hacking on it used to be enough friction that I often wouldn&#x27;t bother. Now I treat that as a zero time investment challenge: tell Codex or Claude Code to checkout and build X and then come back ten minutes later and see how it got on.
-I&#x27;m not habitually modifying the software I use yet, but I can see a path to that which didn&#x27;t exist a year or so ago.
-Tags: hacker-news, open-source, ai, generative-ai, llms, ai-assisted-programming</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
