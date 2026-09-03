@@ -25,6 +25,39 @@
 
   <ul>
     <li>
+      <time>2026-09-03</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Reopening Copilot Business and Enterprise signups
+              <span class="post-metadata">(5 min | 1484 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-09-03-reopening-copilot-business-and-enterprise-signups>We’re gradually reopening sign-ups for Copilot Business and Copilot Enterprise customers paying by credit card or PayPal over the next couple of weeks. If you’ve been waiting to get started…
+The post Reopening Copilot Business and Enterprise signups appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              CodeQL 2.26.4 improves GitHub actions security detections
+              <span class="post-metadata">(7 min | 2157 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-09-03-codeql-2-26-4-improves-github-actions-security-detections>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.26.4, which adds support for Go 1.27,…
+The post CodeQL 2.26.4 improves GitHub actions security detections appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-09-02</time>
 
       <section>
@@ -289,6 +322,18 @@ I exported the transcript from building the system using my claude-code-transcri
 Tags: ai, git-scraping, prompt-engineering, generative-ai, llms, claude, ai-ethics, system-prompts</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              ATV Big Air Tour turned 3 days of work into 3 hours with ChatGPT
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/atv-big-air-tour>ATV Big Air Tour uses ChatGPT Work to speed up marketing, merchandising, and more. It even turned merchandise photos into an inventory website in 15 minutes.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
       <article>
@@ -5302,496 +5347,6 @@ That said, I thoroughly recommend tinkering with game development projects as a 
 Tags: game-design, ai, prompt-engineering, generative-ai, llms, anthropic, claude, text-to-image, vibe-coding, coding-agents, claude-mythos-fable</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-08-04</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              New release of LLM adds support for reasoning traces, OpenAI Responses, server-side tools, and smarter logging
-              <span class="post-metadata">(6 min | 1868 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/new-release-of-llm/>I released LLM 0.32 this morning, the most significant new version of LLM since the initial launch of the project. The new version includes support for visible reasoning traces, server-side provider tools, redesigned content-addressable SQLite logs, new models, and new features enabled by the OpenAI Responses API. I also released a new version of the llm-anthropic plugin with substantial updates of its own.
-
-Headline features for LLM CLI users
-
-Running LLM against reasoning models now displays their reasoning traces to standard error, so you can see what they are &quot;thinking&quot; without that information being included in the standard output that you might pipe to another tool. Add -R/--hide-reasoning to turn this off.
-
-
-
-LLM includes support out-of-the-box for the GPT-5.6 model family, and the new default model used with llm &quot;prompt&quot; is now the inexpensive but capable GPT-5.6 Luna.
-
-LLM calls can now use server-side tools from various providers. OpenAI provide a code execution environment as a server-side tool; LLM can now run prompts that benefit from that like so:
-
-
-llm --tool CodeInterpreter &#x27;Show current python and SQLite versions&#x27;
-
-OpenAI also gets a WebSearch tool.
-
-The llm-anthropic plugin adds WebSearch, WebFetch, CodeExecution, and AnthropicMCP, which looks like this:
-
-
-llm -m claude-sonnet-5 -T &#x27;AnthropicMCP(&quot;https://datasette.simonwillison.net/-/mcp&quot;)&#x27; \
-  &#x27;how many rows in the blog_blogmark table?&#x27;
-
-That causes Anthropic to execute MCP calls against my new datasette-mcp plugin as part of a single request/response interaction with their API.
-
-The new llm openai endpoint command provides a tool for executing prompts against any OpenAI compatible endpoint as a one-liner. These aren&#x27;t logged, which makes this a handy tool for running one-off prompts against anything that speaks the lingua franca of the LLM API world.
-
-Here&#x27;s how I use that to run prompts against Gemma 4 12B running in my localhost LM Studio API, via uvx (no LLM installation required) and mixing in the llm-tools-quickjs tool plugin for good measure:
-
-
-uvx --with llm-tools-quickjs \
-  llm openai endpoint http://localhost:1234/v1 -m google/gemma-4-12b \
-  -T QuickJS &#x27;Use QuickJS to multiply 3434 * 2434&#x27; --td
-
-
-
-New features in the Python API
-
-LLM&#x27;s Python API previously required you to create a conversation and then send messages to it one at a time. This was an abstraction over the true nature of LLMs, where each request carries a complete history of the messages that came before it. That abstraction started to get in the way for some more advanced cases, so the new release introduces a model.prompt(messages&#x3D;[]) parameter that can be used like this:
-
-import llm
-from llm import user, assistant, system
-
-model &#x3D; llm.get_model(&quot;gpt-5.6-luna&quot;)
-
-response &#x3D; model.prompt(messages&#x3D;[
-    system(&quot;You are a helpful pirate.&quot;),
-    user(&quot;What is the capital of France?&quot;),
-    assistant(&quot;Paris, matey.&quot;),
-    user(&quot;And Germany?&quot;),
-])
-print(response.text())
-
-LLM previously returned an iterable sequence of strings from each prompt. This worked great when models returned a string response, but failed to predict the weird shape that models would evolve towards. Today many models return a mix of reasoning text, output strings, tool calls, and even image attachments. With LLM 0.32 you can do this instead:
-
-for event in model.prompt(&quot;Explain cats&quot;).stream_events():
-    if event.type &#x3D;&#x3D; &quot;reasoning&quot;:
-        print(f&quot;[thinking] {event.chunk}&quot;, end&#x3D;&quot;&quot;, flush&#x3D;True)
-    elif event.type &#x3D;&#x3D; &quot;text&quot;:
-        print(event.chunk, end&#x3D;&quot;&quot;, flush&#x3D;True)
-    else:
-        print(f&quot;Other event: {event}&quot;)
-
-Combine these features and we can finally provide a robust implementation of the semi-standard OpenAI chat completions API, which I&#x27;ve now released as the llm-chat-completions-server plugin:
-
-
-llm install llm-chat-completions-server
-llm chat-completions-server --port 9000
-# Server is now running on http://127.0.0.1:9000/v1
-
-Now you can run prompts against LLM via that server, using the new llm openai endpoint command!
-
-
-llm openai endpoint http://127.0.0.1:9000/v1 &#x27;hello&#x27; -m gpt-5.4-mini
-
-The bigger challenge with that kind of API concerns logging. If we&#x27;re going to support the pattern where the message sequence is appended to on every request, ideally we can avoid logging all of that duplicate JSON for every turn.
-
-The solution is the new content-addressable message store, modeled after Git. You can see the new schema for that in the documentation, but the llm logs and llm logs --json commands have both been upgraded to convert that format back into something that&#x27;s easy to consume.
-
-And the rest
-
-There is a whole lot more in this release. The 0.32 release notes are pretty comprehensive, and the notes for 0.32rc2, 0.32rc, 0.32a3, 0.32a2, and 0.32a0 should fill in any gaps.
-
-Existing LLM plugins should all continue to work, but plugins that provide extra models will need to be upgraded to 0.32 in order to participate fully in the new streaming events system. There&#x27;s a guide to implementing plugins with Structured messages and streaming events in the documentation.
-
-I&#x27;ve updated some of my own plugins:
-
-
-
-llm-anthropic 0.26 adds support for the Claude 5 family of models, plus WebSearch, WebFetch, CodeExecution, and AnthropicMCP server-side tools.
-
-
-llm-gemini and llm-openrouter and llm-mistral are nearly there, releases coming soon.
-
-
-I guess LLM is an agent framework now
-
-Quite a few of the lower-level tools changes in this release were driven by the needs of Datasette Agent. When I started work on LLM, the term &quot;agent&quot; had such a vague definition that I refused to use it. In September 2025 I came around to the idea that &quot;An LLM agent runs tools in a loop to achieve a goal&quot; is well established enough now that I could stop avoiding the term entirely.
-
-Tool chains can now pause for human approval and resume from a stored message history - both needed by Datasette Agent.
-
-Looking at LLM today it&#x27;s beginning to look very agent-shaped to me. There&#x27;s something neat about having a CLI utility that can mix and match different tools from different sources with different models all as a one-liner, and that includes a Python library powerful enough to build systems like Datasette Agent and llm-coding-agent.
-
-Maybe the next version of LLM will bake the concept of an &quot;agent&quot; into the core library. I&#x27;m still trying to figure out what that would look like.
-Tags: projects, releases, ai, openai, generative-ai, llms, llm, anthropic, llm-tool-use, llm-reasoning, model-context-protocol</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              New release of LLM adds support for reasoning traces, OpenAI Responses, server-side tools, and smarter logging
-              <span class="post-metadata">(6 min | 1857 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/new-release-of-llm/#atom-everything>I released LLM 0.32 this morning, the most significant new version of LLM since the initial launch of the project. The new version includes support for visible reasoning traces, server-side provider tools, redesigned content-addressable SQLite logs, new models, and new features enabled by the OpenAI Responses API. I also released a new version of the llm-anthropic plugin with substantial updates of its own.
-
-Headline features for LLM CLI users
-
-Running LLM against reasoning models now displays their reasoning traces to standard error, so you can see what they are &quot;thinking&quot; without that information being included in the standard output that you might pipe to another tool. Add -R/--hide-reasoning to turn this off.
-
-
-
-LLM includes support out-of-the-box for the GPT-5.6 model family, and the new default model used with llm &quot;prompt&quot; is now the inexpensive but capable GPT-5.6 Luna.
-
-LLM calls can now use server-side tools from various providers. OpenAI provide a code execution environment as a server-side tool; LLM can now run prompts that benefit from that like so:
-
-
-llm --tool CodeInterpreter &#x27;Show current python and SQLite versions&#x27;
-
-OpenAI also gets a WebSearch tool.
-
-The llm-anthropic plugin adds WebSearch, WebFetch, CodeExecution, and AnthropicMCP, which looks like this:
-
-
-llm -m claude-sonnet-5 -T &#x27;AnthropicMCP(&quot;https://datasette.simonwillison.net/-/mcp&quot;)&#x27; \
-  &#x27;how many rows in the blog_blogmark table?&#x27;
-
-That causes Anthropic to execute MCP calls against my new datasette-mcp plugin as part of a single request/response interaction with their API.
-
-The new llm openai endpoint command provides a tool for executing prompts against any OpenAI compatible endpoint as a one-liner. These aren&#x27;t logged, which makes this a handy tool for running one-off prompts against anything that speaks the lingua franca of the LLM API world.
-
-Here&#x27;s how I use that to run prompts against Gemma 4 12B running in my localhost LM Studio API, via uvx (no LLM installation required) and mixing in the llm-tools-quickjs tool plugin for good measure:
-
-
-uvx --with llm-tools-quickjs \
-  llm openai endpoint http://localhost:1234/v1 -m google/gemma-4-12b \
-  -T QuickJS &#x27;Use QuickJS to multiply 3434 * 2434&#x27; --td
-
-
-
-New features in the Python API
-
-LLM&#x27;s Python API previously required you to create a conversation and then send messages to it one at a time. This was an abstraction over the true nature of LLMs, where each request carries a complete history of the messages that came before it. That abstraction started to get in the way for some more advanced cases, so the new release introduces a model.prompt(messages&#x3D;[]) parameter that can be used like this:
-
-import llm
-from llm import user, assistant, system
-
-model &#x3D; llm.get_model(&quot;gpt-5.6-luna&quot;)
-
-response &#x3D; model.prompt(messages&#x3D;[
-    system(&quot;You are a helpful pirate.&quot;),
-    user(&quot;What is the capital of France?&quot;),
-    assistant(&quot;Paris, matey.&quot;),
-    user(&quot;And Germany?&quot;),
-])
-print(response.text())
-
-LLM previously returned an iterable sequence of strings from each prompt. This worked great when models returned a string response, but failed to predict the weird shape that models would evolve towards. Today many models return a mix of reasoning text, output strings, tool calls, and even image attachments. With LLM 0.32 you can do this instead:
-
-for event in model.prompt(&quot;Explain cats&quot;).stream_events():
-    if event.type &#x3D;&#x3D; &quot;reasoning&quot;:
-        print(f&quot;[thinking] {event.chunk}&quot;, end&#x3D;&quot;&quot;, flush&#x3D;True)
-    elif event.type &#x3D;&#x3D; &quot;text&quot;:
-        print(event.chunk, end&#x3D;&quot;&quot;, flush&#x3D;True)
-    else:
-        print(f&quot;Other event: {event}&quot;)
-
-Combine these features and we can finally provide a robust implementation of the semi-standard OpenAI chat completions API, which I&#x27;ve now released as the llm-chat-completions-server plugin:
-
-
-llm install llm-chat-completions-server
-llm chat-completions-server --port 9000
-# Server is now running on http://127.0.0.1:9000/v1
-
-Now you can run prompts against LLM via that server, using the new llm openai endpoint command!
-
-
-llm openai endpoint http://127.0.0.1:9000/v1 &#x27;hello&#x27; -m gpt-5.4-mini
-
-The bigger challenge with that kind of API concerns logging. If we&#x27;re going to support the pattern where the message sequence is appended to on every request, ideally we can avoid logging all of that duplicate JSON for every turn.
-
-The solution is the new content-addressable message store, modeled after Git. You can see the new schema for that in the documentation, but the llm logs and llm logs --json commands have both been upgraded to convert that format back into something that&#x27;s easy to consume.
-
-And the rest
-
-There is a whole lot more in this release. The 0.32 release notes are pretty comprehensive, and the notes for 0.32rc2, 0.32rc, 0.32a3, 0.32a2, and 0.32a0 should fill in any gaps.
-
-Existing LLM plugins should all continue to work, but plugins that provide extra models will need to be upgraded to 0.32 in order to participate fully in the new streaming events system. There&#x27;s a guide to implementing plugins with Structured messages and streaming events in the documentation.
-
-I&#x27;ve updated some of my own plugins:
-
-
-
-llm-anthropic 0.26 adds support for the Claude 5 family of models, plus WebSearch, WebFetch, CodeExecution, and AnthropicMCP server-side tools.
-
-
-llm-gemini and llm-openrouter and llm-mistral are nearly there, releases coming soon.
-
-
-I guess LLM is an agent framework now
-
-Quite a few of the lower-level tools changes in this release were driven by the needs of Datasette Agent. When I started work on LLM, the term &quot;agent&quot; had such a vague definition that I refused to use it. In September 2025 I came around to the idea that &quot;An LLM agent runs tools in a loop to achieve a goal&quot; is well established enough now that I could stop avoiding the term entirely.
-
-Tool chains can now pause for human approval and resume from a stored message history - both needed by Datasette Agent.
-
-Looking at LLM today it&#x27;s beginning to look very agent-shaped to me. There&#x27;s something neat about having a CLI utility that can mix and match different tools from different sources with different models all as a one-liner, and that includes a Python library powerful enough to build systems like Datasette Agent and llm-coding-agent.
-
-Maybe the next version of LLM will bake the concept of an &quot;agent&quot; into the core library. I&#x27;m still trying to figure out what that would look like.
-Tags: projects, releases, ai, openai, generative-ai, llms, llm, anthropic, llm-tool-use, llm-reasoning, model-context-protocol</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-anthropic 0.26
-              <span class="post-metadata">(3 min | 891 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/llm-anthropic/>Release: llm-anthropic 0.26
-Includes new features enabled by LLM 0.32:
-New models: claude-fable-5, claude-sonnet-5, and claude-opus-5. #75, #76
-Added server-side tools for WebSearch, WebFetch, CodeExecution, and AnthropicMCP, available through LLM&#x27;s -T interface or Python tools&#x3D;. The previous -o web_search* options have been removed in favor of -T WebSearch. #79
-Upgraded to llm&gt;&#x3D;0.32. Reasoning, tool calls, tool results, and server-side tool results now stream as typed events. Reasoning for llm CLI prompts now displays to standard error unless you pass --hide-reasoning/-R.
-Simplified extended thinking to thinking and thinking_effort (low, medium, high, xhigh, or max). Claude 5 models think by default; -o thinking 0 disables thinking for Sonnet 5 and Opus 5, while Fable 5 always thinks. -R/--hide-reasoning now omits reasoning from responses and logs. The thinking_budget, thinking_display, and thinking_adaptive options have been removed. #80
-Tags: llm, anthropic, claude, model-context-protocol</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm-anthropic 0.26
-              <span class="post-metadata">(3 min | 890 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/llm-anthropic/#atom-everything>Release: llm-anthropic 0.26
-Includes new features enabled by LLM 0.32:
-New models: claude-fable-5, claude-sonnet-5, and claude-opus-5. #75, #76
-Added server-side tools for WebSearch, WebFetch, CodeExecution, and AnthropicMCP, available through LLM&#x27;s -T interface or Python tools&#x3D;. The previous -o web_search* options have been removed in favor of -T WebSearch. #79
-Upgraded to llm&gt;&#x3D;0.32. Reasoning, tool calls, tool results, and server-side tool results now stream as typed events. Reasoning for llm CLI prompts now displays to standard error unless you pass --hide-reasoning/-R.
-Simplified extended thinking to thinking and thinking_effort (low, medium, high, xhigh, or max). Claude 5 models think by default; -o thinking 0 disables thinking for Sonnet 5 and Opus 5, while Fable 5 always thinks. -R/--hide-reasoning now omits reasoning from responses and logs. The thinking_budget, thinking_display, and thinking_adaptive options have been removed. #80
-Tags: llm, anthropic, claude, model-context-protocol</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Customize code scanning default setup at scale
-              <span class="post-metadata">(5 min | 1649 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-04-customize-code-scanning-default-setup-at-scale>You can now apply your own configuration file to code scanning default setup, using the new github-codeql-config-file repository property. This gives you control over how CodeQL scans your code for…
-The post Customize code scanning default setup at scale appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              PipeNetwork/minimax-h3-mlx
-              <span class="post-metadata">(3 min | 977 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/minimax-h3-mlx/>PipeNetwork/minimax-h3-mlx
-MiniMax-H3 two days ago - they describe it as a &quot;a general-purpose, omni-modal generative system&quot;, which in practice means it accepts text, images, audio and video and can use them to generate up to 15 second video clips with audio included.
-This Python package ports it to MLX for running on Apple Silicon.
-I got it running on my M5 Max MacBook Pro. I cloned the repo and ran the model like this:
-# First download the models
-uvx --from huggingface_hub hf download MiniMaxAI/MiniMax-H3 \
-  --include &#x27;FL2VA/*&#x27; --exclude &#x27;FL2VA/transformer/*&#x27;
-uvx --from huggingface_hub hf download pipenetwork/MiniMax-H3-MLX-8bit
-
-# Now run the prompt
-uv run --with mlx-vlm \
-  --with-requirements requirements.txt python scripts/generate.py \
-  &quot;a rainbow colored skunk leaps over a mossy log in a supermarket&quot; \
-  -o skunk.mp4 \
-  -c ~/.cache/huggingface/hub/models--MiniMaxAI--MiniMax-H3/snapshots/fa9c8ab1eaa21c8ae25e7e40b83b2e6002f340af/FL2VA \
-  -t ~/.cache/huggingface/hub/models--pipenetwork--MiniMax-H3-MLX-8bit/snapshots/3ac52081470b0488921c3ec3ba84a39097bf2361
-
-Here&#x27;s the video I got for the prompt:
-a rainbow colored skunk leaps over a mossy log in a supermarket
-
-    
-    Your browser does not support HTML5 video.
-  
-
-
-It downloaded ~115 GB of model files, and the video generation took just under 45 minutes.
-The video is impressive, but the audio is weird speech-like garbage, because I didn&#x27;t provide any prompt guidance as to what the audio should be. The prompting guide (which I didn&#x27;t read prior to this experiment) has a whole bunch of information on how to get this to work.
-
-
-    
-Tags: ai, generative-ai, mlx, text-to-video, minimax</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              PipeNetwork/minimax-h3-mlx
-              <span class="post-metadata">(3 min | 972 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/minimax-h3-mlx/#atom-everything>PipeNetwork/minimax-h3-mlx
-MiniMax-H3 two days ago - they describe it as a &quot;a general-purpose, omni-modal generative system&quot;, which in practice means it accepts text, images, audio and video and can use them to generate up to 15 second video clips with audio included.
-This Python package ports it to MLX for running on Apple Silicon.
-I got it running on my M5 Max MacBook Pro. I cloned the repo and ran the model like this:
-# First download the models
-uvx --from huggingface_hub hf download MiniMaxAI/MiniMax-H3 \
-  --include &#x27;FL2VA/*&#x27; --exclude &#x27;FL2VA/transformer/*&#x27;
-uvx --from huggingface_hub hf download pipenetwork/MiniMax-H3-MLX-8bit
-
-# Now run the prompt
-uv run --with mlx-vlm \
-  --with-requirements requirements.txt python scripts/generate.py \
-  &quot;a rainbow colored skunk leaps over a mossy log in a supermarket&quot; \
-  -o skunk.mp4 \
-  -c ~/.cache/huggingface/hub/models--MiniMaxAI--MiniMax-H3/snapshots/fa9c8ab1eaa21c8ae25e7e40b83b2e6002f340af/FL2VA \
-  -t ~/.cache/huggingface/hub/models--pipenetwork--MiniMax-H3-MLX-8bit/snapshots/3ac52081470b0488921c3ec3ba84a39097bf2361
-
-Here&#x27;s the video I got for the prompt:
-a rainbow colored skunk leaps over a mossy log in a supermarket
-
-    
-    Your browser does not support HTML5 video.
-  
-
-
-It downloaded ~115 GB of model files, and the video generation took just under 45 minutes.
-The video is impressive, but the audio is weird speech-like garbage, because I didn&#x27;t provide any prompt guidance as to what the audio should be. The prompting guide (which I didn&#x27;t read prior to this experiment) has a whole bunch of information on how to get this to work.
-
-
-    
-Tags: ai, generative-ai, mlx, text-to-video, minimax</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Retiring the Copilot Billing Preview app
-              <span class="post-metadata">(4 min | 1347 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-04-retiring-the-copilot-billing-preview-app>We’ve retired the GitHub Copilot Billing Preview app, and it’s no longer available. You can review and manage your Copilot spend directly in your GitHub billing settings. The app helped…
-The post Retiring the Copilot Billing Preview app appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Third-party cyber evaluations involving OpenAI models
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/third-party-cyber-evaluations-involving-openai-models>OpenAI explains recent third-party cybersecurity evaluation incidents and outlines new safeguards to strengthen AI model testing and evaluation.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Build Production-Ready Agents with the GitHub Copilot Harness and Agent Framework
-              <span class="post-metadata">(28 min | 8330 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://devblogs.microsoft.com/agent-framework/build-production-ready-agents-with-the-github-copilot-harness-and-agent-framework/>Developers increasingly want to build agents that can reason about code, modify files, execute commands, interact with developer tools, and work across entire repositories. While GitHub Copilot already provides a powerful coding harness for these scenarios, developers often need additional capabilities such as observability, middleware, approval workflows, enterprise governance, and integration with broader agent ecosystems. […]
-The post Build Production-Ready Agents with the GitHub Copilot Harness and Agent Framework appeared first on Microsoft Agent Framework.</a>
-            </div>
-            <!-- <p class="post-source">Semantic Kernel - Category | Microsoft Agent Framework</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm 0.32
-              <span class="post-metadata">(3 min | 760 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/llm/>Release: llm 0.32
-See my detailed blog post about this release.
-Tags: llm</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              llm 0.32
-              <span class="post-metadata">(3 min | 759 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/4/llm/#atom-everything>Release: llm 0.32
-See my detailed blog post about this release.
-Tags: llm</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Upcoming deprecation of GitHub Spark on github.com
-              <span class="post-metadata">(5 min | 1523 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-04-upcoming-deprecation-of-github-spark-on-github-com>Beginning August 4, 2026, GitHub Spark no longer accepts new users or allows the creation of new apps. Existing users can continue to access GitHub Spark until August 31, 2026…
-The post Upcoming deprecation of GitHub Spark on github.com appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Customize Dependabot pull request branch names
-              <span class="post-metadata">(4 min | 1301 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-04-customize-dependabot-pull-request-branch-names>You can now customize the branch names Dependabot creates for pull requests. New pull-request-branch-name options in .github/dependabot.yml let you set a prefix and maximum length, choose segment and word separators,…
-The post Customize Dependabot pull request branch names appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Code coverage automatic enablement in Code Quality settings
-              <span class="post-metadata">(5 min | 1477 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-04-code-coverage-automatic-enablement-in-code-quality-settings>We’re making code coverage setup faster and simpler. You’ll now see a new option in your repository’s Code Quality settings that lets GitHub generate your coverage workflow automatically with AI.…
-The post Code coverage automatic enablement in Code Quality settings appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              CodeQL 2.26.2 adds Swift 6.3.3 and Kotlin 2.4.10 support
-              <span class="post-metadata">(5 min | 1546 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-04-codeql-2-26-2-adds-swift-6-3-3-and-kotlin-2-4-10-support>CodeQL is the static analysis engine behind GitHub code scanning, which finds and remediates security issues in your code. We’ve recently released CodeQL 2.26.2, which adds support for Swift 6.3.3…
-The post CodeQL 2.26.2 adds Swift 6.3.3 and Kotlin 2.4.10 support appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
