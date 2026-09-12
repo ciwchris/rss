@@ -684,46 +684,6 @@
           "wordCount": 1461,
           "title": "Grok 4.6 is now available in GitHub Copilot",
           "imageUrl": "https://github.blog/wp-content/uploads/2026/08/635543138-38dc7de9-3b49-497d-af2d-36df9b484d15.png"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-08-13-github-copilot-weekly-releases-august-10",
-          "author": "Allison",
-          "description": "From new models and portable plugins to smoother agent workflows, this week’s updates make GitHub Copilot more flexible across editors, the command line, and the Copilot app. GitHub Copilot, general…\nThe post GitHub Copilot weekly releases — August 10 appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-08-13-github-copilot-weekly-releases-august-10",
-          "publishedOn": "2026-08-14T03:15:56.000Z",
-          "wordCount": 1646,
-          "title": "GitHub Copilot weekly releases — August 10",
-          "imageUrl": "https://github.blog/wp-content/uploads/2026/08/social.jpeg"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-08-13-license-data-quality-improvements",
-          "author": "Allison",
-          "description": "GitHub now uses package registries like npmjs.org and PyPI to determine license information for software components in the dependency graph. This improves the accuracy and completeness of the licenses shown…\nThe post License data quality improvements appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-08-13-license-data-quality-improvements",
-          "publishedOn": "2026-08-13T19:14:12.000Z",
-          "wordCount": 1459,
-          "title": "License data quality improvements",
-          "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-improvements.jpg"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-08-13-block-users-from-comments-in-personal-repositories",
-          "author": "Allison",
-          "description": "You can now block or unblock users directly from comments on pull requests and issues in repositories owned by personal GitHub accounts. To block or unblock a user: Open the…\nThe post Block users from comments in personal repositories appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-08-13-block-users-from-comments-in-personal-repositories",
-          "publishedOn": "2026-08-13T19:02:46.000Z",
-          "wordCount": 1286,
-          "title": "Block users from comments in personal repositories",
-          "imageUrl": "https://github.blog/wp-content/uploads/2026/08/social-image.jpeg"
-        },
-        {
-          "id": "https://github.blog/changelog/2026-08-13-gemini-3-7-flash-is-now-available-in-github-copilot",
-          "author": "Allison",
-          "description": "Gemini 3.7 Flash, Google’s latest Flash model, is now rolling out in GitHub Copilot. From our early testing, the model has made improvements in web and app development and agentic…\nThe post Gemini 3.7 Flash is now available in GitHub Copilot appeared first on The GitHub Blog.",
-          "link": "https://github.blog/changelog/2026-08-13-gemini-3-7-flash-is-now-available-in-github-copilot",
-          "publishedOn": "2026-08-13T14:00:53.000Z",
-          "wordCount": 1463,
-          "title": "Gemini 3.7 Flash is now available in GitHub Copilot",
-          "imageUrl": "https://github.blog/wp-content/uploads/2026/08/github-copilot-social-card-13-1.png"
         }
       ]
     },
@@ -788,6 +748,16 @@
       "feedUrl": "https://simonwillison.net/atom/everything/",
       "siteUrl": "http://simonwillison.net/",
       "articles": [
+        {
+          "id": "https://simonwillison.net/2026/Sep/12/openai-agents-rubygems/",
+          "author": null,
+          "description": "<p><a href=\"https://www.rubyhack.ai/\">OpenAI agents carried out an undisclosed attack on RubyGems</a> is a new bombshell report from Spencer Kitts, Thomas Larsen, and Sydney Von Arx - three of the four authors of the <a href=\"https://collusion.wiki/\">report on the agent attack on disused wikis</a> (<a href=\"https://simonwillison.net/2026/Sep/4/rogue-agent-wikis/\">previously</a>) last week.</p>\r\n<p>This time they're noting that it looks very likely that an OpenAI agent swarm was behind an attack against the RubyGems package repository first reported on May 12th <a href=\"https://twitter.com/maciejmensfeld/status/2054164602577940619\">by Maciej Mensfeld of the RubyGems security team</a>:</p>\r\n<blockquote>\r\n<p>We're dealing with a major malicious attack on @rubygems right now. Signups are paused for the time being.</p>\r\n<p>Hundreds of packages involved - mostly targeting us, but some carrying exploits. The team has been on this for hours. More details to follow once we're through it.</p>\r\n</blockquote>\r\n<p>Those packages turned out to carry some very suspicious patterns:</p>\r\n<ol>\r\n<li>Many of them included \"oai\" in their name, or the author field, or the fake email address they provided.</li>\r\n<li>The files they were accessing were similar in character to the files retrieved by the wiki agents, using similar tricks (r.jina.ai) - and OpenAI have confirmed the wiki agents were theirs.</li>\r\n<li>The code in the packages appeared to be LLM-authored.</li>\r\n</ol>\r\n<p>I find point 2 the most convincing, given what we learned from the wiki attack when it was analyzed in September.</p>\r\n<p>Many of the packages were exploiting the <a href=\"https://rubydoc.info/\">RubyDoc.info</a> documentation build process to exfiltrate (public) data from UK government websites, presumably as part of an information gathering task similar to the research tasks processed by the wiki-exploiting agents. We know this because one agent helpfully left a comment:</p>\r\n<p><code># malicious crawler/exfil for Southwark Jan 2026 docs via rubydoc.info worker</code></p>\r\n<p>They also attempted to steal API keys via an exploit that <a href=\"https://blog.rubygems.org/2026/07/22/security-advisory-legacy-api-key-leak.html\">was patched over two months later</a> - it's not clear if those attempts were successful.</p>\r\n<p>The thing that bothers me most about this incident is that the authors report that OpenAI had not disclosed to RubyGems that they were responsible for the attack prior to now. If that's true there are two options:</p>\r\n<ol>\r\n<li>After the Hugging Face and Wiki attacks OpenAI were still unable to review their previous logs and determine that they had previously attacked RubyGems.</li>\r\n<li>They knew about the attack on RubyGems and made the decision <em>not</em> to reach out to the RubyGems team about it.</li>\r\n</ol>\r\n<p>Both of these are bad!</p>\r\n<p>Given this incident, the <a href=\"https://simonwillison.net/2026/Jul/22/openai-cyberattack/\">Hugging Face situation</a>, and the Wiki attack, the obvious question right now is <em>how many more incidents</em> like this are out there waiting to be discovered?</p>\n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/ruby\">ruby</a>, <a href=\"https://simonwillison.net/tags/security\">security</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/openai\">openai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/supply-chain\">supply-chain</a>, <a href=\"https://simonwillison.net/tags/ai-ethics\">ai-ethics</a>, <a href=\"https://simonwillison.net/tags/accidental-cyberattacks\">accidental-cyberattacks</a></p>",
+          "link": "https://simonwillison.net/2026/Sep/12/openai-agents-rubygems/",
+          "publishedOn": "2026-09-12T00:42:25.000Z",
+          "wordCount": 1163,
+          "title": "OpenAI agents attacked RubyGems back in May",
+          "imageUrl": null
+        },
         {
           "id": "https://simonwillison.net/2026/Sep/11/so-you-want-to-use-openrouter/",
           "author": null,
@@ -856,6 +826,46 @@
           "publishedOn": "2026-09-11T03:27:16.000Z",
           "wordCount": 959,
           "title": "Datasette 1.0a39 and 0.65.4 security releases",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Sep/11/datasette-publish-fly/",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/datasette-publish-fly/releases/tag/1.4\">datasette-publish-fly 1.4</a></p>\n        <blockquote>\n<ul>\n<li>Sets <code>force_https=true</code> in <code>fly.toml</code>. <a href=\"https://github.com/simonw/datasette-publish-fly/issues/31\">#31</a></li>\n<li>Fix for Volume could not be found bug. <a href=\"https://github.com/simonw/datasette-publish-fly/issues/32\">#32</a></li>\n<li>Compatible with app-scoped deploy tokens. <a href=\"https://github.com/simonw/datasette-publish-fly/issues/34\">#34</a></li>\n</ul>\n</blockquote>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/datasette\">datasette</a>, <a href=\"https://simonwillison.net/tags/fly\">fly</a></p>",
+          "link": "https://simonwillison.net/2026/Sep/11/datasette-publish-fly/",
+          "publishedOn": "2026-09-11T02:58:52.000Z",
+          "wordCount": 745,
+          "title": "datasette-publish-fly 1.4",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Sep/11/github-to-sqlite/",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/dogsheep/github-to-sqlite/releases/tag/2.9.1\">github-to-sqlite 2.9.1</a></p>\n        <blockquote>\n<ul>\n<li>Fix for compatibility with <a href=\"https://sqlite-utils.datasette.io/en/stable/changelog.html#v4-2\">sqlite-utils 4.x</a>. <a href=\"https://github.com/dogsheep/github-to-sqlite/issues/85\">#85</a></li>\n</ul>\n</blockquote>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/github\">github</a>, <a href=\"https://simonwillison.net/tags/sqlite\">sqlite</a></p>",
+          "link": "https://simonwillison.net/2026/Sep/11/github-to-sqlite/",
+          "publishedOn": "2026-09-11T00:28:39.000Z",
+          "wordCount": 733,
+          "title": "github-to-sqlite 2.9.1",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Sep/11/datasette/",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/datasette/releases/tag/0.65.4\">datasette 0.65.4</a></p>\n        <p>See <a href=\"https://datasette.io/blog/2026/september-security-releases/\">Datasette 1.0a39 and 0.65.4 security releases</a> on the Datasette blog.</p>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/security\">security</a>, <a href=\"https://simonwillison.net/tags/datasette\">datasette</a></p>",
+          "link": "https://simonwillison.net/2026/Sep/11/datasette/",
+          "publishedOn": "2026-09-11T00:06:55.000Z",
+          "wordCount": 738,
+          "title": "datasette 0.65.4",
+          "imageUrl": null
+        },
+        {
+          "id": "https://simonwillison.net/2026/Sep/11/datasette-2/",
+          "author": null,
+          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/datasette/releases/tag/1.0a39\">datasette 1.0a39</a></p>\n        <p>See <a href=\"https://datasette.io/blog/2026/september-security-releases/\">Datasette 1.0a39 and 0.65.4 security releases</a> on the Datasette blog.</p>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/security\">security</a>, <a href=\"https://simonwillison.net/tags/datasette\">datasette</a></p>",
+          "link": "https://simonwillison.net/2026/Sep/11/datasette-2/",
+          "publishedOn": "2026-09-11T00:05:54.000Z",
+          "wordCount": 738,
+          "title": "datasette 1.0a39",
           "imageUrl": null
         },
         {
@@ -1537,36 +1547,6 @@
           "wordCount": 961,
           "title": "Don't classify. Hallucinate!",
           "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Aug/13/sqlite-utils-2/",
-          "author": null,
-          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/sqlite-utils/releases/tag/4.2.1\">sqlite-utils 4.2.1</a></p>\n        <p>Fixes a crashing bug in <a href=\"https://simonwillison.net/2026/Aug/13/sqlite-utils/\">sqlite-utils 4.2</a>. I'd introduced code that looks like this:</p>\n<pre><code>from typing_extensions import Self\n</code></pre>\n<p>It turned out the <a href=\"https://pypi.org/project/typing-extensions/\">typing-extensions</a> package was not listed as a dependency for <code>sqlite-utils</code> - it was installed by one of the other dependencies in the <a href=\"https://github.com/simonw/sqlite-utils/blob/56dd09702fdb9e899f577ffd51693c1f2176cb08/pyproject.toml#L34-L55\">dev dependency group</a>, but when you <code>uvx sqlite-utils</code> directly you don't get those dependencies.</p>\n<p>As part of fixing this I figured out how to run a smoke test to ensure the CLI tool still works even without those dev dependencies, which can be run from the project checkout:</p>\n<pre><code>uv run --isolated --no-default-groups sqlite-utils --help\n</code></pre>\n<p>The <code>--no-default-groups</code> argument prevents it from installing that default <code>dev</code> group, and <code>--isolated</code> means that even if there is a <code>.venv/</code> folder containing extra dependencies they will be ignored for the duration of that <code>uv run</code> command.</p>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/packaging\">packaging</a>, <a href=\"https://simonwillison.net/tags/python\">python</a>, <a href=\"https://simonwillison.net/tags/sqlite-utils\">sqlite-utils</a>, <a href=\"https://simonwillison.net/tags/uv\">uv</a></p>",
-          "link": "https://simonwillison.net/2026/Aug/13/sqlite-utils-2/",
-          "publishedOn": "2026-08-13T23:53:47.000Z",
-          "wordCount": 895,
-          "title": "sqlite-utils 4.2.1",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Aug/13/sqlite-utils/",
-          "author": null,
-          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/sqlite-utils/releases/tag/4.2\">sqlite-utils 4.2</a></p>\n        <p>Lots of improvements in this one relating to the <a href=\"https://sqlite-utils.datasette.io/en/stable/python-api.html#transforming-a-table\">table.transform() feature</a>, which adds support for complex alter table operations by creating a fresh table, copying across the data and then dropping and replacing the old one.</p>\n<p><code>transform()</code> now preserves a much larger array of edge-case schema definitions, including check constraints, unique constraints and even comments describing the columns.</p>\n<p>There are also <a href=\"https://sqlite-utils.datasette.io/en/stable/python-api.html#checks\">new introspection properties</a> for check constraints, and a whole lot of other smaller changes.</p>\n<p>Includes contributions from <a href=\"https://github.com/bunlongheng\">Bunlong Heng</a>, <a href=\"https://github.com/ethanhawkes-gif\">ethanhawkes-gif</a>, <a href=\"https://github.com/RamiNoodle733\">Rami Abdelrazzaq</a>, <a href=\"https://github.com/nyxst4ck\">nyxst4ck</a>, and <a href=\"https://github.com/ikatyal2110\">ikatyal2110</a>.</p>\n<p>(It later turned out 4.2 had <a href=\"https://github.com/simonw/sqlite-utils/issues/842\">a crashing bug</a>, fixed in <a href=\"https://sqlite-utils.datasette.io/en/stable/changelog.html#v4-2-1\">4.2.1</a>.)</p>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/releases\">releases</a>, <a href=\"https://simonwillison.net/tags/sqlite\">sqlite</a>, <a href=\"https://simonwillison.net/tags/sqlite-utils\">sqlite-utils</a></p>",
-          "link": "https://simonwillison.net/2026/Aug/13/sqlite-utils/",
-          "publishedOn": "2026-08-13T20:11:29.000Z",
-          "wordCount": 856,
-          "title": "sqlite-utils 4.2",
-          "imageUrl": null
-        },
-        {
-          "id": "https://simonwillison.net/2026/Aug/13/llm-gemini/",
-          "author": null,
-          "description": "<p><strong>Release:</strong> <a href=\"https://github.com/simonw/llm-gemini/releases/tag/0.33\">llm-gemini 0.33</a></p>\n        <p>It's been a while since the last <code>llm-gemini</code> release. This version of the plugin adds support for today's <a href=\"https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/\">Gemini 3.7 Flash</a> release, plus <code>gemini-3.6-flash</code>, <code>gemini-3.5-flash-lite</code> and two embedding models <code>gemini-embedding-2</code> and <code>gemini-embedding-001</code>.</p>\n<p>The plugin is also upgraded for compatibility with LLM 0.32, which means you can now see reasoning traces and you can also enable server-side tools using this pattern:</p>\n<pre><code>llm -m gemini-3.7-flash -T CodeExecution \\\n  'use python to calculate (factorial of 13) * 3'\n</code></pre>\n<p>I had Gemini 3.7 Flash <a href=\"https://tools.simonwillison.net/markdown-svg-renderer.html#url=https%3A%2F%2Fgist.github.com%2Fsimonw%2F6779a22d5e7bb6bdf29936f1600a5259\">draw me some pelicans riding bicycles</a> at high, medium, and low thinking efforts (minimal, which was an option in 3.6 Flash, has been removed in 3.7.) Here's the high level one, which is pretty great:</p>\n<p><img alt=\"This pelican has  a very cool curved green bicycle, a fish in its basket, a lovely red and white spotted scarf and a captain's hat\" src=\"https://static.simonwillison.net/static/2026/gemini-3.7-flash-high-pelican.jpg\" /></p>\n<p>One catch though: the pelican I showed here was rendered with Safari. Both Firefox and Chrome render it differently, due to Safari being more tolerant of empty SVG <code>&lt;filter&gt;</code> elements than those other two browsers.</p>\n<p>They still display the bicycle, but the pelican is missing entirely!</p>\n<p><img alt=\"The same image except the pelican is entirely missing - it's just the bicycle.\" src=\"https://static.simonwillison.net/static/2026/broken-pelican-safari.jpg\" /></p>\n    \n    \n        <p>Tags: <a href=\"https://simonwillison.net/tags/google\">google</a>, <a href=\"https://simonwillison.net/tags/ai\">ai</a>, <a href=\"https://simonwillison.net/tags/generative-ai\">generative-ai</a>, <a href=\"https://simonwillison.net/tags/llms\">llms</a>, <a href=\"https://simonwillison.net/tags/llm\">llm</a>, <a href=\"https://simonwillison.net/tags/gemini\">gemini</a>, <a href=\"https://simonwillison.net/tags/pelican-riding-a-bicycle\">pelican-riding-a-bicycle</a>, <a href=\"https://simonwillison.net/tags/llm-release\">llm-release</a></p>",
-          "link": "https://simonwillison.net/2026/Aug/13/llm-gemini/",
-          "publishedOn": "2026-08-13T19:37:34.000Z",
-          "wordCount": 929,
-          "title": "llm-gemini 0.33",
-          "imageUrl": "https://static.simonwillison.net/static/2026/gemini-3.7-flash-high-pelican.jpg"
         }
       ]
     },
@@ -1587,6 +1567,16 @@
       "feedUrl": "https://openai.com/news/rss.xml",
       "siteUrl": "https://openai.com/news",
       "articles": [
+        {
+          "id": "https://openai.com/index/cognition-devin-testing-with-astra",
+          "author": null,
+          "description": "GPT‑6 Astra improves Devin’s ability to test software and show that it works, with the goal of helping engineers review less code and ship more.",
+          "link": "https://openai.com/index/cognition-devin-testing-with-astra",
+          "publishedOn": "2026-09-11T16:00:00.000Z",
+          "wordCount": null,
+          "title": "Cognition helps Devin test its own work with GPT‑6 Astra",
+          "imageUrl": null
+        },
         {
           "id": "https://openai.com/index/scaling-storage-one-billion-users-part-one",
           "author": null,
@@ -2195,16 +2185,6 @@
           "publishedOn": "2026-08-17T03:15:00.000Z",
           "wordCount": null,
           "title": "New policy ideas for the Intelligence Age",
-          "imageUrl": null
-        },
-        {
-          "id": "https://openai.com/index/builders-guide-to-gpt-5-6",
-          "author": null,
-          "description": "Learn how startups use GPT-5.6 to build faster, more cost-efficient AI agents with smarter model selection and new Responses API capabilities.",
-          "link": "https://openai.com/index/builders-guide-to-gpt-5-6",
-          "publishedOn": "2026-08-13T11:00:00.000Z",
-          "wordCount": null,
-          "title": "The builder’s guide to GPT‑5.6",
           "imageUrl": null
         }
       ]
