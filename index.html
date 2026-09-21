@@ -31,6 +31,113 @@
       <article>
           <details>
             <summary>
+              Jev introduces a new shape of LLM - System One, aka Decision Models
+              <span class="post-metadata">(5 min | 1605 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/21/jev/>Last week TypeSafe AI unveiled Jev, their first example of a new category of model that they are calling &quot;System One models&quot; (I&#x27;m with Maggie Appleton, I think &quot;decision models&quot; is a better name for these). Jev is an interesting variant on the usual LLM format: it still accepts text inputs, but instead of text output it returns floating point numbers corresponding to categories, yes/no questions, ratings, and associated confidence scores.
+
+TypeSafe describe Jev like this:
+
+
+Think of Jev as a frontier-intelligence function call: unstructured state in, typed probabilistic decisions out.
+
+
+It&#x27;s also very fast, and really cheap. Regular LLMs are priced in terms of input and output tokens, with output generally charged at significantly higher rates. Jev charges only for input - output is free - and the input price of their first model is $0.042 per million tokens - cheaper even than OpenAI&#x27;s GPT-5 Nano ($0.05/million).
+
+Jev lets you ask questions about text or semi-structured data. You compose a &quot;state&quot; object containing a string, array of strings, or set of name-value pairs - this might describe an article, or a customer, or any other kind of record. You then send that to their API with one or more questions, and get a reply back for each.
+
+You can ask three kinds of questions:
+
+
+Yes/No questions, which Jev calls &quot;Noul&quot; questions - their CEO confirmed on Hacker News that this is short for Bernoulli, from the Bernoulli distribution. You pose a statement and get back a floating point number between 0 and 1 for how confident the model is that the statement is true.
+
+Choice questions, where the model picks one from a set of provided options - actually a confidence score plus a probability distribution across all of the options.
+
+Score questions, where you provide sequence of numeric levels with descriptions and it provides a floating point score somewhere along that range.
+
+
+The Jev API can accept a single document (&quot;state&quot;) and as many questions as you can cram into the context window. Questions are evaluated in parallel, so sending many questions should take a similar time to sending just one.
+
+I think the decision model framing is useful for understanding where to use Jev. It&#x27;s great for anything that can be expressed as a classification task - think spam detection, suggesting labels, prioritization and ranking.
+
+I&#x27;ve also been experimenting with it for search reranking, where you fetch 100 likely matches using an inexpensive algorithm like BM25, then have Jev score those 100 candidates for relevance against the original query.
+
+Black boxes are back in fashion
+
+Something I&#x27;ve found a little uncomfortable about Jev is how it very much represents a regression even further towards black box machine learning systems.
+
+LLMs are black boxes already - you can ask them to justify their decisions, but you can&#x27;t guarantee that what they say is useful or accurate.
+
+Jev doesn&#x27;t even give you that: put in all the text you want, the only thing you&#x27;re going to get back is a floating point number. If Jev marks something as spam, which content signals tipped it off?
+
+This also means that concerns about bias should be front and center. I really hope nobody uses Jev to rank job applicants - that floating point number could conceal all manner of unseen bias baked into the models, and experimentally picking that bias apart is going to be a tricky business.
+
+(I tried one experiment where I had Jev score every city in the San Francisco Bay Area on a yes/no answer to whether they were a &quot;Good city?&quot; - it rated Cupertino top and East Palo Alto bottom. Huh.)
+
+In practice, this all means that evals and structured experiments are even more important than they are for regular LLM projects. Thankfully, Jev is so cheap that running hundreds or even thousands of experimental prompts through it costs just a few cents.
+
+Unconventional uses for Jev
+
+It&#x27;s been really fun watching the wider community come up with potential use-cases for Jev over the past few days. Here are some creative ones that caught my eye:
+
+
+
+jevchat by Kyle Pena turns Jev into a (terrible) chat model. &quot;At every step it asks Jev one question: Given the user&#x27;s question and the reply written so far, which symbol comes next?&quot;. ericpruitt on Hacker News: &quot;It&#x27;s the digital equivalent of Morty speaking with the death crystal&quot;.
+
+
+jev-leftpad by Fatih Kadir Akın implements left-pad with the prompt &quot;How many spaces are needed before value to reach targetLength?&quot; and a choice query allowing options from &quot;0 spaces are needed&quot; to &quot;10 spaces are needed&quot;.
+
+
+jev-2048 by Andy Gayton uses Jev to play the 2048 sliding puzzle game.
+
+
+Open weight recreations
+
+There&#x27;s also been a flurry of projects attempting to create a model like Jev using on top of open weight models. Kev is one interesting example, using Qwen 3.5 to produce 0.8B, 4B, and 9B models. Here&#x27;s the accompanying Hacker News thread, where someone linked to a JevBench benchmark that has already cropped up to compare &quot;Jev-class decision models&quot;.
+
+Given Jev was released just under a week ago, the amount of activity around it is extremely impressive.
+Tags: ai, generative-ai, llms</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Cloudflare Python Workers are now generally available
+              <span class="post-metadata">(3 min | 908 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/21/cloudflare-python-worker/>Cloudflare Python Workers are now generally available
+A neat thing about this is how it works. Cloudflare are running Python compiled to WebAssembly via Pyodide in their V8-based workerd runtime.
+This comes with some limitations, documented here - most notably both multiprocessing and threading are non-functional in the WebAssembly VM.
+One particularly interesting detail of this is the local development environment story - their pywrangler development tool (confusingly packaged as workers-py on PyPI) runs a full local simulation of their stack, including executing code with Pyodide in WebAssembly in V8 in a 123MB workerd binary, which for me ended up in node_modules/@cloudflare/workerd-darwin-arm64/bin/workerd.
+Python Workers represent a significant investment in the wider Python ecosystem by Cloudflare. The release announcement is credited to Gyeongjae Choi, Dominik Picheta, and Hood Chatham - Gyeongjae and Hood are both Pyodide core maintainers.
+
+    
+Via Hacker News
+Tags: python, cloudflare, webassembly, pyodide</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              GitHub Enterprise adds credential inventory exports
+              <span class="post-metadata">(5 min | 1482 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-09-21-github-enterprise-adds-credential-inventory-exports>Enterprise owners can now export a complete inventory of every credential that can access their enterprise (e.g., SSH keys, classic and fine-grained personal access tokens, OAuth App access tokens, and…
+The post GitHub Enterprise adds credential inventory exports appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Grok 4.7 is now available in GitHub Copilot
               <span class="post-metadata">(5 min | 1451 words)</span> 
             </summary>
@@ -39,6 +146,18 @@
 The post Grok 4.7 is now available in GitHub Copilot appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Higgsfield AI ships new video features in a day with GPT-6 Astra
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/higgsfield-from-prompt-to-production-with-astra>With GPT-6 Astra, Higgsfield AI makes video ad creation easier for small businesses and brings new creative tools to market faster.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
       <article>
