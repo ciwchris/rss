@@ -25,6 +25,73 @@
 
   <ul>
     <li>
+      <time>2026-09-26</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Kākāpō Party
+              <span class="post-metadata">(4 min | 1123 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Sep/26/kakapo-party/>Tool: Kākāpō Party
+I presented a closing keynote for the WeAreDevelopers World Congress North America yesterday. As a STAR moment I decided to weave in references to the record breaking kākāpō breeding season we had in 2026.
+For my closing slide I wanted to celebrate, and I had seen some buzz around how good Claude Opus 5.5 was at creating pixel art animations. So I rounded up three Kakapo photos from Google image search and dropped them into Claude with this prompt:
+Here are some photos of kakapo parrots just to remind you what they look like
+I need you to make an animation in animated pixel art on HTML 5 canvas of obviously pixel art kakapo jumping up and down having a party with confetti and suchlike - there should be at least 20 of them
+Here&#x27;s the transcript, and this is the resulting page. It&#x27;s pretty great!
+I wanted to embed it in a Keynote presentation file, so I downloaded the HTML and told a local Claude Code session:
+Make me a video of file:///Users/simon/Downloads/kakapo-party.html - you need to load it in a browser and click on it a few times to get the confetti effect, the video should be 15s long
+don&#x27;t start clicking until 3s in
+make sure several clicks are spread around the clickable area
+Claude Code used Playwright (transcript here) and produced this video, which was exactly what I needed for my final slide:
+
+    
+    Your browser does not support HTML5 video.
+  
+
+
+Here&#x27;s the full Playwright script it used, which was pleasingly short:
+# /// script
+# dependencies &#x3D; [&quot;playwright&quot;]
+# ///
+import time
+from playwright.sync_api import sync_playwright
+W, H &#x3D; 1280, 720
+# Canvas fills the viewport; spread clicks across corners, edges and centre
+clicks &#x3D; [
+    (3.0, 640, 360),   # centre
+    (4.2, 160, 120),   # top-left
+    (5.4, 1120, 120),  # top-right
+    (6.6, 180, 600),   # bottom-left
+    (7.8, 1100, 600),  # bottom-right
+    (9.0, 640, 100),   # top-centre
+    (10.0, 380, 380),  # mid-left
+    (11.0, 900, 380),  # mid-right
+    (12.2, 640, 620),  # bottom-centre
+    (13.2, 640, 300),  # finale centre
+]
+with sync_playwright() as p:
+    b &#x3D; p.chromium.launch()
+    ctx &#x3D; b.new_context(viewport&#x3D;{&quot;width&quot;:W,&quot;height&quot;:H}, record_video_dir&#x3D;&quot;vids&quot;, record_video_size&#x3D;{&quot;width&quot;:W,&quot;height&quot;:H})
+    page &#x3D; ctx.new_page()
+    t0 &#x3D; time.time()
+    page.goto(&quot;file:///Users/simon/Downloads/kakapo-party.html&quot;)
+    for t,x,y in clicks:
+        time.sleep(max(0, t-(time.time()-t0)))
+        page.mouse.click(x,y)
+    time.sleep(max(0, 16.0-(time.time()-t0)))
+    ctx.close(); b.close()
+Tags: animation, speaking, ai, kakapo, playwright, generative-ai, llms, anthropic, claude, claude-code</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-09-25</time>
 
       <section>
@@ -4848,73 +4915,6 @@ It&#x27;s interesting how the reasoning trace uses slightly truncated English, p
 Tags: ai, generative-ai, llms, pelican-riding-a-bicycle, llm-reasoning, llm-release, ai-in-china</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-08-28</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Just a rumour of a bug is enough to find a security exploit these days
-              <span class="post-metadata">(4 min | 1085 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Aug/28/just-a-rumour-of-a-bug/>Just a rumour of a bug is enough to find a security exploit these days
-This normally takes a few days and a release within a week or two is reasonable. Within about ten minutes (!) this website was fielding probes for percent-encoded traversal sequences, indicating that automated watchers are keeping an eye on public repositories.
-Modern coding agents have become so effective at finding flaws that the slightest hint at a new bug can be enough information for them to find it, something Anil has been able to demonstrate using his own agents, switching to DeepSeek V4 Pro⁠ when Claude Fable refused the task.
-Anil points out that this rate of discovery appears incompatible with existing open source embargo practices for new issues. If an issue can become an exploit this fast, we need to figure out new processes for keeping our communities safe.
-rclone maintainer Nick Craig-Wood confirms in the Hacker News comments that his project is seeing this problem:
-In the first 10 years of the rclone project we received about 20 security disclosures through GitHub. We had to deal with over 40 in the last month! That has taken a huge amount of my time, even using AI tools to triage and come up with fixes for review.
-The hit rate for those security disclosures is pretty good - about 75% of them have a nugget of something which needs looking at. [...]
-GitHub assigns CVEs for the advisories. Before the AI apocalypse they took 2-3 days for an assignment but now it they are running at 3-4 weeks so I have to send the point releases out with CVE-PENDING in the changelog which isn&#x27;t ideal.
-Via Hacker News
-Tags: open-source, security, ai, generative-ai, llms, coding-agents, ocaml, ai-security-research</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot in Visual Studio — August update
-              <span class="post-metadata">(5 min | 1583 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-28-github-copilot-in-visual-studio-august-update-2>August 2026 brought more control over how GitHub Copilot reasons, which models you use, how teams share specialized agents, and when you ask for a code review. Highlights Here’s what’s…
-The post GitHub Copilot in Visual Studio — August update appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot weekly releases — August 24
-              <span class="post-metadata">(6 min | 1738 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-28-github-copilot-weekly-releases-august-24>This week’s updates give you more control over how Copilot runs, from team sessions in Slack and Teams to customization across the app, CLI, and your IDE. GitHub Copilot in…
-The post GitHub Copilot weekly releases — August 24 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Upcoming changes to GitHub Copilot policies and billing
-              <span class="post-metadata">(7 min | 2114 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-08-28-upcoming-changes-to-github-copilot-policies-and-billing>To provide a strong, consistent Copilot experience, we’re making three separate, upcoming changes to Copilot policies and billing. Please review the upcoming updates to understand what may impact you. Reopening…
-The post Upcoming changes to GitHub Copilot policies and billing appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
           </details>
       </article>
 
