@@ -25,9 +25,196 @@
 
   <ul>
     <li>
+      <time>2026-10-09</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Quoting Matthew Green
+              <span class="post-metadata">(3 min | 827 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Oct/9/matthew-green/>Everyone is very concerned about being respectable, so I’m going to be the goofball who raises worst-case possibilities. I think there is a 1% chance we live in Minicrypt, and a 15% chance we functionally lose confidence in our existing public-key encryption algorithms. [...]
+The problem here is that the speed of AI producing surprises, and the speed of human beings replacing standards (even with the very best AI assistance) are just orders of magnitude different. You only recover from a surprise like this if you do the preparation in advance.
+
+— Matthew Green, on Twitter. I looked it up and Minicrypt is Russell Impagliazzo’s hypothetical world in which public-key encryption is impossible.
+Tags: ai-security-research, matthew-green, cryptography, standards, llms, ai, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              A new feature for my blog, built using my voice
+              <span class="post-metadata">(7 min | 2013 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Oct/9/built-using-my-voice/>I shipped a new feature for my blog today: the Newsletters page, which offers an index of all of the newsletters I&#x27;ve sent out, both my free weekly Substack and my monthly sponsors-only updates. I built the feature almost entirely using my voice, chatting away to my laptop while I cooked dinner.
+
+Codex voice mode
+
+I used the ChatGPT desktop app for this, in the Codex tab, using the voice conversation mode, running against a local development environment. Here&#x27;s what that looks like:
+
+
+
+I started the session against my local simonwillisonblog checkout by typing:
+
+
+Start dev server and open in browser
+
+
+This gave me a preview of the site that it would be working on, and meant that I could later ask it to show me the new pages so I could visually track its progress.
+
+Then I clicked the &quot;Start new voice chat&quot; button - that&#x27;s not the microphone button, it&#x27;s the one to the right of it - and set my laptop up in the kitchen so I could talk to it while I cooked.
+
+Talking to my computer
+
+I had a pretty good idea of what I wanted to build, and it&#x27;s a simple enough Django feature that I was certain the model (in this case GPT-6 Astra High) would be able to do it. A new model, a migration, some view code, templates, and a couple of import functions to populate the database from external sources.
+
+Here&#x27;s an extract of my voice transcript that was captured by Codex:
+
+
+Um, they do not. Um, this is going to be a new type of content. Um, it&#x27;s not going to show up... Oh, hold on. Yeah, no- I do not want this to show up in my, um, tag pages and date archive pages and... Actually, no, I think... I don&#x27;t want it on the tag pages. I don&#x27;t want it on the, um, blog index page. But I think I do want it to show up on the date-based pages. You know, if you navigate to September the 19th, and I sent a newsletter on that page, I think I want that to show up. So... this is- so I think we probably need a new model. The other thing is that I want them searchable, uh the Substack ones are not searchable, because those are actually just copies of other s- on content on my blog. These monthly ones do contain unique content, and spe- and once they&#x27;re... published, like once they&#x27;re made public a month after they&#x27;ve gone out, I want them to show up on my search results.
+
+
+Apparently this was clear enough that the model knew what I wanted to build! You can read the full transcript, disfluencies and all, in this Gist.
+
+We went on like this for about half an hour (the time it took to cook dinner). The model would reply and occasionally ask clarifying questions, then get to work modifying the code.
+
+What we built
+
+We got a surprisingly long way entirely by voice:
+
+
+A new model and migration to represent imported newsletters in Django, plus Django Admin configuration for that
+
+Four working imports:
+
+The most recent Substack items via RSS
+
+Every other Substack item via their undocumented API, which GPT-6 Astra knew about (it tried /api/v1/archive directly) and then ran a search to figure out how to paginate it and found this article by Karen Spinner
+
+All of my published monthly newsletters from my simonw/monthly-newsletter-archive GitHub repository
+
+My most recent private sponsors-only newsletter from a private repository
+
+
+
+The /newsletters/ and /newsletters/2026/ public archive pages
+
+Newsletters showing up on day and month archive pages too, but not on tag pages or my homepage
+
+Weekly Substack newsletters link to Substack; archived monthly newsletters have their own pages
+
+Integration with my site search engine
+
+
+It was almost ready to ship. The catch was the imports: Astra offered to export data from my local copy so I could import that into production, but I wanted it to work like my other import scripts. Since some of the data lived in a private GitHub repository, this would involve creating a new API key, and for that I knew I&#x27;d have to sit at the keyboard for a while.
+
+Finishing it with a review
+
+Once I had finished cooking and judged it mostly feature-complete, I had Codex create a branch and open a pull request.
+
+I reviewed the code in the GitHub PR interface. It was nearly what I needed, except it had chosen to use Git in a subprocess for one of the import scripts. I needed one of the imports to pull from a private Git repository, so I figured the API would be a better bet. I switched to typing and had Codex swap that out for an API-based import instead.
+
+You can see the changes I made during the review in the extra commits on the PR. I fixed the import mechanism and made a few tweaks to the display of those public pages. It took an additional half hour of typing-based prompting to get to the point where I was happy to deploy it to production by landing the PR.
+
+The end result
+
+You can see the end result at the new newsletters index page, or view the page for a previous monthly newsletter.
+
+
+
+The index page shows my most recent Substack weekly newsletters and GitHub sponsors monthly newsletters mixed together in reverse chronological order. Further down the page are links to my by-year archive pages.
+
+GPT-6 Astra designed the page, and then tweaked that design based on my vocal feedback from glancing at the local preview across the kitchen.
+
+Better for multi-tasking than as a daily driver
+
+OpenAI love using voice-driven demos like this one for things like DevDay - and they do work well in that environment. I don&#x27;t think this is going to be a daily driver for me though.
+
+I&#x27;ve written before about how much &quot;work&quot; I get done using ChatGPT voice mode on my phone while walking the dog - mostly research and brainstorming, but occasionally actual development work by having ChatGPT write and test out snippets of code.
+
+This feels different. The addition of the visual preview, plus being able to type or paste things in via the keyboard when I need to communicate something that doesn&#x27;t work vocally, makes this a much more powerful way of interacting with a coding agent.
+
+I still switch back to typing once I get down to the details of things though. Being able to paste in examples and error messages, or directly highlight the code or feature that needs changing, remains more efficient than trying to describe it in words.
+
+I mainly work from home, which is good because there&#x27;s no way I&#x27;d want to talk to my computer like this in a shared workspace!
+
+The killer feature for me is the ability to multi-task. I usually cook with a podcast or TikTok running; now I can actually build stuff instead.
+Tags: text-to-speech, ai, openai, generative-ai, llms, newsletter, coding-agents, codex, speech-to-text, site-upgrades</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Sophos cuts threat investigation time by 96% with OpenAI Daybreak
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/sophos>Discover how Sophos uses OpenAI’s Daybreak to cut cyber-threat investigation time by 96% and automate 52% of MDR cases while preserving human oversight.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Asana cuts model costs 76x in browser tests with GPT-6.1 Sol
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/asana-browser-agent>Using GPT-6 Astra in Codex, Asana made its browser agent 76x cheaper and 5x faster in tests to offer customers more capable models.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              ttok 1.0
+              <span class="post-metadata">(3 min | 874 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Oct/9/ttok/>Release: ttok 1.0
+I released ttok 0.4, ran uv tool upgrade ttok, piped a file into the new version... and realized that it was defaulting to the GPT-4 tokenizer when it should very clearly default to GPT-5/GPT-6 instead!
+I figured switching the default was a reasonable excuse to finally ship a 1.0.
+OpenAI haven&#x27;t actually confirmed that GPT-6 uses the same tokenizer as the GPT-5 family yet - there&#x27;s an angry issue about it - but I found this commit by William Liu which reports on an experiment he ran confirming that the tokenizers are likely the same:
+All seven GPT models (5.5, 5.6 Sol/Terra/Luna, 6 Astra/Sol/Luna) report 44,794 tokens and match each other on every one of the 31 fixtures. GPT-6 introduces no input-count change on this corpus.
+Tags: projects, ai, openai, generative-ai, llms, tokenization</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-10-08</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              ttok 0.4
+              <span class="post-metadata">(3 min | 808 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Oct/8/ttok/>Release: ttok 0.4
+ttok is my CLI tool for counting tokens, using OpenAI&#x27;s open source tiktoken library.
+It hasn&#x27;t been in updated in a couple of years, but I finally fixed a Click warning, updated CI, and added a --list-models command to list available models.
+It works with uvx, so you can count tokens in anything like this:
+cat file.txt | uvx ttok
+
+Tags: projects, ai, openai, generative-ai, llms, tokenization</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -3136,6 +3323,18 @@ The post CodeQL 2.27.1 adds C and C++ query and Kotlin 2.4.20 support appeared f
       <article>
           <details>
             <summary>
+              Lowe’s answers millions of home improvement questions with OpenAI
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/lowes>Lowe’s uses OpenAI models to power Mylow and Mylow Companion, helping customers and associates answer 25M+ questions and move home improvement projects forward.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Default Enablement of Copilot features for Copilot Business and Enterprise
               <span class="post-metadata">(5 min | 1502 words)</span> 
             </summary>
@@ -5578,192 +5777,6 @@ The post Xcode 27 runner image now runs on macOS 27 appeared first on The GitHub
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/put-data-to-work>Meet the Data agent in ChatGPT Work. Connect company data, uncover insights, and build interactive dashboards with AI using natural language.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Introducing ChatGPT for Financial Services
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/introducing-chatgpt-financial-services>Introducing ChatGPT for Financial Services, combining built-in financial data and GPT-6 Astra for research, modeling, and client-ready materials.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Expanding AI access and cyber defense for federal, state, local, and tribal governments
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/expanding-ai-access-us-government>OpenAI and GSA will offer eligible federal, state, local, and tribal governments $0 license fees, 50% off usage, and expanded cyber defense support.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Calif Research
-              <span class="post-metadata">(3 min | 843 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Sep/10/calif-research/>Today, we&#x27;re releasing a demo of WeWorm, the first zero-click worm to spread through WeChat calls across iOS and Android. [...]
-The victim does not need to answer the call, or interact with their phone at all. Even if they do answer, they hear nothing, and the exploit still succeeds. [...]
-Working with AI, our team found the bug and wrote the first remote code execution (RCE) exploit in about two days. Building the worm took one more week.
-A worm at this scale used to be the kind of thing that took a larger team months. AI can already do most of the work here. Our team provided the judgment about what to target and how to test it safely.
-
-— Calif Research, WeWorm
-Tags: ai-security-research, ai, llms, security, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Introducing the Agents API
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/introducing-the-agents-api>Build and launch cloud agents with the Agents API, a managed service powered by the Codex harness for orchestration, long-running sessions, and tool use.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Build more natural voice experiences with GPT‑Live‑1 in the API
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/introducing-gpt-live-1-in-the-api>GPT‑Live‑1 brings natural, full-duplex voice conversations to the API, with stronger instruction following, custom voices, and telephony support.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-09-09</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              .blend URL Viewer
-              <span class="post-metadata">(3 min | 979 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Sep/9/blender-viewer/>Tool: .blend URL Viewer
-I&#x27;m continuing to have a lot of fun with GPT-6 Astra and Blender (see my TIL).
-As a big fan of the Imperial Fabergé Easter eggs, I&#x27;ve always thought it would be fun to make some new ones that celebrate popular culture.
-Yesterday I decided to try out the new ChatGPT Images 2.5 by running this prompt:
-Generate a photo of a faberge egg that&#x27;s themed after the TV show Pluribus - research first
-It gave me this - honestly not bad for a first attempt!
-
-Then, just to see what would happen, I pasted that image into Codex running GPT-6 Astra (high) and prompted:
-Use your blender local skill to create a blender model of this faverge egg
-(Here&#x27;s the skill file, which I created like this.)
-It churned away for 17m51s and built me several .blend files. I already had this vibe-coded Blender viewing experiment lying around, so I added that to my tools collection and now you can use it to see my Pluribus blender model in your browser:
-
-Tags: 3d, javascript, tools, ai, generative-ai, llms, blender, coding-agents, codex, gpt-6-astra</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              npm extends recovery-code security holds to all accounts
-              <span class="post-metadata">(4 min | 1330 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-09-09-npm-extends-recovery-code-security-holds-to-all-accounts>npm now places a temporary 72-hour security hold on any account after a successful recovery-code sign-in, extending a protection that previously applied only to high-impact accounts. This change applies to…
-The post npm extends recovery-code security holds to all accounts appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              CodeQL 2.27.0 adds support for Linux ARM64
-              <span class="post-metadata">(6 min | 1729 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-09-09-codeql-2-27-0-adds-support-for-linux-arm64>CodeQL 2.27.0 is now available on Linux ARM64, adds a new Rust security query, expanded framework coverage for Java/Kotlin and C#, and analysis accuracy improvements across multiple languages. CodeQL is…
-The post CodeQL 2.27.0 adds support for Linux ARM64 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Enterprise managed permissions for GitHub Copilot agent operations
-              <span class="post-metadata">(4 min | 1329 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-09-09-enterprise-managed-permissions-for-github-copilot-agent-operations>If you administer GitHub Copilot Business or GitHub Copilot Enterprise, you can now centrally control which agent operations are blocked, require human approval, or can proceed without a prompt. Managed…
-The post Enterprise managed permissions for GitHub Copilot agent operations appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub Advanced Security expands trial availability
-              <span class="post-metadata">(6 min | 1827 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-09-09-github-advanced-security-expands-trial-availability>More GitHub Enterprise Cloud customers can now start a self-serve GitHub Advanced Security trial to evaluate GitHub Code Security and GitHub Secret Protection. Eligibility has expanded from enterprises with up…
-The post GitHub Advanced Security expands trial availability appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Block pull requests with exposed secrets from merging
-              <span class="post-metadata">(5 min | 1599 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-09-09-block-pull-requests-with-exposed-secrets-from-merging>Repository rulesets allow you to easily add scalable protections across your repositories. Starting today, you can use repository rulesets to block pull requests from merging when the pull request introduces…
-The post Block pull requests with exposed secrets from merging appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Paul Christiano joins OpenAI Foundation Board
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/paul-christiano-joins-openai-foundation-board>Paul Christiano joins the OpenAI Foundation Board and its Safety and Security Committee, bringing experience in AI alignment, safety, and standards.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              The AI policy window is open. We need to act.
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/ai-policy-window>Chris Lehane argues that stronger AI capabilities require stronger safety evidence, shared standards, and durable policy action while the policy window remains open.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
