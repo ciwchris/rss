@@ -25,6 +25,177 @@
 
   <ul>
     <li>
+      <time>2026-10-12</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              Hello Python 3.15, goodbye 3.10, and now I can use 3.11
+              <span class="post-metadata">(6 min | 1703 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Oct/12/python-3-15/>Python 3.15 is here! Here&#x27;s the essential What&#x27;s new in Python 3.15 guide, this year curated by 3.14 and 3.15 release manager Hugo van Kemenade. As someone who builds open source software that works in every supported Python version, I get to say goodbye to Python 3.10 and start embracing features from Python 3.11.
+
+First, some highlights from Python 3.15.
+
+Explicit lazy imports
+
+I&#x27;m most excited about Explicit lazy imports from PEP 810. These let you import modules like so:
+
+lazy import json
+lazy from pathlib import Path
+
+The module will then be imported the first time those symbols are used in the code that follows.
+
+My LLM CLI tool implements plugins. I had to recommend manual lazy imports in the plugin author documentation, because simply installing plugins that used heavy dependencies such as sentence_transformers could add multiple seconds to every invocation of the llm command. Lazy imports directly address this startup cost.
+
+Unpacking in comprehensions
+
+The new [*sublist for sublist in lists] unpacking syntax is neat. Here&#x27;s an illustration lifted from the documentation:
+
+lists &#x3D; [[1, 2], [3, 4], [5]]
+[*L for L in lists]
+# [1, 2, 3, 4, 5]
+# equivalent to [x for L in lists for x in L]
+
+sets &#x3D; [{1, 2}, {2, 3}, {3, 4}]
+{*s for s in sets}
+# {1, 2, 3, 4}
+# equivalent to {x for s in sets for x in s}
+
+dicts &#x3D; [{&#x27;a&#x27;: 1}, {&#x27;b&#x27;: 2}, {&#x27;a&#x27;: 3}]
+{**d for d in dicts}
+# {&#x27;a&#x27;: 3, &#x27;b&#x27;: 2}
+# equivalent to {k: v for d in dicts for k,v in d.items()}
+
+PEP 798: Unpacking in Comprehensions by Adam Hartz and Erik Demaine proposed this as an extension of the unpacking syntax from PEP 448, which landed in Python 3.5 back in 2015.
+
+A sampling profiler
+
+Python&#x27;s existing tracing profiler has been renamed from cProfile to profiling.tracing, and has been joined by an exciting new sampling profiler called Tachyon, aka profiling.sampling.
+
+Sampling profilers work by periodically capturing stack traces from running processes, then using those to calculate which functions have the most time spent inside of them. They&#x27;re very low overhead and can provide a deep insight into running systems, without needing to instrument those systems first.
+
+I&#x27;ve previously used tools like py-spy for this. Now this capability is baked into the standard library.
+
+If you have the PID of an existing Python 3.15 process you can start gathering samples by running this (I had to use sudo on macOS):
+
+
+sudo uv run --python 3.15 python -m profiling.sampling attach 1234
+
+Interact with the main program a bit, then hit Ctrl+C to stop gathering and see a report, which looks something like this:
+
+
+
+It can also produce flame graphs like this and heat maps like this, and can even output a format that can be viewed in the Firefox profiler UI.
+
+3.15 isn&#x27;t much faster than 3.14
+
+Miguel Grinberg investigated How fast is Python 3.15? the other day against the 3.15.0rc3 release and found performance to be mostly the same as 3.14, with the exception of the experimental JIT. The JIT gave a 1.2x boost over the standard 3.15 interpreter (on a Fibonacci test), the first time Miguel observed a meaningful JIT performance increase.
+
+Miguel&#x27;s explorations of 3.14 last year found significant boosts against Python 3.13 across many more categories.
+
+Upgrading to Python 3.15 with uv
+
+I used the following sequence of commands to get uv to use Python 3.15 on my Mac. First I had to upgrade uv itself to ensure it knew about the new release:
+
+
+uv self update
+
+Then I installed the stable 3.15 release:
+
+
+uv python install 3.15
+
+And told uv that I wanted that to be the default for every uv run command, unless the project itself pinned a different version:
+
+
+uv python pin --global 3.15
+
+Now the following reports 3.15 as the version:
+
+
+uv run python --version
+
+I already have a bunch of tools installed using uv tool install. I reinstalled them to use Python 3.15 like this:
+
+
+uv tool upgrade datasette --python 3.15
+
+Then I can confirm the version like this:
+
+
+datasette --get /-/versions.json | jq
+
+Highlights from Python 3.11
+
+The release of 3.15 means that Python 3.10 (released in 2021) is officially no longer supported.
+
+My policy for my main open source projects is to keep them working in every supported Python version. I can now drop 3.10 and start using features that were introduced in 3.11.
+
+Here&#x27;s the What&#x27;s new in Python 3.11 document. I finally get to rely on tomllib being available!
+
+Datasette makes extensive use of asyncio. 3.11 adds TaskGroup and timeout(), and several more new features.
+
+datetime.UTC is a new in 3.11 alias for datetime.timezone.utc.
+
+Python&#x27;s SQLite support got some significant upgrades in 3.11, including:
+
+
+
+setlimit() and getlimit() expose a mechanism for setting SQLite runtime limits from Python.
+
+
+create_window_function() lets us create custom window functions in Python, as a class with step(), value(), inverse(), and finalize() methods.
+
+
+blobopen() provides an efficient mechanism for partial reads and writes of large BLOB binary values stored in a SQLite row.
+
+You can now call set_authorizer(None) to remove a SQLite authorizer. Datasette had a workaround for this!
+
+
+Plus a whole bunch of improvements to Python&#x27;s typing system.
+
+I plan to land Python 3.11 improvements to a bunch of my projects over the next few weeks. Here&#x27;s my first Datasette PR removing that set_authorizer(None) workaround.
+
+I&#x27;ve also updated my click-app, datasette-plugin, python-lib, and llm-plugin cookiecutter templates to test against Python 3.11 through Python 3.15.
+Tags: open-source, profiling, python, sqlite, uv</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Push attribution for commits in limited public preview
+              <span class="post-metadata">(5 min | 1517 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-10-12-push-attribution-public-preview>GitHub now durably records the authenticated user who pushed each commit and surfaces that pusher identity in the UI and API alongside the existing author and committer fields. Commit author…
+The post Push attribution for commits in limited public preview appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              datasette-ports 0.4
+              <span class="post-metadata">(3 min | 789 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Oct/12/datasette-ports/>Release: datasette-ports 0.4
+My plugin for detecting and listing all Datasette instances on the current machine now works with the latest version, and displays the detected PID as well. Knowing the PID makes it easier to attach the new Python 3.15 profiler.
+Tags: datasette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-10-11</time>
 
       <section>
@@ -5329,110 +5500,6 @@ The --quality option sets the quality - without that option the WebP file will b
 In my experience WebP screenshots are almost always significantly smaller in file size than their JPEG or PNG equivalents. See the PR for some examples.
 I shipped this feature so I could use it to generate the screenshot for my new commit-rewriter tool.
 Tags: playwright, shot-scraper</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-09-12</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              Generating running routes with GPT-6 Astra and ChatGPT Work
-              <span class="post-metadata">(4 min | 1112 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Sep/12/astra-running-routes/>Here&#x27;s a neat thing I had ChatGPT Work with GPT-6 Astra (Max) do this morning:
-
-
-I live at &lt;my address&gt;. Figure out 5K and 10K running routes from me that loop from my house. Use OSM data.
-
-
-It worked for 27 minutes and produced exactly what I&#x27;d asked for, as both an embedded visualization and downloadable GPX file and GeoJSON files. Here&#x27;s that 5K route:
-
-
-
-When I asked it how it had created the route, it replied:
-
-
-I used Nominatim to locate the address and Overpass to download local OpenStreetMap roads and trails, then calculated the loops locally.
-
-
-Frustratingly, the actual code it ran and exact details of what it did weren&#x27;t visible to me in the ChatGPT UI. I see this lack of transparency is an anti-feature.
-
-By the time I thought to ask for a copy of the Python code it had used, ChatGPT was unable to provide it. This appears to be because the thread had been compacted. I think any LLM system that uses compaction needs to both preserve the pre-compacted text and make that text available via agent tool calls, to protect against this kind of problem.
-
-As for displaying the map to me, that used the visualize skill. It created a file called /workspace/el-granada-5k-share.html to embed directly into the ChatGPT UI.
-
-Here&#x27;s a copy of that HTML, which starts like this:
-
-
-&lt;div id&#x3D;&quot;eg-share-loop&quot;&gt;
-  &lt;div class&#x3D;&quot;viz-row&quot;&gt;&lt;h3&gt;El Granada harbor loop&lt;/h3&gt;&lt;span class&#x3D;&quot;text-small&quot;&gt;5.1 km&lt;/span&gt;&lt;/div&gt;
-  &lt;div id&#x3D;&quot;eg-share-stage&quot;&gt;&lt;/div&gt;
-  &lt;div class&#x3D;&quot;text-small text-muted&quot;&gt;Map data © &lt;a href&#x3D;&quot;https://www.openstreetmap.org/copyright&quot; target&#x3D;&quot;_blank&quot; rel&#x3D;&quot;noopener&quot;&gt;OpenStreetMap contributors&lt;/a&gt;&lt;/div&gt;
-  &lt;style&gt;
-    #eg-share-loop { width:100%; }
-    #eg-share-loop #eg-share-stage { width:100%; margin:8px 0; }
-    #eg-share-loop .eg-share-map { display:block; width:100%; touch-action:none; }
-    #eg-share-loop .eg-share-map text { fill:var(--foreground); font-size:12px; font-weight:400; }
-    #eg-share-loop .eg-share-label { paint-order:stroke; stroke:var(--background); stroke-width:3px; stroke-linejoin:round; }
-  &lt;/style&gt;
-  &lt;script type&#x3D;&quot;application/json&quot; id&#x3D;&quot;eg-share-data&quot;&gt;{&quot;route&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[-122.467425,37.4997753] ...&lt;/script&gt;
-  &lt;script src&#x3D;&quot;https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js&quot;&gt;&lt;/script&gt;
-  &lt;script&gt;
-  (() &#x3D;&gt; {
-    const root&#x3D;document.getElementById(&#x27;eg-share-loop&#x27;);
-
-
-The &lt;script type&#x3D;&quot;application/json&quot;&gt; element contains the full geometry needed to render both the running route and the map itself, using D3, which is loaded from an allow-listed CDN location described in this section of the visualize skill:
-
-
-External resources
-
-
-The CSP allows only cdnjs.cloudflare.com, esm.sh, cdn.jsdelivr.net, unpkg.com, fonts.googleapis.com, fonts.gstatic.com, and fonts.bunny.net. Other origins are blocked and fail silently.
-
-
-
-    
-        
-Tags: geospatial, ai, d3, openai, generative-ai, chatgpt, llms, skills, gpt-6-astra</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              California Brown Pelican
-              <span class="post-metadata">(2 min | 683 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Sep/12/sighting-399708714/>California Brown Pelican, in San Mateo County, CA, US
-The Pacifica Pier shut down at the start of June after a crack in the concrete walkway made access to the pier unsafe.
-It has since been entirely taken over by pelicans!
-Tags: wildlife</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Paul Ford
-              <span class="post-metadata">(3 min | 802 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Sep/12/paul-ford/>For a while, I must admit, it looked as if software developer roles like mine were done for. How could we fight against tireless robots? But our industry is slowly realizing that making truly cutting-edge software still requires humans to think and work together, to maximize their skill sets and to practice their respective crafts. A.I. can write very good software, but it also makes it easy to do someone else’s job badly, which is part of why all those projects fail. Now that everyone can code, it’s become clearer why many shouldn’t.
-
-— Paul Ford, A.I. Was Supposed to Give Us New Killer Apps. What Happened?
-Tags: paul-ford, generative-ai, deep-blue, ai, llms</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
