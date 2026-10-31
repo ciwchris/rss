@@ -25,6 +25,38 @@
 
   <ul>
     <li>
+      <time>2026-10-31</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              How We Took Over ChatGPT Accounts
+              <span class="post-metadata">(4 min | 1074 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Oct/31/how-we-took-over-chatgpt-accounts/>How We Took Over ChatGPT Accounts
+HTML previews), where interactive custom HTML apps are displayed in a sandboxed iframe.
+It&#x27;s important that HTML in these stays tightly sandboxed to avoid untrusted code interacting with OpenAI APIs and accessing private data.
+Parameter found quite a complex attack chain. OpenAI use the MathLive JavaScript library as part of their graph support, and that library includes its own virtual keyboard, which can be triggered in the parent page via postMessage() from the sandboxed iframe.
+That message receiving code uses innerHTML, so anything that sends a message can add custom HTML to the parent - and there was no mechanism to prevent other sandboxed frames, including HTML preview frames, from calling that method.
+This meant untrusted code in an iframe could insert HTML, and while innerHTML doesn&#x27;t directly execute script elements it could be used to inject a new iframe without sandbox restrictions.
+OpenAI’s CSP rules blocked inline scripts entirely, and only allowed script loading from a handful of domains, but one of those was YouTube - and the YouTube oEmbed endpoint could be used to reflect JavaScript back in a way that executed it.
+Once the attack had JavaScript execution on ChatGPT, it was trivial to fetch private user data from APIs and exfiltrate it via an image reference.
+The end result: you could create a ChatGPT share URL which, when visited by another signed-in user, could exfiltrate their private data or take actions on their behalf.
+OpenAI closed the hole and paid out a $5,000 bug bounty, which I think was a bit cheap for a vulnerability this serious.
+
+    
+Via Hacker News
+Tags: iframes, javascript, sandboxing, security, xss, openai, chatgpt, content-security-policy</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-10-30</time>
 
       <section>
