@@ -31,6 +31,30 @@
       <article>
           <details>
             <summary>
+              If in doubt, delete the uv.lock file
+              <span class="post-metadata">(3 min | 909 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Nov/1/delete-uv-lock-first/>I&#x27;ve been getting the occasional confusing Python dependency error since switching over to Python 3.15 and the rule I&#x27;m having to remember is:
+If in doubt, delete the uv.lock file
+Most of my projects are libraries which don&#x27;t include a uv.lock file, since it&#x27;s rude for a library dependency to lock versions for anything else that uses it.
+Running uv run pytest etc tends to leave uv.lock files lying around, which are listed in .gitignore and so do not get committed to my repositories.
+But... sometimes that uv.lock pins a version of a dependency that doesn&#x27;t yet have a Python 3.15 wheel. An example from earlier today:
+error: Failed to build &#x60;watchfiles&#x3D;&#x3D;1.1.1&#x60;
+  cause: Call to &#x60;maturin.build_wheel&#x60; failed
+
+error: the configured Python interpreter version (3.15) is newer
+than PyO3&#x27;s maximum supported version (3.14)
+
+Deleting that file and running uv run pytest again usually fixes the problem.
+Tags: uv, til, python</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Quoting Kyle Kingsbury
               <span class="post-metadata">(3 min | 824 words)</span> 
             </summary>
