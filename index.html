@@ -31,6 +31,28 @@
       <article>
           <details>
             <summary>
+              datasette #3046: Don&#x27;t serve link: rel&#x3D;next HTTP headers to Firefox for HTML pages
+              <span class="post-metadata">(3 min | 894 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Nov/7/link-rel-next/>datasette #3046: Don&#x27;t serve link: rel&#x3D;next HTTP headers to Firefox for HTML pages
+HTTP prefetch to the next page of rows in that table.
+This was happening because Datasette pages serve an HTTP link header like this:
+link: &lt;https://latest.datasette.io/fixtures/compound_three_primary_keys?_next&#x3D;a%2Cd%2Cv&gt;; rel&#x3D;&quot;next&quot;
+This is bad. A tiny fraction of the visitors to one of those pages will click the &quot;next&quot; link, which means their browser is fetching unnecessary data and the Datasette server is having to render an entire page that then gets thrown away.
+I dug in and learned that Firefox has an issue that has been open for 24 years about this behavior...
+And one of the early comments on that issue links to my blog post from 2002 complaining about this feature. I hadn&#x27;t just forgotten that I had written about it, I had forgotten the feature entirely!
+
+
+    
+Tags: firefox, html, mozilla, datasette</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
               Copilot code review: API management and review overview updates
               <span class="post-metadata">(7 min | 1973 words)</span> 
             </summary>
@@ -4371,200 +4393,6 @@ Tags: github, python, github-actions, chatgpt</a>
 The post New controls and chat improvements in Copilot for JetBrains appeared first on The GitHub Blog.</a>
             </div>
             <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting The New York Times
-              <span class="post-metadata">(3 min | 788 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Oct/10/the-new-york-times/>Anthropic detailed the activity of its A.I. agents in a blog post on Friday, without naming the targeted websites. But two sources with knowledge of the incidents said Anthropic’s A.I. agents had submitted 20 visa applications through a form available on the State Department’s website. All the applications were incomplete and were not processed, they said.
-
-— The New York Times, Anthropic Agents Tried to Fill Out Visa Forms on State Dept. Website
-Tags: accidental-cyberattacks, anthropic, generative-ai, ai, llms</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-10-09</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              GitHub Copilot weekly releases — October 5
-              <span class="post-metadata">(5 min | 1567 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-10-09-github-copilot-weekly-releases-october-5>This week’s updates make Copilot easier to use across accounts and environments, with more control over what agents can access and how you manage their work. GitHub Copilot Claude Haiku…
-The post GitHub Copilot weekly releases — October 5 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Deno is joining Cloudflare
-              <span class="post-metadata">(4 min | 1105 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Oct/9/deno-is-joining-cloudflare/>Deno is joining Cloudflare
-celld back in August - their open source implementation of the Durable Objects pattern from Cloudflare Workers.
-Today, Cloudflare are acquiring Deno outright, with the goal of building on celld to &quot;make workerd self-hosting a first-class supported way to build and run apps using the Workers programming model&quot; (see the Cloudflare blog.)
-The bad news is that Deno itself will not be maintained by Cloudflare beyond the next year:
-We will support the Deno runtime for another year with monthly releases containing bug fixes and security updates. After that year we will end our development of the Deno runtime. Deno will remain open source, and we welcome others who want to continue its development.
-Deno (and Node.js) creator Ryan Dahl explained that decision in a comment on Hacker News:
-It&#x27;s a joint decision and I agree with it. I&#x27;m most invested in its success and have put the most work into it - and I no longer think it&#x27;s where I can do the most important work. There are some good ideas in Deno and it&#x27;s well engineered - but it ultimately is not solving big problems. It has been sucked into the gravity well of node compatibility, which forces it to behave exactly as Node does. Why reimplement Node? It works. Marginal performance or UX or security benefits are not enough.
-I&#x27;m interested in building powerful new abstractions. celld has been working remarkably well, depending only on object storage for coordination and persistence. It is not just a slightly different API to interact with the file system or network - it&#x27;s an entirely new model for server development.
-My favorite feature of Deno has long been the permissions system, where you can run a Deno script and specify exactly which files and folders it can read and write to, and which network hosts it can access.
-Node.js has a similar permissions model these days, added in Node v20.0.0 in April 2023 and declared stable in Node v22.13.0 in January 2025. They don&#x27;t yet support allow-listing specific network hosts though - networking is either on or off.
-
-    
-Via Hacker News
-Tags: cloudfront, javascript, nodejs, ryan-dahl, sandboxing, deno</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              CodeQL 2.27.2 improves C++, Go, Rust, and JavaScript analysis
-              <span class="post-metadata">(6 min | 1892 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-10-09-codeql-2-27-2-improves-c-go-rust-and-javascript-analysis>CodeQL 2.27.2 is now available, adding a C++ regular-expression parser and analysis improvements across several languages. CodeQL is the static analysis engine behind GitHub code scanning, which helps you find…
-The post CodeQL 2.27.2 improves C++, Go, Rust, and JavaScript analysis appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Quoting Matthew Green
-              <span class="post-metadata">(3 min | 827 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Oct/9/matthew-green/>Everyone is very concerned about being respectable, so I’m going to be the goofball who raises worst-case possibilities. I think there is a 1% chance we live in Minicrypt, and a 15% chance we functionally lose confidence in our existing public-key encryption algorithms. [...]
-The problem here is that the speed of AI producing surprises, and the speed of human beings replacing standards (even with the very best AI assistance) are just orders of magnitude different. You only recover from a surprise like this if you do the preparation in advance.
-
-— Matthew Green, on Twitter. I looked it up and Minicrypt is Russell Impagliazzo’s hypothetical world in which public-key encryption is impossible.
-Tags: ai-security-research, matthew-green, cryptography, standards, llms, ai, generative-ai</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              A new feature for my blog, built using my voice
-              <span class="post-metadata">(7 min | 2013 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Oct/9/built-using-my-voice/>I shipped a new feature for my blog today: the Newsletters page, which offers an index of all of the newsletters I&#x27;ve sent out, both my free weekly Substack and my monthly sponsors-only updates. I built the feature almost entirely using my voice, chatting away to my laptop while I cooked dinner.
-
-Codex voice mode
-
-I used the ChatGPT desktop app for this, in the Codex tab, using the voice conversation mode, running against a local development environment. Here&#x27;s what that looks like:
-
-
-
-I started the session against my local simonwillisonblog checkout by typing:
-
-
-Start dev server and open in browser
-
-
-This gave me a preview of the site that it would be working on, and meant that I could later ask it to show me the new pages so I could visually track its progress.
-
-Then I clicked the &quot;Start new voice chat&quot; button - that&#x27;s not the microphone button, it&#x27;s the one to the right of it - and set my laptop up in the kitchen so I could talk to it while I cooked.
-
-Talking to my computer
-
-I had a pretty good idea of what I wanted to build, and it&#x27;s a simple enough Django feature that I was certain the model (in this case GPT-6 Astra High) would be able to do it. A new model, a migration, some view code, templates, and a couple of import functions to populate the database from external sources.
-
-Here&#x27;s an extract of my voice transcript that was captured by Codex:
-
-
-Um, they do not. Um, this is going to be a new type of content. Um, it&#x27;s not going to show up... Oh, hold on. Yeah, no- I do not want this to show up in my, um, tag pages and date archive pages and... Actually, no, I think... I don&#x27;t want it on the tag pages. I don&#x27;t want it on the, um, blog index page. But I think I do want it to show up on the date-based pages. You know, if you navigate to September the 19th, and I sent a newsletter on that page, I think I want that to show up. So... this is- so I think we probably need a new model. The other thing is that I want them searchable, uh the Substack ones are not searchable, because those are actually just copies of other s- on content on my blog. These monthly ones do contain unique content, and spe- and once they&#x27;re... published, like once they&#x27;re made public a month after they&#x27;ve gone out, I want them to show up on my search results.
-
-
-Apparently this was clear enough that the model knew what I wanted to build! You can read the full transcript, disfluencies and all, in this Gist.
-
-We went on like this for about half an hour (the time it took to cook dinner). The model would reply and occasionally ask clarifying questions, then get to work modifying the code.
-
-What we built
-
-We got a surprisingly long way entirely by voice:
-
-
-A new model and migration to represent imported newsletters in Django, plus Django Admin configuration for that
-
-Four working imports:
-
-The most recent Substack items via RSS
-
-Every other Substack item via their undocumented API, which GPT-6 Astra knew about (it tried /api/v1/archive directly) and then ran a search to figure out how to paginate it and found this article by Karen Spinner
-
-All of my published monthly newsletters from my simonw/monthly-newsletter-archive GitHub repository
-
-My most recent private sponsors-only newsletter from a private repository
-
-
-
-The /newsletters/ and /newsletters/2026/ public archive pages
-
-Newsletters showing up on day and month archive pages too, but not on tag pages or my homepage
-
-Weekly Substack newsletters link to Substack; archived monthly newsletters have their own pages
-
-Integration with my site search engine
-
-
-It was almost ready to ship. The catch was the imports: Astra offered to export data from my local copy so I could import that into production, but I wanted it to work like my other import scripts. Since some of the data lived in a private GitHub repository, this would involve creating a new API key, and for that I knew I&#x27;d have to sit at the keyboard for a while.
-
-Finishing it with a review
-
-Once I had finished cooking and judged it mostly feature-complete, I had Codex create a branch and open a pull request.
-
-I reviewed the code in the GitHub PR interface. It was nearly what I needed, except it had chosen to use Git in a subprocess for one of the import scripts. I needed one of the imports to pull from a private Git repository, so I figured the API would be a better bet. I switched to typing and had Codex swap that out for an API-based import instead.
-
-You can see the changes I made during the review in the extra commits on the PR. I fixed the import mechanism and made a few tweaks to the display of those public pages. It took an additional half hour of typing-based prompting to get to the point where I was happy to deploy it to production by landing the PR.
-
-The end result
-
-You can see the end result at the new newsletters index page, or view the page for a previous monthly newsletter.
-
-
-
-The index page shows my most recent Substack weekly newsletters and GitHub sponsors monthly newsletters mixed together in reverse chronological order. Further down the page are links to my by-year archive pages.
-
-GPT-6 Astra designed the page, and then tweaked that design based on my vocal feedback from glancing at the local preview across the kitchen.
-
-Better for multi-tasking than as a daily driver
-
-OpenAI love using voice-driven demos like this one for things like DevDay - and they do work well in that environment. I don&#x27;t think this is going to be a daily driver for me though.
-
-I&#x27;ve written before about how much &quot;work&quot; I get done using ChatGPT voice mode on my phone while walking the dog - mostly research and brainstorming, but occasionally actual development work by having ChatGPT write and test out snippets of code.
-
-This feels different. The addition of the visual preview, plus being able to type or paste things in via the keyboard when I need to communicate something that doesn&#x27;t work vocally, makes this a much more powerful way of interacting with a coding agent.
-
-I still switch back to typing once I get down to the details of things though. Being able to paste in examples and error messages, or directly highlight the code or feature that needs changing, remains more efficient than trying to describe it in words.
-
-I mainly work from home, which is good because there&#x27;s no way I&#x27;d want to talk to my computer like this in a shared workspace!
-
-The killer feature for me is the ability to multi-task. I usually cook with a podcast or TikTok running; now I can actually build stuff instead.
-Tags: text-to-speech, ai, openai, generative-ai, llms, newsletter, coding-agents, codex, speech-to-text, site-upgrades</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
           </details>
       </article>
 
