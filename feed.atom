@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-11-11T20:58:25.475Z</updated>
+    <updated>2026-11-12T02:02:38.774Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
@@ -14,6 +14,65 @@
         <summary type="html"><![CDATA[A conversation with Sam Nickless, Partner and Chief Executive Officer at Gilbert + Tobin.]]></summary>
         <author>
             <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Gemini Decisions API]]></title>
+        <id>https://simonwillison.net/2026/Nov/11/gemini-decisions-api/</id>
+        <link href="https://simonwillison.net/2026/Nov/11/gemini-decisions-api/"/>
+        <updated>2026-11-11T22:03:25.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/">Gemini Decisions API</a></strong></p>
+Google join <a href="https://simonwillison.net/2026/Sep/21/jev/">Jev</a> and <a href="https://simonwillison.net/2026/Oct/6/llm-openai-decisions/">OpenAI</a> in the decision model category with "Gemini Decision 1". This new model API is almost identical to Jev: it supports the same three types of questions (yes/no, choice, and rubric-scoring) and even reuses Jev's term "Noul" for a yes/no question.</p>
+<p>It's priced the same as the GPT-6 Luna decision model: 10 cents per million input tokens, and output is free. Jev remains the cheapest of the three, at 4.2 cents per million.</p>
+<p>Jev is text (and JSON) only. OpenAI can handle text and images. Gemini Decision 1 is fully multi-model: it covers text, images, audio, video, and PDFs.</p>
+<p>I tested it against video by passing these questions to it along with my <a href="https://simonwillison.net/2026/Nov/10/yonkers-rises/">Yonkers stomping robot</a> video file:</p>
+<pre><code>dragon: Does this video have a dragon in it?
+robot: Does this video have a robot in it?
+france: Is this video set in France?
+usa: Is this video set in the USA?
+</code></pre>
+<p>Jev and OpenAI both return 1.0 or 0.0 for yes/no questions, but Gemini insists on being a little less confident than that:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-ent">"dragon"</span>: {
+    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>yes_no<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"probability"</span>: <span class="pl-c1">0.04976021841520312</span>
+  },
+  <span class="pl-ent">"robot"</span>: {
+    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>yes_no<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"probability"</span>: <span class="pl-c1">0.9234055387792485</span>
+  },
+  <span class="pl-ent">"france"</span>: {
+    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>yes_no<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"probability"</span>: <span class="pl-c1">0.08329171353166241</span>
+  },
+  <span class="pl-ent">"usa"</span>: {
+    <span class="pl-ent">"type"</span>: <span class="pl-s"><span class="pl-pds">"</span>yes_no<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"probability"</span>: <span class="pl-c1">0.9230459995157706</span>
+  }
+}</pre></div>
+
+    <p><small></small>Via <a href="https://news.ycombinator.com/item?id=50456791">Hacker News</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/jev">jev</a>, <a href="https://simonwillison.net/tags/decision-models">decision-models</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[aws-emulator]]></title>
+        <id>https://simonwillison.net/2026/Nov/11/aws-emulator/</id>
+        <link href="https://simonwillison.net/2026/Nov/11/aws-emulator/"/>
+        <updated>2026-11-11T21:18:30.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://github.com/aws/aws-emulator">aws-emulator</a></strong></p>
+Finally, an official emulator from AWS to run tests against a local clone of their many different services without having to provision a paid API key to do so.</p>
+<p>It's written in Rust by a huge swarm of agents - 29,684 commits in the first three weeks of the project. Swaminathan (Swami) Sivasubramanian wrote about <a href="https://www.allthingsdistributed.com/2026/11/aws-emulator-and-the-engineers-job-when-agents-write-the-code.html">how it came to be</a> in a guest post on Werner Vogels' blog.</p>
+<p>It currently requires Docker to run on macOS or Windows. I'm hoping they fix that in the future - it would be great if you could download a single binary and use that as part of a standard test suite in other languages and on other platforms.
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/amazon">amazon</a>, <a href="https://simonwillison.net/tags/amazon-web-services">amazon-web-services</a>, <a href="https://simonwillison.net/tags/testing">testing</a>, <a href="https://simonwillison.net/tags/werner-vogels">werner-vogels</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/rust">rust</a>, <a href="https://simonwillison.net/tags/docker">docker</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
         </author>
     </entry>
     <entry>
@@ -3926,51 +3985,6 @@ The post Enterprise managed settings enforcement updates appeared first on The G
 The post Improved detection for withdrawn Dependabot alerts appeared first on The GitHub Blog.]]></summary>
         <author>
             <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Geoffrey Huntley]]></title>
-        <id>https://simonwillison.net/2026/Oct/13/geoffrey-huntley/</id>
-        <link href="https://simonwillison.net/2026/Oct/13/geoffrey-huntley/"/>
-        <updated>2026-10-13T13:32:00.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://ghuntley.com/agency/"><p>If the agent isn't using my diagnostics library, I could introspect and update AGENTS.md, but there's still a delta, and it'll drift. Instead, I write a pre-commit hook that checks the git diff for direct calls to observability modules that bypass my diagnostics module. Boom: fail the commit, inject a prompt telling the agent to use the diagnostics library. All of a sudden it's ten out of ten.</p></blockquote>
-<p class="cite">&mdash; <a href="https://ghuntley.com/agency/">Geoffrey Huntley</a>, nobody should type code by hand anymore. here's what's left.</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/git">git</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/geoffrey-huntley">geoffrey-huntley</a>, <a href="https://simonwillison.net/tags/llms">llms</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Search and filter for budgets now available]]></title>
-        <id>https://github.blog/changelog/2026-10-12-search-and-filter-for-budgets-now-available</id>
-        <link href="https://github.blog/changelog/2026-10-13-search-and-filter-for-budgets-now-available"/>
-        <updated>2026-10-13T12:06:09.000Z</updated>
-        <summary type="html"><![CDATA[The “Budgets and alerts” page in your GitHub billing settings now shows all of your budgets in one list that you can search and filter. Whether you manage budgets for…
-The post Search and filter for budgets now available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Code scanning AI Scan metrics in security overview]]></title>
-        <id>https://github.blog/changelog/2026-10-13-code-scanning-ai-scan-metrics-in-security-overview</id>
-        <link href="https://github.blog/changelog/2026-10-13-code-scanning-ai-scan-metrics-in-security-overview"/>
-        <updated>2026-10-13T12:03:17.000Z</updated>
-        <summary type="html"><![CDATA[Organization and enterprise administrators can now observe the impact of AI Scan for pull requests in security overview. New metrics show how many AI Scan findings were generated, resolved, the…
-The post Code scanning AI Scan metrics in security overview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Higgsfield takes AI video from 1 minute to over 10]]></title>
-        <id>https://openai.com/index/higgsfield-longer-videos-voice</id>
-        <link href="https://openai.com/index/higgsfield-longer-videos-voice"/>
-        <updated>2026-10-13T12:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Higgsfield brings creators longer videos with GPT-6 Astra, precise visuals with GPT-Image-2.5, and a path to voice filmmaking with GPT-Live.]]></summary>
-        <author>
-            <name>OpenAI News</name>
         </author>
     </entry>
 </feed>
