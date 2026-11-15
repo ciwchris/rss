@@ -2,10 +2,38 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-11-15T00:29:50.182Z</updated>
+    <updated>2026-11-15T19:29:34.936Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[datasette-llm 0.1a11]]></title>
+        <id>https://simonwillison.net/2026/Nov/14/datasette-llm/</id>
+        <link href="https://simonwillison.net/2026/Nov/14/datasette-llm/"/>
+        <updated>2026-11-14T23:59:28.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-llm/releases/tag/0.1a11">datasette-llm 0.1a11</a></p>
+        <p><code>datasette-llm</code> is the intermediate plugin for Datasette that supports configuring LLMs for use with other Datasette plugins.</p>
+<p>This release adds support for OpenAI-compatible endpoints, so you can configure Datasette to use an LLM hosted anywhere that talks the OpenAI pseudo-standard web protocol.</p>
+<p>This means that if you're running local models with <a href="https://lmstudio.ai">LM Studio</a> or <a href="https://ollama.com">Ollama</a> or <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> (which just hit <a href="https://huggingface.co/blog/ggml-org/llama-cpp-v1">v1.0.0</a>) you can run Datasette via <code>uvx</code> like this:</p>
+<div class="highlight highlight-source-shell"><pre>wget https://datasette.io/content.db
+
+uvx --with datasette-agent datasette \
+  --root --secret 1 \
+  -s plugins.datasette-llm.default_model <span class="pl-s"><span class="pl-pds">'</span>{</span>
+<span class="pl-s">    "model": "lmstudio-qwen",</span>
+<span class="pl-s">    "model_name": "qwen/qwen3.8-27b",</span>
+<span class="pl-s">    "api_base": "http://localhost:1234/v1"</span>
+<span class="pl-s">  }<span class="pl-pds">'</span></span> content.db</pre></div>
+
+<p>And you'll get a local server running a Datasette Agent instance powered by your local model!</p>
+<p><img alt="Screenshot of a chat interface. Header bar reads &quot;home&quot; on the left and &quot;root&quot; with a hamburger menu icon on the right. Below is a back arrow, the heading &quot;Chat&quot;, a model label &quot;lmstudio-qwen&quot; and an &quot;EXPORT&quot; button. A blue user message bubble says &quot;how many repos and how many releases are there?&quot; Below it is a collapsed tool call &quot;list_databases_and_tables&quot; and an expanded tool call &quot;sql_query&quot;. Its REQUEST section shows database &quot;content&quot;, display &quot;both&quot; and the SQL: SELECT (SELECT COUNT(*) FROM repos) AS repo_count, (SELECT COUNT(*) FROM releases) AS release_count. Its RESPONSE section shows columns repo_count and release_count with a single row of 200 and 1889. Below that is a table with columns repo_count and release_count and one row: 200, 1889, followed by a &quot;View SQL query&quot; button. The assistant reply reads &quot;There are 200 repos and 1,889 releases in the content database.&quot; At the bottom is a text input with placeholder &quot;Type a message... (# to tag a table or query)&quot; and a blue &quot;Send&quot; button." src="https://static.simonwillison.net/static/2026/lmstudio-datasette-agent.webp" /></p>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/uv">uv</a>, <a href="https://simonwillison.net/tags/datasette-agent">datasette-agent</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[datasette-vega 0.7]]></title>
         <id>https://simonwillison.net/2026/Nov/14/datasette-vega/</id>
@@ -3708,65 +3736,6 @@ document.currentScript.replaceWith(
         <p>Tags: <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/deepseek">deepseek</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Quoting Addy Osmani, Morgan Westlee Lunt, and Qing Wang]]></title>
-        <id>https://simonwillison.net/2026/Oct/16/code-review/</id>
-        <link href="https://simonwillison.net/2026/Oct/16/code-review/"/>
-        <updated>2026-10-16T22:06:37.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote cite="https://claude.dev/blog/solving-code-review-at-anthropic/"><p>We think "did a human read the code?" is an imprecise proxy for "what could go wrong with this change, and which check—automated or human—is the right one to catch it?"</p>
-<p>Asking that question also changed <em>when</em> review happens. Before, review was a gate at the end of the road: write the code, open a PR, wait for your colleague.</p>
-<p>Now, review runs continuously, more like spellcheck while you write. Most changes have been reviewed and fixed by Claude at least once before a human is asked to look. This catches most routine mistakes, and saves team attention for higher-level questions and scrutiny.</p></blockquote>
-<p class="cite">&mdash; <a href="https://claude.dev/blog/solving-code-review-at-anthropic/">Addy Osmani, Morgan Westlee Lunt, and Qing Wang</a>, How the Claude Code team does code review</p>
-
-    <p>Tags: <a href="https://simonwillison.net/tags/anthropic">anthropic</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/addy-osmani">addy-osmani</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/agentic-engineering">agentic-engineering</a>, <a href="https://simonwillison.net/tags/code-review">code-review</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[How Itaú is building generative AI for its entire customer base]]></title>
-        <id>https://openai.com/index/itau-generative-ai</id>
-        <link href="https://openai.com/index/itau-generative-ai"/>
-        <updated>2026-10-16T19:00:00.000Z</updated>
-        <summary type="html"><![CDATA[With ia.i, a conversational interface, and the IARA governance platform, Itaú is applying its AI First strategy to customers and employees — in one of Brazil’s most regulated sectors.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Open source license compliance generally available]]></title>
-        <id>https://github.blog/changelog/2026-10-13-open-source-license-compliance-generally-available</id>
-        <link href="https://github.blog/changelog/2026-10-16-open-source-license-compliance-generally-available"/>
-        <updated>2026-10-16T14:00:32.000Z</updated>
-        <summary type="html"><![CDATA[Enterprises can now manage their dependencies’ licenses at scale with sophisticated, ruleset-based checks that enforce a centralized policy. Open source license compliance is now generally available for GitHub Enterprise Cloud…
-The post Open source license compliance generally available appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Oct 16th, 2026 - Smarter search widgets, Privacy Pass upgrades, and a calmer Assistant]]></title>
-        <id>https://kagifeedback.org/d/11698-oct-16th-2026-smarter-search-widgets-privacy-pass-upgrades-and-a-calmer-assistant/1</id>
-        <link href="https://kagifeedback.org/d/11698-oct-16th-2026-smarter-search-widgets-privacy-pass-upgrades-and-a-calmer-assistant/1"/>
-        <updated>2026-10-16T13:29:29.000Z</updated>
-        <summary type="html"><![CDATA[Search
-We added a small animation to the coin widget – and clicking the coin does another flip! Try it for yourself!
-
-
-
-We've increased the Quick Bangs and Quick Snaps limit from 20 to 50  #11480 @Kage), and known scam / phishing sites are now blocked when Safe Search is enabled, rather than just being downranked.
-The weather widget has been updated. Its triggers have been improved and now support more than 40 languages. This change closes several issues: #3348 @CrunchyFritos, #4525 @lawngnome, #4612 @laiz, #3326 @ak42, #6474 @bram
-
-
-Improvements and bug fixes
-Double Quotes not working properly #11354 @LC
-News search with "Belgique (BE-fr)" region filter returns Dutch results instead of French #10236 @Renaud
-In video search order by view doesn't work #11628 @Adamant
-Blocked TLD shown in Bl…]]></summary>
-        <author>
-            <name>Activity in the release-notes tag</name>
         </author>
     </entry>
 </feed>
