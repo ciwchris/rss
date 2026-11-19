@@ -2,10 +2,169 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rss.christopherlopes.com/index.html</id>
     <title>RSS following feeds | Christopher Lopes</title>
-    <updated>2026-11-18T21:39:21.238Z</updated>
+    <updated>2026-11-19T21:54:51.381Z</updated>
     <generator>osmosfeed 1.15.1</generator>
     <link rel="alternate" href="https://rss.christopherlopes.com/index.html"/>
     <link rel="self" href="https://rss.christopherlopes.com/feed.atom"/>
+    <entry>
+        <title type="html"><![CDATA[PostgreSQL 19 Released]]></title>
+        <id>https://simonwillison.net/2026/Nov/19/postgresql-19/</id>
+        <link href="https://simonwillison.net/2026/Nov/19/postgresql-19/"/>
+        <updated>2026-11-19T20:43:57.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong><a href="https://www.postgresql.org/about/news/postgresql-19-released-3449/">PostgreSQL 19 Released</a></strong></p>
+Most years PostgreSQL ships a new release in September, but this year's release came two months later <a href="https://rhaas.blogspot.com/2026/10/postgres-19-is-late-and-its-ais-fault.html">thanks mainly</a> to the flurry of issues that the PostgreSQL team needed to address as part of the ongoing AI-reported vulnerability apocalypse.</p>
+<p>This release was definitely worth the wait. My favorite new feature is this one:</p>
+<blockquote>
+<p>For applications that send reads to standbys, PostgreSQL 19 adds "read-your-writes" consistency with the new <a href="https://www.postgresql.org/docs/19/sql-wait.html"><code>WAIT FOR LSN</code></a> command. A session on a standby can use <code>WAIT FOR LSN</code> to wait until the standby has replayed the write-ahead log (WAL) up to a specific <a href="https://www.postgresql.org/docs/19/wal-internals.html">log sequence number (LSN)</a> before running a query, so the application can read data it just wrote on the primary.</p>
+</blockquote>
+<p>In practice, that looks like this:</p>
+<pre><code>UPDATE movie SET genre = 'Dramatic' WHERE genre = 'Drama';
+SELECT pg_current_wal_insert_lsn();
+</code></pre>
+<p>That returns a value like <code>0/0306EE20</code>. Store that somewhere (a signed cookie would work) such that on a subsequent request your application can do:</p>
+<pre><code>WAIT FOR LSN '0/0306EE20' WITH (TIMEOUT '0.1s');
+SELECT * FROM movie WHERE genre = 'Drama';
+</code></pre>
+<p>The timeout is optional - if you provide one you'll get an error if the replica you are talking to doesn't catch up within the specified time.</p>
+<p>I first encountered this pattern <a href="https://www.mediawiki.org/wiki/Manual:Database_access#Lag">in Wikipedia</a>, which has a hand-rolled version of this built against MySQL replication:</p>
+<blockquote>
+<p>In addition to this, MediaWiki attempts to ensure that the user sees events occurring on the wiki in chronological order. A few seconds of lag can be tolerated, as long as the user sees a consistent picture from subsequent requests. This is done by saving the primary binlog position in the session, and then at the start of each request, waiting for the replica to catch up to that position before doing any reads from it.</p>
+</blockquote>
+<p>Here's <a href="https://github.com/wikimedia/mediawiki/blob/1ff78194b182ee4b5b3678f7d9fc9aefd0852cf7/includes/libs/Rdbms/Replication/MysqlReplicationReporter.php#L238-L299">the relevant MediaWiki code</a>, which these days uses MySQL's <a href="https://dev.mysql.com/doc/refman/9.7/en/gtid-functions.html#function_wait-for-executed-gtid-set">WAIT_FOR_EXECUTED_GTID_SET()</a> function and falls back to <a href="https://dev.mysql.com/doc/refman/8.4/en/replication-functions-synchronization.html#function_master-pos-wait">MASTER_POS_WAIT()</a>.
+
+    <p><small></small>Via <a href="https://lobste.rs/s/pqyuhk/postgresql_19_released">Lobste.rs</a></small></p>
+
+
+    <p>Tags: <a href="https://simonwillison.net/tags/mysql">mysql</a>, <a href="https://simonwillison.net/tags/postgresql">postgresql</a>, <a href="https://simonwillison.net/tags/replication">replication</a>, <a href="https://simonwillison.net/tags/scaling">scaling</a>, <a href="https://simonwillison.net/tags/wikipedia">wikipedia</a>, <a href="https://simonwillison.net/tags/ai-security-research">ai-security-research</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Enterprise Live Migrations from Azure DevOps generally available]]></title>
+        <id>https://github.blog/changelog/2026-11-19-enterprise-live-migrations-from-azure-devops-generally-available</id>
+        <link href="https://github.blog/changelog/2026-11-19-enterprise-live-migrations-from-azure-devops-generally-available"/>
+        <updated>2026-11-19T18:50:57.000Z</updated>
+        <summary type="html"><![CDATA[Enterprise Live Migrations (ELM) from Azure DevOps Services to GitHub Enterprise Cloud with data residency is now generally available. You can move your repositories while your teams keep working, then…
+The post Enterprise Live Migrations from Azure DevOps generally available appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Red Hat Enterprise Linux runner images now generally available]]></title>
+        <id>https://github.blog/changelog/2026-11-19-red-hat-enterprise-linux-runner-images-now-generally-available</id>
+        <link href="https://github.blog/changelog/2026-11-19-red-hat-enterprise-linux-runner-images-now-generally-available"/>
+        <updated>2026-11-19T18:48:46.000Z</updated>
+        <summary type="html"><![CDATA[Red Hat Enterprise Linux (RHEL) 9 and RHEL 10 images for GitHub-hosted larger runners are now generally available. Originally introduced in public preview in June 2026 in partnership with Red…
+The post Red Hat Enterprise Linux runner images now generally available appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[S3 audit log streaming with OpenID Connect expands to GHE.com]]></title>
+        <id>https://github.blog/changelog/2026-11-17-s3-audit-log-streaming-with-openid-connect-expands-to-ghe-com</id>
+        <link href="https://github.blog/changelog/2026-11-19-s3-audit-log-streaming-with-openid-connect-expands-to-ghe-com"/>
+        <updated>2026-11-19T08:27:16.000Z</updated>
+        <summary type="html"><![CDATA[You can now stream enterprise audit logs to Amazon S3 using OpenID Connect (OIDC) on GitHub Enterprise Cloud with data residency (GHE.com). This extends the existing github.com capability, letting you…
+The post S3 audit log streaming with OpenID Connect expands to GHE.com appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How OpenAI’s Performance Factory keeps ChatGPT fast]]></title>
+        <id>https://openai.com/index/how-openai-performance-factory-keeps-chatgpt-fast</id>
+        <link href="https://openai.com/index/how-openai-performance-factory-keeps-chatgpt-fast"/>
+        <updated>2026-11-19T08:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn how OpenAI built the Performance Factory, a system of Codex-powered workflows that finds and fixes performance issues to help keep ChatGPT fast.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Wait for pull request events with GitHub CLI]]></title>
+        <id>https://github.blog/changelog/2026-11-18-wait-for-pull-request-events-with-github-cli</id>
+        <link href="https://github.blog/changelog/2026-11-18-wait-for-pull-request-events-with-github-cli"/>
+        <updated>2026-11-19T00:00:13.000Z</updated>
+        <summary type="html"><![CDATA[GitHub CLI now supports GitHub Event Streams. With gh v2.105.0, you and your agents can wait for a pull request to change with a single command instead of polling it…
+The post Wait for pull request events with GitHub CLI appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[llm-gemini 0.38]]></title>
+        <id>https://simonwillison.net/2026/Nov/18/llm-gemini/</id>
+        <link href="https://simonwillison.net/2026/Nov/18/llm-gemini/"/>
+        <updated>2026-11-18T23:59:20.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/simonw/llm-gemini/releases/tag/0.38">llm-gemini 0.38</a></p>
+        <p>Today Google <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/">introduced Gemini 4 Neon</a>. I <a href="https://simonwillison.net/2026/Nov/12/llm-gemini/">wrote recently</a> about how confusing the pricing for the Gemini 4 series was - Neon has somehow made this even worse.</p>
+<p>Previously the Gemini 4 lineup was Hydrogen, Argon, and Carbon - where Argon and Carbon were <em>the same price</em>, and Hydrogen was 3/4 of that price now but will be 1/4 of that price when the other two double an 1st December once their initial discount pricing expires.</p>
+<p>The Neon announcement pretends that Argon doesn't exist. Here's their new image explaining the model line-up:</p>
+<p><img alt="Comparison table slide titled &quot;Gemini 4 - Our next era of frontier intelligence&quot; with three model columns, Carbon, Neon and Hydrogen, where the Neon column is highlighted with a blue outline. Best For: Carbon - Hardest long-horizon projects and deep research; Neon - Deep reasoning across software engineering, knowledge work, and science; Hydrogen - Speed and efficiency in everyday coding and agentic workflows. Quality (Artificial Analysis Index): Carbon 60, Neon 61, Hydrogen 54. Price ($/1M In / Out (1M flat)): Carbon $4 / $20*, Neon $3 / $15, Hydrogen $1.50 / $7.50. Thinking levels: Carbon - Low, medium, high; Neon - Low, medium, high, xhigh; Hydrogen - Low, medium, high, xhigh. Speed (shown as rocket icons out of five): Carbon 2, Neon 3.5, Hydrogen 5. Subscriptions: Carbon - Google AI Ultra; Neon - Google AI Pro &amp; Ultra; Hydrogen - For Everyone. Availability: Carbon - Gemini API in Google AI Studio (paid), Gemini for business, Google AI Ultra: Gemini app, Google Antigravity, AI Mode in Search; Neon - Gemini API in Google AI Studio (paid), Gemini for business, Google AI Pro &amp; Ultra: Gemini app, Google Antigravity (paid); Hydrogen - Gemini API in Google AI Studio (all tiers), Gemini for business, Gemini app, Google Search, Google AI Pro &amp; Ultra: Google Antigravity (paid). Footnote: *$2 / $10 promo through Nov 30. Dated 18 November 2026." src="https://static.simonwillison.net/static/2026/gemini-4-neon__comparison-graphi.width-2000.webp" /></p>
+<p>So the lineup now, from most to least expensive, is Carbon, Neon, Hydrogen.</p>
+<p>Except Carbon is currently half price, so right now Neon ($3/million input, $15/million output) is the most expensive of the three - then Carbon ($2/$10), then Hydrogen ($1.50/$7.50). I guess this will make more sense when Carbon doubles to $4/$20 on December 1st.</p>
+<p>I ran <a href="https://tools.simonwillison.net/markdown-svg-renderer?url=https%3A%2F%2Fgist.github.com%2Fsimonw%2Fabc5dfe18e8d37a46fd09a3dcc18ed5c">some pelicans</a> through the three reasoning levels for Neon - low, medium, high.</p>
+<p>I dropped Argon from <a href="https://static.simonwillison.net/static/2026/gemini-4-carbon-neon-hydrogen.html">my Gemini 4 comparison grid</a> - here's the new Gemini 4 lineup, where the Neon pelicans do look better than Hydrogen and worse than Carbon:</p>
+<p><img alt="Comparison grid of nine flat vector-style illustrations of a pelican riding a red bicycle, arranged as a table with three model columns and three thinking-level rows. Column headers: Thinking, gemini-4-carbon, gemini-4-neon, gemini-4-hydrogen. Row HIGH: gemini-4-carbon is the most detailed of all, a pelican in a sailor cap on a red cruiser bike with fenders, chain guard and a wicker basket holding a fish, on a beach promenade with ocean, sun, clouds and distant birds, captioned &quot;40 input tokens, 20,305 output = 20.31 cents · 4m 11s&quot;; gemini-4-neon is a clean, well-proportioned pelican on a simpler red bike on a road with a yellow dashed line and the sea behind, captioned &quot;40 input tokens, 9,691 output = 14.55 cents · 1m 11s&quot;; gemini-4-hydrogen is a plainer pelican on a basic red bike with speed lines, flat green ground and a pale sky, captioned &quot;40 input tokens, 5,311 output = 3.99 cents · 19s&quot;. Row MEDIUM: gemini-4-carbon adds a red striped scarf blowing in the wind plus the sailor cap, cream fenders, a basket and a beach with a rope fence, captioned &quot;40 input tokens, 11,020 output = 11.03 cents · 1m 53s&quot;; gemini-4-neon has a basket with a fish, green hills and a grey road, captioned &quot;40 input tokens, 7,846 output = 11.78 cents · 54s&quot;; gemini-4-hydrogen is a simple pelican and bike on a flat green strip with faint clouds, captioned &quot;40 input tokens, 3,964 output = 2.98 cents · 17s&quot;. Row LOW: gemini-4-carbon is still richly detailed with cap, scarf, basket, a seaside railing and a road, captioned &quot;40 input tokens, 9,153 output = 9.16 cents · 1m 34s&quot;; gemini-4-neon is a simpler pelican on a bike with no basket, on a road edged with grass, captioned &quot;40 input tokens, 4,974 output = 7.47 cents · 43s&quot;; gemini-4-hydrogen is the most minimal, a basic pelican and thin-framed bike over a single green line on a plain pale background, captioned &quot;40 input tokens, 2,996 output = 2.25 cents · 10s&quot;. Overall, detail and polish drop from carbon to neon to hydrogen and, less sharply, from high to low thinking, while every image remains a recognisable pelican on a bicycle." src="https://static.simonwillison.net/static/2026/gemini-grid-updated.webp" /></p>
+<p>As I've done with <a href="https://simonwillison.net/tags/yonkers-rising/">several recent models</a>, I also fired the following prompt against Gemini 4 Neon on "extra" effort level in Google Antigravity:</p>
+<blockquote>
+<p><code>Make a three js animation where yonkers stands up as a big mech (cool stand up motion) and stomps around manhattan and queens and Brooklyn, use openstreetmap mapping data</code></p>
+</blockquote>
+<p><a href="https://static.simonwillison.net/static/2026/gemini-4-neon-yonkers/index.html">Here's the result</a>.</p>
+<video controls playsinline preload="none" width="1280" height="720" poster="https://static.simonwillison.net/static/2026/yonkers-neon.webp">
+  <source src="https://static.simonwillison.net/static/2026/yonkers-neon.mp4" type="video/mp4">
+</video>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/yonkers-rising">yonkers-rising</a>, <a href="https://simonwillison.net/tags/gemini">gemini</a>, <a href="https://simonwillison.net/tags/llm">llm</a>, <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle">pelican-riding-a-bicycle</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/llm-release">llm-release</a>, <a href="https://simonwillison.net/tags/google">google</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Connect Supabase, Box, Calendly, and more to Copilot]]></title>
+        <id>https://github.blog/changelog/2026-11-18-connect-supabase-clickup-buildkite-and-more-to-copilot</id>
+        <link href="https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot"/>
+        <updated>2026-11-18T22:04:50.000Z</updated>
+        <summary type="html"><![CDATA[You can now connect eight more services to Copilot using GitHub-verified MCP servers, or connectors, available in public preview. They join more than 25 services you can already connect, like…
+The post Connect Supabase, Box, Calendly, and more to Copilot appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Gemini 4 Neon in GitHub Copilot]]></title>
+        <id>https://github.blog/changelog/2026-11-18-gemini-4-neon-in-github-copilot</id>
+        <link href="https://github.blog/changelog/2026-11-18-gemini-4-neon-in-github-copilot"/>
+        <updated>2026-11-18T21:49:21.000Z</updated>
+        <summary type="html"><![CDATA[Gemini 4 Neon is now generally available in GitHub Copilot. It is designed for agentic coding, multistep tool use, and knowledge work. According to Google, Gemini 4 Neon delivers quality…
+The post Gemini 4 Neon in GitHub Copilot appeared first on The GitHub Blog.]]></summary>
+        <author>
+            <name>Allison</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[datasette-arrows 0.1a0]]></title>
+        <id>https://simonwillison.net/2026/Nov/18/datasette-arrows/</id>
+        <link href="https://simonwillison.net/2026/Nov/18/datasette-arrows/"/>
+        <updated>2026-11-18T17:09:59.000Z</updated>
+        <summary type="html"><![CDATA[<p><strong>Release:</strong> <a href="https://github.com/datasette/datasette-arrows/releases/tag/0.1a0">datasette-arrows 0.1a0</a></p>
+        <p><a href="https://docs.datasette.io/en/latest/changelog.html#a43-2026-11-15">Datasette 1.0a43</a> added the ability for plugins to implement streaming export formats. Datasette core supports streaming CSV and TSV - you can export millions of lines of data from a table without needing to load it all into memory, because those two file formats support streaming data in chunks. The <a href="https://docs.datasette.io/en/latest/plugin_hooks.html#register-output-renderer-datasette">register_output_renderer()</a> plugin hook can now be used to implement the same pattern for other formats.</p>
+<p>I've learned never to release a new plugin feature without accompanying it with a plugin that uses it.</p>
+<p>Claude Fable 5.2 suggested the <a href="https://arrow.apache.org/docs/python/ipc.html">Apache Arrow streaming</a> format as a good option, and built this plugin in almost a single shot.</p>
+<p>Add the plugin to Datasette (<code>datasette install datasette-arrows</code>) and the export dialog gains this new Arrow option:</p>
+<p><img alt="Export data modal for the threads table. The TSV and CSV exports are now joined by Arrow, showing &quot;All 927 rows&quot; and the text Apache Arrow IPC stream, for DuckDB, pandas, Polars and other tools. There is a Download button and a Copy URL button." src="https://static.simonwillison.net/static/2026/arrow-export-dialog.webp" /></p>
+<p>This screenshot is from Datasette's <code>main</code> branch - the most recent release doesn't yet group streaming formats such as Arrow with the TSV and CSV in the "All rows in this table" section, but that's coming in the next alpha release.</p>
+    
+    
+        <p>Tags: <a href="https://simonwillison.net/tags/datasette">datasette</a>, <a href="https://simonwillison.net/tags/projects">projects</a></p>]]></summary>
+        <author>
+            <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Security risk assessments run automatically on GitHub Team]]></title>
         <id>https://github.blog/changelog/2026-11-18-security-risk-assessments-run-automatically-on-github-team</id>
@@ -56,6 +215,26 @@ With my Python Software Foundation board director hat on: we've launched our end
     <p>Tags: <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/psf">psf</a></p>]]></summary>
         <author>
             <name>Simon Willison's Weblog</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How Sumitomo Life’s leaders helped teams adopt ChatGPT Enterprise]]></title>
+        <id>https://openai.com/business/customer-stories/sumitomo-life</id>
+        <link href="https://openai.com/business/customer-stories/sumitomo-life"/>
+        <updated>2026-11-18T08:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Sumitomo Life uses ChatGPT Enterprise to research insurers, prepare proposals, and draft code for investment analysis. Early use by executives helped drive adoption.]]></summary>
+        <author>
+            <name>OpenAI News</name>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Research acceleration: The jagged frontier]]></title>
+        <id>https://openai.com/index/research-acceleration-jagged-frontier</id>
+        <link href="https://openai.com/index/research-acceleration-jagged-frontier"/>
+        <updated>2026-11-18T08:00:00.000Z</updated>
+        <summary type="html"><![CDATA[OpenAI measures how coding agents are accelerating AI research, where their performance remains uneven, and what this signals about recursive self-improvement.]]></summary>
+        <author>
+            <name>OpenAI News</name>
         </author>
     </entry>
     <entry>
@@ -3908,423 +4087,6 @@ Well this is delightful: I <a href="https://simonwillison.net/2026/Oct/20/battle
         <link href="https://openai.com/index/openai-models-google-cloud"/>
         <updated>2026-10-21T12:00:00.000Z</updated>
         <summary type="html"><![CDATA[OpenAI and Google Cloud are bringing frontier models and Codex workflows to Gemini’s Model Garden, available through Google Cloud Marketplace.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Patch the Planet: global response coordination as agents uncover critical vulnerabilities]]></title>
-        <id>https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities</id>
-        <link href="https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities"/>
-        <updated>2026-10-21T07:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Patch the Planet connects security researchers, maintainers, and incident responders to help address critical vulnerabilities across open source.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[How we built ChatGPT’s novel ad stack for user trust and relevance]]></title>
-        <id>https://openai.com/index/building-chatgpt-ad-stack</id>
-        <link href="https://openai.com/index/building-chatgpt-ad-stack"/>
-        <updated>2026-10-21T07:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Learn how OpenAI built ChatGPT’s LLM-powered ad stack to understand conversational intent, keep ads separate from answers, and deliver relevant ads at scale.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Using thousands of AI agents to uncover new leads in biological data]]></title>
-        <id>https://openai.com/index/scaling-ai-research-for-complex-biological-data</id>
-        <link href="https://openai.com/index/scaling-ai-research-for-complex-biological-data"/>
-        <updated>2026-10-21T04:50:00.000Z</updated>
-        <summary type="html"><![CDATA[See how OpenAI, PerturbAI, and Scripps Research used distributed AI agents to uncover promising research leads in data from millions of brain cells.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Cloudflare links vulnerability discovery to defense with OpenAI]]></title>
-        <id>https://openai.com/index/cloudflare-cyber</id>
-        <link href="https://openai.com/index/cloudflare-cyber"/>
-        <updated>2026-10-21T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Cloudflare uses OpenAI Daybreak to investigate vulnerabilities and propose fixes for review. Its developers use Codex to build faster and improve code quality.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Democratic governance of frontier AI, part II: Empowering cyber defenders]]></title>
-        <id>https://openai.com/index/empowering-cyber-defenders</id>
-        <link href="https://openai.com/index/empowering-cyber-defenders"/>
-        <updated>2026-10-21T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[OpenAI outlines a blueprint for empowering cyber defenders with frontier AI, stronger safeguards, modernized cybersecurity, and more resilient public institutions.]]></summary>
-        <author>
-            <name>OpenAI News</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[eMudhra Intermediate CA Compromise]]></title>
-        <id>https://simonwillison.net/2026/Oct/20/emudhra-certificates/</id>
-        <link href="https://simonwillison.net/2026/Oct/20/emudhra-certificates/"/>
-        <updated>2026-10-20T23:50:25.000Z</updated>
-        <summary type="html"><![CDATA[<p><strong><a href="https://emudhra.we-have-a-problem.com">eMudhra Intermediate CA Compromise</a></strong></p>
-This is very, very bad news:</p>
-<blockquote>
-<p>The private keys of eight eMudhra intermediate CA certificates have been compromised. They chain to roots trusted by the Mozilla, Microsoft, Apple and Chrome root programs and by many downstream trust stores.</p>
-</blockquote>
-<p>Any software that bundles a list of trusted certificates needs to be updated. This site is tracking software updates <a href="https://github.com/galadran/we-have-a-problem.com">via this GitHub repository</a> - Linux distros need to update their <code>ca-certificates</code> packages.</p>
-<p>In Python world <a href="https://github.com/astral-sh/uv/releases/tag/0.13.4">uv 0.13.4</a> and <a href="https://github.com/pypa/pip/releases/tag/26.2.2">pip 26.2.2</a> and <a href="https://github.com/certifi/python-certifi/releases/tag/2026.10.19">certifi 2026.10.19</a> have been released with upgraded certificate lists.
-
-
-    <p>Tags: <a href="https://simonwillison.net/tags/encryption">encryption</a>, <a href="https://simonwillison.net/tags/https">https</a>, <a href="https://simonwillison.net/tags/pip">pip</a>, <a href="https://simonwillison.net/tags/python">python</a>, <a href="https://simonwillison.net/tags/security">security</a>, <a href="https://simonwillison.net/tags/uv">uv</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Battle Drones - a vibe coded RTS with audio-based multiplayer]]></title>
-        <id>https://simonwillison.net/2026/Oct/20/battledrones/</id>
-        <link href="https://simonwillison.net/2026/Oct/20/battledrones/"/>
-        <updated>2026-10-20T19:34:19.000Z</updated>
-        <summary type="html"><![CDATA[<p>My latest vibe coded game experiment is a Command &amp; Conquer style RTS (Real Time Strategy) game called <a href="https://github.com/simonw/battledrones#readme">Battle Drones</a> (<a href="https://simonw.github.io/battledrones/">play it here</a>). Unlike <a href="https://simonwillison.net/2026/Aug/5/raccoon-heist/">my previous experiments</a>, this one is <em>actually fun to play</em>. I'm somewhat embarrassed to admit that I got there by telling Claude to "Make it a LOT more fun". It also supports multiplayer between nearby devices using audio to synchronize game state! Here's what I've built so far, and some of the things I learned along the way.</p>
-
-<ul>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#battle-drones">Battle Drones</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#how-i-built-this">How I built this</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v1-the-initial-prototype">v1: the initial prototype</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v2-full-sprites">v2: full sprites</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v3-varied-terrain">v3: varied terrain</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v4-the-fun-update">v4: the fun update</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v5-battle-drones-goes-3d">v5: Battle Drones goes 3D</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v8-archipelago">v8: Archipelago</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v10-goliath-and-agent-battles">v10: Goliath, and agent battles</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#agent-battles">Agent battles</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v11-random-maps">v11: Random Maps</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#v12-multiplayer-via-sound">v12: Multiplayer via sound</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#some-thoughts">Some thoughts</a></li>
-  <li><a href="https://simonwillison.net/2026/Oct/20/battledrones/#update-online-multiplayer-support">Update: Online multiplayer support</a></li>
-</ul>
-
-<h4 id="battle-drones">Battle Drones</h4>
-<p>My initial goal was to build an RTS game I could play on my phone, in the style of <a href="https://en.wikipedia.org/wiki/Command_&amp;_Conquer_(1995_video_game)">Command &amp; Conquer</a>. I have fond memories of the 1995 original (I liked Red Alert too) and wanted to recapture a little bit of the magic.</p>
-<p>After 12 major iterations (and <a href="https://github.com/simonw/battledrones/commits/main/">321 commits</a> by coding agents, mainly Claude Code) I now have a browser-based game that works on mobile and desktop, has multiple play modes, several maps (including a random map generator) and even supports multiplayer for two devices within microphone range of each other.</p>
-<p>Here's a video demo of Battle Drones running in a desktop browser:</p>
-
-<video
-  src="https://static.simonwillison.net/static/2026/archipelago_720p_h264.mp4"
-  poster="https://static.simonwillison.net/static/2026/archipelago_poster.jpg"
-  preload="none"
-  loop="1" controls="1"
-  playsinline="1" muted="1"
-  width="1280"
-  height="706"
-  style="display: block; width: 100%; height: auto;"
-> </video>
-
-<p style="margin-top: 1em">Features so far include:</p>
-<ul>
-<li>9 buildings, 7 ground vehicles, 6 aerial vehicles, 3 infantry units - all 3D models, which you can <a href="https://simonw.github.io/battledrones/models.html">browse here</a>
-</li>
-<li>Fog of war</li>
-<li>Different weapons are needed to target aerial or ground vehicles</li>
-<li>
-<strong>Six maps</strong>, across five biomes - temperate, desert, arctic, volcanic, tropical</li>
-<li>A random map generator</li>
-<li>
-<strong>Skirmish mode</strong> - red vs. blue on a rotationally symmetrical map</li>
-<li>
-<strong>Last Stand mode</strong> - one player holds out against as many waves of enemies as possible</li>
-<li>Area effect weapons: Barrage, EMP, Drop Pod, Sky Hammer</li>
-<li>
-<strong>Crate drops</strong> with bonus resources</li>
-<li>In-game music that responds to events - it gets more intense as fighting breaks out</li>
-<li>Different in-game <strong>AI personalities</strong> (Balanced, Rush, Air Swarm, Boom, Skyforce, Ironclad)</li>
-<li>
-<strong>AI vs. AI</strong> mode, to watch those personalities play each other</li>
-<li>The <strong>Goliath</strong> - a giant stomping mech with laser eyes and arm cannons and the ability to establish a new base</li>
-<li>
-<strong>Mutators</strong> that add extra rules or twists</li>
-<li>A "Daily Op" challenge</li>
-<li>Ranks and achievements (<strong>Medals</strong>)</li>
-<li>
-<strong>Agent vs. Agent</strong> mode where two LLMs can play Battle Drones against each other</li>
-<li>A <strong>multiplayer mode</strong> based on two nearby phones communicating via audio messages, an extension of my earlier experiment with <a href="https://simonwillison.net/2026/Oct/15/chirp-pong/">Chirp Pong</a>
-</li>
-</ul>
-<h4 id="how-i-built-this">How I built this</h4>
-<p>Battle Drones is heavily vibe coded - I've reviewed almost none of the code, and it's built in a language (TypeScript) that I've hardly used myself. I've playtested it quite a bit though, and it's been through a large number of iterations since I started the project.</p>
-<p>Here's a rough history of the project so far, including key prompts and links to transcripts.</p>
-<h4 id="v1-the-initial-prototype">v1: the initial prototype</h4>
-<p>I started out with Claude Fable 5 back in July:</p>
-<blockquote>
-<p><code>We are going to build a mobile friendly RTS game - command and conquer style - called Battle Drones, in which two armies of drones (both flying and ground-based) battle for territory and resources</code></p>
-<p><code>Let's start with a MVP design, ask me some questions</code></p>
-</blockquote>
-<p>Here's a <a href="https://claude.ai/code/session_015RYeKm4ji4N16oqthyX1b1">shared transcript</a>. I'd given Claude Code for Web an environment variable with an OpenAI API key and told it to use the OpenAI <a href="https://developers.openai.com/api/docs/guides/image-generation">Image Generation API</a> for assets, which got me some basic sprites.</p>
-<p>You can <a href="https://simonw.github.io/battledrones/v1/">try v1 here</a> - it looked like this:</p>
-<p><img src="https://static.simonwillison.net/static/2026/battledrones-v1.webp" alt="Game screen. Down the right are text icons to build Fab, Airpad, Turret, Harv, Sting, Flak, Scout, Wasp, Raptor. There is a blocky fog of war on a 2D battlefield. There are some gems, an HQ building being attacked by badly rendered tanks, and some blue vehicles dotted around. It's not very visually impressive but it does look like a basic RTS." style="max-width: 100%;" /></p>
-<p>It's recognizable as an RTS, has building mechanics and the ability to select and direct units, and a basic AI to play against.</p>
-
-<p>This first version was barely a proof of concept, and it wasn't any fun to play.</p>
-<p>Claude used the <a href="https://github.com/phaserjs/phaser">Phaser</a> 2D game framework for these early versions. I didn't even realize this until several iterations later!</p>
-<h4 id="v2-full-sprites">v2: full sprites</h4>
-<p>The second version (<a href="https://simonw.github.io/battledrones/v2/">try v2 here</a>) added sprites for all of the vehicles and the "AI vs. AI" mode, so I could watch the game playing without having to directly control it myself.</p>
-<p>Claude proved reasonably competent at prompting OpenAI's image models to generate sprites. You can browse the v2 sprites in the <a href="https://github.com/simonw/battledrones/tree/v2/public/assets/sprites">public/assets/sprites</a> folder.</p>
-<p><img src="https://static.simonwillison.net/static/2026/battledrones-v2.webp" alt="Four flying units, three turrets, a harvester and an airpad all have proper sprites now. The scrap field has a new design which doesn't look great but is at least using a graphic." style="max-width: 100%;" /></p>
-<h4 id="v3-varied-terrain">v3: varied terrain</h4>
-<p>It still wasn't much fun, and the graphics were boring. It was now October, and I had upgraded to Claude Opus 5.5. I told it:</p>
-<blockquote>
-<p><code>Massively improve this game. Make the graphics and gameplay better (keep it mobile friendly). Render new graphics using the latest OpenAI GPT image API (lookup details) with the API key in the environment variable. Add new unit types and balance the gameplay better. Also add new buildings and better, more varied terrain.</code></p>
-</blockquote>
-<p>This resulted in five new maps with generated background tiles in a variety of styles, <a href="https://github.com/simonw/battledrones/commit/aa22f08a34347d7d9f94b33f44a73b4deb046aa1">visible here</a>. Opus also regenerated the sprites, making them much more visually appealing. You can <a href="https://simonw.github.io/battledrones/v3/">try v3 here</a> - it looks like this:</p>
-<p><img src="https://static.simonwillison.net/static/2026/battledrones-v3.jpg" alt="The map is now an ice map with snow and ice and broken ice - it looks really good. The vehicles and buildings have all had a cosmetic upgrade too. This is starting to look like a real game." style="max-width: 100%;" /></p>
-<p>This is starting to feel like a real game! It still wasn't very fun to play though - I found myself getting bored pretty quickly.</p>
-<h4 id="v4-the-fun-update">v4: the fun update</h4>
-<p>So far my Battle Drones experiment was confirming my <a href="https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/#simon-willison-2026-in-llms.059.webp">previous belief</a> that coding agents can build a thing that looks like a game but can't actually make something that's genuinely compelling to play.</p>
-<p>I shared this theory with someone over dinner, and then thought to myself that I should give the models a proper chance to prove me wrong. I prompted Opus 5.5 on my phone:</p>
-<blockquote>
-<p><code>This game isn't fun enough yet. Make it a LOT more fun.</code></p>
-</blockquote>
-<p>This time I was running in <a href="https://code.claude.com/docs/en/workflows">Ultracode mode</a>, where Claude Code (in this case Claude Code for Web) runs "dynamic workflows", described in their docs as:</p>
-<blockquote>
-<p>A dynamic workflow is a JavaScript script that orchestrates many <a href="https://code.claude.com/docs/en/sub-agents">subagents</a> at once.</p>
-</blockquote>
-<p>This kicked off <em>many hours</em> of work. I started it in the evening and didn't get a playable result back until late into the next morning. But the results were spectacular.</p>
-<p>You can <a href="https://simonw.github.io/battledrones/v4/">try v4 here</a> - it looks like this:</p>
-<p><img src="https://static.simonwillison.net/static/2026/battledrones-v4.jpg" alt="The lava map. Uplink satellites are being taken, crystals look better, Elite text is shown above a unit, there is an arrow marked Fight to jump to a fight, the AI vs AI mode has a speed controller - plenty of new features here." style="max-width: 100%;" /></p>
-<p>I had Claude <a href="https://github.com/simonw/battledrones/blob/main/Battle%20Drones%20The%20Fun%20Update%20%E2%80%94%20Release%20Notes.md">write its own release notes</a> - here are the highlights:</p>
-<blockquote>
-<p>Every skirmish and Daily Op now opens with a choice, gives the side that's losing a way back, and pulls the armies into the middle of the map. There are also two new ways to play.</p>
-<ul>
-<li>
-<strong>Openers</strong>: pick Blitz, Industry or Air Wing before the clock starts.</li>
-<li>
-<strong>Call-down powers</strong>: Barrage, EMP, Drop Pod and the Sky Hammer orbital strike.</li>
-<li>
-<strong>Objectives and salvage</strong>: Uplink relays, supply drops and wrecks worth scrap.</li>
-<li>
-<strong>Feel</strong>: combat juice, adaptive music, unit voices and an announcer.</li>
-<li>
-<strong>Command</strong>: battle alerts, game speed, saved squads and touch placement.</li>
-<li>
-<strong>New modes</strong>: Last Stand survival waves and an 8-mission Ops campaign.</li>
-<li>
-<strong>Progression</strong>: heroes, an after-action report with awards, a career, 7 mutators and a Daily Op.</li>
-</ul>
-<p>Fights run longer and swing more. In 1,200 AI-vs-AI test matches on Normal, games still undecided after 25 minutes fell from 14% to 0.9%. The share of wins by a side that had been 800+ scrap behind rose from 24% to 46%.</p>
-</blockquote>
-<p>Part of the reason Claude took so long was that it ran over a thousand simulated playtest sessions, and used the results to rebalance the existing units, add new ones, and introduce new features.</p>
-<h4 id="v5-battle-drones-goes-3d">v5: Battle Drones goes 3D</h4>
-<p>After the success of Ultracode at "Make it a LOT more fun", I decided to be more ambitious:</p>
-<blockquote>
-<p><code>Port this game to three.js with 3D models for all of the buildings and vehicles and landscapes</code></p>
-</blockquote>
-<p>That was another overnight run. I woke up to <a href="https://simonw.github.io/battledrones/v5/">this v5 version</a>:</p>
-<p><img src="https://static.simonwillison.net/static/2026/battledrones-v5.jpg" alt="Now it is in 3D - the battlefield is at a slight angle, the buildings and vehicles are all 3D models, the rocks and trees look a bit 3D as well." style="max-width: 100%;" /></p>
-<p>The new 3D models were entirely constructed by Claude in TypeScript code.</p>
-<p>v6 (<a href="https://simonw.github.io/battledrones/v6/">play v6 here</a>) added some more visual polish. v7 (<a href="https://simonw.github.io/battledrones/v7/">play v7</a>) added robot infantry (troopers, rocket squads, snipers) and a "Condor" troop carrying aircraft.</p>
-<h4 id="v8-archipelago">v8: Archipelago</h4>
-<p>I was beginning to feel guilty at how little actual design input I had into the game - it really had been a case of me saying "make it more fun" and "add visual polish" for the past few releases.</p>
-<p>I'd noticed that the AI didn't use the new infantry and troop carrying aircraft from v7 very often - there wasn't a great strategic reason to use them.</p>
-<p>It would be neat if we had a new map with a new game mechanic that actively encouraged players to load up Condors with infantry robots and send them out into the map.</p>
-<p>This resulted in my longest prompt yet:</p>
-<blockquote>
-<p><code>Design a new map. Goal is to make different strategic incentives that encourage use of Infantry and Condors and aerial vehicles.</code></p>
-<p><code>To do this the map will have limited harvester resources but several more uplinks - but uplinks will be on islands that are inaccessible by land vehicles or infantry. These uplinks can also not be claimed using air vehicles. The ONLY way to get them is to fly infantry there in a Condor.</code></p>
-<p><code>Armies always start with a Condor and a single squad. If an army has no Condor a new one will be provided for free, flying in from the edge closest to their HQ and landing there. That free condor will come with a single free squad on board.</code></p>
-<p><code>The two HQs should be entirely separated by water, but still accessible by vehicles thanks to two bridges across the map in different places</code></p>
-<p><code>I want to encourage a battle over uplinks.</code></p>
-<p><code>The map should be the times the size of other maps - still square</code></p>
-<p><code>First research and then critique this design. Only build after we have agreed on any modifications</code></p>
-<p><code>You get to design a new biome for this</code></p>
-</blockquote>
-<p>The result was the tropical <strong>Archipelago</strong> map, with seven island uplinks that players can only capture by flying out infantry in a Condor. It's definitely the most fun map to play, once you've got the hang of the basic game mechanics from the simpler maps. The <a href="https://simonw.github.io/battledrones/v9/">v9 edition</a> made that map a little more interesting - it now looks like this:</p>
-<p><img src="https://static.simonwillison.net/static/2026/battledrones-v8.jpg" alt="Three islands, each with an uplink satellite. Blue holds one, red holds another, A blue condor is flying towards the red island, which is guarded by a red plane. There is a bridge nearby. The theme is tropical islands and looks very pleasant." style="max-width: 100%;" /></p>
-<h4 id="v10-goliath-and-agent-battles">v10: Goliath, and agent battles</h4>
-<p>I decided to add giant robot mechs to the game - think Jaegers from <a href="https://en.wikipedia.org/wiki/Pacific_Rim_(film)#Plot">Pacific Rim</a>, or Titans from Warhammer 40,000.</p>
-<p>Here are some of the prompts I used to brainstorm with Claude:</p>
-<blockquote>
-<p><code>Help me brainstorm ideas for adding giant robots to this game - think dreadnoughts or titans from W20K - how could we do this in a way that enhanced gameplay, kept things balanced, added unique twist? Don't overthink this yet</code></p>
-</blockquote>
-<blockquote>
-<p><code>Let's keep brainstorming. I like the idea that it's a mobile base - that can accept harvested scrap and can have buildings built near it (even if it later moves on) and can produce infantry units too. An interaction with condor would be neat but I don't know what that could be.</code></p>
-</blockquote>
-<blockquote>
-<p><code>Idea: as it gets damage it loses the ability to fire some weapons - by default it has eye laser (like lancers) and arm canons (like titan) and two shoulder mounted mortars, plus machine guns similar to a squad of troops</code></p>
-</blockquote>
-<blockquote>
-<p><code>Damage knocks out mortars and then laser - it always has guns. You can't build next to a building that was only put there because of the mech, you need the mech there for off-base building and only within three squares of it</code></p>
-</blockquote>
-<blockquote>
-<p><code>[...] Lets do two condors can carry the mech</code></p>
-</blockquote>
-<p>The end result is <em>really cool</em>.</p>
-
-<video
-  width="1644"
-  height="1080"
-  preload="none"
-  loop="1" controls="1"
-  playsinline="1" muted="1"
-  style="display: block; width: 100%; height: auto;"
-  poster="https://static.simonwillison.net/static/2026/goliath-poster.jpg"
->
-  <source src="https://static.simonwillison.net/static/2026/goliath.mp4" type="video/mp4" />
-  Your browser does not support HTML video.
-</video>
-
-<p style="margin-top: 1em">Goliaths can be constructed using a Gantry - a building that can only be created after first building a Fab, Bay, Airpad, and Tech Lab. You can see the Goliath under construction, and it then walks out from the Gantry and can march around the map.</p>
-<p>Goliaths can "anchor", which digs them into the ground. In their anchored state they can act as a new HQ, constructing infantry units and additional buildings in a new area.</p>
-<p>Two Condor aircraft can hook onto a Goliath, at which point it can be flown around the map!</p>
-<p>The game now ends when you destroy the enemy's HQ building <em>and</em> any Goliaths they might have built.</p>
-<p>There are also a couple of mutators relating to Goliaths:</p>
-<ul>
-<li>
-<strong>Goliath Armada</strong> starts each side with four airborne Goliaths (each with a pair of Condors) and no other units.</li>
-<li>
-<strong>Robot Love</strong> adds a special rule: if enemy Goliaths get close to each other on the battlefield they fall in love and the game ends in a draw. (Thank Natalie for that one).</li>
-</ul>
-<h4 id="agent-battles">Agent battles</h4>
-<p>The other v10 feature is <strong>agent battles</strong>. In musing about how multiplayer could work I had an idea: what if different LLMs could fight it out in the game?</p>
-<blockquote>
-<p><code>Fun extra challenge: think about how we might make multiplayer available to coding agents. It would be neat if we could set up a battle between eg GPT-6 Sol and Claude Opus 5.5 where each model has access to a tool which gives them information about the game (presumably non-visual, but only the information they could see through fog of war etc) and lets them control their units etc [...]</code></p>
-<p><code>Consult ~/dev/llm/docs and include notes in that file about how LLM could be used here via a new tools plugin</code></p>
-</blockquote>
-<p>Opus 5.5 went to work on this, producing <a href="https://github.com/simonw/battledrones/blob/7001ed186c8b8aef4acb27f680ecf4c09b607e54/AGENT-BATTLES.md">this AGENT-BATTLES.md proposal</a> and then implementing and testing it. The feature also includes the ability to record and replay these battles - here's <a href="https://simonw.github.io/battledrones/v11/?replay=battles/showcase/2026-10-14-frostbite-42-claude-haiku-5.5-vs-gpt-6-luna.json">a replay of Claude Haiku 5.5 vs. GPT-6 Luna</a>, and here's that same battle <a href="https://simonw.github.io/battledrones/record-viewer.html?replay=battles/showcase/2026-10-14-frostbite-42-claude-haiku-5.5-vs-gpt-6-luna.json#r1">in a separate debug tool</a> that shows the underlying prompt responses.</p>
-<p><img src="https://static.simonwillison.net/static/2026/agent-v-agent.jpg" alt="Screenshot of a replay of a real-time strategy game between two AI models, shown from a top-down view of a snowy map with a dark frozen lake of cracked ice floes on the left and pine forests at the top and lower right. Top bar: pause button, &quot;6:27&quot;, &quot;1×&quot;, &quot;anthropic/claude-haiku-5-5 · industry&quot; in blue, &quot;gpt-6-luna · industry&quot; in red, a blue-and-red strength bar labeled &quot;B&quot; and &quot;R&quot;, and &quot;0:03&quot;. Left notification: &quot;Blue: Pushing turrets at the enemy's south-east edge.&quot; Replay panel: &quot;Blue anthropic/claude-haiku-5-5 · industry vs Red gpt-6-luna · industry · frostbite seed 42&quot;, a timeline slider at &quot;6:27 / 7:48&quot;, and buttons &quot;−30s&quot;, &quot;+30s&quot;, &quot;All&quot;, &quot;Blue's eyes&quot;, &quot;Red's eyes&quot;, &quot;Notes&quot;. In the scene, a group of blue tanks and a large blue Goliath mech trailing smoke advance near the ice edge at lower center, while a column of red turrets (one burning) lines the ice to their north, red tanks and trucks sit by a rocky ridge to the east, and red base buildings occupy the top right. A minimap is in the top right corner and zoom in, zoom out and lightning-bolt buttons are on the lower left." style="max-width: 100%;" /></p>
-<p>The prompt that drives agent battles <a href="https://github.com/simonw/battledrones/blob/d584e351d9d28c4ba058b78ddcca9b93cd9bcd33/llm-tools-battledrones/llm_tools_battledrones.py#L106-L117">can be seen here</a>.</p>
-<p>There are a few more replays like this <a href="https://github.com/simonw/battledrones/blob/main/README.md#watch-ai-models-play-it">linked in the README</a>. I hope to turn this into a full league table at some point in the future.</p>
-<h4 id="v11-random-maps">v11: Random Maps</h4>
-<p>This version exists purely because I glanced at my <a href="https://claude.ai/new#settings/usage">Claude Usage</a> page one day and saw that I'd only used 75% of my weekly allowance and it was resetting in 45 minutes. I decided to see if I could get an extra Battle Drones feature from my remaining tokens, and picked "random map" as the target:</p>
-<blockquote>
-<p><code>Design and implement a mechanism for generating a random map using any of the available biomes - it should be the size of the largest map and rivers and bridges and rocks and forest and scrap and crystals are all in play. Make them rotationally symmetric and use a seed to allow them to be selected or reused later. You have 45 minutes to build this! Be creative.</code></p>
-</blockquote>
-<p>Here's <a href="https://claude.ai/code/session_01CfwMwDaK1kLKnRV6di8VMT">the transcript</a>, and an image Claude generated to show me its work:</p>
-<p><img src="https://static.simonwillison.net/static/2026/random-map-contact-sheet.jpg" alt="Grid of ten top-down game maps, two per biome (temperate, desert, arctic, volcanic, tropical), each with a river or lava flow, bridges and roads. Title: &quot;Battle Drones: generated maps (108x108, point-symmetric), 2 per biome, runtime ground painter&quot;. Each map is captioned with a name and layout type plus a seed and crossing counts, e.g. &quot;Hawthorn Delta · fork&quot; &quot;random-temperate-1x8a6r2 · 6 bridges, 4 fords&quot;; layout types are fork, badlands, crossing and lake." style="max-width: 100%;" /></p>
-<h4 id="v12-multiplayer-via-sound">v12: Multiplayer via sound</h4>
-<p>I only <em>just</em> got this working, so I've not had much time to actively test it yet. The latest Battle Drones now supports multiplayer via two devices sat within microphone distance of each other!</p>
-<p>This feature started out as my <a href="https://simonwillison.net/2026/Oct/15/chirp-pong/">Chirp Pong</a> experiment from last week. I pointed Claude Code at that working proof of concept:</p>
-<blockquote>
-<p><code>Clone Simonw/tools from GitHub and look at recent branches for the example pong game that uses web microphone to implement multiplayer between two phones via audio signals</code></p>
-<p><code>Build a version of that for battledrones</code></p>
-</blockquote>
-<p>Opus built <a href="https://simonw.github.io/battledrones/radio-probe.html">this Radio Probe tool</a> to measure how much bandwidth we could get between two devices and, based on positive results from that, implemented a full audio modem system. I've tried it between laptops, iPhones and iPads so far and it seems to work really well!</p>
-<p>Why use sound for this? Because I <a href="https://simonwillison.net/2025/Dec/10/html-tools/#the-anatomy-of-an-html-tool">love static HTML</a> that costs nothing to run, and I don't want to spin up a server somewhere and then stay responsible for keeping it operating for as long as anyone might want to play the game.</p>
-<h4 id="some-thoughts">Some thoughts</h4>
-<p>I know almost <em>nothing</em> about game development. This makes it a great opportunity to try out coding agents in a field where my existing software engineering experience has less impact on the results.</p>
-<p>Games are also super low stakes. The worst that can happen is one of my silly game experiments suffers a bug.</p>
-<p>This morning (<a href="https://news.ycombinator.com/item?id=50168190">via Hacker News</a>) I found <a href="https://www.ign.com/articles/steam-fans-are-begging-for-a-no-ai-filter-as-steam-next-fest-is-filled-with-slop">Steam Fans Are Begging for a No-AI Filter as Steam Next Fest Is Filled With Slop</a>. I wouldn't personally dream of submitting Battle Drones to an event like this - it's still way too low effort to warrant consideration as a legitimate indie gaming project.</p>
-<p>... but I can now see a path to vibe coded games like this being taken seriously. Battle Drones is fun, it looks good, it has innovative features (the multiplayer-over-audio thing is a first for an RTS as far as I can tell).</p>
-<p>I'd love to see what someone with better taste than me and a driving passion to produce something truly exceptional could build!</p>
-<p>A few other observations from this project:</p>
-<ul>
-<li>Static HTML and JavaScript is a fantastic medium for games development. WebGL works great, and <a href="https://github.com/mrdoob/three.js/">Three.js</a> (and <a href="https://github.com/phaserjs/phaser">Phaser</a> before it) are excellent platforms to build on that the current models know inside out.</li>
-<li>This also lets them run as <a href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps">Progressive Web Apps</a> - I didn't ask for it, but Battle Drones works offline. I was able to play it on a plane despite never having directly installed it - my phone had it cached.</li>
-<li>Giving Claude an OpenAI API key and telling it to generate images using OpenAI's models works really well. It can view the images it has generated and iterate on the prompts.</li>
-<li>Opus 5.5 is spectacular at 3D modeling using Three.js (and Blender, and no doubt other 3D applications as well). The <a href="https://til.simonwillison.net/llms/blender-coding-agents-macos">same is true</a> of GPT-6 Astra. They are absolutely capable of building models for 3D game projects.</li>
-<li>For features like replay and multiplayer it's useful to have a deterministic simulation engine. At one point Claude had to replace calls to <code>Math.sin()</code> and <code>Math.cos()</code> and friends with <a href="https://github.com/simonw/battledrones/blob/v12/src/sim/fmath.ts">custom versions</a> because different browsers (Chrome vs. Safari, for example) returned very slightly different numbers, desynchronizing the replay.</li>
-<li>Opus 5.5 can write music! There are no audio files in this project - the soundtrack is entirely generated through code, varies across different maps, and even gets more intense as the battle heats up. See <a href="https://simonwillison.net/2026/Oct/6/scrimshaw-jukebox/">Scrimshaw Jukebox</a> for a previous experiment with Claude for music composition.</li>
-<li>I still can't get over how well the prompt "Make it a LOT more fun" worked.</li>
-<li>Tools are effectively free. I prompted up the <a href="https://simonw.github.io/battledrones/radio-probe.html">Radio Probe</a>, the <a href="https://simonw.github.io/battledrones/models.html">Model browser</a>, the <a href="https://simonw.github.io/battledrones/record-viewer.html?replay=battles/showcase/2026-10-14-frostbite-42-claude-haiku-5.5-vs-gpt-6-luna.json#r1">Agent vs. Agent debug tool</a>, and Claude Code <a href="https://github.com/simonw/battledrones/tree/main/tools">built a bunch of tools</a> for itself that I haven't even explored myself.</li>
-<li>Audio-based multiplayer between static HTML games works! I hope to see a whole lot more games use this same pattern - in digging around today I've not found much prior art beyond <a href="https://github.com/AlonHor/siner">Siner</a> by Alon Horesh and <a href="https://github.com/ggerganov/ggwave">ggwave</a> by Georgi Gerganov (also of <code>llama.cpp</code> fame).</li>
-<li>Claude Code "Ultracode" burns tokens like there's no tomorrow, but it can also solve complex problems (like adding audio-based multiplayer) from a single prompt.</li>
-<li>I'm still not quite over the <em>guilt</em> of building software in this way. I don't feel like I've earned the right to create something this good, in a field in which I have so little prior experience! At this point I've shown it to enough people in private that it felt wrong not to publish it for everyone else to see and learn from.</li>
-</ul>
-
-<h4 id="update-online-multiplayer-support">Update: Online multiplayer support</h4>
-<p>Earlier in this article I said:</p>
-<blockquote>
-<p>Games are also super low stakes. The worst that can happen is one of my silly game experiments suffers a bug.</p>
-</blockquote>
-<p>Then I tried playing the multiplayer version with Natalie... and the high pitched modem sounds gave her a nasty headache!</p>
-<p>That's a pretty bad bug. I <a href="https://github.com/simonw/battledrones/pull/36">added a warning</a> and was then inspired to build proper network multiplayer. I tried <a href="https://github.com/simonw/battledrones/pull/37">getting WebRTC to work</a> but couldn't get a connection going between two of my own devices even on my own WiFi network, so <a href="https://github.com/simonw/battledrones/pull/38">I had Claude build</a> a simple, stateless WebSockets relay server instead:</p>
-<blockquote>
-<p>If I wanted to support multiplayer between two devices at a very low cost without storing any state on the server could I do that with a tiny asyncio web server running on the cheapest Fly instance?</p>
-</blockquote>
-<blockquote>
-<p>Build the server and the fly.toml for deploying it, use Fly application name battledrones-relay - put that in a folder in the repo, include deploy instructions in the README in that folder</p>
-</blockquote>
-<p>Here's <a href="https://github.com/simonw/battledrones/tree/v13/relay">the resulting server</a>. Since this scales to zero and runs on a single <a href="https://fly.io/">Fly.io</a> <code>shared-cpu-1x</code> instance it should cost me no more than $2.19/month - and that's if it stays hot and serving connections the whole time.</p>
-<p>Battle Drones now supports online multiplayer. Click "Duel a friend online", then either share the resulting room URL via your messaging app of choice or have them snap a picture of the displayed QR Code.</p>
-<p>I also added a feature where you can copy JSON of the match once it has ended and then feed that into the replay feature to rewatch your game.</p>
-<p>I didn't expect to introduce online multiplayer this soon, but the headache bug felt like it warranted an urgent alternative.</p>
-    
-        <p>Tags: <a href="https://simonwillison.net/tags/game-design">game-design</a>, <a href="https://simonwillison.net/tags/projects">projects</a>, <a href="https://simonwillison.net/tags/ai">ai</a>, <a href="https://simonwillison.net/tags/generative-ai">generative-ai</a>, <a href="https://simonwillison.net/tags/llms">llms</a>, <a href="https://simonwillison.net/tags/claude">claude</a>, <a href="https://simonwillison.net/tags/vibe-coding">vibe-coding</a>, <a href="https://simonwillison.net/tags/coding-agents">coding-agents</a>, <a href="https://simonwillison.net/tags/claude-code">claude-code</a></p>]]></summary>
-        <author>
-            <name>Simon Willison's Weblog</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Bulk migrate branch protections to rulesets for a repository]]></title>
-        <id>https://github.blog/changelog/2026-10-20-bulk-migrate-branch-protections-to-rulesets-for-a-repository</id>
-        <link href="https://github.blog/changelog/2026-10-20-bulk-migrate-branch-protections-to-rulesets-for-a-repository"/>
-        <updated>2026-10-20T18:06:21.000Z</updated>
-        <summary type="html"><![CDATA[You can now convert all branch protection rules of a repository to rulesets in a single action. This is an extension of the ability to convert a single branch protection…
-The post Bulk migrate branch protections to rulesets for a repository appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Updates to GitHub secret scanning]]></title>
-        <id>https://github.blog/changelog/2026-10-20-updates-to-github-secret-scanning</id>
-        <link href="https://github.blog/changelog/2026-10-20-updates-to-github-secret-scanning"/>
-        <updated>2026-10-20T18:03:55.000Z</updated>
-        <summary type="html"><![CDATA[This update covers improvements and bug fixes for GitHub secret scanning. Update to audit log events On November 12, 2026, the business field in affected secret_scanning_alert.* and secret_scanning_push_protection.bypass audit log…
-The post Updates to GitHub secret scanning appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Dependabot alerts REST API now includes dependency versions]]></title>
-        <id>https://github.blog/changelog/2026-10-20-dependabot-alerts-rest-api-now-includes-dependency-versions</id>
-        <link href="https://github.blog/changelog/2026-10-20-dependabot-alerts-rest-api-now-includes-dependency-versions"/>
-        <updated>2026-10-20T17:13:40.000Z</updated>
-        <summary type="html"><![CDATA[You can now get the version of a vulnerable dependency directly from Dependabot alert responses in the REST API. Each alert’s dependency object includes a new version_requirement field with the…
-The post Dependabot alerts REST API now includes dependency versions appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GitHub package firewall in public preview]]></title>
-        <id>https://github.blog/changelog/2026-10-16-github-package-firewall-in-public-preview</id>
-        <link href="https://github.blog/changelog/2026-10-20-github-package-firewall-in-public-preview"/>
-        <updated>2026-10-20T16:11:53.000Z</updated>
-        <summary type="html"><![CDATA[An increasing number of malware attacks exploit systems at package installation time, harvesting credentials on CI/CD hosts or developer workstations without even running the package’s code. To stem this tide…
-The post GitHub package firewall in public preview appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[30 Months on the Exponential (in Charts)]]></title>
-        <id>https://www.oneusefulthing.org/p/30-months-on-the-exponential-in-charts</id>
-        <link href="https://www.oneusefulthing.org/p/30-months-on-the-exponential-in-charts"/>
-        <updated>2026-10-20T15:57:59.000Z</updated>
-        <summary type="html"><![CDATA[My new book is out today... what happened since the last one]]></summary>
-        <author>
-            <name>Ethan Mollick</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Dependabot now supports npm 12, pnpm 11 and 12, and Bun 1.4]]></title>
-        <id>https://github.blog/changelog/2026-10-19-dependabot-now-supports-npm-12-pnpm-11-and-12-and-bun-1-4</id>
-        <link href="https://github.blog/changelog/2026-10-20-dependabot-now-supports-npm-12-pnpm-11-and-12-and-bun-1-4"/>
-        <updated>2026-10-20T13:52:38.000Z</updated>
-        <summary type="html"><![CDATA[You can now upgrade your projects to npm 12, pnpm 11 or 12, or Bun 1.4 and keep receiving Dependabot updates. Support for these package manager versions is available to…
-The post Dependabot now supports npm 12, pnpm 11 and 12, and Bun 1.4 appeared first on The GitHub Blog.]]></summary>
-        <author>
-            <name>Allison</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Franchisee reconciles cash in 94% less time with ChatGPT Work]]></title>
-        <id>https://openai.com/index/ted-taylor-restaurant</id>
-        <link href="https://openai.com/index/ted-taylor-restaurant"/>
-        <updated>2026-10-20T10:00:00.000Z</updated>
-        <summary type="html"><![CDATA[An independent Schlotzsky’s and Cinnabon franchisee cut menu repricing time by 95% and built a workflow that could free up $100K in cash flow.]]></summary>
         <author>
             <name>OpenAI News</name>
         </author>

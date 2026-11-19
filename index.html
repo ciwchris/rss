@@ -25,9 +25,181 @@
 
   <ul>
     <li>
+      <time>2026-11-19</time>
+
+      <section>
+      <article>
+          <details>
+            <summary>
+              PostgreSQL 19 Released
+              <span class="post-metadata">(4 min | 1079 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Nov/19/postgresql-19/>PostgreSQL 19 Released
+thanks mainly to the flurry of issues that the PostgreSQL team needed to address as part of the ongoing AI-reported vulnerability apocalypse.
+This release was definitely worth the wait. My favorite new feature is this one:
+For applications that send reads to standbys, PostgreSQL 19 adds &quot;read-your-writes&quot; consistency with the new WAIT FOR LSN command. A session on a standby can use WAIT FOR LSN to wait until the standby has replayed the write-ahead log (WAL) up to a specific log sequence number (LSN) before running a query, so the application can read data it just wrote on the primary.
+In practice, that looks like this:
+UPDATE movie SET genre &#x3D; &#x27;Dramatic&#x27; WHERE genre &#x3D; &#x27;Drama&#x27;;
+SELECT pg_current_wal_insert_lsn();
+
+That returns a value like 0/0306EE20. Store that somewhere (a signed cookie would work) such that on a subsequent request your application can do:
+WAIT FOR LSN &#x27;0/0306EE20&#x27; WITH (TIMEOUT &#x27;0.1s&#x27;);
+SELECT * FROM movie WHERE genre &#x3D; &#x27;Drama&#x27;;
+
+The timeout is optional - if you provide one you&#x27;ll get an error if the replica you are talking to doesn&#x27;t catch up within the specified time.
+I first encountered this pattern in Wikipedia, which has a hand-rolled version of this built against MySQL replication:
+In addition to this, MediaWiki attempts to ensure that the user sees events occurring on the wiki in chronological order. A few seconds of lag can be tolerated, as long as the user sees a consistent picture from subsequent requests. This is done by saving the primary binlog position in the session, and then at the start of each request, waiting for the replica to catch up to that position before doing any reads from it.
+Here&#x27;s the relevant MediaWiki code, which these days uses MySQL&#x27;s WAIT_FOR_EXECUTED_GTID_SET() function and falls back to MASTER_POS_WAIT().
+
+    
+Via Lobste.rs
+Tags: mysql, postgresql, replication, scaling, wikipedia, ai-security-research</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Enterprise Live Migrations from Azure DevOps generally available
+              <span class="post-metadata">(7 min | 2030 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-11-19-enterprise-live-migrations-from-azure-devops-generally-available>Enterprise Live Migrations (ELM) from Azure DevOps Services to GitHub Enterprise Cloud with data residency is now generally available. You can move your repositories while your teams keep working, then…
+The post Enterprise Live Migrations from Azure DevOps generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Red Hat Enterprise Linux runner images now generally available
+              <span class="post-metadata">(5 min | 1357 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-11-19-red-hat-enterprise-linux-runner-images-now-generally-available>Red Hat Enterprise Linux (RHEL) 9 and RHEL 10 images for GitHub-hosted larger runners are now generally available. Originally introduced in public preview in June 2026 in partnership with Red…
+The post Red Hat Enterprise Linux runner images now generally available appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              S3 audit log streaming with OpenID Connect expands to GHE.com
+              <span class="post-metadata">(4 min | 1328 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-11-19-s3-audit-log-streaming-with-openid-connect-expands-to-ghe-com>You can now stream enterprise audit logs to Amazon S3 using OpenID Connect (OIDC) on GitHub Enterprise Cloud with data residency (GHE.com). This extends the existing github.com capability, letting you…
+The post S3 audit log streaming with OpenID Connect expands to GHE.com appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How OpenAI’s Performance Factory keeps ChatGPT fast
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/how-openai-performance-factory-keeps-chatgpt-fast>Learn how OpenAI built the Performance Factory, a system of Codex-powered workflows that finds and fixes performance issues to help keep ChatGPT fast.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Wait for pull request events with GitHub CLI
+              <span class="post-metadata">(5 min | 1481 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-11-18-wait-for-pull-request-events-with-github-cli>GitHub CLI now supports GitHub Event Streams. With gh v2.105.0, you and your agents can wait for a pull request to change with a single command instead of polling it…
+The post Wait for pull request events with GitHub CLI appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+
+      </section>
+    </li>
+    <li>
       <time>2026-11-18</time>
 
       <section>
+      <article>
+          <details>
+            <summary>
+              llm-gemini 0.38
+              <span class="post-metadata">(3 min | 1026 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Nov/18/llm-gemini/>Release: llm-gemini 0.38
+Today Google introduced Gemini 4 Neon. I wrote recently about how confusing the pricing for the Gemini 4 series was - Neon has somehow made this even worse.
+Previously the Gemini 4 lineup was Hydrogen, Argon, and Carbon - where Argon and Carbon were the same price, and Hydrogen was 3/4 of that price now but will be 1/4 of that price when the other two double an 1st December once their initial discount pricing expires.
+The Neon announcement pretends that Argon doesn&#x27;t exist. Here&#x27;s their new image explaining the model line-up:
+
+So the lineup now, from most to least expensive, is Carbon, Neon, Hydrogen.
+Except Carbon is currently half price, so right now Neon ($3/million input, $15/million output) is the most expensive of the three - then Carbon ($2/$10), then Hydrogen ($1.50/$7.50). I guess this will make more sense when Carbon doubles to $4/$20 on December 1st.
+I ran some pelicans through the three reasoning levels for Neon - low, medium, high.
+I dropped Argon from my Gemini 4 comparison grid - here&#x27;s the new Gemini 4 lineup, where the Neon pelicans do look better than Hydrogen and worse than Carbon:
+
+As I&#x27;ve done with several recent models, I also fired the following prompt against Gemini 4 Neon on &quot;extra&quot; effort level in Google Antigravity:
+Make a three js animation where yonkers stands up as a big mech (cool stand up motion) and stomps around manhattan and queens and Brooklyn, use openstreetmap mapping data
+Here&#x27;s the result.
+Tags: yonkers-rising, gemini, llm, pelican-riding-a-bicycle, ai, llms, llm-release, google, generative-ai</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Connect Supabase, Box, Calendly, and more to Copilot
+              <span class="post-metadata">(5 min | 1560 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot>You can now connect eight more services to Copilot using GitHub-verified MCP servers, or connectors, available in public preview. They join more than 25 services you can already connect, like…
+The post Connect Supabase, Box, Calendly, and more to Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Gemini 4 Neon in GitHub Copilot
+              <span class="post-metadata">(5 min | 1501 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://github.blog/changelog/2026-11-18-gemini-4-neon-in-github-copilot>Gemini 4 Neon is now generally available in GitHub Copilot. It is designed for agentic coding, multistep tool use, and knowledge work. According to Google, Gemini 4 Neon delivers quality…
+The post Gemini 4 Neon in GitHub Copilot appeared first on The GitHub Blog.</a>
+            </div>
+            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              datasette-arrows 0.1a0
+              <span class="post-metadata">(3 min | 925 words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://simonwillison.net/2026/Nov/18/datasette-arrows/>Release: datasette-arrows 0.1a0
+Datasette 1.0a43 added the ability for plugins to implement streaming export formats. Datasette core supports streaming CSV and TSV - you can export millions of lines of data from a table without needing to load it all into memory, because those two file formats support streaming data in chunks. The register_output_renderer() plugin hook can now be used to implement the same pattern for other formats.
+I&#x27;ve learned never to release a new plugin feature without accompanying it with a plugin that uses it.
+Claude Fable 5.2 suggested the Apache Arrow streaming format as a good option, and built this plugin in almost a single shot.
+Add the plugin to Datasette (datasette install datasette-arrows) and the export dialog gains this new Arrow option:
+
+This screenshot is from Datasette&#x27;s main branch - the most recent release doesn&#x27;t yet group streaming formats such as Arrow with the TSV and CSV in the &quot;All rows in this table&quot; section, but that&#x27;s coming in the next alpha release.
+Tags: datasette, projects</a>
+            </div>
+            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
       <article>
           <details>
             <summary>
@@ -86,6 +258,30 @@ We also operate the Developers in Residence program, which now includes three se
 Tags: python, psf</a>
             </div>
             <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              How Sumitomo Life’s leaders helped teams adopt ChatGPT Enterprise
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/business/customer-stories/sumitomo-life>Sumitomo Life uses ChatGPT Enterprise to research insurers, prepare proposals, and draft code for investment analysis. Early use by executives helped drive adoption.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
+          </details>
+      </article>
+      <article>
+          <details>
+            <summary>
+              Research acceleration: The jagged frontier
+              <span class="post-metadata">(0 min |  words)</span> 
+            </summary>
+            <div class="post-content">
+              <a target="_blank" href=https://openai.com/index/research-acceleration-jagged-frontier>OpenAI measures how coding agents are accelerating AI research, where their performance remains uneven, and what this signals about recursive self-improvement.</a>
+            </div>
+            <!-- <p class="post-source">OpenAI News</p> -->
           </details>
       </article>
       <article>
@@ -4744,634 +4940,6 @@ Tags: game-design, open-source</a>
             </summary>
             <div class="post-content">
               <a target="_blank" href=https://openai.com/index/openai-models-google-cloud>OpenAI and Google Cloud are bringing frontier models and Codex workflows to Gemini’s Model Garden, available through Google Cloud Marketplace.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Patch the Planet: global response coordination as agents uncover critical vulnerabilities
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities>Patch the Planet connects security researchers, maintainers, and incident responders to help address critical vulnerabilities across open source.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              How we built ChatGPT’s novel ad stack for user trust and relevance
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/building-chatgpt-ad-stack>Learn how OpenAI built ChatGPT’s LLM-powered ad stack to understand conversational intent, keep ads separate from answers, and deliver relevant ads at scale.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Using thousands of AI agents to uncover new leads in biological data
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/scaling-ai-research-for-complex-biological-data>See how OpenAI, PerturbAI, and Scripps Research used distributed AI agents to uncover promising research leads in data from millions of brain cells.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Cloudflare links vulnerability discovery to defense with OpenAI
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/cloudflare-cyber>Cloudflare uses OpenAI Daybreak to investigate vulnerabilities and propose fixes for review. Its developers use Codex to build faster and improve code quality.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Democratic governance of frontier AI, part II: Empowering cyber defenders
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/empowering-cyber-defenders>OpenAI outlines a blueprint for empowering cyber defenders with frontier AI, stronger safeguards, modernized cybersecurity, and more resilient public institutions.</a>
-            </div>
-            <!-- <p class="post-source">OpenAI News</p> -->
-          </details>
-      </article>
-
-      </section>
-    </li>
-    <li>
-      <time>2026-10-20</time>
-
-      <section>
-      <article>
-          <details>
-            <summary>
-              eMudhra Intermediate CA Compromise
-              <span class="post-metadata">(3 min | 852 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Oct/20/emudhra-certificates/>eMudhra Intermediate CA Compromise
-The private keys of eight eMudhra intermediate CA certificates have been compromised. They chain to roots trusted by the Mozilla, Microsoft, Apple and Chrome root programs and by many downstream trust stores.
-Any software that bundles a list of trusted certificates needs to be updated. This site is tracking software updates via this GitHub repository - Linux distros need to update their ca-certificates packages.
-In Python world uv 0.13.4 and pip 26.2.2 and certifi 2026.10.19 have been released with upgraded certificate lists.
-
-
-    
-Tags: encryption, https, pip, python, security, uv</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Battle Drones - a vibe coded RTS with audio-based multiplayer
-              <span class="post-metadata">(15 min | 4369 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://simonwillison.net/2026/Oct/20/battledrones/>My latest vibe coded game experiment is a Command &amp; Conquer style RTS (Real Time Strategy) game called Battle Drones (play it here). Unlike my previous experiments, this one is actually fun to play. I&#x27;m somewhat embarrassed to admit that I got there by telling Claude to &quot;Make it a LOT more fun&quot;. It also supports multiplayer between nearby devices using audio to synchronize game state! Here&#x27;s what I&#x27;ve built so far, and some of the things I learned along the way.
-
-
-
-  
-Battle Drones
-
-  
-How I built this
-
-  
-v1: the initial prototype
-
-  
-v2: full sprites
-
-  
-v3: varied terrain
-
-  
-v4: the fun update
-
-  
-v5: Battle Drones goes 3D
-
-  
-v8: Archipelago
-
-  
-v10: Goliath, and agent battles
-
-  
-Agent battles
-
-  
-v11: Random Maps
-
-  
-v12: Multiplayer via sound
-
-  
-Some thoughts
-
-  
-Update: Online multiplayer support
-
-
-
-Battle Drones
-
-My initial goal was to build an RTS game I could play on my phone, in the style of Command &amp; Conquer. I have fond memories of the 1995 original (I liked Red Alert too) and wanted to recapture a little bit of the magic.
-
-After 12 major iterations (and 321 commits by coding agents, mainly Claude Code) I now have a browser-based game that works on mobile and desktop, has multiple play modes, several maps (including a random map generator) and even supports multiplayer for two devices within microphone range of each other.
-
-Here&#x27;s a video demo of Battle Drones running in a desktop browser:
-
-
-&lt;video
-  src&#x3D;&quot;https://static.simonwillison.net/static/2026/archipelago_720p_h264.mp4&quot;
-  poster&#x3D;&quot;https://static.simonwillison.net/static/2026/archipelago_poster.jpg&quot;
-  preload&#x3D;&quot;none&quot;
-  loop&#x3D;&quot;1&quot; controls&#x3D;&quot;1&quot;
-  playsinline&#x3D;&quot;1&quot; muted&#x3D;&quot;1&quot;
-  width&#x3D;&quot;1280&quot;
-  height&#x3D;&quot;706&quot;
-  style&#x3D;&quot;display: block; width: 100%; height: auto;&quot;
-&gt; 
-
-Features so far include:
-
-
-9 buildings, 7 ground vehicles, 6 aerial vehicles, 3 infantry units - all 3D models, which you can browse here
-
-Fog of war
-
-Different weapons are needed to target aerial or ground vehicles
-
-
-Six maps, across five biomes - temperate, desert, arctic, volcanic, tropical
-
-A random map generator
-
-
-Skirmish mode - red vs. blue on a rotationally symmetrical map
-
-
-Last Stand mode - one player holds out against as many waves of enemies as possible
-
-Area effect weapons: Barrage, EMP, Drop Pod, Sky Hammer
-
-
-Crate drops with bonus resources
-
-In-game music that responds to events - it gets more intense as fighting breaks out
-
-Different in-game AI personalities (Balanced, Rush, Air Swarm, Boom, Skyforce, Ironclad)
-
-
-AI vs. AI mode, to watch those personalities play each other
-
-The Goliath - a giant stomping mech with laser eyes and arm cannons and the ability to establish a new base
-
-
-Mutators that add extra rules or twists
-
-A &quot;Daily Op&quot; challenge
-
-Ranks and achievements (Medals)
-
-
-Agent vs. Agent mode where two LLMs can play Battle Drones against each other
-
-A multiplayer mode based on two nearby phones communicating via audio messages, an extension of my earlier experiment with Chirp Pong
-
-
-How I built this
-
-Battle Drones is heavily vibe coded - I&#x27;ve reviewed almost none of the code, and it&#x27;s built in a language (TypeScript) that I&#x27;ve hardly used myself. I&#x27;ve playtested it quite a bit though, and it&#x27;s been through a large number of iterations since I started the project.
-
-Here&#x27;s a rough history of the project so far, including key prompts and links to transcripts.
-
-v1: the initial prototype
-
-I started out with Claude Fable 5 back in July:
-
-
-We are going to build a mobile friendly RTS game - command and conquer style - called Battle Drones, in which two armies of drones (both flying and ground-based) battle for territory and resources
-
-Let&#x27;s start with a MVP design, ask me some questions
-
-
-Here&#x27;s a shared transcript. I&#x27;d given Claude Code for Web an environment variable with an OpenAI API key and told it to use the OpenAI Image Generation API for assets, which got me some basic sprites.
-
-You can try v1 here - it looked like this:
-
-
-
-It&#x27;s recognizable as an RTS, has building mechanics and the ability to select and direct units, and a basic AI to play against.
-
-
-This first version was barely a proof of concept, and it wasn&#x27;t any fun to play.
-
-Claude used the Phaser 2D game framework for these early versions. I didn&#x27;t even realize this until several iterations later!
-
-v2: full sprites
-
-The second version (try v2 here) added sprites for all of the vehicles and the &quot;AI vs. AI&quot; mode, so I could watch the game playing without having to directly control it myself.
-
-Claude proved reasonably competent at prompting OpenAI&#x27;s image models to generate sprites. You can browse the v2 sprites in the public/assets/sprites folder.
-
-
-
-v3: varied terrain
-
-It still wasn&#x27;t much fun, and the graphics were boring. It was now October, and I had upgraded to Claude Opus 5.5. I told it:
-
-
-Massively improve this game. Make the graphics and gameplay better (keep it mobile friendly). Render new graphics using the latest OpenAI GPT image API (lookup details) with the API key in the environment variable. Add new unit types and balance the gameplay better. Also add new buildings and better, more varied terrain.
-
-
-This resulted in five new maps with generated background tiles in a variety of styles, visible here. Opus also regenerated the sprites, making them much more visually appealing. You can try v3 here - it looks like this:
-
-
-
-This is starting to feel like a real game! It still wasn&#x27;t very fun to play though - I found myself getting bored pretty quickly.
-
-v4: the fun update
-
-So far my Battle Drones experiment was confirming my previous belief that coding agents can build a thing that looks like a game but can&#x27;t actually make something that&#x27;s genuinely compelling to play.
-
-I shared this theory with someone over dinner, and then thought to myself that I should give the models a proper chance to prove me wrong. I prompted Opus 5.5 on my phone:
-
-
-This game isn&#x27;t fun enough yet. Make it a LOT more fun.
-
-
-This time I was running in Ultracode mode, where Claude Code (in this case Claude Code for Web) runs &quot;dynamic workflows&quot;, described in their docs as:
-
-
-A dynamic workflow is a JavaScript script that orchestrates many subagents at once.
-
-
-This kicked off many hours of work. I started it in the evening and didn&#x27;t get a playable result back until late into the next morning. But the results were spectacular.
-
-You can try v4 here - it looks like this:
-
-
-
-I had Claude write its own release notes - here are the highlights:
-
-
-Every skirmish and Daily Op now opens with a choice, gives the side that&#x27;s losing a way back, and pulls the armies into the middle of the map. There are also two new ways to play.
-
-
-
-Openers: pick Blitz, Industry or Air Wing before the clock starts.
-
-
-Call-down powers: Barrage, EMP, Drop Pod and the Sky Hammer orbital strike.
-
-
-Objectives and salvage: Uplink relays, supply drops and wrecks worth scrap.
-
-
-Feel: combat juice, adaptive music, unit voices and an announcer.
-
-
-Command: battle alerts, game speed, saved squads and touch placement.
-
-
-New modes: Last Stand survival waves and an 8-mission Ops campaign.
-
-
-Progression: heroes, an after-action report with awards, a career, 7 mutators and a Daily Op.
-
-
-Fights run longer and swing more. In 1,200 AI-vs-AI test matches on Normal, games still undecided after 25 minutes fell from 14% to 0.9%. The share of wins by a side that had been 800+ scrap behind rose from 24% to 46%.
-
-
-Part of the reason Claude took so long was that it ran over a thousand simulated playtest sessions, and used the results to rebalance the existing units, add new ones, and introduce new features.
-
-v5: Battle Drones goes 3D
-
-After the success of Ultracode at &quot;Make it a LOT more fun&quot;, I decided to be more ambitious:
-
-
-Port this game to three.js with 3D models for all of the buildings and vehicles and landscapes
-
-
-That was another overnight run. I woke up to this v5 version:
-
-
-
-The new 3D models were entirely constructed by Claude in TypeScript code.
-
-v6 (play v6 here) added some more visual polish. v7 (play v7) added robot infantry (troopers, rocket squads, snipers) and a &quot;Condor&quot; troop carrying aircraft.
-
-v8: Archipelago
-
-I was beginning to feel guilty at how little actual design input I had into the game - it really had been a case of me saying &quot;make it more fun&quot; and &quot;add visual polish&quot; for the past few releases.
-
-I&#x27;d noticed that the AI didn&#x27;t use the new infantry and troop carrying aircraft from v7 very often - there wasn&#x27;t a great strategic reason to use them.
-
-It would be neat if we had a new map with a new game mechanic that actively encouraged players to load up Condors with infantry robots and send them out into the map.
-
-This resulted in my longest prompt yet:
-
-
-Design a new map. Goal is to make different strategic incentives that encourage use of Infantry and Condors and aerial vehicles.
-
-To do this the map will have limited harvester resources but several more uplinks - but uplinks will be on islands that are inaccessible by land vehicles or infantry. These uplinks can also not be claimed using air vehicles. The ONLY way to get them is to fly infantry there in a Condor.
-
-Armies always start with a Condor and a single squad. If an army has no Condor a new one will be provided for free, flying in from the edge closest to their HQ and landing there. That free condor will come with a single free squad on board.
-
-The two HQs should be entirely separated by water, but still accessible by vehicles thanks to two bridges across the map in different places
-
-I want to encourage a battle over uplinks.
-
-The map should be the times the size of other maps - still square
-
-First research and then critique this design. Only build after we have agreed on any modifications
-
-You get to design a new biome for this
-
-
-The result was the tropical Archipelago map, with seven island uplinks that players can only capture by flying out infantry in a Condor. It&#x27;s definitely the most fun map to play, once you&#x27;ve got the hang of the basic game mechanics from the simpler maps. The v9 edition made that map a little more interesting - it now looks like this:
-
-
-
-v10: Goliath, and agent battles
-
-I decided to add giant robot mechs to the game - think Jaegers from Pacific Rim, or Titans from Warhammer 40,000.
-
-Here are some of the prompts I used to brainstorm with Claude:
-
-
-Help me brainstorm ideas for adding giant robots to this game - think dreadnoughts or titans from W20K - how could we do this in a way that enhanced gameplay, kept things balanced, added unique twist? Don&#x27;t overthink this yet
-
-
-
-Let&#x27;s keep brainstorming. I like the idea that it&#x27;s a mobile base - that can accept harvested scrap and can have buildings built near it (even if it later moves on) and can produce infantry units too. An interaction with condor would be neat but I don&#x27;t know what that could be.
-
-
-
-Idea: as it gets damage it loses the ability to fire some weapons - by default it has eye laser (like lancers) and arm canons (like titan) and two shoulder mounted mortars, plus machine guns similar to a squad of troops
-
-
-
-Damage knocks out mortars and then laser - it always has guns. You can&#x27;t build next to a building that was only put there because of the mech, you need the mech there for off-base building and only within three squares of it
-
-
-
-[...] Lets do two condors can carry the mech
-
-
-The end result is really cool.
-
-
-&lt;video
-  width&#x3D;&quot;1644&quot;
-  height&#x3D;&quot;1080&quot;
-  preload&#x3D;&quot;none&quot;
-  loop&#x3D;&quot;1&quot; controls&#x3D;&quot;1&quot;
-  playsinline&#x3D;&quot;1&quot; muted&#x3D;&quot;1&quot;
-  style&#x3D;&quot;display: block; width: 100%; height: auto;&quot;
-  poster&#x3D;&quot;https://static.simonwillison.net/static/2026/goliath-poster.jpg&quot;
-&gt;
-  
-  Your browser does not support HTML video.
-
-
-Goliaths can be constructed using a Gantry - a building that can only be created after first building a Fab, Bay, Airpad, and Tech Lab. You can see the Goliath under construction, and it then walks out from the Gantry and can march around the map.
-
-Goliaths can &quot;anchor&quot;, which digs them into the ground. In their anchored state they can act as a new HQ, constructing infantry units and additional buildings in a new area.
-
-Two Condor aircraft can hook onto a Goliath, at which point it can be flown around the map!
-
-The game now ends when you destroy the enemy&#x27;s HQ building and any Goliaths they might have built.
-
-There are also a couple of mutators relating to Goliaths:
-
-
-
-Goliath Armada starts each side with four airborne Goliaths (each with a pair of Condors) and no other units.
-
-
-Robot Love adds a special rule: if enemy Goliaths get close to each other on the battlefield they fall in love and the game ends in a draw. (Thank Natalie for that one).
-
-
-Agent battles
-
-The other v10 feature is agent battles. In musing about how multiplayer could work I had an idea: what if different LLMs could fight it out in the game?
-
-
-Fun extra challenge: think about how we might make multiplayer available to coding agents. It would be neat if we could set up a battle between eg GPT-6 Sol and Claude Opus 5.5 where each model has access to a tool which gives them information about the game (presumably non-visual, but only the information they could see through fog of war etc) and lets them control their units etc [...]
-
-Consult ~/dev/llm/docs and include notes in that file about how LLM could be used here via a new tools plugin
-
-
-Opus 5.5 went to work on this, producing this AGENT-BATTLES.md proposal and then implementing and testing it. The feature also includes the ability to record and replay these battles - here&#x27;s a replay of Claude Haiku 5.5 vs. GPT-6 Luna, and here&#x27;s that same battle in a separate debug tool that shows the underlying prompt responses.
-
-
-
-The prompt that drives agent battles can be seen here.
-
-There are a few more replays like this linked in the README. I hope to turn this into a full league table at some point in the future.
-
-v11: Random Maps
-
-This version exists purely because I glanced at my Claude Usage page one day and saw that I&#x27;d only used 75% of my weekly allowance and it was resetting in 45 minutes. I decided to see if I could get an extra Battle Drones feature from my remaining tokens, and picked &quot;random map&quot; as the target:
-
-
-Design and implement a mechanism for generating a random map using any of the available biomes - it should be the size of the largest map and rivers and bridges and rocks and forest and scrap and crystals are all in play. Make them rotationally symmetric and use a seed to allow them to be selected or reused later. You have 45 minutes to build this! Be creative.
-
-
-Here&#x27;s the transcript, and an image Claude generated to show me its work:
-
-
-
-v12: Multiplayer via sound
-
-I only just got this working, so I&#x27;ve not had much time to actively test it yet. The latest Battle Drones now supports multiplayer via two devices sat within microphone distance of each other!
-
-This feature started out as my Chirp Pong experiment from last week. I pointed Claude Code at that working proof of concept:
-
-
-Clone Simonw/tools from GitHub and look at recent branches for the example pong game that uses web microphone to implement multiplayer between two phones via audio signals
-
-Build a version of that for battledrones
-
-
-Opus built this Radio Probe tool to measure how much bandwidth we could get between two devices and, based on positive results from that, implemented a full audio modem system. I&#x27;ve tried it between laptops, iPhones and iPads so far and it seems to work really well!
-
-Why use sound for this? Because I love static HTML that costs nothing to run, and I don&#x27;t want to spin up a server somewhere and then stay responsible for keeping it operating for as long as anyone might want to play the game.
-
-Some thoughts
-
-I know almost nothing about game development. This makes it a great opportunity to try out coding agents in a field where my existing software engineering experience has less impact on the results.
-
-Games are also super low stakes. The worst that can happen is one of my silly game experiments suffers a bug.
-
-This morning (via Hacker News) I found Steam Fans Are Begging for a No-AI Filter as Steam Next Fest Is Filled With Slop. I wouldn&#x27;t personally dream of submitting Battle Drones to an event like this - it&#x27;s still way too low effort to warrant consideration as a legitimate indie gaming project.
-
-... but I can now see a path to vibe coded games like this being taken seriously. Battle Drones is fun, it looks good, it has innovative features (the multiplayer-over-audio thing is a first for an RTS as far as I can tell).
-
-I&#x27;d love to see what someone with better taste than me and a driving passion to produce something truly exceptional could build!
-
-A few other observations from this project:
-
-
-Static HTML and JavaScript is a fantastic medium for games development. WebGL works great, and Three.js (and Phaser before it) are excellent platforms to build on that the current models know inside out.
-
-This also lets them run as Progressive Web Apps - I didn&#x27;t ask for it, but Battle Drones works offline. I was able to play it on a plane despite never having directly installed it - my phone had it cached.
-
-Giving Claude an OpenAI API key and telling it to generate images using OpenAI&#x27;s models works really well. It can view the images it has generated and iterate on the prompts.
-
-Opus 5.5 is spectacular at 3D modeling using Three.js (and Blender, and no doubt other 3D applications as well). The same is true of GPT-6 Astra. They are absolutely capable of building models for 3D game projects.
-
-For features like replay and multiplayer it&#x27;s useful to have a deterministic simulation engine. At one point Claude had to replace calls to Math.sin() and Math.cos() and friends with custom versions because different browsers (Chrome vs. Safari, for example) returned very slightly different numbers, desynchronizing the replay.
-
-Opus 5.5 can write music! There are no audio files in this project - the soundtrack is entirely generated through code, varies across different maps, and even gets more intense as the battle heats up. See Scrimshaw Jukebox for a previous experiment with Claude for music composition.
-
-I still can&#x27;t get over how well the prompt &quot;Make it a LOT more fun&quot; worked.
-
-Tools are effectively free. I prompted up the Radio Probe, the Model browser, the Agent vs. Agent debug tool, and Claude Code built a bunch of tools for itself that I haven&#x27;t even explored myself.
-
-Audio-based multiplayer between static HTML games works! I hope to see a whole lot more games use this same pattern - in digging around today I&#x27;ve not found much prior art beyond Siner by Alon Horesh and ggwave by Georgi Gerganov (also of llama.cpp fame).
-
-Claude Code &quot;Ultracode&quot; burns tokens like there&#x27;s no tomorrow, but it can also solve complex problems (like adding audio-based multiplayer) from a single prompt.
-
-I&#x27;m still not quite over the guilt of building software in this way. I don&#x27;t feel like I&#x27;ve earned the right to create something this good, in a field in which I have so little prior experience! At this point I&#x27;ve shown it to enough people in private that it felt wrong not to publish it for everyone else to see and learn from.
-
-
-
-Update: Online multiplayer support
-
-Earlier in this article I said:
-
-
-Games are also super low stakes. The worst that can happen is one of my silly game experiments suffers a bug.
-
-
-Then I tried playing the multiplayer version with Natalie... and the high pitched modem sounds gave her a nasty headache!
-
-That&#x27;s a pretty bad bug. I added a warning and was then inspired to build proper network multiplayer. I tried getting WebRTC to work but couldn&#x27;t get a connection going between two of my own devices even on my own WiFi network, so I had Claude build a simple, stateless WebSockets relay server instead:
-
-
-If I wanted to support multiplayer between two devices at a very low cost without storing any state on the server could I do that with a tiny asyncio web server running on the cheapest Fly instance?
-
-
-
-Build the server and the fly.toml for deploying it, use Fly application name battledrones-relay - put that in a folder in the repo, include deploy instructions in the README in that folder
-
-
-Here&#x27;s the resulting server. Since this scales to zero and runs on a single Fly.io shared-cpu-1x instance it should cost me no more than $2.19/month - and that&#x27;s if it stays hot and serving connections the whole time.
-
-Battle Drones now supports online multiplayer. Click &quot;Duel a friend online&quot;, then either share the resulting room URL via your messaging app of choice or have them snap a picture of the displayed QR Code.
-
-I also added a feature where you can copy JSON of the match once it has ended and then feed that into the replay feature to rewatch your game.
-
-I didn&#x27;t expect to introduce online multiplayer this soon, but the headache bug felt like it warranted an urgent alternative.
-Tags: game-design, projects, ai, generative-ai, llms, claude, vibe-coding, coding-agents, claude-code</a>
-            </div>
-            <!-- <p class="post-source">Simon Willison&#x27;s Weblog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Bulk migrate branch protections to rulesets for a repository
-              <span class="post-metadata">(5 min | 1522 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-10-20-bulk-migrate-branch-protections-to-rulesets-for-a-repository>You can now convert all branch protection rules of a repository to rulesets in a single action. This is an extension of the ability to convert a single branch protection…
-The post Bulk migrate branch protections to rulesets for a repository appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Updates to GitHub secret scanning
-              <span class="post-metadata">(5 min | 1608 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-10-20-updates-to-github-secret-scanning>This update covers improvements and bug fixes for GitHub secret scanning. Update to audit log events On November 12, 2026, the business field in affected secret_scanning_alert.* and secret_scanning_push_protection.bypass audit log…
-The post Updates to GitHub secret scanning appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot alerts REST API now includes dependency versions
-              <span class="post-metadata">(7 min | 1990 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-10-20-dependabot-alerts-rest-api-now-includes-dependency-versions>You can now get the version of a vulnerable dependency directly from Dependabot alert responses in the REST API. Each alert’s dependency object includes a new version_requirement field with the…
-The post Dependabot alerts REST API now includes dependency versions appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              GitHub package firewall in public preview
-              <span class="post-metadata">(5 min | 1562 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-10-20-github-package-firewall-in-public-preview>An increasing number of malware attacks exploit systems at package installation time, harvesting credentials on CI/CD hosts or developer workstations without even running the package’s code. To stem this tide…
-The post GitHub package firewall in public preview appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              30 Months on the Exponential (in Charts)
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://www.oneusefulthing.org/p/30-months-on-the-exponential-in-charts>My new book is out today... what happened since the last one</a>
-            </div>
-            <!-- <p class="post-source">One Useful Thing</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Dependabot now supports npm 12, pnpm 11 and 12, and Bun 1.4
-              <span class="post-metadata">(4 min | 1298 words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://github.blog/changelog/2026-10-20-dependabot-now-supports-npm-12-pnpm-11-and-12-and-bun-1-4>You can now upgrade your projects to npm 12, pnpm 11 or 12, or Bun 1.4 and keep receiving Dependabot updates. Support for these package manager versions is available to…
-The post Dependabot now supports npm 12, pnpm 11 and 12, and Bun 1.4 appeared first on The GitHub Blog.</a>
-            </div>
-            <!-- <p class="post-source">Archive: 2026 - GitHub Changelog</p> -->
-          </details>
-      </article>
-      <article>
-          <details>
-            <summary>
-              Franchisee reconciles cash in 94% less time with ChatGPT Work
-              <span class="post-metadata">(0 min |  words)</span> 
-            </summary>
-            <div class="post-content">
-              <a target="_blank" href=https://openai.com/index/ted-taylor-restaurant>An independent Schlotzsky’s and Cinnabon franchisee cut menu repricing time by 95% and built a workflow that could free up $100K in cash flow.</a>
             </div>
             <!-- <p class="post-source">OpenAI News</p> -->
           </details>
